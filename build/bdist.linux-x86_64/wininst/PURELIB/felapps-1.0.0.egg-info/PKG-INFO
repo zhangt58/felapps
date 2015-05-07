@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: felapps
+Version: 1.0.0
+Summary: High-level applications for FEL commissioning.
+Home-page: UNKNOWN
+Author: Tong Zhang
+Author-email: zhangtong@sinap.ac.cn
+License: MIT
+Description: High-level applications created for the tunning/commissioning of the free-electron laser facilities.
+Keywords: FEL high-level application physics commissioning
+Platform: Linux
