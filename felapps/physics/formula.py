@@ -14,6 +14,7 @@ first version is written in MATLAB on Dec. 25th, 2014.
 import wx
 from wx.lib.wordwrap import wordwrap
 from . import felbase
+#import felbase
 import numpy as np
 
 import matplotlib
@@ -380,7 +381,10 @@ class MainFrame(wx.Frame):
         gbsizer.AddGrowableRow(4, 1)
         gbsizer.AddGrowableRow(5, 1)
 
-        panel.SetSizerAndFit(gbsizer)
+        panel.SetSizer(gbsizer)
+        osizer = wx.BoxSizer(wx.HORIZONTAL)
+        osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
 
         # callback bindings
         self.Bind(wx.EVT_CLOSE,  self.onExit)
@@ -455,7 +459,7 @@ class MainFrame(wx.Frame):
                 self.scanX = avgBeta
                 #print self.scanX
             else:
-                print 'Scan parameters ERROR!'
+                print('Scan parameters ERROR!')
 
             instFEL = felbase.FELcalc(beamEnergy,
                                       energySpread,
