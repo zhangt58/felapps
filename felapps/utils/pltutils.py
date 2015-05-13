@@ -12,6 +12,8 @@ Created: Feb. 3rd, 2015
 #import wxversion
 #wxversion.ensureMinimal('2.8')
 
+from __future__ import division
+
 import wx
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,8 +23,8 @@ import epics
 import time
 import os
 import xml.etree.cElementTree as ET
-#from . import resutils
-#from . import funutils
+from . import resutils
+from . import funutils
 import resutils
 import funutils
 
@@ -71,7 +73,7 @@ class ConfigFile(object):
         #print ET.tostring(self.root)
 
 class ImageViewer(wx.Frame):
-    def __init__(self, parent, size = (930, 700), **kwargs):
+    def __init__(self, parent, size = (800, 600), **kwargs):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, name = 'imageviewer', **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.parent = parent
         self.cmlist_seq1 = ['Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges', 
@@ -203,10 +205,12 @@ class ImageViewer(wx.Frame):
         self.menuShowInt.Show()
 
     def onShowXhist(self, event):
-        pass
+        flag = not self.imgpanel.linex.get_visible()
+        self.imgpanel.linex.set_visible(flag)
 
     def onShowYhist(self, event):
-        pass
+        flag = not self.imgpanel.liney.get_visible()
+        self.imgpanel.liney.set_visible(flag)
 
     def onConfigApps(self, event):
         self.menuAppConfig = AppConfigPanel(self)
@@ -495,7 +499,7 @@ class ImageViewer(wx.Frame):
             self.inten_val.SetLabel("%.5e" % (np.sum(self.mypv.get())))
 
             #self.wpx, self.hpx = 494, 659
-            self.imgpanel.z = self.mypv.get().reshape((self.wpx,self.hpx))
+            self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))
             try:
                 cmin_now = float(self.imgcr_min_tc.GetValue())
                 cmax_now = float(self.imgcr_max_tc.GetValue())
@@ -518,7 +522,7 @@ class ImageViewer(wx.Frame):
         """
         self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
         #self.wpx, self.hpx = 494, 659
-        self.imgpanel.z = self.mypv.get().reshape((self.wpx,self.hpx))
+        self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))
         self.imgpanel.cmin = self.imgpanel.z.min()
         self.imgpanel.cmax = self.imgpanel.z.max()
         cmin_now = self.imgpanel.cmin
@@ -645,10 +649,10 @@ class AppConfigPanel(wx.Frame):
         sbfont = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
             
         # test font setting
-        print sbfont.GetFamilyString()
-        print sbfont.GetFaceName()
-        print sbfont.GetPointSize()
-        print sbfont.GetPixelSize()
+        #print sbfont.GetFamilyString()
+        #print sbfont.GetFaceName()
+        #print sbfont.GetPointSize()
+        #print sbfont.GetPixelSize()
 
         sbfont.SetPointSize(8)
         sbfont.SetWeight(wx.FONTWEIGHT_NORMAL)
@@ -905,6 +909,7 @@ class ImagePanel(wx.Panel):
         self.figsize = figsize
         self.dpi     = dpi
         self.bgcolor = bgcolor
+        self.ratio   = 0.4
         self.figure = Figure(self.figsize, self.dpi)
         self.canvas = FigureCanvasWxAgg(self, -1, self.figure)
         self.cmaptype = 'jet'
@@ -926,6 +931,7 @@ class ImagePanel(wx.Panel):
         self.canvas.SetBackgroundColour(wx.Colour(*rgbtuple))
 
     def repaint(self):
+        self.onSetHist()
         self.figure.canvas.draw_idle()
 
     def onSetcm(self, cmap):
@@ -934,6 +940,20 @@ class ImagePanel(wx.Panel):
         self.im.set_array(self.z)
         self.repaint()
 
+    def onSetHist(self):
+        self.histx = self.z.sum(axis = 0)
+        self.histy = self.z.sum(axis = 1)
+        idxmaxx, idxmaxy = np.where(self.histx==self.histx.max()), np.where(self.histy==self.histy.max())
+        self.maxidx, self.maxidy = idxmaxx[0][0], idxmaxy[0][0]
+        self.xx = np.arange(self.histx.size) + 1
+        self.yy = np.arange(self.histy.size) + 1
+        self.linex.set_xdata(self.xx)
+        self.linex.set_ydata(self.histx/self.histx.max()*self.maxidy*self.ratio)
+        self.liney.set_xdata(self.histy/self.histy.max()*self.maxidx*self.ratio)
+        self.liney.set_ydata(self.yy)
+        self.xyscalar = [self.xx.min(), self.xx.max(), self.yy.min(), self.yy.max()]
+        self.im.set_extent(self.xyscalar)
+
     def onSetCr(self, crange):
         self.im.set_clim(crange)
         self.repaint()
@@ -941,18 +961,33 @@ class ImagePanel(wx.Panel):
     def doPlot(self):
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111)
+        self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.ratio, 'w--')
+        self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.ratio, self.yy, 'w--')
+
         #self.axes.set_title(r'$f(x,y)=\sin x + \cos y$')
-        self.im = self.axes.imshow(self.z, cmap = plt.get_cmap(self.cmaptype), 
+        self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
                                    origin = 'lower left', vmin = self.cmin, vmax = self.cmax)
+        self.im.set_extent(self.xyscalar)
+        self.linex.set_visible(False)
+        self.liney.set_visible(False)
         self.figure.canvas.draw()
 
     def onGetData(self):
-        x = np.arange(120.0)*2*np.pi/60.0
+        x = np.arange(100.0)*2*np.pi/50.0
         y = np.arange(100.0)*2*np.pi/50.0
         self.x, self.y = np.meshgrid(x, y)
         self.z = 100*np.sin(self.x) + 100*np.cos(self.y)
         self.cmin = self.z.min()
         self.cmax = self.z.max()
+        
+        self.histx = self.z.sum(axis = 0)
+        self.histy = self.z.sum(axis = 1)
+        self.xx = np.arange(self.histx.size)+1
+        self.yy = np.arange(self.histy.size)+1
+        idxmaxx, idxmaxy = np.where(self.histx==self.histx.max()), np.where(self.histy==self.histy.max())
+        self.maxidx, self.maxidy = idxmaxx[0][0], idxmaxy[0][0]
+        self.xyscalar = [self.xx.min(), self.xx.max(), self.yy.min(), self.yy.max()]
+
 
     def fitCanvas(self):
         self.canvas.SetSize(self.GetSize())

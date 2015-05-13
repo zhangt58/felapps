@@ -21,7 +21,7 @@ def run(maximize = True, logon = True):
     else:
         myframe = pltutils.ImageViewer(None, title = 'ImageViewer --- Another Profile Monitor', style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
     myframe.Show()
-    print myframe.GetSize()
+    #print myframe.GetSize()
     app.MainLoop()
 
 if __name__ == '__main__':
