@@ -56,5 +56,6 @@ docs/_build/
 # PyBuilder
 target/
 
-# vim temp file
+# temp file
 *.swp
+*~
