@@ -1,5 +1,3 @@
-# felapps
-
 FEL Apps (felapps) Python project
 =================================
 
