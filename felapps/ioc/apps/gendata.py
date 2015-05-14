@@ -46,13 +46,20 @@ x1, y1 = np.meshgrid(xx1, yy1)
 
 for i in np.arange(100000):
     #### PROF test
-    #ampArr = [15,2,10,4,25]
+    """
     ampArr = np.random.random_integers(2,25,5)
     tmpdata1= ampArr[0]*gauss2d(x, y, 5,  3, 1.0, 2.0) + \
               ampArr[1]*gauss2d(x, y, 9,  6, 1.0, 1.0) + \
               ampArr[2]*gauss2d(x, y, 11, 4, 1.5, 1.5) + \
               ampArr[3]*gauss2d(x, y, 7, 10, 2.0, 2.0) + \
               ampArr[4]*gauss2d(x, y, 6,  7, 0.5, 0.5) + \
+              0.5*np.random.random(size = 659*494).reshape(494, 659)
+    """
+
+    ampArr = np.random.random_integers(50,100,1)
+    rx, ry = np.random.random()*3+1, np.random.random()*3+1
+    px, py = np.random.random()*3+5, np.random.random()*3+2
+    tmpdata1= ampArr*gauss2d(x, y, px, py, rx, ry) + \
               0.5*np.random.random(size = 659*494).reshape(494, 659)
 
     arrdata1 = np.array(tmpdata1, dtype = np.int8)

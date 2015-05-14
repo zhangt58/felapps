@@ -1,4 +1,5 @@
-# felapps
+FEL Apps (felapps) Python project
+=================================
 
 High-level application suite for free-electron laser, developed by Python
 
