@@ -17,6 +17,7 @@ appPlatform         = ["Linux"]
 appAuthor           = "Tong Zhang"
 appAuthor_email     = "zhangtong@sinap.ac.cn"
 appLicense          = "MIT"
+appUrl              = "https://github.com/Archman/felapps"
 appKeywords         = "FEL high-level application physics commissioning"
 requiredpackages = ['numpy','scipy','matplotlib', 'pyepics'] # install_requires
 
@@ -28,6 +29,7 @@ setup(name             = appName,
       author           = appAuthor,
       author_email     = appAuthor_email,
       license          = appLicense,
+      url              = appUrl,
       keywords         = appKeywords,
       packages         = find_packages(exclude=['contrib','tests*']),
       install_requires = requiredpackages,
