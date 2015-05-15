@@ -9,7 +9,7 @@ def readme():
 from setuptools import find_packages, setup
 
 appName             = "felapps"
-appVersion          = "1.0.4"
+appVersion          = "1.0.6"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
