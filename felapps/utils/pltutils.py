@@ -23,12 +23,12 @@ import epics
 import time
 import os
 import xml.etree.cElementTree as ET
-#from . import resutils
-#from . import funutils
-import resutils
-import funutils
+from . import resutils
+from . import funutils
+#import resutils
+#import funutils
 
-APPVERSION = "1.1.2" # application version
+APPVERSION = "1.2.0" # application version
 
 class ConfigFile(object):
 
@@ -42,22 +42,22 @@ class ConfigFile(object):
         root = tree.getroot()
         self.root = root
         self.tree = tree
-        namelist_image = {}
-        namelist_daq   = {}
-        namelist_look  = {}
-        namestring_image = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveIntName', 'saveIntExt', 'cmFavor']
-        namestring_daq   = ['frequency', 'imgsrcPV']
-        namestring_look  = ['backgroundColor']
+        namelist_image   = {}
+        namelist_control = {}
+        namelist_style   = {}
+        namestring_image   = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveIntName', 'saveIntExt', 'cmFavor']
+        namestring_control = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
+        namestring_style   = ['backgroundColor']
         for group in root.iter('group'):
             if group.get('name') == 'Image':
                 namelist_image = {s:group.find('properties').get(s) for s in namestring_image}
-            elif group.get('name') == 'DAQ':
-                namelist_daq   = {s:group.find('properties').get(s) for s in namestring_daq  }
-            elif group.get('name') == 'Appearance':
-                namelist_look  = {s:group.find('properties').get(s) for s in namestring_look }
+            elif group.get('name') == 'Control':
+                namelist_control   = {s:group.find('properties').get(s) for s in namestring_control}
+            elif group.get('name') == 'Style':
+                namelist_style  = {s:group.find('properties').get(s) for s in namestring_style}
         self.namelist.update(namelist_image)
-        self.namelist.update(namelist_daq  )
-        self.namelist.update(namelist_look )
+        self.namelist.update(namelist_control)
+        self.namelist.update(namelist_style)
     
     def getConfigs(self):
         return self.namelist
@@ -100,6 +100,7 @@ class ImageViewer(wx.Frame):
         self.xmlconfig = {} # xml config class
 
         self.loadConfig()
+        #self.printConfig() # just for debug
         self.Bind(wx.EVT_CLOSE, self.onExit)
         self.InitUI()
 
@@ -124,10 +125,15 @@ class ImageViewer(wx.Frame):
         self.timer_freq = int(namelist['frequency'])
         self.timer_msec = 1./self.timer_freq*1000 
 
-        self.bkgdcolor  = funutils.hex2rgb(namelist['backgroundColor'])
-        self.imgsrcPV   = namelist['imgsrcPV']
+        self.bkgdcolor    = funutils.hex2rgb(namelist['backgroundColor'])
+        self.imgsrcPV     = namelist['imgsrcPV']
+        self.imgsrcPVlist = namelist['imgsrcPVlist'].split()
 
         self.configdict = namelist
+
+    def printConfig(self):
+        for (key,value) in sorted(self.configdict.items()):
+            print("%s --- %s" % (key, value))
 
     def InitUI(self):
         self.createMenubar()
@@ -323,6 +329,17 @@ class ImageViewer(wx.Frame):
                 fontcolor = 'black')
         ## define pv value here!
         self.imgsrc_tc = wx.TextCtrl(self.panel, value = self.imgsrcPV,style=wx.TE_PROCESS_ENTER)
+        
+        ## add/remove pv from imgsrcPVlist
+        self.addpvbtn = wx.BitmapButton(self.panel, bitmap = resutils.addicon.GetBitmap())
+        self.rmpvbtn  = wx.BitmapButton(self.panel, bitmap = resutils.delicon.GetBitmap())
+
+        pvbox = wx.BoxSizer(wx.HORIZONTAL)
+        pvbox.Add(self.imgsrc_tc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_LEFT | wx.RIGHT, border = 8)
+        pvbox.Add(self.addpvbtn,  flag = wx.ALIGN_CENTER_VERTICAL)
+        pvbox.Add(self.rmpvbtn,   flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 6)
+        
+        ## color map
         cm_st = self.createStaticText(self.panel,
                 label = u'Color Map:', style = wx.ALIGN_LEFT,
                 fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
@@ -372,8 +389,8 @@ class ImageViewer(wx.Frame):
         ## selected colormap + add/remove to/from bookmarks btn
         cbbookbox = wx.BoxSizer(wx.HORIZONTAL)
         cbbookbox.Add(self.cm_cb, proportion = 1, flag = wx.EXPAND | wx.ALIGN_LEFT | wx.RIGHT, border = 8)
-        cbbookbox.Add(self.bookbtn,   flag = wx.ALIGN_RIGHT)
-        cbbookbox.Add(self.unbookbtn, flag = wx.ALIGN_RIGHT | wx.LEFT, border = 6)
+        cbbookbox.Add(self.bookbtn,   flag = wx.ALIGN_CENTER_VERTICAL)
+        cbbookbox.Add(self.unbookbtn, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 6)
 
         ## show the selected colormap image
         self.imgcm = ImageColorMap(self.panel, figsize = (0.8,0.2),  dpi = 75, bgcolor = self.bkgdcolor)
@@ -392,7 +409,7 @@ class ImageViewer(wx.Frame):
         crbox.AddGrowableCol(1)
         ##
         vboxright.Add(imgsrc_st,      flag = wx.TOP, border = 25)
-        vboxright.Add(self.imgsrc_tc, flag = wx.EXPAND | wx.TOP, border = 10)
+        vboxright.Add(pvbox, flag = wx.EXPAND | wx.TOP, border = 10)
         ##
         vboxright.Add((-1,25))
         vboxright.Add(cmstbox,   flag = wx.EXPAND)
@@ -441,13 +458,19 @@ class ImageViewer(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         ### event bindings
+
+        ## add input pv namestring to imgsrcPVlist or not
+        self.Bind(wx.EVT_BUTTON, self.onAddPV, self.addpvbtn)
+        self.Bind(wx.EVT_BUTTON, self.onRmPV,  self.rmpvbtn )
+
         ## colormap categories
         self.Bind(wx.EVT_COMBOBOX, self.onSetCmclass, self.cmlist_cb)
+
         ## color map value from specific category
         self.Bind(wx.EVT_COMBOBOX, self.onSetColormap, self.cm_cb)
 
         ## add selected colormap to favorites or not
-        self.Bind(wx.EVT_BUTTON, self.onBookmark,   self.bookbtn)
+        self.Bind(wx.EVT_BUTTON, self.onBookmark,   self.bookbtn  )
         self.Bind(wx.EVT_BUTTON, self.onUnBookmark, self.unbookbtn)
 
         ## color range min and max sliders
@@ -462,7 +485,7 @@ class ImageViewer(wx.Frame):
 
         ## timer for update image
         self.timer = wx.Timer(self)
-        self.Bind(wx.EVT_TIMER, self.onUpdate, self.timer)
+        self.Bind(wx.EVT_TIMER,  self.onUpdate, self.timer     )
         self.Bind(wx.EVT_BUTTON, self.onDAQbtn, self.daqtgl_btn)
 
         ## another timer for showing time now
@@ -581,6 +604,24 @@ class ImageViewer(wx.Frame):
         self.cm_cb.Clear()
         self.cm_cb.AppendItems(self.cmlist[cmclass])
 
+    def onAddPV(self, event):
+        pvstr = self.imgsrc_tc.GetValue()
+        if pvstr not in self.imgsrcPVlist:
+            self.imgsrcPVlist.append(pvstr)
+        ## update imgsrcPVcb choices field of self.menuAppConfig
+        imgsrcPVcb_point = self.menuAppConfig.controlPage.imgsrcPVcb
+        imgsrcPVcb_point.Clear()
+        imgsrcPVcb_point.AppendItems(self.imgsrcPVlist)
+
+    def onRmPV(self, event):
+        pvstr = self.imgsrc_tc.GetValue()
+        if pvstr in self.imgsrcPVlist:
+            self.imgsrcPVlist.remove(pvstr)
+        ## update imgsrcPVcb choices field of self.menuAppConfig
+        imgsrcPVcb_point = self.menuAppConfig.controlPage.imgsrcPVcb
+        imgsrcPVcb_point.Clear()
+        imgsrcPVcb_point.AppendItems(self.imgsrcPVlist)
+
     def onSetColormap(self, event):
         self.imgpanel.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
         self.imgcm.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
@@ -619,18 +660,19 @@ class ImageViewer(wx.Frame):
         return btn
 
 class ConfigNoteBook(wx.Notebook):
-    def __init__(self, parent, *args, **kws):
-        super(self.__class__, self).__init__(parent = parent, style = wx.NB_LEFT, *args, **kws)
+    def __init__(self, parent, style = wx.NB_LEFT, *args, **kws):
+        super(self.__class__, self).__init__(parent = parent, *args, **kws)
         self.parent = parent
         self.MakePages()
         
     def MakePages(self):
-        self.panel1 = ImageConfigPanel(self)
-        self.panel2 = wx.Panel(self)
-        self.panel2.SetBackgroundColour(wx.BLUE)
+        self.imagePage   =   ImageConfigPanel(self)
+        self.stylePage   =   StyleConfigPanel(self)
+        self.controlPage = ControlConfigPanel(self)
 
-        self.AddPage(self.panel1, 'Image')
-        self.AddPage(self.panel2, 'Appearance')
+        self.AddPage(self.imagePage,   'Image'  )
+        self.AddPage(self.stylePage,   'Style'  )
+        self.AddPage(self.controlPage, 'Control')
 
 class AppConfigPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
@@ -639,7 +681,7 @@ class AppConfigPanel(wx.Frame):
                 #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
         self.parent = parent
         self.InitUI()
-    
+
     def InitUI(self):
         self.createMenu()
         self.createStatusbar()
@@ -652,17 +694,105 @@ class AppConfigPanel(wx.Frame):
         pass
 
     def createNotebooks(self):
-        nb1 = ConfigNoteBook(self)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        
+        # config notebook
+        self.configNB = ConfigNoteBook(self, style = wx.NB_TOP)
 
-        hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add(nb1, proportion = 1, flag = wx.EXPAND)
-        self.SetSizerAndFit(hbox)
+        # btns
+        # btn style
+        """
+        lbtnfont = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
+        lbtnfont.SetPointSize(12)
+        lbtnfont.SetWeight(wx.FONTWEIGHT_NORMAL)
+        lbtnfontcolor = '#FF00B0'
+        lbtnfacecolor = '#BFD9F0'
+        self.applybtn.SetFont(lbtnfont)
+        self.applybtn.SetForegroundColour(lbtnfontcolor)
+        self.applybtn.SetBackgroundColour(lbtnfacecolor)
+        """
+
+        self.cancelbtn = wx.Button(self, label = 'Cancel')
+        self.applybtn  = wx.Button(self, label = 'Apply' )
+        self.okbtn     = wx.Button(self, label = 'OK'    )
+
+        self.Bind(wx.EVT_BUTTON, self.onCancelData, self.cancelbtn)
+        self.Bind(wx.EVT_BUTTON, self.onApplyData,  self.applybtn )
+        self.Bind(wx.EVT_BUTTON, self.onUpdateData, self.okbtn    )
+
+        hboxbtn = wx.BoxSizer(wx.HORIZONTAL)
+        hboxbtn.Add(self.cancelbtn, proportion = 0, flag = wx.EXPAND |           wx.BOTTOM, border = 10)
+        hboxbtn.Add(self.applybtn,  proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
+        hboxbtn.Add(self.okbtn,     proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
+        
+        # set sizer
+        vbox.Add(self.configNB, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 15)
+        vbox.Add(hboxbtn, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border = 15)
+        vbox.Add((-1,10))
+        self.SetSizerAndFit(vbox)
+
+        # config pages references:
+        self.imagePage   = self.configNB.imagePage
+        self.stylePage   = self.configNB.stylePage
+        self.controlPage = self.configNB.controlPage
+        
+        # main App panel reference
+        self.thisapp = self.parent
+
+    def onCancelData(self, event):
+        self.Close(True)
+
+    def onApplyData(self, event):
+        self.setParams()
+
+    def onUpdateData(self, event):
+        self.setParams()
+        self.Close(True)
+
+    def setParams(self):
+        # imagePage
+        self.thisapp.wpx = int(self.imagePage.imgwpxtc.GetValue())
+        self.thisapp.hpx = int(self.imagePage.imghpxtc.GetValue())
+        self.thisapp.save_path_str_head = os.path.expanduser(self.imagePage.pathtc.GetValue())
+        self.thisapp.save_path_str = os.path.join(self.thisapp.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
+        self.thisapp.save_img_name_str = self.imagePage.imgnamepretc.GetValue()
+        self.thisapp.save_img_ext_str  = self.imagePage.imgnameexttc.GetValue()
+        self.thisapp.save_int_name_str = self.imagePage.intnamepretc.GetValue()
+        self.thisapp.save_int_ext_str  = self.imagePage.intnameexttc.GetValue()
+
+        # stylePage
+        self.thisapp.bkgdcolor = funutils.hex2rgb(self.stylePage.bkgdcolortc.GetValue())
+
+        # controlPage
+        self.thisapp.timer_freq = int(self.controlPage.freqtc.GetValue())
+        self.thisapp.timer_msec = 1.0/self.thisapp.timer_freq * 1000
+        self.thisapp.imgsrcPV   = self.controlPage.imgsrcPVcb.GetValue()
+
+        # update parameters
+        self.thisapp.configdict['width'          ] = str(self.thisapp.wpx)
+        self.thisapp.configdict['height'         ] = str(self.thisapp.hpx)
+        self.thisapp.configdict['savePath'       ] = self.thisapp.save_path_str_head
+        self.thisapp.configdict['saveImgName'    ] = self.thisapp.save_img_name_str
+        self.thisapp.configdict['saveImgExt'     ] = self.thisapp.save_img_ext_str
+        self.thisapp.configdict['saveIntName'    ] = self.thisapp.save_int_name_str
+        self.thisapp.configdict['saveIntExt'     ] = self.thisapp.save_int_ext_str
+        self.thisapp.configdict['frequency'      ] = str(self.thisapp.timer_freq)  
+        self.thisapp.configdict['imgsrcPV'       ] = self.thisapp.imgsrcPV
+        self.thisapp.configdict['imgsrcPVlist'   ] = ' '.join(str(i) + ' ' for i in self.thisapp.imgsrcPVlist).rstrip()
+        self.thisapp.configdict['cmFavor'        ] = ' '.join(str(i) + ' ' for i in self.thisapp.cmlist_favo).rstrip()
+        self.thisapp.configdict['backgroundColor'] = self.stylePage.bkgdcolortc.GetValue()
+        self.thisapp.xmlconfig.updateConfigs(self.thisapp.configdict)
+        self.thisapp.onUpdateUI()
+        
+        # for debug
+        #self.thisapp.printConfig()
+ 
 
 class ImageConfigPanel(wx.Panel):
     def __init__(self, parent, **kwargs):
         super(self.__class__, self).__init__(parent = parent, id = wx.ID_ANY, **kwargs)
         self.parent = parent
-        self.paramparent = self.parent.parent.parent
+        self.thisapp = self.parent.parent.parent
         self.initUI()
     
     def initUI(self):
@@ -691,28 +821,23 @@ class ImageConfigPanel(wx.Panel):
 
         #### input items
         gs = wx.GridBagSizer(5, 5)
-        imgwpxst     = wx.StaticText(self, label = u'Image Width [px]',                  style = wx.ALIGN_LEFT)
-        imghpxst     = wx.StaticText(self, label = u'Image Height [px]',                 style = wx.ALIGN_LEFT)
-        pathst       = wx.StaticText(self, label = u'Save Figure to Path',               style = wx.ALIGN_LEFT)
-        imgnameprest = wx.StaticText(self, label = u'Figure Name Prefix (Image)',        style = wx.ALIGN_LEFT)
-        imgnameextst = wx.StaticText(self, label = u'Figure Name Extension (Image)',     style = wx.ALIGN_LEFT)
-        intnameprest = wx.StaticText(self, label = u'Figure Name Prefix (Intensity)',    style = wx.ALIGN_LEFT)
-        intnameextst = wx.StaticText(self, label = u'Figure Name Extension (Intensity)', style = wx.ALIGN_LEFT)
-        freqst       = wx.StaticText(self, label = u'Monitor Frequency [Hz]',            style = wx.ALIGN_LEFT)
-        bkgdcolorst  = wx.StaticText(self, label = u'Background Color',                  style = wx.ALIGN_LEFT)
+        imgwpxst     = wx.StaticText(self, label = u'Image Width [px]',         style = wx.ALIGN_LEFT)
+        imghpxst     = wx.StaticText(self, label = u'Image Height [px]',        style = wx.ALIGN_LEFT)
+        pathst       = wx.StaticText(self, label = u'Save Figure to Path',      style = wx.ALIGN_LEFT)
+        imgnameprest = wx.StaticText(self, label = u'Image Name Prefix',        style = wx.ALIGN_LEFT)
+        imgnameextst = wx.StaticText(self, label = u'Image Name Extension',     style = wx.ALIGN_LEFT)
+        intnameprest = wx.StaticText(self, label = u'Intensity Name Prefix',    style = wx.ALIGN_LEFT)
+        intnameextst = wx.StaticText(self, label = u'Intensity Name Extension', style = wx.ALIGN_LEFT)
 
-        self.imgwpxtc     = wx.TextCtrl(self, value = str(self.paramparent.wpx),          style = wx.TE_PROCESS_ENTER)
-        self.imghpxtc     = wx.TextCtrl(self, value = str(self.paramparent.hpx),          style = wx.TE_PROCESS_ENTER)
-        self.pathtc       = wx.TextCtrl(self, value = self.paramparent.save_path_str_head,style = wx.TE_PROCESS_ENTER)
+        self.imgwpxtc     = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
+        self.imghpxtc     = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
+        self.pathtc       = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.TE_PROCESS_ENTER)
         self.pathtc.SetToolTip(wx.ToolTip('Fullpath (subdired by the date) the config file be saved.'))
         self.pathbtn      = wx.Button(self, label = 'Browse', style = wx.CB_READONLY)
-        self.imgnamepretc = wx.TextCtrl(self, value = self.paramparent.save_img_name_str, style = wx.TE_PROCESS_ENTER)
-        self.imgnameexttc = wx.ComboBox(self, value = self.paramparent.save_img_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
-        self.intnamepretc = wx.TextCtrl(self, value = self.paramparent.save_int_name_str, style = wx.TE_PROCESS_ENTER)
-        self.intnameexttc = wx.ComboBox(self, value = self.paramparent.save_int_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
-        self.freqtc       = wx.TextCtrl(self, value = str(self.paramparent.timer_freq),   style = wx.TE_PROCESS_ENTER)
-        self.bkgdcolortc  = wx.TextCtrl(self, value = funutils.rgb2hex(self.paramparent.bkgdcolor).upper(), style = wx.CB_READONLY)
-        self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color')
+        self.imgnamepretc = wx.TextCtrl(self, value = self.thisapp.save_img_name_str, style = wx.TE_PROCESS_ENTER)
+        self.imgnameexttc = wx.ComboBox(self, value = self.thisapp.save_img_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
+        self.intnamepretc = wx.TextCtrl(self, value = self.thisapp.save_int_name_str, style = wx.TE_PROCESS_ENTER)
+        self.intnameexttc = wx.ComboBox(self, value = self.thisapp.save_int_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
 
         gs.Add(imgwpxst,          pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(self.imgwpxtc,     pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
@@ -720,7 +845,7 @@ class ImageConfigPanel(wx.Panel):
         gs.Add(self.imghpxtc,     pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(pathst,            pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(self.pathtc,       pos = (2, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.pathbtn,      pos = (2, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.pathbtn,      pos = (2, 3), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(imgnameprest,      pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(self.imgnamepretc, pos = (3, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(imgnameextst,      pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
@@ -729,48 +854,18 @@ class ImageConfigPanel(wx.Panel):
         gs.Add(self.intnamepretc, pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(intnameextst,      pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.Add(self.intnameexttc, pos = (6, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(freqst,            pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.freqtc,       pos = (7, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(bkgdcolorst,       pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.bkgdcolortc,  pos = (8, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.bkgdcolorbtn, pos = (8, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        
-        gs.AddGrowableCol(2)
-        vboxsizer.Add(gs, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
+        gs.AddGrowableCol(1, 2)
+        gs.AddGrowableCol(2, 0)
+        vboxsizer.Add(gs, proportion = 0, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
 
         vboxsizer.Add((-1, 10))
         
-        #### btns
-        self.cancelbtn = wx.Button(self, label = 'Cancel')
-        self.applybtn  = wx.Button(self, label = 'Apply' )
-
-        self.Bind(wx.EVT_BUTTON, self.OnCancelData, self.cancelbtn)
-        self.Bind(wx.EVT_BUTTON, self.OnUpdateData, self.applybtn )
-
-        lbtnfont = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        lbtnfont.SetPointSize(12)
-        lbtnfont.SetWeight(wx.FONTWEIGHT_NORMAL)
-        lbtnfontcolor = '#FF00B0'
-        lbtnfacecolor = '#BFD9F0'
-        self.cancelbtn.SetFont(lbtnfont)
-        self.applybtn.SetFont(lbtnfont)
-        self.cancelbtn.SetForegroundColour(lbtnfontcolor)
-        self.applybtn.SetForegroundColour(lbtnfontcolor)
-        self.cancelbtn.SetBackgroundColour(lbtnfacecolor)
-        self.applybtn.SetBackgroundColour(lbtnfacecolor)
-        
-        hboxbtn = wx.BoxSizer(orient = wx.HORIZONTAL)
-        hboxbtn.Add(self.cancelbtn, proportion = 1, flag = wx.EXPAND | wx.BOTTOM, border = 10)
-        hboxbtn.Add(self.applybtn,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
-        vboxsizer.Add(hboxbtn, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border = 25)
-
         ## set boxsizer
         self.SetSizer(vboxsizer)
         
         ## bind events
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnUpdateParams,  self.imgwpxtc)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnUpdateParams,  self.imghpxtc)
-        self.Bind(wx.EVT_BUTTON,     self.onChooseColor,   self.bkgdcolorbtn)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams,  self.imgwpxtc)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams,  self.imghpxtc)
         self.Bind(wx.EVT_BUTTON,     self.onChooseDirpath, self.pathbtn     )
 
     def onChooseDirpath(self, event):
@@ -780,15 +875,7 @@ class ImageConfigPanel(wx.Panel):
             self.pathtc.SetValue(dirpath)
         dlg.Destroy()
 
-    def onChooseColor(self, event):
-        dlg = wx.ColourDialog(self)
-        dlg.GetColourData().SetChooseFull(True) # only windows
-        if dlg.ShowModal() == wx.ID_OK:
-            color = dlg.GetColourData().GetColour()
-            self.bkgdcolortc.SetValue(color.GetAsString(wx.C2S_HTML_SYNTAX))
-        dlg.Destroy()
-
-    def OnUpdateParams(self, event):
+    def onUpdateParams(self, event):
         obj = event.GetEventObject() 
         try:
             int(obj.GetValue())
@@ -800,36 +887,95 @@ class ImageConfigPanel(wx.Panel):
                 obj.SetValue('')
                 dial.Destroy()
 
-    def OnCancelData(self, event):
-        self.Close(True)
+class StyleConfigPanel(wx.Panel):
+    def __init__(self, parent, **kwargs):
+        super(self.__class__, self).__init__(parent = parent, id = wx.ID_ANY, **kwargs)
+        self.parent = parent
+        self.thisapp = self.parent.parent.parent
+        self.initUI()
+    
+    def initUI(self):
+        self.initConfig()
+        self.createPanel()
 
-    def OnUpdateData(self, event):
-        self.paramparent.wpx = int(self.imgwpxtc.GetValue())
-        self.paramparent.hpx = int(self.imghpxtc.GetValue())
-        self.paramparent.save_path_str_head = os.path.expanduser(self.pathtc.GetValue())
-        self.paramparent.save_path_str = os.path.join(self.paramparent.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
-        self.paramparent.save_img_name_str = self.imgnamepretc.GetValue()
-        self.paramparent.save_img_ext_str  = self.imgnameexttc.GetValue()
-        self.paramparent.save_int_name_str = self.intnamepretc.GetValue()
-        self.paramparent.save_int_ext_str  = self.intnameexttc.GetValue()
-        self.paramparent.imgsrcPV   = self.paramparent.imgsrc_tc.GetValue()
-        self.paramparent.timer_freq = int(self.freqtc.GetValue())
-        self.paramparent.timer_msec = 1.0/self.paramparent.timer_freq * 1000
-        self.paramparent.bkgdcolor = funutils.hex2rgb(self.bkgdcolortc.GetValue())
+    def initConfig(self):
+        self.bkgdcolor   = wx.BLUE
+        self.fontcolor   = wx.BLACK
+        self.fontptsize  = 10
+        self.fontweight  = wx.FONTWEIGHT_NORMAL
 
-        self.paramparent.configdict['width'      ] = str(self.paramparent.wpx)
-        self.paramparent.configdict['height'     ] = str(self.paramparent.hpx)
-        self.paramparent.configdict['savePath'   ] = self.paramparent.save_path_str_head
-        self.paramparent.configdict['saveImgName'] = self.paramparent.save_img_name_str
-        self.paramparent.configdict['saveImgExt' ] = self.paramparent.save_img_ext_str
-        self.paramparent.configdict['saveIntName'] = self.paramparent.save_int_name_str
-        self.paramparent.configdict['saveIntExt' ] = self.paramparent.save_int_ext_str
-        self.paramparent.configdict['frequency'  ] = str(self.paramparent.timer_freq)  
-        self.paramparent.configdict['imgsrcPV'   ] = self.paramparent.imgsrcPV
-        self.paramparent.configdict['cmFavor'    ] = ' '.join(str(i) + ' ' for i in self.paramparent.cmlist_favo).rstrip()
-        self.paramparent.configdict['backgroundColor'] = self.bkgdcolortc.GetValue()
-        self.paramparent.xmlconfig.updateConfigs(self.paramparent.configdict)
-        self.paramparent.onUpdateUI()
+    def createPanel(self):
+        vboxsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        bkgdcolorst  = wx.StaticText(self, label = u'Background Color',  style = wx.ALIGN_LEFT)
+
+        self.bkgdcolortc  = wx.TextCtrl(self, value = funutils.rgb2hex(self.thisapp.bkgdcolor).upper(), style = wx.CB_READONLY)
+        self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color')
+
+        hboxbtn = wx.BoxSizer(wx.HORIZONTAL)
+        hboxbtn.Add(bkgdcolorst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hboxbtn.Add(self.bkgdcolortc,  proportion = 3, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hboxbtn.Add(self.bkgdcolorbtn, proportion = 2, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        vboxsizer.Add(hboxbtn, flag = wx.EXPAND | wx.ALL, border = 15)
+
+        vboxsizer.Add((-1, 10))
+        
+        ## set boxsizer
+        self.SetSizer(vboxsizer)
+        
+        ## bind events
+        self.Bind(wx.EVT_BUTTON, self.onChooseColor, self.bkgdcolorbtn)
+
+    def onChooseColor(self, event):
+        dlg = wx.ColourDialog(self)
+        dlg.GetColourData().SetChooseFull(True) # only windows
+        if dlg.ShowModal() == wx.ID_OK:
+            color = dlg.GetColourData().GetColour()
+            self.bkgdcolortc.SetValue(color.GetAsString(wx.C2S_HTML_SYNTAX))
+        dlg.Destroy()
+
+class ControlConfigPanel(wx.Panel):
+    def __init__(self, parent, **kwargs):
+        super(self.__class__, self).__init__(parent = parent, id = wx.ID_ANY, **kwargs)
+        self.parent = parent
+        self.thisapp = self.parent.parent.parent
+        self.initUI()
+
+    def initUI(self):
+        self.initConfig()
+        self.createPanel()
+
+    def initConfig(self):
+        self.bkgdcolor   = wx.BLUE
+        self.fontcolor   = wx.BLACK
+        self.fontptsize  = 10
+        self.fontweight  = wx.FONTWEIGHT_NORMAL
+
+    def createPanel(self):
+        vboxsizer = wx.BoxSizer(wx.VERTICAL)
+        
+        # frequency
+        freqst       = wx.StaticText(self, label = u'Monitor Frequency [Hz]',   style = wx.ALIGN_RIGHT)
+        self.freqtc  = wx.TextCtrl(self, value = str(self.thisapp.timer_freq),  style = wx.TE_PROCESS_ENTER)
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox1.Add(freqst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hbox1.Add(self.freqtc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        vboxsizer.Add(hbox1, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
+
+        # PV list
+        imgsrcPVst      = wx.StaticText(self, label = u'Image PV Name', style = wx.ALIGN_RIGHT)
+        self.imgsrcPVcb = wx.ComboBox(self, value = self.thisapp.imgsrcPV,  style = wx.CB_READONLY,
+                                            choices = sorted(self.thisapp.imgsrcPVlist))
+        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox2.Add(imgsrcPVst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hbox2.Add(self.imgsrcPVcb,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        vboxsizer.Add(hbox2, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
+        
+        vboxsizer.Add((-1, 10))
+        
+        ## set boxsizer
+        self.SetSizer(vboxsizer)
+
 
 class ShowIntPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
