@@ -1,0 +1,11 @@
+<config>
+    <group name="Image">
+        <properties cmFavor="jet  Greys  cool  rainbow  gnuplot  gray  hot" height="659" saveImgExt=".pdf" saveImgName="imagenow" saveIntExt=".png" saveIntName="inten_monitor" savePath="/home/tong/Desktop" width="494" />
+    </group>
+    <group name="DAQ">
+        <properties frequency="1" imgsrcPV="BASLER0:ARR:ArrayData" />
+    </group>
+    <group name="Appearance">
+        <properties backgroundColor="#D6D6D6" />
+    </group>
+</config>
