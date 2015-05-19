@@ -1,5 +1,7 @@
 iss001: (created on May. 13, 2015, 16:14)
     [ ]: ROI
-    [ ]: plot style for histx and histy lines
-    [ ]: configuration parameter: ratio
+    [x]: plot style for histx and histy lines
+    [x]: notebook style for Preference menu
+    [x]: store/unstore PV name string from imageviewer panel
+    [ ]: configuration parameter: ratio (height of hist line)
     
