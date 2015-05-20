@@ -7,27 +7,17 @@ Author: Tong Zhang (zhangtong AT sinap dot ac dot cn)
 
 first uploaded to github on Apr. 23, 2015
 
-USAGE example:
+USAGE:
 
-create python script file (test.py) like:
+pip install felapps
 
-#!/usr/bin/env python
+type imageviewer in terminal to launch one of apps from felapps module
 
-import sys
-
-sys.path.append('./felapps-1.0.1-py2.7.egg')
-
-#sys.path.append('./felapps-1.0.1-py2.py3-none-any.whl')
+OR
 
 import felapps
 
-felapps.imageviewer.run(maximize = True,logon = False)
+felapps.imageviewer.run()
 
-#felapps.formula.run()
-
-or install by pip install felapps
-
-then import felapps
-
-and run test.py by python test.py.
+if config.xml not found in present working directory, please choose right config.xml file as the app guiding.
 
