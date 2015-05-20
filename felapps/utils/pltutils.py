@@ -441,12 +441,13 @@ class ImageViewer(wx.Frame):
         vboxright.Add(crbox, flag = wx.EXPAND | wx.TOP, border = 10)
 
         ## for debug: add a statictext and button to vboxright sizer 2015.Feb.11
-        self.daqtgl_btn = wx.Button(self.panel,     label = 'DAQ START')
         self.inten_st   = wx.StaticText(self.panel, label = 'Intensity:')
         self.inten_val  = wx.StaticText(self.panel, label = '0')
+        self.daqtgl_btn = wx.Button(self.panel,     label = 'DAQ START')
         hbox_int = wx.BoxSizer(wx.HORIZONTAL)
         hbox_int.Add(self.inten_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_int.Add(self.inten_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
+
         ## add color range for imgsrc
         self.imgcr_st     = wx.StaticText(self.panel, label = 'CR of Image:')
         self.imgcr_min_tc = wx.TextCtrl(self.panel, value = '0'  )
@@ -459,6 +460,16 @@ class ImageViewer(wx.Frame):
         vboxright.Add(hbox_imgcr, proportion = 0, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 20)
         vboxright.Add(hbox_int,   proportion = 0, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 20)
         vboxright.Add(self.daqtgl_btn, flag = wx.ALIGN_RIGHT | wx.TOP, border = 20)
+
+        ### information display from image
+        ## mouse position tracker
+        self.pos_st  = wx.StaticText(self.panel, label = 'Pos:')
+        self.pos_val = wx.StaticText(self.panel, label = ''    )
+        hbox_pos = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_pos.Add(self.pos_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        hbox_pos.Add(self.pos_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
+
+        vboxright.Add(hbox_pos, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 20)
 
         ##
         hbox.Add(vboxright, proportion = 3, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
@@ -1138,6 +1149,15 @@ class ImagePanel(wx.Panel):
 
         # resize figure when size event trigged
         self.Bind(wx.EVT_SIZE, self.onSize)
+
+        self.canvas.mpl_connect('button_press_event',  self.onPress )
+        self.canvas.mpl_connect('motion_notify_event', self.onMotion)
+
+    def onPress(self, event):
+        print event.xdata, event.ydata
+
+    def onMotion(self, event):
+        self.parent.GetParent().pos_val.SetLabel("(%.3f,%.3f)" % (event.xdata, event.ydata))
 
     def setColor(self, rgbtuple = None):
         """Set figure and canvas colours to be the same."""
