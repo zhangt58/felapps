@@ -7,9 +7,10 @@ def readme():
         return f.read()
 
 from setuptools import find_packages, setup
+import os
 
 appName             = "felapps"
-appVersion          = "1.2.0"
+appVersion          = "1.2.5"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
@@ -20,6 +21,9 @@ appLicense          = "MIT"
 appUrl              = "https://github.com/Archman/felapps"
 appKeywords         = "FEL high-level application physics commissioning"
 requiredpackages = ['numpy','scipy','matplotlib', 'pyepics'] # install_requires
+appScriptsName = ['imageviewer']
+ScriptsRoot = 'scripts'
+appScripts = [os.path.join(ScriptsRoot,scriptname) for scriptname in appScriptsName]
 
 setup(name             = appName,
       version          = appVersion,
@@ -32,7 +36,8 @@ setup(name             = appName,
       url              = appUrl,
       keywords         = appKeywords,
       packages         = find_packages(exclude=['contrib','tests*']),
-      install_requires = requiredpackages,
+      scripts          = appScripts,
+      #install_requires = requiredpackages,
       classifiers = ['Programming Language :: Python', 
                      'Topic :: Software Development :: Libraries :: Python Modules', 
                      'Topic :: Scientific/Engineering :: Physics'],
