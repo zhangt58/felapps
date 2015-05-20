@@ -42,12 +42,14 @@ class ConfigFile(object):
         root = tree.getroot()
         self.root = root
         self.tree = tree
-        namelist_image   = {}
-        namelist_control = {}
-        namelist_style   = {}
-        namestring_image   = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveIntName', 'saveIntExt', 'cmFavor']
-        namestring_control = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
-        namestring_style   = ['backgroundColor']
+        namelist_image      = {}
+        namelist_control    = {}
+        namelist_style      = {}
+        namelist_histplot   = {}
+        namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveIntName', 'saveIntExt', 'cmFavor']
+        namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
+        namestring_histplot = ['heightRatio']
+        namestring_style    = ['backgroundColor']
         for group in root.iter('group'):
             if group.get('name') == 'Image':
                 namelist_image = {s:group.find('properties').get(s) for s in namestring_image}
@@ -55,10 +57,13 @@ class ConfigFile(object):
                 namelist_control   = {s:group.find('properties').get(s) for s in namestring_control}
             elif group.get('name') == 'Style':
                 namelist_style  = {s:group.find('properties').get(s) for s in namestring_style}
+            elif group.get('name') == 'HistPlot':
+                namelist_histplot  = {s:group.find('properties').get(s) for s in namestring_histplot}
         self.namelist.update(namelist_image)
         self.namelist.update(namelist_control)
         self.namelist.update(namelist_style)
-    
+        self.namelist.update(namelist_histplot)
+
     def getConfigs(self):
         return self.namelist
     
@@ -110,7 +115,8 @@ class ImageViewer(wx.Frame):
         self.xmlconfig = ConfigFile(configfilename)
         namelist = self.xmlconfig.getConfigs()
 
-        self.wpx, self.hpx = int(namelist['width']), int(namelist['height'])
+        # Image
+        self.wpx, self.hpx = int(float(namelist['width'])), int(float(namelist['height']))
         dirdate = time.strftime('%Y%m%d', time.localtime())
         self.save_path_str_head = os.path.expanduser(namelist['savePath'])
         self.save_path_str      = os.path.join(self.save_path_str_head, dirdate)
@@ -122,12 +128,17 @@ class ImageViewer(wx.Frame):
         self.cmlist_favo = namelist['cmFavor'].split()
         self.cmlist['Favorites'] = self.cmlist_favo
 
-        self.timer_freq = int(namelist['frequency'])
+        # Control
+        self.timer_freq = int(float(namelist['frequency']))
         self.timer_msec = 1./self.timer_freq*1000 
-
-        self.bkgdcolor    = funutils.hex2rgb(namelist['backgroundColor'])
         self.imgsrcPV     = namelist['imgsrcPV']
         self.imgsrcPVlist = namelist['imgsrcPVlist'].split()
+
+        # Style
+        self.bkgdcolor    = funutils.hex2rgb(namelist['backgroundColor'])
+
+        # HistPlot
+        self.heightRatio  = float(namelist['heightRatio'])
 
         self.configdict = namelist
 
@@ -271,8 +282,10 @@ class ImageViewer(wx.Frame):
     def onUpdateUI(self):
         self.imgsrc_tc.SetValue(self.imgsrcPV)
         self.panel.SetBackgroundColour(self.bkgdcolor)
-        self.imgpanel.setColor() # make color as private var 
+        self.imgpanel.setColor(self.bkgdcolor) # make color as private var
         self.imgpanel.repaint() # rewrite repaint func
+        self.imgcm.setColor(self.bkgdcolor)
+        self.imgcm.repaint()
 
     def createStatusbar(self):
         self.statusbar = self.CreateStatusBar(2)
@@ -309,7 +322,7 @@ class ImageViewer(wx.Frame):
                 fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
 
-        self.imgpanel = ImagePanel(self.panel, figsize = (12,12), dpi = 75, bgcolor = self.bkgdcolor)
+        self.imgpanel = ImagePanel(self.panel, figsize = (12,12), dpi = 75, bgcolor = self.bkgdcolor, heightratio = self.heightRatio)
         
         vboxleft.Add(self.timenow_st, proportion = 0, flag = wx.ALIGN_CENTER | wx.TOP, border = 10)
         vboxleft.Add(self.imgpanel, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
@@ -666,13 +679,15 @@ class ConfigNoteBook(wx.Notebook):
         self.MakePages()
         
     def MakePages(self):
-        self.imagePage   =   ImageConfigPanel(self)
-        self.stylePage   =   StyleConfigPanel(self)
-        self.controlPage = ControlConfigPanel(self)
+        self.imagePage    =    ImageConfigPanel(self)
+        self.stylePage    =    StyleConfigPanel(self)
+        self.controlPage  =  ControlConfigPanel(self)
+        self.histPlotPage = HistPlotConfigPanel(self)
 
-        self.AddPage(self.imagePage,   'Image'  )
-        self.AddPage(self.stylePage,   'Style'  )
-        self.AddPage(self.controlPage, 'Control')
+        self.AddPage(self.imagePage,    'Image'   )
+        self.AddPage(self.stylePage,    'Style'   )
+        self.AddPage(self.controlPage,  'Control' )
+        self.AddPage(self.histPlotPage, 'HistPlot')
 
 class AppConfigPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
@@ -732,9 +747,10 @@ class AppConfigPanel(wx.Frame):
         self.SetSizerAndFit(vbox)
 
         # config pages references:
-        self.imagePage   = self.configNB.imagePage
-        self.stylePage   = self.configNB.stylePage
-        self.controlPage = self.configNB.controlPage
+        self.imagePage    = self.configNB.imagePage
+        self.stylePage    = self.configNB.stylePage
+        self.controlPage  = self.configNB.controlPage
+        self.histPlotPage = self.configNB.histPlotPage
         
         # main App panel reference
         self.thisapp = self.parent
@@ -768,6 +784,9 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.timer_msec = 1.0/self.thisapp.timer_freq * 1000
         self.thisapp.imgsrcPV   = self.controlPage.imgsrcPVcb.GetValue()
 
+        # histPlotPage
+        self.thisapp.heightRatio = float(self.histPlotPage.heightratiotc.GetValue())
+
         # update parameters
         self.thisapp.configdict['width'          ] = str(self.thisapp.wpx)
         self.thisapp.configdict['height'         ] = str(self.thisapp.hpx)
@@ -781,6 +800,7 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.configdict['imgsrcPVlist'   ] = ' '.join(str(i) + ' ' for i in self.thisapp.imgsrcPVlist).rstrip()
         self.thisapp.configdict['cmFavor'        ] = ' '.join(str(i) + ' ' for i in self.thisapp.cmlist_favo).rstrip()
         self.thisapp.configdict['backgroundColor'] = self.stylePage.bkgdcolortc.GetValue()
+        self.thisapp.configdict['heightRatio'    ] = str(self.thisapp.heightRatio)
         self.thisapp.xmlconfig.updateConfigs(self.thisapp.configdict)
         self.thisapp.onUpdateUI()
         
@@ -976,6 +996,38 @@ class ControlConfigPanel(wx.Panel):
         ## set boxsizer
         self.SetSizer(vboxsizer)
 
+class HistPlotConfigPanel(wx.Panel):
+    def __init__(self, parent, **kwargs):
+        super(self.__class__, self).__init__(parent = parent, id = wx.ID_ANY, **kwargs)
+        self.parent = parent
+        self.thisapp = self.parent.parent.parent
+        self.initUI()
+
+    def initUI(self):
+        self.initConfig()
+        self.createPanel()
+
+    def initConfig(self):
+        self.bkgdcolor   = wx.BLUE
+        self.fontcolor   = wx.BLACK
+        self.fontptsize  = 10
+        self.fontweight  = wx.FONTWEIGHT_NORMAL
+
+    def createPanel(self):
+        vboxsizer = wx.BoxSizer(wx.VERTICAL)
+
+        # height ratio
+        heightratiost       = wx.StaticText(self, label = u'Height Ratio',   style = wx.ALIGN_RIGHT)
+        self.heightratiotc  = wx.TextCtrl(self, value = str(self.thisapp.heightRatio),  style = wx.TE_PROCESS_ENTER)
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox1.Add(heightratiost,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hbox1.Add(self.heightratiotc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        vboxsizer.Add(hbox1, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
+
+        vboxsizer.Add((-1, 10))
+
+        ## set boxsizer
+        self.SetSizer(vboxsizer)
 
 class ShowIntPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
@@ -1069,15 +1121,15 @@ class ShowIntPanel(wx.Frame):
         self.intdisp.repaint()
 
 class ImagePanel(wx.Panel):
-    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+    def __init__(self, parent, figsize, dpi, bgcolor, heightratio = 0.4, **kwargs):
         super(self.__class__, self).__init__(parent = parent, **kwargs)
-        self.parent  = parent
-        self.figsize = figsize
-        self.dpi     = dpi
-        self.bgcolor = bgcolor
-        self.ratio   = 0.4
-        self.figure = Figure(self.figsize, self.dpi)
-        self.canvas = FigureCanvasWxAgg(self, -1, self.figure)
+        self.parent   = parent
+        self.figsize  = figsize
+        self.dpi      = dpi
+        self.bgcolor  = bgcolor
+        self.hratio   = heightratio
+        self.figure   = Figure(self.figsize, self.dpi)
+        self.canvas   = FigureCanvasWxAgg(self, -1, self.figure)
         self.cmaptype = 'jet'
         self.setColor(self.bgcolor)
         self.onGetData()
@@ -1114,8 +1166,8 @@ class ImagePanel(wx.Panel):
         self.xx = np.arange(self.histx.size) + 1
         self.yy = np.arange(self.histy.size) + 1
         self.linex.set_xdata(self.xx)
-        self.linex.set_ydata(self.histx/self.histx.max()*self.maxidy*self.ratio)
-        self.liney.set_xdata(self.histy/self.histy.max()*self.maxidx*self.ratio)
+        self.linex.set_ydata(self.histx/self.histx.max()*self.maxidy*self.hratio)
+        self.liney.set_xdata(self.histy/self.histy.max()*self.maxidx*self.hratio)
         self.liney.set_ydata(self.yy)
         self.xyscalar = [self.xx.min(), self.xx.max(), self.yy.min(), self.yy.max()]
         self.im.set_extent(self.xyscalar)
@@ -1127,8 +1179,8 @@ class ImagePanel(wx.Panel):
     def doPlot(self):
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111)
-        self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.ratio, 'w--')
-        self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.ratio, self.yy, 'w--')
+        self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.hratio, 'w--')
+        self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.hratio, self.yy, 'w--')
 
         #self.axes.set_title(r'$f(x,y)=\sin x + \cos y$')
         self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
