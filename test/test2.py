@@ -12,7 +12,7 @@ class MyFrame(wx.Frame):
 
 class MyNB(wx.Notebook):
     def __init__(self, parent, *args, **kws):
-        super(self.__class__, self).__init__(parent=parent, style = wx.NB_LEFT, *args, **kws)
+        super(self.__class__, self).__init__(parent=parent, style = wx.NB_TOP, *args, **kws)
 
         # panel #1
         self.panel1 = MyPanel(self)
@@ -42,8 +42,6 @@ class MyNB(wx.Notebook):
         dlg.Destroy()
 
 
- 
-
 class MyPanel(wx.Panel):
     def __init__(self, parent, *args, **kws):
         super(self.__class__, self).__init__(parent=parent, *args, **kws)
@@ -53,5 +51,6 @@ def main():
     myframe = MyFrame(None)
     app.MainLoop()
 
-main()
+if __name__ == '__main__':
+    main()
 
