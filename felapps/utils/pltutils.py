@@ -19,6 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
+from matplotlib.patches import Rectangle
 import epics
 import time
 import os
@@ -117,6 +118,7 @@ class ImageViewer(wx.Frame):
 
         # Image
         self.wpx, self.hpx = int(float(namelist['width'])), int(float(namelist['height']))
+        self.roixy = [0,self.wpx, 0, self.hpx]
         dirdate = time.strftime('%Y%m%d', time.localtime())
         self.save_path_str_head = os.path.expanduser(namelist['savePath'])
         self.save_path_str      = os.path.join(self.save_path_str_head, dirdate)
@@ -463,13 +465,20 @@ class ImageViewer(wx.Frame):
 
         ### information display from image
         ## mouse position tracker
-        self.pos_st  = wx.StaticText(self.panel, label = 'Pos:')
+        self.pos_st  = wx.StaticText(self.panel, label = 'Current pos (x,y):')
         self.pos_val = wx.StaticText(self.panel, label = ''    )
         hbox_pos = wx.BoxSizer(wx.HORIZONTAL)
         hbox_pos.Add(self.pos_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_pos.Add(self.pos_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
 
+        self.roi_btn = wx.Button(self.panel, label = 'Choose ROI')
+        self.reset_roi_btn = wx.Button(self.panel, label = 'Reset ROI')
+        hbox_roi = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_roi.Add(self.roi_btn,       proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        hbox_roi.Add(self.reset_roi_btn, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
+
         vboxright.Add(hbox_pos, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.TOP, border = 20)
+        vboxright.Add(hbox_roi, flag = wx.ALIGN_RIGHT | wx.TOP, border = 20)
 
         ##
         hbox.Add(vboxright, proportion = 3, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
@@ -482,6 +491,10 @@ class ImageViewer(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         ### event bindings
+
+        ## ROI callback
+        self.Bind(wx.EVT_BUTTON, self.onChooseROI, self.roi_btn      )
+        self.Bind(wx.EVT_BUTTON, self.onResetROI,  self.reset_roi_btn)
 
         ## add input pv namestring to imgsrcPVlist or not
         self.Bind(wx.EVT_BUTTON, self.onAddPV, self.addpvbtn)
@@ -519,6 +532,14 @@ class ImageViewer(wx.Frame):
         ## start timernow (clock)
         self.timernow.Start(1000)
 
+    def onResetROI(self, event):
+        self.roixy = [0,self.wpx, 0, self.hpx]
+
+    def onChooseROI(self, event):
+        self.roiFrame = ChooseROIFrame(self, self.imgpanel)
+        self.roiFrame.SetTitle('Choose ROI')
+        self.roiFrame.Show()
+
     def onTickTime(self, event):
         fmt='%Y-%m-%d %H:%M:%S %Z'
         self.timenow_st.SetLabel(time.strftime(fmt, time.localtime()))
@@ -546,7 +567,7 @@ class ImageViewer(wx.Frame):
             self.inten_val.SetLabel("%.5e" % (np.sum(self.mypv.get())))
 
             #self.wpx, self.hpx = 494, 659
-            self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))
+            self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
             try:
                 cmin_now = float(self.imgcr_min_tc.GetValue())
                 cmax_now = float(self.imgcr_max_tc.GetValue())
@@ -569,7 +590,7 @@ class ImageViewer(wx.Frame):
         """
         self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
         #self.wpx, self.hpx = 494, 659
-        self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))
+        self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
         self.imgpanel.cmin = self.imgpanel.z.min()
         self.imgpanel.cmax = self.imgpanel.z.max()
         cmin_now = self.imgpanel.cmin
@@ -817,7 +838,6 @@ class AppConfigPanel(wx.Frame):
         
         # for debug
         #self.thisapp.printConfig()
- 
 
 class ImageConfigPanel(wx.Panel):
     def __init__(self, parent, **kwargs):
@@ -1150,14 +1170,21 @@ class ImagePanel(wx.Panel):
         # resize figure when size event trigged
         self.Bind(wx.EVT_SIZE, self.onSize)
 
-        self.canvas.mpl_connect('button_press_event',  self.onPress )
-        self.canvas.mpl_connect('motion_notify_event', self.onMotion)
+        #self.canvas.mpl_connect('button_press_event',   self.onPress  )
+        #self.canvas.mpl_connect('button_release_event', self.onRelease)
+        self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
 
     def onPress(self, event):
-        print event.xdata, event.ydata
+        print("%d,%d" % (event.xdata, event.ydata))
+
+    def onRelease(self, event):
+        print("%d,%d" % (event.xdata, event.ydata))
 
     def onMotion(self, event):
-        self.parent.GetParent().pos_val.SetLabel("(%.3f,%.3f)" % (event.xdata, event.ydata))
+        try:
+            self.parent.GetParent().pos_val.SetLabel("(%.4f,%.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
 
     def setColor(self, rgbtuple = None):
         """Set figure and canvas colours to be the same."""
@@ -1241,6 +1268,147 @@ class ImagePanel(wx.Panel):
         #heresize = self.GetSize()
         #self.figure.set_size_inches(float(heresize[0])/self.figure.get_dpi(),
         #                            float(heresize[1])/self.figure.get_dpi())
+
+class ChooseROIFrame(wx.Frame):
+    def __init__(self, parent, imgsrcptn, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE, **kwargs)
+                #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
+        self.parent = parent
+        self.imgpanel = imgsrcptn
+        self.InitUI()
+
+    def InitUI(self):
+        self.createMenu()
+        self.createStatusbar()
+        self.createPanel(self.imgpanel)
+
+    def createMenu(self):
+        pass
+
+    def createStatusbar(self):
+        pass
+
+    def createPanel(self, imgsrcptn):
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        self.roiPanel = ChooseROIPanel(self, figsize = (7,7), dpi = 80)
+        self.roiPanel.doPlot(imgsrcptn)
+
+        self.cancelbtn = wx.Button(self, label = 'Cancel')
+        self.okbtn     = wx.Button(self, label = 'OK'    )
+
+        self.Bind(wx.EVT_BUTTON, self.onCancel, self.cancelbtn)
+        self.Bind(wx.EVT_BUTTON, self.onGetROI, self.okbtn    )
+
+        hboxbtn = wx.BoxSizer(wx.HORIZONTAL)
+        hboxbtn.Add(self.cancelbtn, proportion = 0, flag = wx.EXPAND |           wx.BOTTOM, border = 10)
+        hboxbtn.Add(self.okbtn,     proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
+ 
+        vbox.Add(self.roiPanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 15)
+        vbox.Add(hboxbtn, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border = 15)
+        vbox.Add((-1,10))
+        self.SetSizerAndFit(vbox)
+
+        # get and draw ROI box
+        self.is_pressed = False
+        self.patch = []
+        self.x0, self.y0 = None, None
+        self.x1, self.y1 = None, None
+        self.figure = self.roiPanel.figure
+        self.canvas = self.roiPanel.canvas
+        self.axes   = self.roiPanel.axes
+        self.canvas.mpl_connect('button_press_event',   self.onPress  )
+        self.canvas.mpl_connect('button_release_event', self.onRelease)
+        #self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
+
+    def onCancel(self, event):
+        self.Close(True)
+
+    def onGetROI(self, event):
+        try:
+            self.parent.roixy = sorted([int(self.y0), int(self.y1)]) + sorted([int(self.x0), int(self.x1)])
+        except TypeError:
+            dial = wx.MessageDialog(self, message = u"Please simply draw box on image to get ROI, then click OK.",
+                    caption = u"Fetch ROI Warning", 
+                    style = wx.OK | wx.ICON_QUESTION | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+                return
+        self.Close(True)
+
+    def onPress(self, event):
+        #self.is_pressed = True
+        self.x0 = event.xdata
+        self.y0 = event.ydata
+
+    def onRelease(self, event):
+        #self.is_pressed = False
+        self.x1 = event.xdata
+        self.y1 = event.ydata
+        self.rect = Rectangle((self.x0, self.y0), 
+                          self.x1 - self.x0, 
+                          self.y1 - self.y0,
+                          fill = False, color = 'w', linestyle = 'dashed',
+                          linewidth = 1)
+        self.patch.append(self.rect)
+        [self.axes.add_patch(inspatch) for inspatch in self.patch]
+        self.figure.canvas.draw()
+    """
+    def onMotion(self, event):
+        if self.is_pressed == True:
+            try:
+                self.x1 = event.xdata
+                self.y1 = event.ydata
+                self.rect = Rectangle((self.x0, self.y0), 
+                                  self.x1 - self.x0, 
+                                  self.y1 - self.y0,
+                                  fill = False, color = 'w', linestyle = 'dashed',
+                                  linewidth = 1)
+                self.patch.pop()
+                self.patch.append(self.rect)
+                [self.axes.add_patch(inspatch) for inspatch in self.patch]
+                self.figure.canvas.draw_idle()
+            except:
+                pass
+    """
+
+class ChooseROIPanel(wx.Panel):
+    def __init__(self, parent, figsize, dpi, **kwargs):
+        super(self.__class__, self).__init__(parent = parent, **kwargs)
+        self.parent  = parent
+        self.figsize = figsize
+        self.dpi     = dpi
+        self.figure  = Figure(self.figsize, self.dpi)
+        self.canvas  = FigureCanvasWxAgg(self, -1, self.figure)
+        self.Bind(wx.EVT_SIZE, self.onSize)
+    
+    def doPlot(self, imgsrcptn):
+        ## imgsrcptn: object reference for image, from which ROI would be got
+        # set background color
+        self.setColor(imgsrcptn.bgcolor)
+
+        # set image
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111)
+        self.im = self.axes.imshow(imgsrcptn.z, aspect = 'equal', cmap = plt.get_cmap(imgsrcptn.cmaptype), 
+                                   origin = 'lower left', vmin = imgsrcptn.cmin, vmax = imgsrcptn.cmax)
+        self.im.set_extent(imgsrcptn.xyscalar)
+        self.figure.canvas.draw()
+
+    def onSize(self, event):
+        self.canvas.SetSize(self.GetSize())
+        self.figure.set_tight_layout(True)
+        self.figure.subplots_adjust(top  = 0.9999, bottom = 0.0001, 
+                                    left = 0.0001, right  = 0.9999)
+
+    def setColor(self, rgbtuple = None):
+        """Set figure and canvas colours to be the same."""
+        if rgbtuple is None:
+            rgbtuple = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
+        clr = [c/255. for c in rgbtuple]
+        self.figure.set_facecolor(clr)
+        self.figure.set_edgecolor(clr)
+        self.canvas.SetBackgroundColour(wx.Colour(*rgbtuple))
 
 class ImagePanelxy(wx.Panel):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
