@@ -57,8 +57,8 @@ for i in np.arange(100000):
     """
 
     ampArr = np.random.random_integers(50,100,1)
-    rx, ry = np.random.random()*3+1, np.random.random()*3+1
-    px, py = np.random.random()*3+5, np.random.random()*3+2
+    rx, ry = np.random.random()*0.5+0.1, np.random.random()*0.5+0.1
+    px, py = np.random.random()*3+5, np.random.random()*3+4
     tmpdata1= ampArr*gauss2d(x, y, px, py, rx, ry) + \
               0.5*np.random.random(size = 659*494).reshape(494, 659)
 

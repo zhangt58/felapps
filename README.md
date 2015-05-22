@@ -20,7 +20,7 @@ following approaches:
 <code>pip install felapps</code>, the required packages (i.e. the above lised python modules) will be pulled and installed automatically;
 2. Clone this repo by <code>git clone https://github.com/Archman/felapps.git</code>.
 
-#### How to Use
+### How to Use
 Assuming the <code>felapps</code> package has been already installed by 
 <code>pip</code> way, one can write python script and run it to call 
 methods that included by <code>felapps</code>, e.g.:
@@ -65,4 +65,5 @@ into python provided that the correct module path be added into
 
 ---
 Tong Zhang
+
 May. 22nd, 2015

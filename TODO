@@ -1,7 +1,12 @@
 iss001: (created on May. 13, 2015, 16:14)
-    [ ]: ROI
+    [x]: ROI
+        [x]: ROI btn to call seperate pop up frame for choosing ROI
+        [ ]: ROI box cannot be drawn continuely
     [x]: plot style for histx and histy lines
     [x]: notebook style for Preference menu
     [x]: store/unstore PV name string from imageviewer panel
-    [ ]: configuration parameter: ratio (height of hist line)
+    [ ]: configuration notebook pages:
+        [x]: hist lines: ratio (height of hist line), line type, legend
+        [ ]: monitor plotting frame
+        [ ]: image show frame
     
