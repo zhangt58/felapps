@@ -24,11 +24,11 @@ following approaches:
 Assuming the <code>felapps</code> package has been already installed by 
 <code>pip</code> way, one can write python script and run it to call 
 methods that included by <code>felapps</code>, e.g.:
-
-    #!/usr/bin/env python
-    import felapps
-    felapps.imageviewer.run()
-    
+```python
+#!/usr/bin/env python
+import felapps
+felapps.imageviewer.run()
+```
 Or just type <code>imageviewer</code> in the terminal, the two methods do
 the same thing. Please note that <code>imageviewer</code> app would 
 complain that it cannot find any configuration file for loading in the
@@ -57,12 +57,12 @@ ensure python knows where <code>felapps</code> is.
 The third approach only generates the python module, which could be imported
 into python provided that the correct module path be added into 
 <code>PYTHONPATH</code>, e.g.:
-
-    import sys
-    sys.path.append('../dist/felapps.VERSION.whl')
-    import felapps
-    ...
-
+```python
+import sys
+sys.path.append('../dist/felapps.VERSION.whl')
+import felapps
+...
+```
 ---
 Tong Zhang
 
