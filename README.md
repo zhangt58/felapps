@@ -63,7 +63,3 @@ sys.path.append('../dist/felapps.VERSION.whl')
 import felapps
 ...
 ```
----
-Tong Zhang
-
-May. 22nd, 2015
