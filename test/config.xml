@@ -1,6 +1,6 @@
 <config>
     <group name="Image">
-        <properties cmFavor="jet  Greys  cool  rainbow  gnuplot  gray  hot" height="659" saveImgExt=".jpg" saveImgName="image" saveImgDatExt=".asc" saveImgDatName="imagedat" saveIntExt=".jpg" saveIntName="intensity" savePath="/home/tong/Desktop" width="494" />
+        <properties cmFavor="jet  Greys  cool  rainbow  gnuplot  gray  hot" height="659" saveImgDatExt=".hdf5" saveImgDatName="imagedat" saveImgExt=".jpg" saveImgName="image" saveIntExt=".jpg" saveIntName="intensity" savePath="/home/tong/Desktop" width="494" />
     </group>
 
     <group name="Control">
