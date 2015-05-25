@@ -208,7 +208,7 @@ class ImageViewer(wx.Frame):
     def onSaveImg(self, event):
         if not os.path.exists(self.save_path_str):
             os.system('mkdir -p' + ' ' + self.save_path_str) # I've not found pure python way (simple) to do that yet.
-        filelabel = time.strftime('%H%m%S', time.localtime())
+        filelabel = time.strftime('%H%M%S', time.localtime())
         savetofilename = self.save_path_str + '/' + self.save_img_name_str + filelabel + self.save_img_ext_str
         self.imgpanel.figure.savefig(savetofilename)
         hintText = 'Image Plotting file: ' + savetofilename + ' was saved.'
@@ -217,7 +217,7 @@ class ImageViewer(wx.Frame):
     def onSaveDat(self, event):
         if not os.path.exists(self.save_path_str):
             os.system('mkdir -p' + ' ' + self.save_path_str) 
-        filelabel = time.strftime('%H%m%S', time.localtime())
+        filelabel = time.strftime('%H%M%S', time.localtime())
         savetofilename = self.save_path_str + '/' + self.save_dat_name_str + filelabel + self.save_dat_ext_str
         saveins = funutils.SaveData(self.imgpanel.z, savetofilename, self.save_dat_ext_str)
         hintText = 'Image Data file: ' + savetofilename + ' was saved.'
