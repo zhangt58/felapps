@@ -152,3 +152,29 @@ def getFilename(parent):
     return fullfilename
 
 #-------------------------------------------------------------------------#
+
+class SaveData(object):
+    def __init__(self, data, fname, type):
+        """
+        type: asc, hdf5, sdds
+        """
+        self.data  = data
+        self.fname = fname
+        if type == ".asc":
+            self.onSaveASC()
+        elif type == 'hdf5':
+            self.onSaveHDF5()
+        elif type == '.sdds':
+            self.onSaveSDDS()
+
+    def onSaveASC(self):
+        np.savetxt(self.fname, self.data, fmt='%.16e', delimiter=' ')
+
+    def onSaveHDF5(self):
+        print 'save hdf5 format'
+
+    def onSaveSDDS(self):
+        print 'save sdds format'
+        
+    
+#-------------------------------------------------------------------------#
