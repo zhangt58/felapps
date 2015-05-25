@@ -47,7 +47,7 @@ class ConfigFile(object):
         namelist_control    = {}
         namelist_style      = {}
         namelist_histplot   = {}
-        namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveIntName', 'saveIntExt', 'cmFavor']
+        namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveImgDatName', 'saveImgDatExt', 'saveIntName', 'saveIntExt', 'cmFavor']
         namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
         namestring_histplot = ['heightRatio']
         namestring_style    = ['backgroundColor']
@@ -124,6 +124,8 @@ class ImageViewer(wx.Frame):
         self.save_path_str      = os.path.join(self.save_path_str_head, dirdate)
         self.save_img_name_str = namelist['saveImgName']
         self.save_img_ext_str  = namelist['saveImgExt']
+        self.save_dat_name_str = namelist['saveImgDatName']
+        self.save_dat_ext_str  = namelist['saveImgDatExt']
         self.save_int_name_str = namelist['saveIntName']
         self.save_int_ext_str  = namelist['saveIntExt']
 
@@ -158,25 +160,21 @@ class ImageViewer(wx.Frame):
         
         ## File menu
         fileMenu = wx.Menu()
-        openItem = fileMenu.Append(wx.ID_OPEN, '&Open file\tCtrl+O', 
-                'Open file to view')
-        saveItem = fileMenu.Append(wx.ID_SAVE, '&Save plot\tCtrl+S', 
-                'Save figure to file')
+        openItem    = fileMenu.Append(wx.ID_OPEN, '&Open file\tCtrl+O',            'Open file to view')
+        saveImgItem = fileMenu.Append(wx.ID_SAVE, '&Save Image Plot\tCtrl+S',      'Save figure plotting to file')
+        saveDatItem = fileMenu.Append(wx.ID_ANY,  '&Save Image Data\tCtrl+D',  'Save figure data to file')
         fileMenu.AppendSeparator()
-        exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W',
-                'Exit window')
-        self.Bind(wx.EVT_MENU, self.onOpen, id = wx.ID_OPEN)
-        self.Bind(wx.EVT_MENU, self.onSave, id = wx.ID_SAVE)
-        self.Bind(wx.EVT_MENU, self.onExit, id = wx.ID_EXIT)
+        exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit application')
+        self.Bind(wx.EVT_MENU, self.onOpen,    id =    openItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onSaveImg, id = saveImgItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onSaveDat, id = saveDatItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onExit,    id =    exitItem.GetId())
         
         ## Configurations menu
         configMenu = wx.Menu()
-        loadConfigItem = configMenu.Append(wx.ID_ANY, 'Load from file\tCtrl+Shift+L',
-                'Loading configurations from file')
-        saveConfigItem = configMenu.Append(wx.ID_ANY, 'Save to file\tCtrl+Shift+S',
-                'Saving configurations to file')
-        appsConfigItem = configMenu.Append(wx.ID_ANY, 'Preferences\tCtrl+Shift+I',
-                'Configurations for application')
+        loadConfigItem = configMenu.Append(wx.ID_ANY, 'Load from file\tCtrl+Shift+L', 'Loading configurations from file')
+        saveConfigItem = configMenu.Append(wx.ID_ANY, 'Save to file\tCtrl+Shift+S',   'Saving configurations to file')
+        appsConfigItem = configMenu.Append(wx.ID_ANY, 'Preferences\tCtrl+Shift+I',    'Configurations for application')
         self.Bind(wx.EVT_MENU, self.onConfigApps, id = appsConfigItem.GetId())
         self.Bind(wx.EVT_MENU, self.onConfigLoad, id = loadConfigItem.GetId())
         self.Bind(wx.EVT_MENU, self.onConfigSave, id = saveConfigItem.GetId())
@@ -184,16 +182,15 @@ class ImageViewer(wx.Frame):
         ## Methods menu
         methMenu = wx.Menu()
         showIntItem   = methMenu.Append(wx.ID_ANY, 'Show intensity\tCtrl+Shift+V', 'Monitor intensity')
-        showXhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-X\tAlt+X', 'Show histogram along X-axis', kind = wx.ITEM_CHECK)
-        showYhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-Y\tAlt+Y', 'Show histogram along Y-axis', kind = wx.ITEM_CHECK)
+        showXhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-X\tAlt+X',           'Show histogram along X-axis', kind = wx.ITEM_CHECK)
+        showYhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-Y\tAlt+Y',           'Show histogram along Y-axis', kind = wx.ITEM_CHECK)
         self.Bind(wx.EVT_MENU, self.onShowInt,   id =   showIntItem.GetId())
         self.Bind(wx.EVT_MENU, self.onShowXhist, id = showXhistItem.GetId())
         self.Bind(wx.EVT_MENU, self.onShowYhist, id = showYhistItem.GetId())
 
         ## Help menu
         helpMenu = wx.Menu()
-        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tF1',
-                'Show about information')
+        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tF1', 'Show about information')
         self.Bind(wx.EVT_MENU, self.onAbout, id = wx.ID_ABOUT)
         
         ## make menu
@@ -208,15 +205,24 @@ class ImageViewer(wx.Frame):
     def onOpen(self, event):
         pass
 
-    def onSave(self, event):
+    def onSaveImg(self, event):
         if not os.path.exists(self.save_path_str):
             os.system('mkdir -p' + ' ' + self.save_path_str) # I've not found pure python way (simple) to do that yet.
         filelabel = time.strftime('%H%m%S', time.localtime())
         savetofilename = self.save_path_str + '/' + self.save_img_name_str + filelabel + self.save_img_ext_str
         self.imgpanel.figure.savefig(savetofilename)
-        hintText = 'Image file: ' + savetofilename + ' was saved.'
+        hintText = 'Image Plotting file: ' + savetofilename + ' was saved.'
         self.statusbar.SetStatusText(hintText)
 
+    def onSaveDat(self, event):
+        if not os.path.exists(self.save_path_str):
+            os.system('mkdir -p' + ' ' + self.save_path_str) 
+        filelabel = time.strftime('%H%m%S', time.localtime())
+        savetofilename = self.save_path_str + '/' + self.save_dat_name_str + filelabel + self.save_dat_ext_str
+        saveins = funutils.SaveData(self.imgpanel.z, savetofilename, self.save_dat_ext_str)
+        hintText = 'Image Data file: ' + savetofilename + ' was saved.'
+        self.statusbar.SetStatusText(hintText)
+    
     def onShowInt(self, event):
         self.menuShowInt = ShowIntPanel(self)
         self.menuShowInt.SetTitle('Image Intensity Monitor')
@@ -805,6 +811,8 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.save_path_str = os.path.join(self.thisapp.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
         self.thisapp.save_img_name_str = self.imagePage.imgnamepretc.GetValue()
         self.thisapp.save_img_ext_str  = self.imagePage.imgnameexttc.GetValue()
+        self.thisapp.save_dat_name_str = self.imagePage.imgdatnamepretc.GetValue()
+        self.thisapp.save_dat_ext_str  = self.imagePage.imgdatnameexttc.GetValue()
         self.thisapp.save_int_name_str = self.imagePage.intnamepretc.GetValue()
         self.thisapp.save_int_ext_str  = self.imagePage.intnameexttc.GetValue()
 
@@ -825,6 +833,8 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.configdict['savePath'       ] = self.thisapp.save_path_str_head
         self.thisapp.configdict['saveImgName'    ] = self.thisapp.save_img_name_str
         self.thisapp.configdict['saveImgExt'     ] = self.thisapp.save_img_ext_str
+        self.thisapp.configdict['saveImgDatName' ] = self.thisapp.save_dat_name_str
+        self.thisapp.configdict['saveImgDatExt'  ] = self.thisapp.save_dat_ext_str
         self.thisapp.configdict['saveIntName'    ] = self.thisapp.save_int_name_str
         self.thisapp.configdict['saveIntExt'     ] = self.thisapp.save_int_ext_str
         self.thisapp.configdict['frequency'      ] = str(self.thisapp.timer_freq)  
@@ -872,39 +882,49 @@ class ImageConfigPanel(wx.Panel):
 
         #### input items
         gs = wx.GridBagSizer(5, 5)
-        imgwpxst     = wx.StaticText(self, label = u'Image Width [px]',         style = wx.ALIGN_LEFT)
-        imghpxst     = wx.StaticText(self, label = u'Image Height [px]',        style = wx.ALIGN_LEFT)
-        pathst       = wx.StaticText(self, label = u'Save Figure to Path',      style = wx.ALIGN_LEFT)
-        imgnameprest = wx.StaticText(self, label = u'Image Name Prefix',        style = wx.ALIGN_LEFT)
-        imgnameextst = wx.StaticText(self, label = u'Image Name Extension',     style = wx.ALIGN_LEFT)
-        intnameprest = wx.StaticText(self, label = u'Intensity Name Prefix',    style = wx.ALIGN_LEFT)
-        intnameextst = wx.StaticText(self, label = u'Intensity Name Extension', style = wx.ALIGN_LEFT)
+        imgwpxst        = wx.StaticText(self, label = u'Image Width [px]',         style = wx.ALIGN_LEFT)
+        imghpxst        = wx.StaticText(self, label = u'Image Height [px]',        style = wx.ALIGN_LEFT)
+        pathst          = wx.StaticText(self, label = u'Save Figure to Path',      style = wx.ALIGN_LEFT)
+        imgnameprest    = wx.StaticText(self, label = u'Image Name Prefix',        style = wx.ALIGN_LEFT)
+        imgnameextst    = wx.StaticText(self, label = u'Image Name Extension',     style = wx.ALIGN_LEFT)
+        intnameprest    = wx.StaticText(self, label = u'Intensity Name Prefix',    style = wx.ALIGN_LEFT)
+        intnameextst    = wx.StaticText(self, label = u'Intensity Name Extension', style = wx.ALIGN_LEFT)
+        imgdatnameprest = wx.StaticText(self, label = u'Image Data Name Prefix',        style = wx.ALIGN_LEFT)
+        imgdatnameextst = wx.StaticText(self, label = u'Image Data Name Extension',     style = wx.ALIGN_LEFT)
 
-        self.imgwpxtc     = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
-        self.imghpxtc     = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
-        self.pathtc       = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.TE_PROCESS_ENTER)
+        self.imgwpxtc        = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
+        self.imghpxtc        = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
+        self.pathtc          = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.TE_PROCESS_ENTER)
         self.pathtc.SetToolTip(wx.ToolTip('Fullpath (subdired by the date) the config file be saved.'))
-        self.pathbtn      = wx.Button(self, label = 'Browse', style = wx.CB_READONLY)
-        self.imgnamepretc = wx.TextCtrl(self, value = self.thisapp.save_img_name_str, style = wx.TE_PROCESS_ENTER)
-        self.imgnameexttc = wx.ComboBox(self, value = self.thisapp.save_img_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
-        self.intnamepretc = wx.TextCtrl(self, value = self.thisapp.save_int_name_str, style = wx.TE_PROCESS_ENTER)
-        self.intnameexttc = wx.ComboBox(self, value = self.thisapp.save_int_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
+        self.pathbtn         = wx.Button(self, label = 'Browse', style = wx.CB_READONLY)
+        self.imgnamepretc    = wx.TextCtrl(self, value = self.thisapp.save_img_name_str, style = wx.TE_PROCESS_ENTER)
+        self.imgnameexttc    = wx.ComboBox(self, value = self.thisapp.save_img_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
+        self.imgdatnamepretc = wx.TextCtrl(self, value = self.thisapp.save_dat_name_str, style = wx.TE_PROCESS_ENTER)
+        self.imgdatnameexttc = wx.ComboBox(self, value = self.thisapp.save_dat_ext_str,  style = wx.CB_READONLY, choices = ['.asc','.hdf5','.sdds'])
+        self.intnamepretc    = wx.TextCtrl(self, value = self.thisapp.save_int_name_str, style = wx.TE_PROCESS_ENTER)
+        self.intnameexttc    = wx.ComboBox(self, value = self.thisapp.save_int_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
 
-        gs.Add(imgwpxst,          pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgwpxtc,     pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imghpxst,          pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imghpxtc,     pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(pathst,            pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.pathtc,       pos = (2, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.pathbtn,      pos = (2, 3), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imgnameprest,      pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgnamepretc, pos = (3, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imgnameextst,      pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgnameexttc, pos = (4, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(intnameprest,      pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.intnamepretc, pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(intnameextst,      pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.intnameexttc, pos = (6, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgwpxst,             pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgwpxtc,        pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imghpxst,             pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imghpxtc,        pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(pathst,               pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.pathtc,          pos = (2, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.pathbtn,         pos = (2, 3), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgnameprest,         pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgnamepretc,    pos = (3, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgnameextst,         pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgnameexttc,    pos = (4, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gs.Add(imgdatnameprest,      pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgdatnamepretc, pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgdatnameextst,      pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgdatnameexttc, pos = (6, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gs.Add(intnameprest,         pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.intnamepretc,    pos = (7, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(intnameextst,         pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.intnameexttc,    pos = (8, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.AddGrowableCol(1, 2)
         gs.AddGrowableCol(2, 0)
         vboxsizer.Add(gs, proportion = 0, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
@@ -917,7 +937,7 @@ class ImageConfigPanel(wx.Panel):
         ## bind events
         self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams,  self.imgwpxtc)
         self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams,  self.imghpxtc)
-        self.Bind(wx.EVT_BUTTON,     self.onChooseDirpath, self.pathbtn     )
+        self.Bind(wx.EVT_BUTTON,     self.onChooseDirpath, self.pathbtn )
 
     def onChooseDirpath(self, event):
         dlg = wx.DirDialog(self)
