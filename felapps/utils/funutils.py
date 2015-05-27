@@ -168,22 +168,16 @@ class SaveData(object):
             self.onSaveSDDS()
 
     def onSaveASC(self):
-        print self.data.shape
-        print self.data.dtype
         np.savetxt(self.fname, self.data, fmt='%.16e', delimiter=' ')
 
     def onSaveHDF5(self):
         import h5py
         f = h5py.File(self.fname,'w')
-        print self.data.shape
-        print self.data.dtype
         dset = f.create_dataset('image/data', shape=self.data.shape, dtype=self.data.dtype)
         dset[...] = self.data
-        
-        print 'save hdf5 format'
 
     def onSaveSDDS(self):
-        print 'save sdds format'
+        print 'save sdds format to be implemented.'
         
     
 #-------------------------------------------------------------------------#
