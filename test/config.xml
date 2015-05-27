@@ -12,6 +12,6 @@
     </group>
 
     <group name="HistPlot">
-        <properties heightRatio="0.7" />
+        <properties heightRatio="0.5" />
     </group>
 </config>

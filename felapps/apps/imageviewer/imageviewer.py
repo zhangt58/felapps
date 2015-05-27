@@ -17,9 +17,9 @@ def run(maximize = True, logon = True):
     """
     app = wx.App(redirect = logon, filename='log')
     if maximize == True:
-        myframe = pltutils.ImageViewer(None, title = 'ImageViewer --- Another Profile Monitor', style = wx.DEFAULT_FRAME_STYLE)
+        myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', style = wx.DEFAULT_FRAME_STYLE)
     else:
-        myframe = pltutils.ImageViewer(None, title = 'ImageViewer --- Another Profile Monitor', style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
     myframe.Show()
     #print myframe.GetSize()
     app.MainLoop()
