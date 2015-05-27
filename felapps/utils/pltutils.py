@@ -3,7 +3,7 @@
 
 """
 python modules for plot utilities:
-    ImageViewer: embed matplotlib objects into wx
+    ImageViewer: main GUI framework for an universal image viewer
 
 Author: Tong Zhang
 Created: Feb. 3rd, 2015
@@ -291,6 +291,7 @@ class ImageViewer(wx.Frame):
         self.imgsrc_tc.SetValue(self.imgsrcPV)
         self.panel.SetBackgroundColour(self.bkgdcolor)
         self.imgpanel.setColor(self.bkgdcolor) # make color as private var
+        self.imgpanel.setHratio(self.heightRatio)
         self.imgpanel.repaint() # rewrite repaint func
         self.imgcm.setColor(self.bkgdcolor)
         self.imgcm.repaint()
@@ -1205,6 +1206,9 @@ class ImagePanel(wx.Panel):
             self.parent.GetParent().pos_val.SetLabel("(%.4f,%.4f)" % (event.xdata, event.ydata))
         except TypeError:
             pass
+
+    def setHratio(self, hratio):
+        self.hratio = hratio
 
     def setColor(self, rgbtuple = None):
         """Set figure and canvas colours to be the same."""
