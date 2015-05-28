@@ -66,12 +66,11 @@ class MainFrame(wx.Frame):
 
 #------------------------------------------------------------------------#
 
-    def __init__(self, parent, title, **kwargs):
-        super(self.__class__, self).__init__(parent, id = wx.ID_ANY,
-                title = title, **kwargs)
-        self.InitUI()
-        self.Centre()
-        self.Show()
+    def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
+        super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs)
+        self.parent = parent
+        self.appversion = appversion
+        self.initUI()
 
 #------------------------------------------------------------------------#
 
@@ -111,7 +110,7 @@ class MainFrame(wx.Frame):
         # First we create and fill the info object
         info = wx.AboutDialogInfo()
         info.Name = "FEL Formula"
-        info.Version = "2015.01.20"
+        info.Version = self.appversion
         info.Copyright = "(C) 2014-2015 Tong Zhang, SINAP, CAS"
         info.Description = wordwrap(
             "This program is designed for fast FEL physics calculations.\n"
@@ -128,7 +127,7 @@ class MainFrame(wx.Frame):
 
 #------------------------------------------------------------------------#
 
-    def InitUI(self):
+    def initUI(self):
 
         self.createMenu()
 
