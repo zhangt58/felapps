@@ -12,6 +12,9 @@ FEL utilities:
     1.1: ModdsPanel
     1.2: MatchPanel
     1.3: RadisPanel
+
+    2 correlation analyzer:
+    2.1: ScannerPanel 
 """
 
 #------------------------------------------------------------------------#
@@ -1653,6 +1656,110 @@ class ChiConfigPanel(wx.Frame):
 
     def OnInter(self, event):
         pass
+
+#------------------------------------------------------------------------#
+
+class ScanAnalyzer(wx.Frame):
+    def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
+        super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs)
+        self.parent = parent
+        self.appversion = appversion
+
+        self.Bind(wx.EVT_CLOSE, self.onExit)
+        self.initUI()
+
+    def initUI(self):
+        self.createMenubar()
+        self.createStatusbar()
+        self.createPanel()
+
+    def createMenubar(self):
+        self.menubar = wx.MenuBar()
+        
+        ## File menu
+        fileMenu = wx.Menu()
+        openItem = fileMenu.Append(wx.ID_OPEN, '&Open file\tCtrl+O', 'Open file to view')
+        saveItem = fileMenu.Append(wx.ID_SAVE, '&Save Plot\tCtrl+S', 'Save plotting to file')
+        fileMenu.AppendSeparator()
+        exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit application')
+        self.Bind(wx.EVT_MENU, self.onOpen, id = openItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onSave, id = saveItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onExit, id = exitItem.GetId())
+        
+        ## Configurations menu
+        configMenu = wx.Menu()
+        loadConfigItem = configMenu.Append(wx.ID_ANY, 'Load from file\tCtrl+Shift+L', 'Loading configurations from file')
+        saveConfigItem = configMenu.Append(wx.ID_ANY, 'Save to file\tCtrl+Shift+S',   'Saving configurations to file')
+        appsConfigItem = configMenu.Append(wx.ID_ANY, 'Preferences\tCtrl+Shift+I',    'Preferences for application')
+        self.Bind(wx.EVT_MENU, self.onConfigLoad, id = loadConfigItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onConfigSave, id = saveConfigItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onConfigApps, id = appsConfigItem.GetId())
+        
+        ## Help menu
+        helpMenu = wx.Menu()
+        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tF1', 'Show about information')
+        self.Bind(wx.EVT_MENU, self.onAbout, id = wx.ID_ABOUT)
+        
+        ## make menu
+        self.menubar.Append(fileMenu,   '&File')
+        self.menubar.Append(configMenu, '&Configurations')
+        self.menubar.Append(helpMenu,   '&Help')
+        
+        ## set menu
+        self.SetMenuBar(self.menubar)
+
+    def onAbout(self, event):
+        try:
+            from wx.lib.wordwrap import wordwrap
+        except:
+            dial = wx.MessageDialog(self, message = u"Cannot show about information, sorry!",
+                    caption = u"Unknow Error", 
+                    style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+        info = wx.AboutDialogInfo()
+        info.Name = "Cornalyzer"
+        info.Version = self.appversion
+        info.Copyright = "(C) 2014-2015 Tong Zhang, SINAP, CAS"
+        info.Description = wordwrap(
+            "This application is created for correlation analysis of parameters.\n"
+
+            "It is designed by Python language, using GUI module of wxPython.",
+            350, wx.ClientDC(self))
+        info.WebSite = ("http://everyfame.me", "Cornalyzer home page")
+        info.Developers = [ "Tong Zhang <zhangtong@sinap.ac.cn>"]
+        licenseText = "Cornalyzer is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n" + "\nCornalyzer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n" + "\nYou should have received a copy of the GNU General Public License along with Cornalyzer; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"
+        info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
+        wx.AboutBox(info)
+
+    def onConfigLoad(self, event):
+        pass
+
+    def onConfigSave(self, event):
+        pass
+
+    def onConfigApps(self, event):
+        pass
+
+    def onOpen(self, event):
+        pass
+
+    def onSave(self, event):
+        pass
+
+    def onExit(self, event):
+        dial = wx.MessageDialog(self, message = "Are you sure to exit this application?",
+                                caption = 'Exit Warning',
+                                style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
+        if dial.ShowModal() == wx.ID_YES:
+            self.Destroy()
+
+    def createStatusbar(self):
+        pass
+
+    def createPanel(self):
+        pass
+
 
 #------------------------------------------------------------------------#
 

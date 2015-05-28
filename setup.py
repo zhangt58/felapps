@@ -21,7 +21,7 @@ appLicense          = "MIT"
 appUrl              = "https://github.com/Archman/felapps"
 appKeywords         = "FEL high-level application physics commissioning"
 requiredpackages = ['numpy','scipy','matplotlib', 'pyepics'] # install_requires
-appScriptsName = ['imageviewer']
+appScriptsName = ['imageviewer', 'felformula', 'cornalyzer']
 ScriptsRoot = 'scripts'
 appScripts = [os.path.join(ScriptsRoot,scriptname) for scriptname in appScriptsName]
 

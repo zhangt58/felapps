@@ -29,8 +29,6 @@ from . import funutils
 #import resutils
 #import funutils
 
-APPVERSION = "1.2.0" # application version
-
 class ConfigFile(object):
 
     def __init__(self, infilename='config.xml', *args, **kwargs):
@@ -79,9 +77,10 @@ class ConfigFile(object):
         #print ET.tostring(self.root)
 
 class ImageViewer(wx.Frame):
-    def __init__(self, parent, size = (800, 600), **kwargs):
-        super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, name = 'imageviewer', **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
+    def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
+        super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.parent = parent
+        self.appversion = appversion
         self.cmlist_seq1 = ['Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges', 
                             'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu','Reds', 
                             'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd']
@@ -274,7 +273,7 @@ class ImageViewer(wx.Frame):
                 dial.Destroy()
         info = wx.AboutDialogInfo()
         info.Name = "Image Viewer"
-        info.Version = APPVERSION
+        info.Version = self.appversion
         info.Copyright = "(C) 2014-2015 Tong Zhang, SINAP, CAS"
         info.Description = wordwrap(
             "This application is created for being an profile/image monitor and image data processing.\n"
@@ -300,7 +299,7 @@ class ImageViewer(wx.Frame):
         self.statusbar = self.CreateStatusBar(2)
         self.statusbar.SetStatusWidths([-4, -1])
         self.statusbar.SetStatusText(u'ImageViewer powered by Python' ,0)
-        versionfield =  0*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + APPVERSION + ')'
+        versionfield =  0*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
         #print type(versionfield)
         self.statusbar.SetStatusText(versionfield, 1)
 
