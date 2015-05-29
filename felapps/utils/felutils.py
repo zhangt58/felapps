@@ -14,13 +14,14 @@ FEL utilities:
     1.3: RadisPanel
 
     2 correlation analyzer:
-    2.1: ScannerPanel 
+    2.1: ScanAnalyzer 
 """
 
 #------------------------------------------------------------------------#
 
 import wx
 import epics
+import time
 from . import funutils
 from . import pltutils
 from . import resutils
@@ -1755,11 +1756,53 @@ class ScanAnalyzer(wx.Frame):
             self.Destroy()
 
     def createStatusbar(self):
-        pass
+        self.statusbar = self.CreateStatusBar(2)
+        self.statusbar.SetStatusWidths([-8, -3])
+        self.statusbar.SetStatusText(u'Correlation Analyzer powered by Python' ,0)
+        versionfield =  0*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
+        self.statusbar.SetStatusText(versionfield, 1)
 
     def createPanel(self):
-        pass
+        self.panel    = funutils.createwxPanel(self,       funutils.hex2rgb('#0000AA'))
+        self.panel_l  = funutils.createwxPanel(self.panel, funutils.hex2rgb('#AA00EE'))
+        self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb('#00AAEE'))
+        self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb('#00EEAA'))
+        
 
+        ##   vleft     vright
+        ## |-------|------------|
+        ## |       |            |
+        ## |       | vrigh1     |
+        ## | vleft |------------|
+        ## |       |            |
+        ## |       |            |
+        ## |       | vright2    |
+        ## |       |            |
+        ## |-------|------------|
+        ##
+
+        hbox     = wx.BoxSizer(wx.HORIZONTAL)
+        vleft    = wx.BoxSizer(wx.VERTICAL  )
+        vright   = wx.BoxSizer(wx.VERTICAL  )
+        vright1  = wx.BoxSizer(wx.HORIZONTAL)
+        vright2  = wx.BoxSizer(wx.HORIZONTAL)
+
+        vleft.Add(self.panel_l, proportion = 1, flag = wx.EXPAND)
+        vright1.Add(self.panel_ru, proportion = 1, flag = wx.EXPAND)
+        vright2.Add(self.panel_rd, proportion = 1, flag = wx.EXPAND)
+
+        vright.Add(vright1, proportion = 1, flag = wx.EXPAND)
+        vright.Add(vright2, proportion = 2, flag = wx.EXPAND)
+
+        hbox.Add(vleft,  proportion = 1, flag = wx.EXPAND)
+        hbox.Add(vright, proportion = 2, flag = wx.EXPAND)
+
+        # set outer hbox
+        self.panel.SetSizer(hbox)
+        osizer = wx.BoxSizer(wx.HORIZONTAL)
+        osizer.SetMinSize((1080, 720))
+        osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
 
 #------------------------------------------------------------------------#
 
