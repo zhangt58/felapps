@@ -19,7 +19,7 @@ appAuthor           = "Tong Zhang"
 appAuthor_email     = "zhangtong@sinap.ac.cn"
 appLicense          = "MIT"
 appUrl              = "https://github.com/Archman/felapps"
-appKeywords         = "FEL high-level application physics commissioning"
+appKeywords         = "FEL HLA high-level python wxpython"
 requiredpackages = ['numpy','scipy','matplotlib', 'pyepics'] # install_requires
 appScriptsName = ['imageviewer', 'felformula', 'cornalyzer']
 ScriptsRoot = 'scripts'
@@ -37,9 +37,11 @@ setup(name             = appName,
       keywords         = appKeywords,
       packages         = find_packages(exclude=['contrib','tests*']),
       scripts          = appScripts,
-      #install_requires = requiredpackages,
+      install_requires = requiredpackages,
       classifiers = ['Programming Language :: Python', 
                      'Topic :: Software Development :: Libraries :: Python Modules', 
                      'Topic :: Scientific/Engineering :: Physics'],
+      test_suite = 'nose.collector',
+      tests_require = ['nose'],
       )
 
