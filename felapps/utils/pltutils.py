@@ -309,7 +309,7 @@ class ImageViewer(wx.Frame):
 
         vbox = wx.BoxSizer(wx.VERTICAL)
         ## title and horizontal line
-        title_st = self.createStaticText(self.panel,
+        title_st = funutils.createwxStaticText(self.panel,
                 label = u'Image Viewer', style = wx.ALIGN_CENTER,
                 fontsize = 20, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
@@ -325,7 +325,7 @@ class ImageViewer(wx.Frame):
         vboxleft  = wx.BoxSizer(wx.VERTICAL)
         
         ## StaticText for time indication
-        self.timenow_st = self.createStaticText(self.panel,
+        self.timenow_st = funutils.createwxStaticText(self.panel,
                 label = u'2015-02-11 15:10:16 CST', style = wx.ALIGN_CENTER,
                 fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
@@ -344,7 +344,7 @@ class ImageViewer(wx.Frame):
         ## right panel
         vboxright = wx.BoxSizer(wx.VERTICAL)
 
-        imgsrc_st = self.createStaticText(self.panel,
+        imgsrc_st = funutils.createwxStaticText(self.panel,
                 label = u'Image Source:', style = wx.ALIGN_LEFT,
                 fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
@@ -361,7 +361,7 @@ class ImageViewer(wx.Frame):
         pvbox.Add(self.rmpvbtn,   flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 6)
         
         ## color map
-        cm_st = self.createStaticText(self.panel,
+        cm_st = funutils.createwxStaticText(self.panel,
                 label = u'Color Map:', style = wx.ALIGN_LEFT,
                 fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
@@ -375,15 +375,15 @@ class ImageViewer(wx.Frame):
         self.bookbtn   = wx.BitmapButton(self.panel, bitmap = resutils.addicon.GetBitmap())
         self.unbookbtn = wx.BitmapButton(self.panel, bitmap = resutils.delicon.GetBitmap())
         ## color range box
-        cr_st = self.createStaticText(self.panel,
+        cr_st = funutils.createwxStaticText(self.panel,
                 label = u'Color Range:', style = wx.ALIGN_LEFT,
                 fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
-        min_st = self.createStaticText(self.panel,
+        min_st = funutils.createwxStaticText(self.panel,
                 label = u'min:', style = wx.ALIGN_LEFT,
                 fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
-        max_st = self.createStaticText(self.panel,
+        max_st = funutils.createwxStaticText(self.panel,
                 label = u'max:', style = wx.ALIGN_LEFT,
                 fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
@@ -391,11 +391,11 @@ class ImageViewer(wx.Frame):
         cmin_now = self.imgpanel.cmin
         cmax_now = self.imgpanel.cmax
         ### initial values for min&max sliders
-        self.min_value_st = self.createStaticText(self.panel,
+        self.min_value_st = funutils.createwxStaticText(self.panel,
                 label = ('%.1f' % (cmin_now)), style = wx.ALIGN_RIGHT,
                 fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
-        self.max_value_st = self.createStaticText(self.panel,
+        self.max_value_st = funutils.createwxStaticText(self.panel,
                 label = ('%.1f' % (cmax_now)), style = wx.ALIGN_RIGHT,
                 fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
@@ -681,34 +681,6 @@ class ImageViewer(wx.Frame):
         cmclass = event.GetEventObject().GetValue()
         self.cm_cb.Clear()
         self.cm_cb.AppendItems(self.cmlist[cmclass])
-
-    def createStaticText(self, parent, label, style = wx.ALIGN_LEFT, 
-            fontname=wx.SYS_SYSTEM_FONT, 
-            fontsize=12,
-            fontweight=wx.FONTWEIGHT_NORMAL,
-            fontcolor='black'):
-        font = wx.SystemSettings_GetFont(fontname)
-        font.SetPointSize(fontsize)
-        font.SetWeight(fontweight)
-        st = wx.StaticText(parent = parent, 
-                label = label, style = style)
-        st.SetFont(font)
-        st.SetForegroundColour(fontcolor)
-        return st
-
-    def createButton(self, parent, label,
-            fontname=wx.SYS_SYSTEM_FONT, 
-            fontsize=10,
-            fontweight=wx.FONTWEIGHT_NORMAL,
-            fontcolor='black'):
-        font = wx.SystemSettings_GetFont(fontname)
-        font.SetPointSize(fontsize)
-        font.SetWeight(fontweight)
-        btn = wx.Button(parent = parent, 
-                label = label)
-        btn.SetFont(font)
-        btn.SetForegroundColour(fontcolor)
-        return btn
 
 class ConfigNoteBook(wx.Notebook):
     def __init__(self, parent, style = wx.NB_LEFT, *args, **kws):

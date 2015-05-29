@@ -34,7 +34,7 @@ def rescaleImage(image0, scaledFac):
 
 #-------------------------------------------------------------------------#
 
-def createStaticText(parent, label, style = wx.ALIGN_LEFT,
+def createwxStaticText(parent, label, style = wx.ALIGN_LEFT, 
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=12,
         fontweight=wx.FONTWEIGHT_NORMAL,
@@ -46,8 +46,28 @@ def createStaticText(parent, label, style = wx.ALIGN_LEFT,
             label = label, style = style)
     st.SetFont(font)
     st.SetForegroundColour(fontcolor)
-
     return st
+
+def createwxButton(parent, label,
+        fontname=wx.SYS_SYSTEM_FONT, 
+        fontsize=10,
+        fontweight=wx.FONTWEIGHT_NORMAL,
+        fontcolor='black'):
+    font = wx.SystemSettings_GetFont(fontname)
+    font.SetPointSize(fontsize)
+    font.SetWeight(fontweight)
+    btn = wx.Button(parent = parent, 
+            label = label)
+    btn.SetFont(font)
+    btn.SetForegroundColour(fontcolor)
+    return btn
+
+def createwxPanel(parent, backgroundcolor = None):
+    if backgroundcolor == None:
+        backgroundcolor = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
+    panel = wx.Panel(parent)
+    panel.SetBackgroundColour(backgroundcolor)
+    return panel
 
 #-------------------------------------------------------------------------#
 
@@ -179,5 +199,4 @@ class SaveData(object):
     def onSaveSDDS(self):
         print 'save sdds format to be implemented.'
         
-    
 #-------------------------------------------------------------------------#
