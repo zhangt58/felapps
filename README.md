@@ -19,7 +19,7 @@ deployment, etc.
 following approaches:
 
 1. (Recommanded) Install directly from PyPI by: 
-<code>pip install felapps</code>, the required packages (i.e. the above lised python modules) will be pulled and installed automatically;
+<code>pip install felapps</code>, the required packages (i.e. the above listed python modules) will be pulled and installed automatically;
 2. Clone this repo by <code>git clone https://github.com/Archman/felapps.git</code>.
 
 ### How to Use
