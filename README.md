@@ -3,8 +3,10 @@
 High-level applications for the commissioning of free-electron laser 
 facilities. Purely open-sourced, main developing language is 
 <code>Python</code>, powered by various well-benchmarked module/packages,
-e.g.: <code>matplotlib</code>, <code>numpy</code>, <code>scipy</code>,
-<code>wxPython</code>, <code>PyEpics</code>.
+e.g.: <code>matplotlib</code> (beautiful scientific plotting);
+<code>numpy</code> and <code>scipy</code> (scientific computing);
+<code>wxPython</code> (GUI building); <code>PyEpics</code> (interface with EPICS);
+<code>h5py</code> (HDF5 interfacing), etc.
 
 The goal of this project is to make a mature, full-fledged, friendly,
 beautiful and stable open source software framework/suite for the 
