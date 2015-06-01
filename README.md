@@ -68,4 +68,4 @@ import felapps
 
 ### Screenshots
 
-![alt text](/images/imageviewer/01.png?raw=true "Main frame of imageviewer app")
+![alt text](/images/imageviewer/01.png?raw=true "Main frame of imageviewer app" =200x)
