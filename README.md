@@ -68,4 +68,4 @@ import felapps
 
 ### Screenshots
 
-<p><img src=/images/imageviewer/01.png?raw=true alt="ImageViewer Startup" width="200"></img></p>
+<p><img src=/images/imageviewer/01.png?raw=true alt="ImageViewer Startup" width="400"></img></p>
