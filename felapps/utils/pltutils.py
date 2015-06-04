@@ -44,7 +44,7 @@ class ConfigFile(object):
         namelist_control    = {}
         namelist_style      = {}
         namelist_histplot   = {}
-        namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveImgDatName', 'saveImgDatExt', 'saveIntName', 'saveIntExt', 'cmFavor']
+        namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveImgDatName', 'saveImgDatExt', 'saveIntName', 'saveIntExt', 'cmFavor', 'imgIniFunc']
         namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
         namestring_histplot = ['heightRatio']
         namestring_style    = ['backgroundColor']
@@ -115,6 +115,7 @@ class ImageViewer(wx.Frame):
         namelist = self.xmlconfig.getConfigs()
 
         # Image
+        self.imginifunc = namelist['imgIniFunc']
         self.wpx, self.hpx = int(float(namelist['width'])), int(float(namelist['height']))
         self.roixy = [0,self.wpx, 0, self.hpx]
         dirdate = time.strftime('%Y%m%d', time.localtime())
@@ -329,7 +330,7 @@ class ImageViewer(wx.Frame):
                 fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
 
-        self.imgpanel = ImagePanel(self.panel, figsize = (12,12), dpi = 75, bgcolor = self.bkgdcolor, heightratio = self.heightRatio)
+        self.imgpanel = ImagePanel(self.panel, figsize = (12,12), dpi = 75, bgcolor = self.bkgdcolor, heightratio = self.heightRatio, func = self.imginifunc)
         
         vboxleft.Add(self.timenow_st, proportion = 0, flag = wx.ALIGN_CENTER | wx.TOP, border = 10)
         vboxleft.Add(self.imgpanel, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
@@ -400,8 +401,8 @@ class ImageViewer(wx.Frame):
                 fontcolor = 'blue')
         #self.min_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmin_now, minValue = cmin_now, maxValue = cmax_now)
         #self.max_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmax_now, minValue = cmin_now, maxValue = cmax_now)
-        self.min_slider = funutils.FloatSlider(self.panel, cmin_now, cmin_now, cmax_now, 0.1)
-        self.max_slider = funutils.FloatSlider(self.panel, cmax_now, cmin_now, cmax_now, 0.1)
+        self.min_slider = funutils.FloatSlider(self.panel, value = cmin_now, minValue = cmin_now, maxValue = cmax_now, increment = 0.1)
+        self.max_slider = funutils.FloatSlider(self.panel, value = cmax_now, minValue = cmin_now, maxValue = cmax_now, increment = 0.1)
         
         ## colormap line: st + combox for cm categories
         cmstbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -778,16 +779,17 @@ class AppConfigPanel(wx.Frame):
 
     def setParams(self):
         # imagePage
-        self.thisapp.wpx = int(self.imagePage.imgwpxtc.GetValue())
-        self.thisapp.hpx = int(self.imagePage.imghpxtc.GetValue())
+        self.thisapp.imginifunc         = self.imagePage.imginifunccb.GetValue()
+        self.thisapp.wpx                = int(self.imagePage.imgwpxtc.GetValue())
+        self.thisapp.hpx                = int(self.imagePage.imghpxtc.GetValue())
         self.thisapp.save_path_str_head = os.path.expanduser(self.imagePage.pathtc.GetValue())
-        self.thisapp.save_path_str = os.path.join(self.thisapp.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
-        self.thisapp.save_img_name_str = self.imagePage.imgnamepretc.GetValue()
-        self.thisapp.save_img_ext_str  = self.imagePage.imgnameexttc.GetValue()
-        self.thisapp.save_dat_name_str = self.imagePage.imgdatnamepretc.GetValue()
-        self.thisapp.save_dat_ext_str  = self.imagePage.imgdatnameexttc.GetValue()
-        self.thisapp.save_int_name_str = self.imagePage.intnamepretc.GetValue()
-        self.thisapp.save_int_ext_str  = self.imagePage.intnameexttc.GetValue()
+        self.thisapp.save_path_str      = os.path.join(self.thisapp.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
+        self.thisapp.save_img_name_str  = self.imagePage.imgnamepretc.GetValue()
+        self.thisapp.save_img_ext_str   = self.imagePage.imgnameexttc.GetValue()
+        self.thisapp.save_dat_name_str  = self.imagePage.imgdatnamepretc.GetValue()
+        self.thisapp.save_dat_ext_str   = self.imagePage.imgdatnameexttc.GetValue()
+        self.thisapp.save_int_name_str  = self.imagePage.intnamepretc.GetValue()
+        self.thisapp.save_int_ext_str   = self.imagePage.intnameexttc.GetValue()
 
         # stylePage
         self.thisapp.bkgdcolor = funutils.hex2rgb(self.stylePage.bkgdcolortc.GetValue())
@@ -801,6 +803,7 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.heightRatio = float(self.histPlotPage.heightratiotc.GetValue())
 
         # update parameters
+        self.thisapp.configdict['imgIniFunc'     ] = str(self.thisapp.imginifunc)
         self.thisapp.configdict['width'          ] = str(self.thisapp.wpx)
         self.thisapp.configdict['height'         ] = str(self.thisapp.hpx)
         self.thisapp.configdict['savePath'       ] = self.thisapp.save_path_str_head
@@ -855,6 +858,9 @@ class ImageConfigPanel(wx.Panel):
 
         #### input items
         gs = wx.GridBagSizer(5, 5)
+        
+        imginifuncst    = wx.StaticText(self, label = u'Initial Image Function',   style = wx.ALIGN_LEFT)
+
         imgwpxst        = wx.StaticText(self, label = u'Image Width [px]',         style = wx.ALIGN_LEFT)
         imghpxst        = wx.StaticText(self, label = u'Image Height [px]',        style = wx.ALIGN_LEFT)
         pathst          = wx.StaticText(self, label = u'Save Figure to Path',      style = wx.ALIGN_LEFT)
@@ -862,8 +868,10 @@ class ImageConfigPanel(wx.Panel):
         imgnameextst    = wx.StaticText(self, label = u'Image Name Extension',     style = wx.ALIGN_LEFT)
         intnameprest    = wx.StaticText(self, label = u'Intensity Name Prefix',    style = wx.ALIGN_LEFT)
         intnameextst    = wx.StaticText(self, label = u'Intensity Name Extension', style = wx.ALIGN_LEFT)
-        imgdatnameprest = wx.StaticText(self, label = u'Image Data Name Prefix',        style = wx.ALIGN_LEFT)
-        imgdatnameextst = wx.StaticText(self, label = u'Image Data Name Extension',     style = wx.ALIGN_LEFT)
+        imgdatnameprest = wx.StaticText(self, label = u'Image Data Name Prefix',   style = wx.ALIGN_LEFT)
+        imgdatnameextst = wx.StaticText(self, label = u'Image Data Name Extension',style = wx.ALIGN_LEFT)
+
+        self.imginifunccb    = wx.ComboBox(self, value = self.thisapp.imginifunc,        style = wx.CB_READONLY, choices = ['peaks', 'sinc'])
 
         self.imgwpxtc        = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
         self.imghpxtc        = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
@@ -877,27 +885,31 @@ class ImageConfigPanel(wx.Panel):
         self.intnamepretc    = wx.TextCtrl(self, value = self.thisapp.save_int_name_str, style = wx.TE_PROCESS_ENTER)
         self.intnameexttc    = wx.ComboBox(self, value = self.thisapp.save_int_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
 
-        gs.Add(imgwpxst,             pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgwpxtc,        pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imghpxst,             pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imghpxtc,        pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(pathst,               pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.pathtc,          pos = (2, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.pathbtn,         pos = (2, 3), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imgnameprest,         pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgnamepretc,    pos = (3, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imgnameextst,         pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgnameexttc,    pos = (4, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
 
-        gs.Add(imgdatnameprest,      pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgdatnamepretc, pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(imgdatnameextst,      pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.imgdatnameexttc, pos = (6, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imginifuncst,         pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imginifunccb,    pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
 
-        gs.Add(intnameprest,         pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.intnamepretc,    pos = (7, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(intnameextst,         pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gs.Add(self.intnameexttc,    pos = (8, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgwpxst,             pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgwpxtc,        pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imghpxst,             pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imghpxtc,        pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(pathst,               pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.pathtc,          pos = (3, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT  | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.pathbtn,         pos = (3, 3), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgnameprest,         pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgnamepretc,    pos = (4, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgnameextst,         pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgnameexttc,    pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gs.Add(imgdatnameprest,      pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgdatnamepretc, pos = (6, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(imgdatnameextst,      pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.imgdatnameexttc, pos = (7, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gs.Add(intnameprest,         pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.intnamepretc,    pos = (8, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(intnameextst,         pos = (9, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gs.Add(self.intnameexttc,    pos = (9, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gs.AddGrowableCol(1, 2)
         gs.AddGrowableCol(2, 0)
         vboxsizer.Add(gs, proportion = 0, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
@@ -1145,13 +1157,14 @@ class ShowIntPanel(wx.Frame):
         self.intdisp.repaint()
 
 class ImagePanel(wx.Panel):
-    def __init__(self, parent, figsize, dpi, bgcolor, heightratio = 0.4, **kwargs):
+    def __init__(self, parent, figsize, dpi, bgcolor, heightratio = 0.4, func = 'peaks', **kwargs):
         super(self.__class__, self).__init__(parent = parent, **kwargs)
         self.parent   = parent
         self.figsize  = figsize
         self.dpi      = dpi
         self.bgcolor  = bgcolor
         self.hratio   = heightratio
+        self.func     = func
         self.figure   = Figure(self.figsize, self.dpi)
         self.canvas   = FigureCanvasWxAgg(self, -1, self.figure)
         self.cmaptype = 'jet'
@@ -1234,10 +1247,18 @@ class ImagePanel(wx.Panel):
         self.figure.canvas.draw()
 
     def onGetData(self):
-        x = np.linspace(-np.pi, np.pi, 100)
-        y = np.linspace(-np.pi, np.pi, 100)
-        self.x, self.y = np.meshgrid(x, y)
-        self.z = funutils.func_peaks(self.x, self.y)
+
+        if self.func == 'peaks':
+            x = np.linspace(-np.pi, np.pi, 200)
+            y = np.linspace(-np.pi, np.pi, 200)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_peaks(self.x, self.y)
+        elif self.func == 'sinc':
+            x = np.linspace(-2*np.pi, 2*np.pi, 200)
+            y = np.linspace(-2*np.pi, 2*np.pi, 200)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_sinc(self.x, self.y)
+
         self.cmin = self.z.min()
         self.cmax = self.z.max()
         
