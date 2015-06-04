@@ -12,6 +12,8 @@ utilities/functions for convenience
 
 #-------------------------------------------------------------------------#
 
+from __future__ import division
+
 import wx
 import numpy as np
 import os
@@ -164,7 +166,7 @@ def setPath(pathstr):
 #-------------------------------------------------------------------------#
 
 def getFilename(parent):
-    dial = wx.FileDialog(parent, message = "Please select file",
+    dial = wx.FileDialog(parent, message = "Please select the configuration file",
             defaultDir=".", defaultFile="", wildcard = "XML files (*.xml)|*.xml", style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
     if dial.ShowModal() == wx.ID_OK:
         fullfilename = os.path.join(dial.GetDirectory(),dial.GetFilename())
@@ -200,3 +202,79 @@ class SaveData(object):
         print 'save sdds format to be implemented.'
         
 #-------------------------------------------------------------------------#
+
+def func_sinc(x, y):
+    r = np.sqrt(x**2 + y**2)
+    return np.sin(r)/r
+
+def func_peaks(x, y):
+    return 3*(1-x)**2*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2)
+
+#-------------------------------------------------------------------------#
+
+#class FloatSlider(wx.Slider):
+#    def GetValue(self):
+#        return float(wx.Slider.GetValue(self))/self.GetMax()
+
+#-------------------------------------------------------------------------#
+
+class FloatSlider(wx.Slider):
+
+    def __init__(self, parent, value, minval, maxval, res, id = wx.ID_ANY, size=wx.DefaultSize, style=wx.SL_HORIZONTAL):
+        self._value = value
+        self._min = minval
+        self._max = maxval
+        self._res = res
+        ival, imin, imax = [round(v/res) for v in (value, minval, maxval)]
+        self._islider = super(FloatSlider, self)
+        self._islider.__init__(parent, value = ival, minValue = imin, maxValue = imax, id = id, size = size, style = style)
+        self.Bind(wx.EVT_SCROLL, self._OnScroll)
+
+    def _OnScroll(self, event):
+        ival = self._islider.GetValue()
+        imin = self._islider.GetMin()
+        imax = self._islider.GetMax()
+        if ival == imin:
+            self._value = self._min
+        elif ival == imax:
+            self._value = self._max
+        else:
+            self._value = ival * self._res
+        event.Skip()
+        #print 'OnScroll: value=%f, ival=%d' % (self._value, ival)
+
+    def GetValue(self):
+        return self._value
+
+    def GetMin(self):
+        return self._min
+
+    def GetMax(self):
+        return self._max
+
+    def GetRes(self):
+        return self._res
+
+    def SetValue(self, value):
+        self._islider.SetValue(round(value/self._res))
+        self._value = value
+
+    def SetMin(self, minval):
+        self._islider.SetMin(round(minval/self._res))
+        self._min = minval
+
+    def SetMax(self, maxval):
+        self._islider.SetMax(round(maxval/self._res))
+        self._max = maxval
+
+    def SetRes(self, res):
+        self._islider.SetRange(round(self._min/res), round(self._max/res))
+        self._islider.SetValue(round(self._value/res))
+        self._res = res
+
+    def SetRange(self, minval, maxval):
+        self._islider.SetRange(round(minval/self._res), round(maxval/self._res))
+        self._min = minval
+        self._max = maxval
+
+
