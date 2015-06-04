@@ -1249,13 +1249,13 @@ class ImagePanel(wx.Panel):
     def onGetData(self):
 
         if self.func == 'peaks':
-            x = np.linspace(-np.pi, np.pi, 200)
-            y = np.linspace(-np.pi, np.pi, 200)
+            x = np.linspace(-np.pi, np.pi, 100)
+            y = np.linspace(-np.pi, np.pi, 100)
             self.x, self.y = np.meshgrid(x, y)
             self.z = funutils.func_peaks(self.x, self.y)
         elif self.func == 'sinc':
-            x = np.linspace(-2*np.pi, 2*np.pi, 200)
-            y = np.linspace(-2*np.pi, 2*np.pi, 200)
+            x = np.linspace(-2*np.pi, 2*np.pi, 100)
+            y = np.linspace(-2*np.pi, 2*np.pi, 100)
             self.x, self.y = np.meshgrid(x, y)
             self.z = funutils.func_sinc(self.x, self.y)
 
