@@ -220,15 +220,16 @@ def func_peaks(x, y):
 
 class FloatSlider(wx.Slider):
 
-    def __init__(self, parent, value, minval, maxval, res, id = wx.ID_ANY, size=wx.DefaultSize, style=wx.SL_HORIZONTAL):
+    def __init__(self, parent, id = wx.ID_ANY, value = 0, minValue = 0, maxValue = 10, increment = 0.1, 
+                 size = wx.DefaultSize, style = wx.SL_HORIZONTAL, *args, **kws):
         self._value = value
-        self._min = minval
-        self._max = maxval
-        self._res = res
-        ival, imin, imax = [round(v/res) for v in (value, minval, maxval)]
+        self._min = minValue
+        self._max = maxValue
+        self._inc = increment
+        ival, imin, imax = [round(v/increment) for v in (value, minValue, maxValue)]
         self._islider = super(FloatSlider, self)
-        self._islider.__init__(parent, value = ival, minValue = imin, maxValue = imax, id = id, size = size, style = style)
-        self.Bind(wx.EVT_SCROLL, self._OnScroll)
+        self._islider.__init__(parent = parent, value = ival, minValue = imin, maxValue = imax, id = id, size = size, style = style, *args, **kws)
+        self.Bind(wx.EVT_SCROLL, self._OnScroll, self._islider)
 
     def _OnScroll(self, event):
         ival = self._islider.GetValue()
@@ -239,9 +240,8 @@ class FloatSlider(wx.Slider):
         elif ival == imax:
             self._value = self._max
         else:
-            self._value = ival * self._res
+            self._value = ival * self._inc
         event.Skip()
-        #print 'OnScroll: value=%f, ival=%d' % (self._value, ival)
 
     def GetValue(self):
         return self._value
@@ -252,29 +252,31 @@ class FloatSlider(wx.Slider):
     def GetMax(self):
         return self._max
 
-    def GetRes(self):
-        return self._res
+    def GetInc(self):
+        return self._inc
+
+    def GetRange(self):
+        return self._min, self._max
 
     def SetValue(self, value):
-        self._islider.SetValue(round(value/self._res))
+        self._islider.SetValue(round(value/self._inc))
         self._value = value
 
     def SetMin(self, minval):
-        self._islider.SetMin(round(minval/self._res))
+        self._islider.SetMin(round(minval/self._inc))
         self._min = minval
 
     def SetMax(self, maxval):
-        self._islider.SetMax(round(maxval/self._res))
+        self._islider.SetMax(round(maxval/self._inc))
         self._max = maxval
 
-    def SetRes(self, res):
-        self._islider.SetRange(round(self._min/res), round(self._max/res))
-        self._islider.SetValue(round(self._value/res))
-        self._res = res
+    def SetInc(self, inc):
+        self._islider.SetRange(round(self._min/inc), round(self._max/inc))
+        self._islider.SetValue(round(self._value/inc))
+        self._inc = inc
 
     def SetRange(self, minval, maxval):
-        self._islider.SetRange(round(minval/self._res), round(maxval/self._res))
+        self._islider.SetRange(round(minval/self._inc), round(maxval/self._inc))
         self._min = minval
         self._max = maxval
-
 
