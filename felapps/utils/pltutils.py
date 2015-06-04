@@ -15,6 +15,7 @@ Created: Feb. 3rd, 2015
 from __future__ import division
 
 import wx
+from wx.lib.agw import floatspin as fs
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -26,8 +27,6 @@ import os
 import xml.etree.cElementTree as ET
 from . import resutils
 from . import funutils
-#import resutils
-#import funutils
 
 class ConfigFile(object):
 
@@ -299,7 +298,7 @@ class ImageViewer(wx.Frame):
         self.statusbar = self.CreateStatusBar(2)
         self.statusbar.SetStatusWidths([-4, -1])
         self.statusbar.SetStatusText(u'ImageViewer powered by Python' ,0)
-        versionfield =  0*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
+        versionfield =  15*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
         #print type(versionfield)
         self.statusbar.SetStatusText(versionfield, 1)
 
@@ -399,8 +398,10 @@ class ImageViewer(wx.Frame):
                 label = ('%.1f' % (cmax_now)), style = wx.ALIGN_RIGHT,
                 fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
-        self.min_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmin_now, minValue = cmin_now, maxValue = cmax_now)
-        self.max_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmax_now, minValue = cmin_now, maxValue = cmax_now)
+        #self.min_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmin_now, minValue = cmin_now, maxValue = cmax_now)
+        #self.max_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmax_now, minValue = cmin_now, maxValue = cmax_now)
+        self.min_slider = funutils.FloatSlider(self.panel, cmin_now, cmin_now, cmax_now, 0.1)
+        self.max_slider = funutils.FloatSlider(self.panel, cmax_now, cmin_now, cmax_now, 0.1)
         
         ## colormap line: st + combox for cm categories
         cmstbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -1041,7 +1042,7 @@ class HistPlotConfigPanel(wx.Panel):
 
         # height ratio
         heightratiost       = wx.StaticText(self, label = u'Height Ratio',   style = wx.ALIGN_RIGHT)
-        self.heightratiotc  = wx.TextCtrl(self, value = str(self.thisapp.heightRatio),  style = wx.TE_PROCESS_ENTER)
+        self.heightratiotc  = fs.FloatSpin(self, value = str(self.thisapp.heightRatio),  min_val = 0.0, max_val = 0.95, increment = 0.05, digits = 2, style = fs.FS_LEFT)
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         hbox1.Add(heightratiost,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         hbox1.Add(self.heightratiotc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
@@ -1233,10 +1234,10 @@ class ImagePanel(wx.Panel):
         self.figure.canvas.draw()
 
     def onGetData(self):
-        x = np.arange(100.0)*2*np.pi/50.0
-        y = np.arange(100.0)*2*np.pi/50.0
+        x = np.linspace(-np.pi, np.pi, 100)
+        y = np.linspace(-np.pi, np.pi, 100)
         self.x, self.y = np.meshgrid(x, y)
-        self.z = 100*np.sin(self.x) + 100*np.cos(self.y)
+        self.z = funutils.func_peaks(self.x, self.y)
         self.cmin = self.z.min()
         self.cmax = self.z.max()
         
