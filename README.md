@@ -65,12 +65,34 @@ sys.path.append('../dist/felapps.VERSION.whl')
 import felapps
 ...
 ```
+### Deploy Virtual FEL Control Environment
+This python suite is degined for the commissioning of real FEL machine, however
+we can setup the virtual control environment for the software development stage.
+This section shows how to deploy such virtual environment on Linux workstation.
+
+The communication between the suite and control layer is via channel access protocol
+of EPICS; generally speaking, IOC application for the virtual machine should be built.
+
+The EPICS base should be compiled and installed in the Linux workstation.
+
+The built IOC application (or template) could be found in 
+[felapps/ioc](https://github.com/Archman/felapps/tree/master/felapps/ioc), 
+edit configure/RELEASE to make sure the EPICS_BASE path is valid, the database files 
+(.db files) could be modified to simulate the FEL machine 
+(since here's not any physics issues evolved, just control stuff), 
+then build the ioc application; start the ioc to execute st.cmd in iocBoot dir.
+
+The data update is simulated by python script, thanks to the PyEpics interface, 
+one can update some PV values at some frequency, for instance, in ioc/apps dir, 
+gendata.py script is made to update some waveform record every second.
 
 ### Screenshots
 
+1. ImageViewer
+
 <p>
-  <img src=/images/imageviewer/startup.png?raw=true alt="ImageViewer Startup" width="400"></img> <img src=/images/imageviewer/roi.png?raw=true     alt="imageviewer ROI"     width="400"></img>
+  <img src=/images/imageviewer/startup.png?raw=true alt="ImageViewer Startup" width="400"></img> <img src=/images/imageviewer/roi.png?raw=true alt="imageviewer ROI" width="400"></img>
 </p>
 <p>
-  <img src=/images/imageviewer/configuration.png?raw=true alt="imageviewer Configurations" width="400"></img> <img src=/images/imageviewer/colormap.png?raw=true      alt="imageviewer Colormap"       width="400"></img>
+  <img src=/images/imageviewer/configuration.png?raw=true alt="imageviewer Configurations" width="400"></img> <img src=/images/imageviewer/colormap.png?raw=true alt="imageviewer Colormap" width="400"></img>
 </p>
