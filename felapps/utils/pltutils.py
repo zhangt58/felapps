@@ -297,12 +297,23 @@ class ImageViewer(wx.Frame):
         self.imgcm.repaint()
 
     def createStatusbar(self):
+        """
         self.statusbar = self.CreateStatusBar(2)
         self.statusbar.SetStatusWidths([-4, -1])
         self.statusbar.SetStatusText(u'ImageViewer powered by Python' ,0)
         versionfield =  15*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
-        #print type(versionfield)
         self.statusbar.SetStatusText(versionfield, 1)
+        """
+        self.statusbar = funutils.ESB.EnhancedStatusBar(self)
+        self.statusbar.SetFieldsCount(2)
+        self.SetStatusBar(self.statusbar)
+        self.statusbar.SetStatusWidths([-4,-1])
+        applabel = wx.StaticText(self.statusbar, wx.ID_ANY, 
+                                 label = 'ImageViewer powered by Python')
+        versionfield = wx.StaticText(self.statusbar, wx.ID_ANY, 
+                                     label = time.strftime('%Y-%m-%d', time.localtime()) + ' ' + ' (Version: ' + self.appversion + ')')
+        self.statusbar.AddWidget(applabel,    funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(versionfield,funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
         self.panel = wx.Panel(self, id = wx.ID_ANY)
