@@ -105,6 +105,7 @@ class ImageViewer(wx.Frame):
 
         self.loadConfig()
         #self.printConfig() # just for debug
+
         self.Bind(wx.EVT_CLOSE, self.onExit)
         self.InitUI()
 
@@ -661,19 +662,12 @@ class ImageViewer(wx.Frame):
         pvstr = self.imgsrc_tc.GetValue()
         if pvstr not in self.imgsrcPVlist:
             self.imgsrcPVlist.append(pvstr)
-        ## update imgsrcPVcb choices field of self.menuAppConfig
-        imgsrcPVcb_point = self.menuAppConfig.controlPage.imgsrcPVcb
-        imgsrcPVcb_point.Clear()
-        imgsrcPVcb_point.AppendItems(self.imgsrcPVlist)
 
     def onRmPV(self, event):
         pvstr = self.imgsrc_tc.GetValue()
         if pvstr in self.imgsrcPVlist:
             self.imgsrcPVlist.remove(pvstr)
-        ## update imgsrcPVcb choices field of self.menuAppConfig
-        imgsrcPVcb_point = self.menuAppConfig.controlPage.imgsrcPVcb
-        imgsrcPVcb_point.Clear()
-        imgsrcPVcb_point.AppendItems(self.imgsrcPVlist)
+
 
     def onSetColormap(self, event):
         self.imgpanel.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
@@ -763,8 +757,13 @@ class AppConfigPanel(wx.Frame):
         self.stylePage    = self.configNB.stylePage
         self.controlPage  = self.configNB.controlPage
         self.histPlotPage = self.configNB.histPlotPage
+
+        ## update imgsrcPVcb choices field of self.menuAppConfig
+        imgsrcPVcb_point = self.controlPage.imgsrcPVcb
+        imgsrcPVcb_point.Clear()
+        imgsrcPVcb_point.AppendItems(self.parent.imgsrcPVlist)
         
-        # main App panel reference
+        # main App panel (ImageViewer) reference
         self.thisapp = self.parent
 
     def onCancelData(self, event):
