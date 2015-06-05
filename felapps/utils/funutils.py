@@ -19,6 +19,8 @@ import numpy as np
 import os
 import matplotlib.colors as colors
 
+from . import EnhancedStatusBar as ESB
+
 #-------------------------------------------------------------------------#
 
 def rescaleImage(image0, scaledFac):
@@ -212,12 +214,6 @@ def func_peaks(x, y):
 
 #-------------------------------------------------------------------------#
 
-#class FloatSlider(wx.Slider):
-#    def GetValue(self):
-#        return float(wx.Slider.GetValue(self))/self.GetMax()
-
-#-------------------------------------------------------------------------#
-
 class FloatSlider(wx.Slider):
 
     def __init__(self, parent, id = wx.ID_ANY, value = 0, minValue = 0, maxValue = 10, increment = 0.1, 
@@ -280,3 +276,4 @@ class FloatSlider(wx.Slider):
         self._min = minval
         self._max = maxval
 
+#-------------------------------------------------------------------------#
