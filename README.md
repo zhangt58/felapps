@@ -69,11 +69,11 @@ import felapps
 ### Screenshots
 
 <p>
-    <img src=/images/imageviewer/startup.png?raw=true alt="ImageViewer Startup" width="400"></img>
-    <img src=/images/imageviewer/roi.png?raw=true     alt="imageviewer ROI"     width="400"></img>
+  <img src=/images/imageviewer/startup.png?raw=true alt="ImageViewer Startup" width="400"></img>
+  <img src=/images/imageviewer/roi.png?raw=true     alt="imageviewer ROI"     width="400"></img>
 </p>
 
 <p>
-    <img src=/images/imageviewer/configuration.png?raw=true alt="imageviewer Configurations" width="400"></img>
-    <img src=/images/imageviewer/colormap.png?raw=true      alt="imageviewer Colormap"       width="400"></img>
+  <img src=/images/imageviewer/configuration.png?raw=true alt="imageviewer Configurations" width="400"></img>
+  <img src=/images/imageviewer/colormap.png?raw=true      alt="imageviewer Colormap"       width="400"></img>
 </p>
