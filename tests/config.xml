@@ -4,7 +4,7 @@
     </group>
 
     <group name="Control">
-        <properties frequency="1" imgsrcPV="UN-BI:PROF25:ARR" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF19:ARR" />
+        <properties frequency="1" imgsrcPV="UN-BI:PROF19:ARR" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF19:ARR  UN-BI:PROF25:ARR" />
     </group>
 
     <group name="Style">
@@ -12,6 +12,6 @@
     </group>
 
     <group name="HistPlot">
-        <properties heightRatio="0.2" />
+        <properties heightRatio="0.6" />
     </group>
 </config>

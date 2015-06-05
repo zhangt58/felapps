@@ -21,3 +21,5 @@ feature02: (created on May. 27, 2015, 11:06)
     [ ]: Correlation Analyzer
         [ ]: two parameters scanning study
     [x]: set up version number control script
+    [x]: Slider control with float point increment
+    [x]: initialized image function, option for selection in Configurations
