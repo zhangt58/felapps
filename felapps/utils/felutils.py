@@ -1667,7 +1667,18 @@ class ScanAnalyzer(wx.Frame):
         self.appversion = appversion
 
         self.Bind(wx.EVT_CLOSE, self.onExit)
+        
+        # initialize UI
         self.initUI()
+
+        # timer
+        self.timernow = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onTickTime, self.timernow)
+        self.timernow.Start(1000)
+
+    def onTickTime(self, event):
+        fmt='%Y-%m-%d %H:%M:%S %Z'
+        self.timenow_st.SetLabel(time.strftime(fmt, time.localtime()))
 
     def initUI(self):
         self.createMenubar()
@@ -1756,11 +1767,16 @@ class ScanAnalyzer(wx.Frame):
             self.Destroy()
 
     def createStatusbar(self):
-        self.statusbar = self.CreateStatusBar(2)
-        self.statusbar.SetStatusWidths([-8, -3])
-        self.statusbar.SetStatusText(u'Correlation Analyzer powered by Python' ,0)
-        versionfield =  0*' ' + time.strftime('%Y-%m-%d', time.localtime()) + ' ' + '(Version: ' + self.appversion + ')'
-        self.statusbar.SetStatusText(versionfield, 1)
+        self.statusbar = funutils.ESB.EnhancedStatusBar(self)
+        self.statusbar.SetFieldsCount(3)
+        self.SetStatusBar(self.statusbar)
+        self.statusbar.SetStatusWidths([-7,-2,-1])
+        applabel        = wx.StaticText(self.statusbar, wx.ID_ANY, "Correlation Analyzer powered by Python")
+        self.timenow_st = wx.StaticText(self.statusbar, wx.ID_ANY, "2015-06-05 14:00:00 CST")
+        appversion      = wx.StaticText(self.statusbar, wx.ID_ANY, " (Version: " + self.appversion + ")")
+        self.statusbar.AddWidget(applabel,        funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(self.timenow_st, funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(appversion,      funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
         self.panel    = funutils.createwxPanel(self,       funutils.hex2rgb('#0000AA'))
