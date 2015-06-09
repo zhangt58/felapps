@@ -1684,6 +1684,7 @@ class ScanAnalyzer(wx.Frame):
         self.createMenubar()
         self.createStatusbar()
         self.createPanel()
+        self.initScan()
 
     def createMenubar(self):
         self.menubar = wx.MenuBar()
@@ -1779,12 +1780,16 @@ class ScanAnalyzer(wx.Frame):
         self.statusbar.AddWidget(appversion,      funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
-        self.panel    = funutils.createwxPanel(self,       funutils.hex2rgb('#0000AA'))
-        self.panel_l  = funutils.createwxPanel(self.panel, funutils.hex2rgb('#AA00EE'))
-        self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb('#00AAEE'))
-        self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb('#00EEAA'))
+        # background panel
+        self.panel    = funutils.createwxPanel(self,       funutils.hex2rgb('#B1B1B1'))
+
+        # three sub-panels
+        self.panel_l  = funutils.createwxPanel(self.panel, funutils.hex2rgb('#FFCCFF'))
+        self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb('#99FFFF'))
+        self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb('#CCCCFF'))
         
 
+        ## --------hbox---------- 
         ##   vleft     vright
         ## |-------|------------|
         ## |       |            |
@@ -1803,15 +1808,91 @@ class ScanAnalyzer(wx.Frame):
         vright1  = wx.BoxSizer(wx.HORIZONTAL)
         vright2  = wx.BoxSizer(wx.HORIZONTAL)
 
-        vleft.Add(self.panel_l, proportion = 1, flag = wx.EXPAND)
+        # vleft
+        controlpanel_sb = funutils.createwxStaticBox(self.panel_l, label = 'Control Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        controlpanel_sbsizer = wx.StaticBoxSizer(controlpanel_sb, wx.VERTICAL)
+
+        # grid sizer for horizontal entries
+        gs = wx.GridBagSizer(5, 5)
+
+        # X-AXIS input: PV name value
+        xaxis_st      = funutils.createwxStaticText(self.panel_l, label = 'X-AXIS')
+        self.xaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
+        gs.Add(xaxis_st,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.xaxis_tc, pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        # Y-AXIS input: PV name value
+        self.yaxis_st = funutils.createwxStaticText(self.panel_l, label = 'Y-AXIS')
+        self.yaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
+        gs.Add(self.yaxis_st, pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yaxis_tc, pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        # Z-AXIS input: PV name value
+        zaxis_st      = funutils.createwxStaticText(self.panel_l, label = 'Z-AXIS')
+        self.zaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
+        gs.Add(zaxis_st,      pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.zaxis_tc, pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        # X-AXIS range: min, max, num
+        xrange_st = funutils.createwxStaticText(self.panel_l, label = 'X-Range')
+        self.xrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
+        self.xrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
+        self.xrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
+        gs.Add(xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.xrange_min_tc, pos = (3, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.xrange_max_tc, pos = (3, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.xrange_num_tc, pos = (3, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        # Y-AXIS range: min, max, num
+        self.yrange_st = funutils.createwxStaticText(self.panel_l, label = 'Y-Range')
+        self.yrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
+        self.yrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
+        self.yrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
+        gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yrange_max_tc, pos = (4, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yrange_num_tc, pos = (4, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        gs.AddGrowableCol(1, 0)
+        gs.AddGrowableCol(2, 0)
+        gs.AddGrowableCol(3, 0)
+
+        # tick control methods
+        gsm = wx.GridBagSizer(5, 5)
+        self.scan2flag = wx.CheckBox(self.panel_l, label = u'Two Dimensional')
+        self.swapxz    = wx.CheckBox(self.panel_l, label = u'Swap XZ')
+        self.swapxy    = wx.CheckBox(self.panel_l, label = u'Swap XY')
+        gsm.Add(self.scan2flag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsm.Add(self.swapxz,    pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT |  wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsm.Add(self.swapxy,    pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsm.AddGrowableCol(0, 0)
+
+        # splitter line
+        hline1 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
+
+        # mathematical methods control
+        
+
+        # set layout
+        controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+
+        self.panel_l.SetSizerAndFit(controlpanel_sbsizer)
+
+        vleft.Add(  self.panel_l,  proportion = 1, flag = wx.EXPAND)
+
+        # vright1
         vright1.Add(self.panel_ru, proportion = 1, flag = wx.EXPAND)
+        
+        # vright2
         vright2.Add(self.panel_rd, proportion = 1, flag = wx.EXPAND)
 
-        vright.Add(vright1, proportion = 1, flag = wx.EXPAND)
-        vright.Add(vright2, proportion = 2, flag = wx.EXPAND)
+        vright.Add(vright1, proportion = 2, flag = wx.EXPAND)
+        vright.Add(vright2, proportion = 3, flag = wx.EXPAND)
 
-        hbox.Add(vleft,  proportion = 1, flag = wx.EXPAND)
-        hbox.Add(vright, proportion = 2, flag = wx.EXPAND)
+        hbox.Add(vleft,  proportion = 2, flag = wx.EXPAND)
+        hbox.Add(vright, proportion = 5, flag = wx.EXPAND)
 
         # set outer hbox
         self.panel.SetSizer(hbox)
@@ -1819,6 +1900,36 @@ class ScanAnalyzer(wx.Frame):
         osizer.SetMinSize((1080, 720))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
+
+        # binding events
+        self.Bind(wx.EVT_CHECKBOX, self.onCheckScan2, self.scan2flag)
+
+    def initScan(self):
+        self.yaxis_st.Disable()
+        self.yaxis_tc.Disable()
+        self.yrange_st.Disable()
+        self.yrange_min_tc.Disable()
+        self.yrange_max_tc.Disable()
+        self.yrange_num_tc.Disable()
+        self.swapxy.Disable()
+
+    def onCheckScan2(self, event):
+        if event.GetEventObject().IsChecked():
+            self.yaxis_st.Enable()
+            self.yaxis_tc.Enable()
+            self.yrange_st.Enable()
+            self.yrange_min_tc.Enable()
+            self.yrange_max_tc.Enable()
+            self.yrange_num_tc.Enable()
+            self.swapxy.Enable()
+        else:
+            self.yaxis_st.Disable()
+            self.yaxis_tc.Disable()
+            self.yrange_st.Disable()
+            self.yrange_min_tc.Disable()
+            self.yrange_max_tc.Disable()
+            self.yrange_num_tc.Disable()
+            self.swapxy.Disable()
 
 #------------------------------------------------------------------------#
 
