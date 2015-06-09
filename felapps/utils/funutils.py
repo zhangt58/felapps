@@ -38,7 +38,7 @@ def rescaleImage(image0, scaledFac):
 
 #-------------------------------------------------------------------------#
 
-def createwxStaticText(parent, label, style = wx.ALIGN_LEFT, 
+def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LEFT, 
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=12,
         fontweight=wx.FONTWEIGHT_NORMAL,
@@ -51,6 +51,8 @@ def createwxStaticText(parent, label, style = wx.ALIGN_LEFT,
     st.SetFont(font)
     st.SetForegroundColour(fontcolor)
     return st
+
+#-------------------------------------------------------------------------#
 
 def createwxButton(parent, label,
         fontname=wx.SYS_SYSTEM_FONT, 
@@ -66,12 +68,29 @@ def createwxButton(parent, label,
     btn.SetForegroundColour(fontcolor)
     return btn
 
+#-------------------------------------------------------------------------#
+
 def createwxPanel(parent, backgroundcolor = None):
     if backgroundcolor == None:
         backgroundcolor = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
     panel = wx.Panel(parent)
     panel.SetBackgroundColour(backgroundcolor)
     return panel
+
+#-------------------------------------------------------------------------#
+
+def createwxStaticBox(parent, label = '', style = wx.ALIGN_LEFT,
+                      fontname=wx.SYS_SYSTEM_FONT, 
+                      fontsize=10,
+                      fontweight=wx.FONTWEIGHT_NORMAL,
+                      fontcolor='black'):
+    font = wx.SystemSettings_GetFont(fontname)
+    font.SetPointSize(fontsize)
+    font.SetWeight(fontweight)
+    sbox = wx.StaticBox(parent, id = wx.ID_ANY, label = label, style = style)
+    sbox.SetFont(font)
+    sbox.SetForegroundColour(fontcolor)
+    return sbox
 
 #-------------------------------------------------------------------------#
 
