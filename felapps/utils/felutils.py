@@ -25,6 +25,7 @@ import time
 from . import funutils
 from . import pltutils
 from . import resutils
+import matplotlib.pyplot as plt
 
 ID_POWER      = wx.NewId()
 ID_LENGTH     = wx.NewId()
@@ -1925,18 +1926,24 @@ class ScanAnalyzer(wx.Frame):
         self.imgpv_tc     = wx.TextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
         self.imgcm_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Map')
         self.imgcm_cb     = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
+        self.imgcm_rcb    = wx.CheckBox(self.panel_ru, label = u'Reverse')
         self.imgcr_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Range')
         self.imgcr_fs_min = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
         self.imgcr_fs_max = funutils.FloatSlider(self.panel_ru, value = self.imgcmax, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
+        self.imgcr_fs_min_val = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmin)), style = wx.ALIGN_CENTER)
+        self.imgcr_fs_max_val = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmax)), style = wx.ALIGN_CENTER)
 
         gsimg = wx.GridBagSizer(5, 5)
-        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgcm_cb,     pos = (1, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgcm_rcb,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgcm_cb,     pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcr_fs_min_val, pos = (3, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
+        gsimg.Add(self.imgcr_fs_max_val, pos = (3, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
         gsimg.AddGrowableCol(1, 0)
         gsimg.AddGrowableCol(2, 0)
 
@@ -1948,7 +1955,7 @@ class ScanAnalyzer(wx.Frame):
 
         # set layout 
         vr1hbox_lv.Add(self.imgprofile, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.ALL, border = 5)
+        vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
 
         vr1hbox_rv.Add(gsimg, proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT)
 
@@ -1980,7 +1987,7 @@ class ScanAnalyzer(wx.Frame):
         gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
 
         vr2vbox.Add(self.scanfig, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr2vbox.Add(gss,          proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.ALL, border = 5)
+        vr2vbox.Add(gss,          proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
 
         analysispanel_sbsizer.Add(vr2vbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
 
@@ -2001,16 +2008,22 @@ class ScanAnalyzer(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         # binding events
-        self.Bind(wx.EVT_CHECKBOX,   self.onCheckScan2,   self.scan2flag )
-        self.Bind(wx.EVT_CHECKBOX,   self.onCheckFitting, self.fitflag   )
-        self.Bind(wx.EVT_BUTTON,     self.onPushStart,    self.start_btn )
-        self.Bind(wx.EVT_BUTTON,     self.onPushRetake,   self.retake_btn)
-        self.Bind(wx.EVT_BUTTON,     self.onPushPause,    self.pause_btn )
-        self.Bind(wx.EVT_BUTTON,     self.onPushClose,    self.close_btn )
-        self.Bind(wx.EVT_TEXT_ENTER, self.onSetImgPV,     self.imgpv_tc  )
+        self.Bind(wx.EVT_CHECKBOX,   self.onCheckScan2,   self.scan2flag   )
+        self.Bind(wx.EVT_CHECKBOX,   self.onCheckFitting, self.fitflag     )
+        self.Bind(wx.EVT_BUTTON,     self.onPushStart,    self.start_btn   )
+        self.Bind(wx.EVT_BUTTON,     self.onPushRetake,   self.retake_btn  )
+        self.Bind(wx.EVT_BUTTON,     self.onPushPause,    self.pause_btn   )
+        self.Bind(wx.EVT_BUTTON,     self.onPushClose,    self.close_btn   )
+        self.Bind(wx.EVT_TEXT_ENTER, self.onSetImgPV,     self.imgpv_tc    )
+        self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_min)
+        self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_max)
+        self.Bind(wx.EVT_COMBOBOX,   self.onSetImgCM,     self.imgcm_cb    )
+        self.Bind(wx.EVT_CHECKBOX,   self.onSetImgCMR,    self.imgcm_rcb   )
 
     def postInit(self):
         # initialization after UI creation
+
+        ## UI control
         self.yaxis_st.Disable()
         self.yaxis_tc.Disable()
         self.yrange_st.Disable()
@@ -2020,11 +2033,25 @@ class ScanAnalyzer(wx.Frame):
         self.swapxy.Disable()
         self.fittype.Disable()
 
+        ## color range
+        self.imgprofile.cmin = self.imgprofile.z.min()
+        self.imgprofile.cmax = self.imgprofile.z.max()
+        self.imgcmin = self.imgprofile.cmin
+        self.imgcmax = self.imgprofile.cmax
+        self.imgcr_fs_min_val.SetLabel('%.1f' % (self.imgcmin))
+        self.imgcr_fs_max_val.SetLabel('%.1f' % (self.imgcmax))
+        self.imgcr_fs_min.SetMin  (self.imgcmin*2)
+        self.imgcr_fs_min.SetMax  (self.imgcmax*2)
+        self.imgcr_fs_min.SetValue(self.imgcmin)
+        self.imgcr_fs_max.SetMin  (self.imgcmin*2)
+        self.imgcr_fs_max.SetMax  (self.imgcmax*2)
+        self.imgcr_fs_max.SetValue(self.imgcmax)
+
     def preInit(self):
         # initialization before UI creation
         self.imgcmin = 0
         self.imgcmax = 1
-
+        self.rcmflag = ''
 
     def onCheckScan2(self, event):
         if event.GetEventObject().IsChecked():
@@ -2089,9 +2116,28 @@ class ScanAnalyzer(wx.Frame):
         self.imgpanel.repaint()
         """
 
+    def onSetImgCR(self, event):
+        clickedobj = event.GetEventObject()
+        if clickedobj.GetId() == self.imgcr_fs_min.GetId():
+            self.imgcr_fs_min_val.SetLabel('%.1f' % (clickedobj.GetValue()))
+        elif clickedobj.GetId() == self.imgcr_fs_max.GetId():
+            self.imgcr_fs_max_val.SetLabel('%.1f' % (clickedobj.GetValue()))
 
+        cmin = self.imgcr_fs_min.GetValue()
+        cmax = self.imgcr_fs_max.GetValue()
+        self.imgprofile.onSetCr(sorted([cmin, cmax]))
 
+    def onSetImgCM(self, event):
+        self.imgprofile.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
 
+    def onSetImgCMR(self, event):
+        if event.GetEventObject().IsChecked(): # checked
+            self.rcmflag = '_r'
+        else:
+            self.rcmflag = ''
+        cmap = self.imgcm_cb.GetValue() + self.rcmflag
+        self.imgprofile.onSetcm(cmap)
+ 
 
 #------------------------------------------------------------------------#
 
@@ -2113,7 +2159,24 @@ def main(ClassName=ModdsPanel):
 class ImagePanel(pltutils.ImagePanel):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
         pltutils.ImagePanel.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
-        
+
+    def doPlot(self):
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111)
+        self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.hratio, 'w--')
+        self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.hratio, self.yy, 'w--')
+
+        #self.axes.set_title(r'$f(x,y)=\sin x + \cos y$')
+        self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
+                                   origin = 'lower left', vmin = self.cmin, vmax = self.cmax)
+        self.im.set_extent(self.xyscalar)
+        self.figure.colorbar(self.im)
+        self.linex.set_visible(False)
+        self.liney.set_visible(False)
+        self.figure.canvas.draw()
+
+
+
     def onMotion(self, event):
         try:
             self.GetParent().imgprof_pos.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
