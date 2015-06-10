@@ -70,10 +70,10 @@ def createwxButton(parent, label,
 
 #-------------------------------------------------------------------------#
 
-def createwxPanel(parent, backgroundcolor = None):
+def createwxPanel(parent, backgroundcolor = None, id = wx.ID_ANY):
     if backgroundcolor == None:
         backgroundcolor = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
-    panel = wx.Panel(parent)
+    panel = wx.Panel(parent, id = id)
     panel.SetBackgroundColour(backgroundcolor)
     return panel
 
