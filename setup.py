@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 import os
 
 appName             = "felapps"
-appVersion          = "1.2.5"
+appVersion          = "1.2.7"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
@@ -20,7 +20,7 @@ appAuthor_email     = "zhangtong@sinap.ac.cn"
 appLicense          = "MIT"
 appUrl              = "https://github.com/Archman/felapps"
 appKeywords         = "FEL HLA high-level python wxpython"
-requiredpackages = ['numpy','scipy','matplotlib', 'pyepics'] # install_requires
+requiredpackages = ['numpy','scipy','matplotlib','pyepics','h5py'] # install_requires
 appScriptsName = ['imageviewer', 'felformula', 'cornalyzer']
 ScriptsRoot = 'scripts'
 appScripts = [os.path.join(ScriptsRoot,scriptname) for scriptname in appScriptsName]
