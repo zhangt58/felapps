@@ -1168,7 +1168,8 @@ class ShowIntPanel(wx.Frame):
 
 class ImagePanel(wx.Panel):
     def __init__(self, parent, figsize, dpi, bgcolor, heightratio = 0.4, func = 'peaks', **kwargs):
-        super(self.__class__, self).__init__(parent = parent, **kwargs)
+        #super(self.__class__, self).__init__(parent = parent, **kwargs)
+        wx.Panel.__init__(self, parent, **kwargs)
         self.parent   = parent
         self.figsize  = figsize
         self.dpi      = dpi
@@ -1186,15 +1187,17 @@ class ImagePanel(wx.Panel):
         # resize figure when size event trigged
         self.Bind(wx.EVT_SIZE, self.onSize)
 
-        #self.canvas.mpl_connect('button_press_event',   self.onPress  )
-        #self.canvas.mpl_connect('button_release_event', self.onRelease)
+        self.canvas.mpl_connect('button_press_event',   self.onPress  )
+        self.canvas.mpl_connect('button_release_event', self.onRelease)
         self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
 
     def onPress(self, event):
-        print("%d,%d" % (event.xdata, event.ydata))
+        pass
+        #print("%d,%d" % (event.xdata, event.ydata))
 
     def onRelease(self, event):
-        print("%d,%d" % (event.xdata, event.ydata))
+        pass
+        #print("%d,%d" % (event.xdata, event.ydata))
 
     def onMotion(self, event):
         try:
@@ -1439,7 +1442,8 @@ class ChooseROIPanel(wx.Panel):
 
 class ImagePanelxy(wx.Panel):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
-        super(self.__class__, self).__init__(parent = parent, **kwargs)
+        #super(self.__class__, self).__init__(parent = parent, **kwargs)
+        wx.Panel.__init__(self, parent, **kwargs)
         self.parent  = parent
         self.figsize = figsize
         self.dpi     = dpi
@@ -1450,6 +1454,27 @@ class ImagePanelxy(wx.Panel):
         self.onGetData()
         self.doPlot()
         wx.CallAfter(self.fitCanvas) # fit canvas size after initialization
+
+        self.Bind(wx.EVT_SIZE, self.onSize)
+
+        self.canvas.mpl_connect('button_press_event',   self.onPress  )
+        self.canvas.mpl_connect('button_release_event', self.onRelease)
+        self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
+
+    def onPress(self, event):
+        pass
+
+    def onRelease(self, event):
+        pass
+
+    def onMotion(self, event):
+        pass
+        """
+        try:
+            self.parent.GetParent().pos_val.SetLabel("(%.4f,%.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
+        """
 
     def setColor(self, rgbtuple = None):
         """Set figure and canvas colours to be the same."""
@@ -1480,6 +1505,12 @@ class ImagePanelxy(wx.Panel):
         self.x, self.y = x, y
 
     def fitCanvas(self):
+        self.canvas.SetSize(self.GetSize())
+        self.figure.set_tight_layout(True)
+        self.figure.subplots_adjust(top  = 0.9999, bottom = 0.0001, 
+                                    left = 0.0001, right  = 0.9999)
+
+    def onSize(self, event):
         self.canvas.SetSize(self.GetSize())
         self.figure.set_tight_layout(True)
         self.figure.subplots_adjust(top  = 0.9999, bottom = 0.0001, 
