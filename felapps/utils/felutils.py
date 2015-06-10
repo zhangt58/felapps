@@ -1681,10 +1681,11 @@ class ScanAnalyzer(wx.Frame):
         self.timenow_st.SetLabel(time.strftime(fmt, time.localtime()))
 
     def initUI(self):
+        self.preInit()
         self.createMenubar()
         self.createStatusbar()
         self.createPanel()
-        self.initScan()
+        self.postInit()
 
     def createMenubar(self):
         self.menubar = wx.MenuBar()
@@ -1788,7 +1789,6 @@ class ScanAnalyzer(wx.Frame):
         self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb('#99FFFF'))
         self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb('#CCCCFF'))
         
-
         ## --------hbox---------- 
         ##   vleft     vright
         ## |-------|------------|
@@ -1867,25 +1867,124 @@ class ScanAnalyzer(wx.Frame):
         gsm.Add(self.swapxy,    pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsm.AddGrowableCol(0, 0)
 
-        # splitter line
+        # splitter line 1
         hline1 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
 
         # mathematical methods control
-        
+        gsf = wx.GridBagSizer(5, 5)
+        self.fitflag = wx.CheckBox(self.panel_l, label = u'Curve Fitting')
+        self.fittype = wx.ComboBox(self.panel_l, value = 'Gaussian', choices = ['Gaussian','Polynomial'], style = wx.CB_READONLY)
+        gsf.Add(self.fitflag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsf.Add(self.fittype, pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsf.AddGrowableCol(0, 0)
+
+        # splitter line 2
+        hline2 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
+
+        # command pushbuttons
+        gsb = wx.GridBagSizer(5, 5)
+        self.start_btn  = funutils.createwxButton(self.panel_l, label = u'START',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
+        self.retake_btn = funutils.createwxButton(self.panel_l, label = u'RETAKE', fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)   
+        self.pause_btn  = funutils.createwxButton(self.panel_l, label = u'PAUSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
+        self.close_btn  = funutils.createwxButton(self.panel_l, label = u'CLOSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
+        gsb.Add(self.start_btn,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsb.Add(self.retake_btn, pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsb.Add(self.pause_btn,  pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsb.Add(self.close_btn,  pos = (0, 3), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
         # set layout
         controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
         controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
         controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(gsf,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add((-1,20))
+        controlpanel_sbsizer.Add(gsb,    proportion = 0, flag = wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, border = 10)
 
         self.panel_l.SetSizerAndFit(controlpanel_sbsizer)
 
         vleft.Add(  self.panel_l,  proportion = 1, flag = wx.EXPAND)
 
         # vright1
-        vright1.Add(self.panel_ru, proportion = 1, flag = wx.EXPAND)
+
+        imagepanel_sb      = funutils.createwxStaticBox(self.panel_ru, label = 'Image Monitor Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        imagepanel_sbsizer = wx.StaticBoxSizer(imagepanel_sb, wx.HORIZONTAL)
+
+        vr1hbox    = wx.BoxSizer(wx.HORIZONTAL) # container for vr1hbox_l and vr1hbox_r
+        vr1hbox_lv = wx.BoxSizer(wx.VERTICAL  ) # container for imgprofile
+        vr1hbox_rv = wx.BoxSizer(wx.VERTICAL  ) # container for control for imgprofile
+
+        # imageviewer
+
+        self.imgprofile   = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#99FFFF'))
+        self.panel_ru.imgprof_pos_st   = funutils.createwxStaticText(self.panel_ru, label = 'Current Pos:')
+        self.panel_ru.imgprof_pos      = funutils.createwxStaticText(self.panel_ru, label = '')
+        self.panel_ru.imgprof_pos1_st  = funutils.createwxStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
+        self.panel_ru.imgprof_pos1     = funutils.createwxStaticText(self.panel_ru, label = '',            fontcolor = 'red')
+        self.imgpv_st     = funutils.createwxStaticText(self.panel_ru, label = 'Image PV')
+        self.imgpv_tc     = wx.TextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
+        self.imgcm_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Map')
+        self.imgcm_cb     = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
+        self.imgcr_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Range')
+        self.imgcr_fs_min = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
+        self.imgcr_fs_max = funutils.FloatSlider(self.panel_ru, value = self.imgcmax, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
+
+        gsimg = wx.GridBagSizer(5, 5)
+        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcm_cb,     pos = (1, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.AddGrowableCol(1, 0)
+        gsimg.AddGrowableCol(2, 0)
+
+        vr1hbox_lv_gs = wx.GridBagSizer(5, 5)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+
+        # set layout 
+        vr1hbox_lv.Add(self.imgprofile, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.ALL, border = 5)
+
+        vr1hbox_rv.Add(gsimg, proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT)
+
+        vr1hbox.Add(vr1hbox_lv, proportion = 3, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr1hbox.Add(vr1hbox_rv, proportion = 2, flag = wx.EXPAND | wx.ALIGN_RIGHT)
+
+        imagepanel_sbsizer.Add(vr1hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
+
+        self.panel_ru.SetSizerAndFit(imagepanel_sbsizer)
+        vright1.Add(self.panel_ru, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
         
         # vright2
+        analysispanel_sb      = funutils.createwxStaticBox(self.panel_rd, label = 'Correlation Analysis Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        analysispanel_sbsizer = wx.StaticBoxSizer(analysispanel_sb, wx.VERTICAL)
+
+        vr2vbox = wx.BoxSizer(wx.VERTICAL)
+
+        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#CCCCFF'))
+
+        self.panel_rd.sfig_pos_st  = funutils.createwxStaticText(self.panel_rd, label = 'Current Pos:')
+        self.panel_rd.sfig_pos     = funutils.createwxStaticText(self.panel_rd, label = '')
+        self.panel_rd.sfig_pos1_st = funutils.createwxStaticText(self.panel_rd, label = 'Picked Pos:', fontcolor = 'blue')
+        self.panel_rd.sfig_pos1    = funutils.createwxStaticText(self.panel_rd, label = '',            fontcolor = 'blue')
+        
+        gss = wx.GridBagSizer(5, 5)
+        gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+
+        vr2vbox.Add(self.scanfig, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr2vbox.Add(gss,          proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.ALL, border = 5)
+
+        analysispanel_sbsizer.Add(vr2vbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
+
+        self.panel_rd.SetSizerAndFit(analysispanel_sbsizer)
         vright2.Add(self.panel_rd, proportion = 1, flag = wx.EXPAND)
 
         vright.Add(vright1, proportion = 2, flag = wx.EXPAND)
@@ -1902,9 +2001,16 @@ class ScanAnalyzer(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         # binding events
-        self.Bind(wx.EVT_CHECKBOX, self.onCheckScan2, self.scan2flag)
+        self.Bind(wx.EVT_CHECKBOX,   self.onCheckScan2,   self.scan2flag )
+        self.Bind(wx.EVT_CHECKBOX,   self.onCheckFitting, self.fitflag   )
+        self.Bind(wx.EVT_BUTTON,     self.onPushStart,    self.start_btn )
+        self.Bind(wx.EVT_BUTTON,     self.onPushRetake,   self.retake_btn)
+        self.Bind(wx.EVT_BUTTON,     self.onPushPause,    self.pause_btn )
+        self.Bind(wx.EVT_BUTTON,     self.onPushClose,    self.close_btn )
+        self.Bind(wx.EVT_TEXT_ENTER, self.onSetImgPV,     self.imgpv_tc  )
 
-    def initScan(self):
+    def postInit(self):
+        # initialization after UI creation
         self.yaxis_st.Disable()
         self.yaxis_tc.Disable()
         self.yrange_st.Disable()
@@ -1912,6 +2018,13 @@ class ScanAnalyzer(wx.Frame):
         self.yrange_max_tc.Disable()
         self.yrange_num_tc.Disable()
         self.swapxy.Disable()
+        self.fittype.Disable()
+
+    def preInit(self):
+        # initialization before UI creation
+        self.imgcmin = 0
+        self.imgcmax = 1
+
 
     def onCheckScan2(self, event):
         if event.GetEventObject().IsChecked():
@@ -1931,6 +2044,55 @@ class ScanAnalyzer(wx.Frame):
             self.yrange_num_tc.Disable()
             self.swapxy.Disable()
 
+    def onCheckFitting(self, event):
+        if event.GetEventObject().IsChecked():
+            self.fittype.Enable()
+        else:
+            self.fittype.Disable()
+
+    def onPushStart(self, event):
+        pass
+
+    def onPushRetake(self, event):
+        pass
+
+    def onPushPause(self, event):
+        pass
+
+    def onPushClose(self, event):
+        pass
+
+    def onSetImgPV(self, event):
+        pass
+        """
+        set image PV source to show
+        self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
+        self.imgprofile.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
+        self.imgprofile.cmin = self.imgprofile.z.min()
+        self.imgprofile.cmax = self.imgprofile.z.max()
+        self.imgcmincmin_now = self.imgpanel.cmin
+        cmax_now = self.imgpanel.cmax
+        # update self.min_slider and self.max_slider,
+        # as well as self.min_value_st and self.max_value_st
+        self.min_value_st.SetLabel('%.1f' % (cmin_now))
+        self.max_value_st.SetLabel('%.1f' % (cmax_now))
+        self.min_slider.SetMin  (cmin_now)
+        self.min_slider.SetMax  (cmax_now)
+        self.min_slider.SetValue(cmin_now)
+        self.max_slider.SetMin  (cmin_now)
+        self.max_slider.SetMax  (cmax_now)
+        self.max_slider.SetValue(cmax_now)
+        self.imgcr_min_tc.SetValue('%.1f' % cmin_now)
+        self.imgcr_max_tc.SetValue('%.1f' % cmax_now)
+        self.imgpanel.im.set_clim(vmin = cmin_now, vmax= cmax_now)
+        self.imgpanel.im.set_array(self.imgpanel.z)
+        self.imgpanel.repaint()
+        """
+
+
+
+
+
 #------------------------------------------------------------------------#
 
 def main(ClassName=ModdsPanel):
@@ -1946,6 +2108,33 @@ def main(ClassName=ModdsPanel):
     #myframe.Centre()
     myframe.Show()
     app.MainLoop()
+
+#------------------------------------------------------------------------#
+class ImagePanel(pltutils.ImagePanel):
+    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+        pltutils.ImagePanel.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
+        
+    def onMotion(self, event):
+        try:
+            self.GetParent().imgprof_pos.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
+    
+    def onPress(self, event):
+        self.GetParent().imgprof_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+
+class ImagePanelxy(pltutils.ImagePanelxy):
+    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+        pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
+        
+    def onMotion(self, event):
+        try:
+            self.GetParent().sfig_pos.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
+    
+    def onPress(self, event):
+        self.GetParent().sfig_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
 
 #------------------------------------------------------------------------#
 
