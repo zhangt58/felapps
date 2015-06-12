@@ -23,3 +23,7 @@ feature02: (created on May. 27, 2015, 11:06)
     [x]: set up version number control script
     [x]: Slider control with float point increment
     [x]: initialized image function, option for selection in Configurations
+
+feature03: (created on Jun. 10, 2015, 20:15)
+    [ ]: Main launcher for gathering apps
+    [ ]: shortcut from right click on desktop
