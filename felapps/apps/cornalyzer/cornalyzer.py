@@ -11,20 +11,34 @@ Created: May. 27, 2015
 from ...utils import felutils
 from ...utils import miscutils
 import wx
+import wx.lib.mixins.inspection as wit
 
 __version__ =  miscutils.AppVersions().getVersion('cornalyzer')
+__author__  = "Tong Zhang"
 
-def run(maximize = True, logon = False):
+class InspectApp(wx.App, wit.InspectionMixin):
+    def OnInit(self):
+        self.Init()
+        myframe = felutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe.Show()
+        self.SetTopWindow(myframe)
+        return True
+
+def run(maximize = True, logon = False, debug = True):
     """
     function to call cornalyzer
     """
-    app = wx.App(redirect = logon, filename = 'log')
-    if maximize == True:
-        myframe = felutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+    if debug == True:
+        app = InspectApp()
+        app.MainLoop()
     else:
-        myframe = felutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
-    myframe.Show()
-    app.MainLoop()
+        app = wx.App(redirect = logon, filename = 'log')
+        if maximize == True:
+            myframe = felutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        else:
+            myframe = felutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        myframe.Show()
+        app.MainLoop()
 
 if __name__ == '__main__':
     run()

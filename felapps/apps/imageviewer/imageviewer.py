@@ -11,21 +11,34 @@ Created: Feb. 3rd, 2015
 from ...utils import pltutils
 from ...utils import miscutils
 import wx
+import wx.lib.mixins.inspection as wit
 
 __version__ =  miscutils.AppVersions().getVersion('imageviewer')
+__author__  = "Tong Zhang"
 
-def run(maximize = True, logon = False):
+class InspectApp(wx.App, wit.InspectionMixin):
+    def OnInit(self):
+        self.Init()
+        myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe.Show()
+        self.SetTopWindow(myframe)
+        return True
+
+def run(maximize = True, logon = False, debug=True):
     """
     function to make imageviewer app run.
     """
-    app = wx.App(redirect = logon, filename='log')
-    if maximize == True:
-        myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+    if debug == True:
+        app = InspectApp()
+        app.MainLoop()
     else:
-        myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
-    myframe.Show()
-    #print myframe.GetSize()
-    app.MainLoop()
+        app = wx.App(redirect = logon, filename='log')
+        if maximize == True:
+            myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        else:
+            myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        myframe.Show()
+        app.MainLoop()
 
 if __name__ == '__main__':
     run()

@@ -11,20 +11,34 @@ Created: May. 28, 2015 (re-organized)
 from ...physics import felcalc
 from ...utils   import miscutils
 import wx
+import wx.lib.mixins.inspection as wit
 
 __version__ = miscutils.AppVersions().getVersion('felformula')
+__author__  = "Tong Zhang"
 
-def run(maximize = True, logon = False):
+class InspectApp(wx.App, wit.InspectionMixin):
+    def OnInit(self):
+        self.Init()
+        myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe.Show()
+        self.SetTopWindow(myframe)
+        return True
+
+def run(maximize = True, logon = False, debug = False):
     """
     function to call felformula GUI
     """
-    app = wx.App(redirect = logon, filename = 'log')
-    if maximize == True:
-        myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+    if debug == True:
+        app = InspectApp()
+        app.MainLoop()
     else:
-        myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
-    myframe.Show()
-    app.MainLoop()
+        app = wx.App(redirect = logon, filename = 'log')
+        if maximize == True:
+            myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        else:
+            myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+        myframe.Show()
+        app.MainLoop()
 
 if __name__ == '__main__':
     run()
