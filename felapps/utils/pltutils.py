@@ -118,7 +118,7 @@ class ImageViewer(wx.Frame):
         # Image
         self.imginifunc = namelist['imgIniFunc']
         self.wpx, self.hpx = int(float(namelist['width'])), int(float(namelist['height']))
-        self.roixy = [0,self.wpx, 0, self.hpx]
+        self.roixy = [0, self.wpx, 0, self.hpx]
         dirdate = time.strftime('%Y%m%d', time.localtime())
         self.save_path_str_head = os.path.expanduser(namelist['savePath'])
         self.save_path_str      = os.path.join(self.save_path_str_head, dirdate)
@@ -885,9 +885,9 @@ class ImageConfigPanel(wx.Panel):
 
         self.imgwpxtc        = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
         self.imghpxtc        = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
-        self.pathtc          = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.TE_PROCESS_ENTER)
+        self.pathtc          = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.CB_READONLY     )
         self.pathtc.SetToolTip(wx.ToolTip('Fullpath (subdired by the date) the config file be saved.'))
-        self.pathbtn         = wx.Button(self, label = 'Browse', style = wx.CB_READONLY)
+        self.pathbtn         = wx.Button(self, label = 'Browse')
         self.imgnamepretc    = wx.TextCtrl(self, value = self.thisapp.save_img_name_str, style = wx.TE_PROCESS_ENTER)
         self.imgnameexttc    = wx.ComboBox(self, value = self.thisapp.save_img_ext_str,  style = wx.CB_READONLY, choices = ['.png','.jpg','.jpeg','.svg','.tiff','.eps','.pdf','.ps'])
         self.imgdatnamepretc = wx.TextCtrl(self, value = self.thisapp.save_dat_name_str, style = wx.TE_PROCESS_ENTER)
