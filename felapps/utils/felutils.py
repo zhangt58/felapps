@@ -22,6 +22,7 @@ FEL utilities:
 import wx
 import epics
 import time
+import os
 from . import funutils
 from . import pltutils
 from . import resutils
@@ -1917,40 +1918,55 @@ class ScanAnalyzer(wx.Frame):
 
         # imageviewer
 
-        self.imgprofile   = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#99FFFF'))
-        self.panel_ru.imgprof_pos_st   = funutils.createwxStaticText(self.panel_ru, label = 'Current Pos:')
-        self.panel_ru.imgprof_pos      = funutils.createwxStaticText(self.panel_ru, label = '')
-        self.panel_ru.imgprof_pos1_st  = funutils.createwxStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
-        self.panel_ru.imgprof_pos1     = funutils.createwxStaticText(self.panel_ru, label = '',            fontcolor = 'red')
-        self.imgpv_st     = funutils.createwxStaticText(self.panel_ru, label = 'Image PV')
-        self.imgpv_tc     = wx.TextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
-        self.imgcm_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Map')
-        self.imgcm_cb     = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
-        self.imgcm_rcb    = wx.CheckBox(self.panel_ru, label = u'Reverse')
-        self.imgcr_st     = funutils.createwxStaticText(self.panel_ru, label = 'Color Range')
-        self.imgcr_fs_min = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
-        self.imgcr_fs_max = funutils.FloatSlider(self.panel_ru, value = self.imgcmax, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
-        self.imgcr_fs_min_val = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmin)), style = wx.ALIGN_CENTER)
-        self.imgcr_fs_max_val = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmax)), style = wx.ALIGN_CENTER)
+        self.imgprofile               = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#99FFFF'))
+        self.panel_ru.imgprof_pos_st  = funutils.createwxStaticText(self.panel_ru, label = 'Current Pos:')
+        self.panel_ru.imgprof_pos     = funutils.createwxStaticText(self.panel_ru, label = '')
+        self.panel_ru.imgprof_pos1_st = funutils.createwxStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
+        self.panel_ru.imgprof_pos1    = funutils.createwxStaticText(self.panel_ru, label = '',            fontcolor = 'red')
+        self.imgpv_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Image PV:')
+        self.imgpv_tc                 = wx.TextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
+        self.imgcm_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Color Map:')
+        self.imgcm_cb                 = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
+        self.imgcm_rcb                = wx.CheckBox(self.panel_ru, label = u'Reverse:')
+        self.imgcr_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Color Range:')
+        self.imgcr_fs_min             = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
+        self.imgcr_fs_max             = funutils.FloatSlider(self.panel_ru, value = self.imgcmax, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
+        self.imgcr_fs_min_val         = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmin)), style = wx.ALIGN_CENTER)
+        self.imgcr_fs_max_val         = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmax)), style = wx.ALIGN_CENTER)
+
+        self.imgconfig_pathvalue_tc   = wx.TextCtrl(self.panel_ru, value = os.path.abspath(os.path.expanduser(os.curdir)), style = wx.CB_READONLY)
+        self.imgconfig_pathchoose_btn = funutils.createwxButton(self.panel_ru, label = u'Config Path:' , fontcolor = funutils.hex2rgb('#000000'), fontsize = 12)
+        self.imgconfig_fetch_btn      = funutils.createwxButton(self.panel_ru, label = u'Fetch Setting', fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
+        self.imgconfig_dump_btn       = funutils.createwxButton(self.panel_ru, label = u'Dump Setting' , fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
+        self.imgconfig_pathvalue_tc.SetToolTip(wx.ToolTip('Path where config file stays, push "Config Path" button to locate.'))
 
         gsimg = wx.GridBagSizer(5, 5)
-        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.ALIGN_RIGHT |  wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
         gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
-        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        
+        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
         gsimg.Add(self.imgcm_rcb,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
         gsimg.Add(self.imgcm_cb,     pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        
         gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        
         gsimg.Add(self.imgcr_fs_min_val, pos = (3, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
         gsimg.Add(self.imgcr_fs_max_val, pos = (3, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
+        
+        gsimg.Add(self.imgconfig_pathchoose_btn, pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgconfig_pathvalue_tc,   pos = (4, 1), span = (1, 2), flag = wx.LEFT | wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgconfig_fetch_btn,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgconfig_dump_btn,       pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
         gsimg.AddGrowableCol(1, 0)
         gsimg.AddGrowableCol(2, 0)
 
         vr1hbox_lv_gs = wx.GridBagSizer(5, 5)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
         vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
         vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
 
         # set layout 
@@ -1981,9 +1997,9 @@ class ScanAnalyzer(wx.Frame):
         self.panel_rd.sfig_pos1    = funutils.createwxStaticText(self.panel_rd, label = '',            fontcolor = 'blue')
         
         gss = wx.GridBagSizer(5, 5)
-        gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
         gss.Add(self.panel_rd.sfig_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
-        gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
         gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
 
         vr2vbox.Add(self.scanfig, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
@@ -2014,6 +2030,7 @@ class ScanAnalyzer(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.onPushRetake,   self.retake_btn  )
         self.Bind(wx.EVT_BUTTON,     self.onPushPause,    self.pause_btn   )
         self.Bind(wx.EVT_BUTTON,     self.onPushClose,    self.close_btn   )
+        self.Bind(wx.EVT_BUTTON,     self.onChoosePath,   self.imgconfig_pathchoose_btn)
         self.Bind(wx.EVT_TEXT_ENTER, self.onSetImgPV,     self.imgpv_tc    )
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_min)
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_max)
@@ -2022,7 +2039,7 @@ class ScanAnalyzer(wx.Frame):
 
     def postInit(self):
         # initialization after UI creation
-
+        
         ## UI control
         self.yaxis_st.Disable()
         self.yaxis_tc.Disable()
@@ -2033,7 +2050,11 @@ class ScanAnalyzer(wx.Frame):
         self.swapxy.Disable()
         self.fittype.Disable()
 
-        ## color range
+        ## set image
+        self.postSetImage()
+
+    def postSetImage(self):
+        ## image color range setting
         self.imgprofile.cmin = self.imgprofile.z.min()
         self.imgprofile.cmax = self.imgprofile.z.max()
         self.imgcmin = self.imgprofile.cmin
@@ -2047,11 +2068,17 @@ class ScanAnalyzer(wx.Frame):
         self.imgcr_fs_max.SetMax  (self.imgcmax*2)
         self.imgcr_fs_max.SetValue(self.imgcmax)
 
+        ## image plotting panel
+        self.imgprofile.im.set_clim(vmin = self.imgcmin, vmax= self.imgcmax)
+        self.imgprofile.im.set_array(self.imgprofile.z)
+        self.imgprofile.repaint()
+
     def preInit(self):
         # initialization before UI creation
         self.imgcmin = 0
         self.imgcmax = 1
         self.rcmflag = ''
+        self.mypv    = ''
 
     def onCheckScan2(self, event):
         if event.GetEventObject().IsChecked():
@@ -2090,31 +2117,13 @@ class ScanAnalyzer(wx.Frame):
         pass
 
     def onSetImgPV(self, event):
-        pass
-        """
-        set image PV source to show
+        # set image PV source to show
+        self.wpx, self.hpx = 494, 659
+        self.roixy = [0, self.wpx, 0, self.hpx]
+
         self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
         self.imgprofile.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
-        self.imgprofile.cmin = self.imgprofile.z.min()
-        self.imgprofile.cmax = self.imgprofile.z.max()
-        self.imgcmincmin_now = self.imgpanel.cmin
-        cmax_now = self.imgpanel.cmax
-        # update self.min_slider and self.max_slider,
-        # as well as self.min_value_st and self.max_value_st
-        self.min_value_st.SetLabel('%.1f' % (cmin_now))
-        self.max_value_st.SetLabel('%.1f' % (cmax_now))
-        self.min_slider.SetMin  (cmin_now)
-        self.min_slider.SetMax  (cmax_now)
-        self.min_slider.SetValue(cmin_now)
-        self.max_slider.SetMin  (cmin_now)
-        self.max_slider.SetMax  (cmax_now)
-        self.max_slider.SetValue(cmax_now)
-        self.imgcr_min_tc.SetValue('%.1f' % cmin_now)
-        self.imgcr_max_tc.SetValue('%.1f' % cmax_now)
-        self.imgpanel.im.set_clim(vmin = cmin_now, vmax= cmax_now)
-        self.imgpanel.im.set_array(self.imgpanel.z)
-        self.imgpanel.repaint()
-        """
+        self.postSetImage()
 
     def onSetImgCR(self, event):
         clickedobj = event.GetEventObject()
@@ -2138,6 +2147,12 @@ class ScanAnalyzer(wx.Frame):
         cmap = self.imgcm_cb.GetValue() + self.rcmflag
         self.imgprofile.onSetcm(cmap)
  
+    def onChoosePath(self, event):
+        dlg = wx.DirDialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            dirpath = dlg.GetPath()
+            self.imgconfig_pathvalue_tc.SetValue(dirpath)
+        dlg.Destroy()
 
 #------------------------------------------------------------------------#
 
