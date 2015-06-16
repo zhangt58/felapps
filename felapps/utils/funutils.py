@@ -225,15 +225,6 @@ class SaveData(object):
         
 #-------------------------------------------------------------------------#
 
-def func_sinc(x, y):
-    r = np.sqrt(x**2 + y**2)
-    return np.sin(r)/r
-
-def func_peaks(x, y):
-    return 3*(1-x)**2*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2)
-
-#-------------------------------------------------------------------------#
-
 class FloatSlider(wx.Slider):
 
     def __init__(self, parent, id = wx.ID_ANY, value = 0, minValue = 0, maxValue = 10, increment = 0.1, 
@@ -295,5 +286,31 @@ class FloatSlider(wx.Slider):
         self._islider.SetRange(round(minval/self._inc), round(maxval/self._inc))
         self._min = minval
         self._max = maxval
+
+#-------------------------------------------------------------------------#
+
+def func_sinc(x, y):
+    r = np.sqrt(x**2 + y**2)
+    return np.sin(r)/r
+
+#-------------------------------------------------------------------------#
+
+def func_peaks(x, y):
+    return 3*(1-x)**2*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2)
+
+#-------------------------------------------------------------------------#
+
+class DataFactor(object): # will write into C module, 2015-06-16
+    def __init__(self, z):
+        self.imgdata = z
+
+    def setData(self, z):
+        self.imgdata = z
+
+    def getData(self):
+        return imgdata
+
+    def getInt(self):
+        return np.sum(self.imgdata)
 
 #-------------------------------------------------------------------------#
