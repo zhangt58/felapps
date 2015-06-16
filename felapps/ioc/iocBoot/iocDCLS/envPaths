@@ -1,4 +1,4 @@
 epicsEnvSet("ARCH","linux-x86_64")
 epicsEnvSet("IOC","iocDCLS")
-epicsEnvSet("TOP","/home/tong/APS/epics/apps/DCLS")
+epicsEnvSet("TOP","/home/tong/Programming/projects/felapps/felapps/ioc")
 epicsEnvSet("EPICS_BASE","/home/tong/APS/epics/base")

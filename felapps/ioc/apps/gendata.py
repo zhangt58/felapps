@@ -55,7 +55,6 @@ for i in np.arange(100000):
               ampArr[4]*gauss2d(x, y, 6,  7, 0.5, 0.5) + \
               0.5*np.random.random(size = 659*494).reshape(494, 659)
     """
-
     ampArr = np.random.random_integers(50,100,1)
     rx, ry = np.random.random()*0.5+0.1, np.random.random()*0.5+0.1
     px, py = np.random.random()*3+5, np.random.random()*3+4
@@ -67,6 +66,7 @@ for i in np.arange(100000):
     wfarrpv.put(inputArr1)
     wfintpv.put(np.sum(inputArr1))
     
+    """
     #### laser test
     amp = laseramppv.get()
     w0  = laserw0pv.get()
@@ -75,7 +75,9 @@ for i in np.arange(100000):
     arrdata2 = np.array(tmpdata2, dtype = np.int8)
     inputArr2 = arrdata2.flatten()
     laserarrpv.put(inputArr2)
+    """
 
+    """
     #### ebeam test
     amp1 = ebeamamppv.get()
     w01  = ebeamw0pv.get()
@@ -84,6 +86,7 @@ for i in np.arange(100000):
     arrdata3 = np.array(tmpdata3, dtype = np.int8)
     inputArr3 = arrdata3.flatten()
     ebeamarrpv.put(inputArr3)
+    """
 
-    time.sleep(1)
+    time.sleep(0.1)
 

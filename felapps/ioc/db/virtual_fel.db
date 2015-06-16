@@ -3,7 +3,7 @@ record(waveform, "$(PREFIX):PROF19:ARR")
 {
     field(DESC, "Image data 659x494")
     field(NELM, "325546")
-    field(SCAN, "1 second")
+    field(SCAN, ".1 second")
     field(FTVL, "UCHAR")
 }
 
@@ -21,7 +21,7 @@ record(calc, "$(PREFIX):PROF19:INT")
 {
         field(INPA, "$(PREFIX):PROF19:SET:INT")
         field(INPB, "$(PREFIX):NOISE")
-	    field(SCAN, "1 second")
+	    field(SCAN, ".1 second")
         field(PREC, "4")
         field(CALC, "A + A*B")
 }
@@ -30,14 +30,14 @@ record(calc, "$(PREFIX):PROF19:INT")
 record(calc, "$(PREFIX):SIN")
 {
         field(INPA, "$(PREFIX):SIN")
-	    field(SCAN,"1 second")
+	    field(SCAN, ".1 second")
         field(PREC, "4")
-        field(CALC, "(A>10?0:A+0.1)")
+        field(CALC, "A>10?0:A+0.1")
 }
 record(calc, "$(PREFIX):NOISE")
 {
         field(INPA, "$(PREFIX):SIN")
-	    field(SCAN,"1 second")
+	    field(SCAN,".1 second")
         field(PREC, "4")
         field(CALC, "(SIN(A)+COS(A))*0.003")
 }
