@@ -107,6 +107,7 @@ class ImageViewer(wx.Frame):
         #self.printConfig() # just for debug
 
         self.Bind(wx.EVT_CLOSE, self.onExit)
+        self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.InitUI()
 
     def loadConfig(self, configfilename = 'config.xml'):
@@ -205,6 +206,13 @@ class ImageViewer(wx.Frame):
     def onOpen(self, event):
         pass
 
+    def onMenuHL(self, event):
+        try:
+            hltext = event.GetEventObject().GetHelpString(event.GetMenuId())
+            self.statusbar.appinfo.SetLabel(hltext)
+        except:
+            pass
+
     def onSaveImg(self, event):
         if not os.path.exists(self.save_path_str):
             os.system('mkdir -p' + ' ' + self.save_path_str) # I've not found pure python way (simple) to do that yet.
@@ -212,7 +220,8 @@ class ImageViewer(wx.Frame):
         savetofilename = self.save_path_str + '/' + self.save_img_name_str + filelabel + self.save_img_ext_str
         self.imgpanel.figure.savefig(savetofilename)
         hintText = 'Image Plotting file: ' + savetofilename + ' was saved.'
-        self.statusbar.SetStatusText(hintText)
+        self.statusbar.appinfo.SetLabel(hintText)
+        #self.statusbar.SetStatusText(hintText)
 
     def onSaveDat(self, event):
         if not os.path.exists(self.save_path_str):
@@ -221,7 +230,8 @@ class ImageViewer(wx.Frame):
         savetofilename = self.save_path_str + '/' + self.save_dat_name_str + filelabel + self.save_dat_ext_str
         saveins = funutils.SaveData(self.imgpanel.z, savetofilename, self.save_dat_ext_str)
         hintText = 'Image Data file: ' + savetofilename + ' was saved.'
-        self.statusbar.SetStatusText(hintText)
+        #self.statusbar.SetStatusText(hintText)
+        self.statusbar.appinfo.SetLabel(hintText)
     
     def onShowInt(self, event):
         self.menuShowInt = ShowIntPanel(self)
@@ -253,7 +263,8 @@ class ImageViewer(wx.Frame):
             return
         savetofilename = dlg.GetPath()
         self.xmlconfig.updateConfigs(self.configdict, savetofilename)
-        self.statusbar.SetStatusText('Present configurations were just saved to ' + savetofilename + '.')
+        self.statusbar.appinfo.SetLabel('Present configurations were just saved to ' + savetofilename + '.')
+        #self.statusbar.SetStatusText('Present configurations were just saved to ' + savetofilename + '.')
         dlg.Destroy()
 
     def onExit(self, event):
@@ -308,12 +319,12 @@ class ImageViewer(wx.Frame):
         self.statusbar.SetFieldsCount(2)
         self.SetStatusBar(self.statusbar)
         self.statusbar.SetStatusWidths([-4,-1])
-        applabel = wx.StaticText(self.statusbar, wx.ID_ANY, 
+        self.statusbar.appinfo= wx.StaticText(self.statusbar, wx.ID_ANY, 
                                  label = 'ImageViewer powered by Python')
         versionfield = wx.StaticText(self.statusbar, wx.ID_ANY, 
                                      label = time.strftime('%Y-%m-%d', time.localtime()) + ' ' + ' (Version: ' + self.appversion + ')')
-        self.statusbar.AddWidget(applabel,    funutils.ESB.ESB_ALIGN_LEFT )
-        self.statusbar.AddWidget(versionfield,funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(versionfield,  funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
         self.panel = wx.Panel(self, id = wx.ID_ANY)
