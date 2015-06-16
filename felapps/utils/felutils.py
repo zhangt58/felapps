@@ -23,6 +23,7 @@ import wx
 import epics
 import time
 import os
+import numpy as np
 from . import funutils
 from . import pltutils
 from . import resutils
@@ -1724,6 +1725,15 @@ class ScanAnalyzer(wx.Frame):
         ## set menu
         self.SetMenuBar(self.menubar)
 
+        self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
+
+    def onMenuHL(self, event):
+        try:
+            hltext = event.GetEventObject().GetHelpString(event.GetMenuId())
+            self.statusbar.appinfo.SetLabel(hltext)
+        except:
+            pass
+
     def onAbout(self, event):
         try:
             from wx.lib.wordwrap import wordwrap
@@ -1764,6 +1774,9 @@ class ScanAnalyzer(wx.Frame):
         pass
 
     def onExit(self, event):
+        self.exitApp()
+
+    def exitApp(self):
         dial = wx.MessageDialog(self, message = "Are you sure to exit this application?",
                                 caption = 'Exit Warning',
                                 style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
@@ -1775,12 +1788,12 @@ class ScanAnalyzer(wx.Frame):
         self.statusbar.SetFieldsCount(3)
         self.SetStatusBar(self.statusbar)
         self.statusbar.SetStatusWidths([-7,-2,-1])
-        applabel        = wx.StaticText(self.statusbar, wx.ID_ANY, "Correlation Analyzer powered by Python")
-        self.timenow_st = wx.StaticText(self.statusbar, wx.ID_ANY, "2015-06-05 14:00:00 CST")
-        appversion      = wx.StaticText(self.statusbar, wx.ID_ANY, " (Version: " + self.appversion + ")")
-        self.statusbar.AddWidget(applabel,        funutils.ESB.ESB_ALIGN_LEFT )
-        self.statusbar.AddWidget(self.timenow_st, funutils.ESB.ESB_ALIGN_RIGHT)
-        self.statusbar.AddWidget(appversion,      funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.appinfo = wx.StaticText(self.statusbar, wx.ID_ANY, "Correlation Analyzer powered by Python")
+        self.timenow_st        = wx.StaticText(self.statusbar, wx.ID_ANY, "2015-06-05 14:00:00 CST")
+        appversion             = wx.StaticText(self.statusbar, wx.ID_ANY, " (Version: " + self.appversion + ")")
+        self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
         # background panel
@@ -1989,7 +2002,13 @@ class ScanAnalyzer(wx.Frame):
 
         vr2vbox = wx.BoxSizer(wx.VERTICAL)
 
+        vr2hbox    = wx.BoxSizer(wx.HORIZONTAL) # container for vr2hbox_l and vr2hbox_r
+        vr2hbox_lv = wx.BoxSizer(wx.VERTICAL  ) # container for scanfig
+        vr2hbox_rv = wx.BoxSizer(wx.VERTICAL  ) # container for reserved space for other controls
+
         self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#CCCCFF'))
+
+        self.clrfig_btn = funutils.createwxButton(self.panel_rd, label = u'Clear', fontsize = 12)
 
         self.panel_rd.sfig_pos_st  = funutils.createwxStaticText(self.panel_rd, label = 'Current Pos:')
         self.panel_rd.sfig_pos     = funutils.createwxStaticText(self.panel_rd, label = '')
@@ -2002,8 +2021,13 @@ class ScanAnalyzer(wx.Frame):
         gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
         gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
 
-        vr2vbox.Add(self.scanfig, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr2vbox.Add(gss,          proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
+        vr2hbox_lv.Add(self.scanfig,    proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr2hbox_rv.Add(self.clrfig_btn, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
+        vr2hbox.Add(vr2hbox_lv, proportion = 8, flag = wx.EXPAND | wx.ALL, border = 10)
+        vr2hbox.Add(vr2hbox_rv, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+
+        vr2vbox.Add(vr2hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr2vbox.Add(gss,     proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
 
         analysispanel_sbsizer.Add(vr2vbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
 
@@ -2022,6 +2046,14 @@ class ScanAnalyzer(wx.Frame):
         osizer.SetMinSize((1080, 720))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
+        
+        # timers
+        self.imgtimer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onUpdate, self.imgtimer)
+
+        # for debug only
+        self.dtimer1 = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onDEBUG1, self.dtimer1)
 
         # binding events
         self.Bind(wx.EVT_CHECKBOX,   self.onCheckScan2,   self.scan2flag   )
@@ -2036,6 +2068,7 @@ class ScanAnalyzer(wx.Frame):
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_max)
         self.Bind(wx.EVT_COMBOBOX,   self.onSetImgCM,     self.imgcm_cb    )
         self.Bind(wx.EVT_CHECKBOX,   self.onSetImgCMR,    self.imgcm_rcb   )
+        self.Bind(wx.EVT_BUTTON,     self.onScanfigClear, self.clrfig_btn  )
 
     def postInit(self):
         # initialization after UI creation
@@ -2079,6 +2112,11 @@ class ScanAnalyzer(wx.Frame):
         self.imgcmax = 1
         self.rcmflag = ''
         self.mypv    = ''
+        self.wpx, self.hpx = 494, 659
+        self.roixy = [0, self.wpx, 0, self.hpx]
+        self.cnt = 0
+        self.x = []
+        self.y = []
 
     def onCheckScan2(self, event):
         if event.GetEventObject().IsChecked():
@@ -2105,22 +2143,66 @@ class ScanAnalyzer(wx.Frame):
             self.fittype.Disable()
 
     def onPushStart(self, event):
-        pass
+        if not isinstance(self.mypv, epics.pv.PV):
+            self.mypv = epics.PV(self.imgpv_tc.GetValue(), auto_monitor = True)
+        self.imgtimer.Start(100)
+        
+        # for debug only
+        self.Dcnt = 0
+        self.Dt = time.time()
+        self.idx = 0
+        self.Ddt = np.zeros((1000,2))
+        self.dtimer1.Start(1000)
 
     def onPushRetake(self, event):
         pass
 
     def onPushPause(self, event):
-        pass
+        self.imgtimer.Stop()
+
+        # for debug only
+        self.dtimer1.Stop()
+        np.savetxt('log.dat', self.Ddt, delimiter= ' ', fmt='%.2f')
 
     def onPushClose(self, event):
-        pass
+        self.exitApp()
+
+    def onUpdate(self, event):
+        if self.mypv.connected == True:
+            self.updateImage()
+            #self.updateScanfig()
+        else:
+            dial = wx.MessageDialog(self, message = u"Lost connection, may be caused by network error or the IOC server is down.",
+                    caption = u"Lost Connection", 
+                    style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+
+    def updateImage(self):
+        self.Dcnt += 1
+        self.imgprofile.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
+        self.imgprofile.im.set_array(self.imgprofile.z)
+        self.imgprofile.repaint()
+
+    def updateScanfig(self):
+
+        factdata = funutils.DataFactor(self.imgprofile.z)
+        
+        self.cnt += 1
+        self.x.append(self.cnt)
+        self.y.append(factdata.getInt())
+        self.scanfig.x = np.array(self.x)
+        self.scanfig.y = np.array(self.y)
+        self.scanfig.xyplot.set_marker('o')
+        self.scanfig.xyplot.set_markersize(4)
+        self.scanfig.xyplot.set_markerfacecolor('b')
+        self.scanfig.xyplot.set_markeredgecolor('b')
+        self.scanfig.xyplot.set_linestyle('-')
+        self.scanfig.xyplot.set_color('r')
+        self.scanfig.repaint()
 
     def onSetImgPV(self, event):
         # set image PV source to show
-        self.wpx, self.hpx = 494, 659
-        self.roixy = [0, self.wpx, 0, self.hpx]
-
         self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
         self.imgprofile.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
         self.postSetImage()
@@ -2154,6 +2236,16 @@ class ScanAnalyzer(wx.Frame):
             self.imgconfig_pathvalue_tc.SetValue(dirpath)
         dlg.Destroy()
 
+    def onScanfigClear(self, event):
+        self.x = []
+        self.y = []
+        self.updateScanfig()
+
+    def onDEBUG1(self, event):
+        self.Ddt[self.idx,:] = self.Dcnt, time.time() - self.Dt
+        self.idx += 1
+        #print("%.2f | %.2f" % (float(self.Dcnt), time.time() - self.Dt))
+        
 #------------------------------------------------------------------------#
 
 def main(ClassName=ModdsPanel):
@@ -2178,19 +2270,34 @@ class ImagePanel(pltutils.ImagePanel):
     def doPlot(self):
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111)
-        self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.hratio, 'w--')
-        self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.hratio, self.yy, 'w--')
+        #self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.hratio, 'w--')
+        #self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.hratio, self.yy, 'w--')
 
         #self.axes.set_title(r'$f(x,y)=\sin x + \cos y$')
         self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
                                    origin = 'lower left', vmin = self.cmin, vmax = self.cmax)
-        self.im.set_extent(self.xyscalar)
+        #self.im.set_extent(self.xyscalar)
         self.figure.colorbar(self.im)
-        self.linex.set_visible(False)
-        self.liney.set_visible(False)
+        #self.linex.set_visible(False)
+        #self.liney.set_visible(False)
         self.figure.canvas.draw()
 
+    def onGetData(self):
+        if self.func == 'peaks':
+            x = np.linspace(-np.pi, np.pi, 100)
+            y = np.linspace(-np.pi, np.pi, 100)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_peaks(self.x, self.y)
+        elif self.func == 'sinc':
+            x = np.linspace(-2*np.pi, 2*np.pi, 100)
+            y = np.linspace(-2*np.pi, 2*np.pi, 100)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_sinc(self.x, self.y)
+        self.cmin = self.z.min()
+        self.cmax = self.z.max()
 
+    def repaint(self):
+        self.figure.canvas.draw_idle()
 
     def onMotion(self, event):
         try:
@@ -2199,7 +2306,10 @@ class ImagePanel(pltutils.ImagePanel):
             pass
     
     def onPress(self, event):
-        self.GetParent().imgprof_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        try:
+            self.GetParent().imgprof_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
 
 class ImagePanelxy(pltutils.ImagePanelxy):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
@@ -2212,7 +2322,10 @@ class ImagePanelxy(pltutils.ImagePanelxy):
             pass
     
     def onPress(self, event):
-        self.GetParent().sfig_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        try:
+            self.GetParent().sfig_pos1.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
 
 #------------------------------------------------------------------------#
 
