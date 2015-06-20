@@ -300,7 +300,7 @@ def func_peaks(x, y):
 
 #-------------------------------------------------------------------------#
 
-class DataFactor(object): # will write into C module, 2015-06-16
+class ImageDataFactor(object): # will write into C module, 2015-06-16
     def __init__(self, z):
         self.imgdata = z
 
@@ -312,5 +312,34 @@ class DataFactor(object): # will write into C module, 2015-06-16
 
     def getInt(self):
         return np.sum(self.imgdata)
+
+#-------------------------------------------------------------------------#
+
+class ScanDataFactor(object): # will write into C module, 2015-06-17
+    def __init__(self, z, scannum, shotnum, ndim = 2):
+        self.scanshape = [scannum, shotnum, ndim]
+        self.scandata = z.reshape(self.scanshape)
+        self.scanmean = self.scandata.mean(axis = 1)
+
+    def show(self):
+        print [self.scandata[i,:,:][:,1].std() for i in range(0, self.scanshape[0])]
+
+    def setData(self, z):
+        self.scandata = z
+
+    def getXerrbar(self):
+        self.xerr = [self.scandata[i,:,:][:,0].std() for i in range(0, self.scanshape[0])]
+        return self.xerr
+
+    def getYerrbar(self):
+        self.yerr = [self.scandata[i,:,:][:,1].std() for i in range(0, self.scanshape[0])]
+        return self.yerr
+
+    def getXavg(self):
+        return self.scanmean[:,0]
+
+    def getYavg(self):
+        return self.scanmean[:,1]
+
 
 #-------------------------------------------------------------------------#
