@@ -1033,7 +1033,7 @@ class ControlConfigPanel(wx.Panel):
         
         # frequency
         freqst       = wx.StaticText(self, label = u'Monitor Frequency [Hz]',   style = wx.ALIGN_RIGHT)
-        self.freqtc  = wx.TextCtrl(self, value = str(self.thisapp.timer_freq),  style = wx.TE_PROCESS_ENTER)
+        self.freqtc  = wx.SpinCtrl(self, value = str(self.thisapp.timer_freq),  min = 1, max = 50, initial = 1, style = wx.SP_ARROW_KEYS)
         hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         hbox1.Add(freqst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         hbox1.Add(self.freqtc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
