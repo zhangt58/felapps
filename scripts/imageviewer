@@ -7,4 +7,4 @@
 #
 
 import felapps
-felapps.imageviewer.run(maximize = True,logon = False)
+felapps.imageviewer.run(maximize = True,logon = False, debug = False)
