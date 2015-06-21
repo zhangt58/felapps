@@ -17,6 +17,7 @@ import time
 
 wfarrname    = 'UN-BI:PROF19:ARR'
 wfintname    = 'UN-BI:PROF19:INT'
+imgampname   = 'UN-BI:AMP'
 laserarrname = 'OPA:PROF:ARR'
 laserampname = 'OPA:POWER'
 laserw0name  = 'OPA:OMEGA'
@@ -26,6 +27,7 @@ ebeamw0name  = 'DCLS:BSIZE'
 
 wfarrpv    = epics.PV(wfarrname)
 wfintpv    = epics.PV(wfintname)
+imgamppv   = epics.PV(imgampname)
 laserarrpv = epics.PV(laserarrname)
 laseramppv = epics.PV(laserampname)
 laserw0pv  = epics.PV(laserw0name)
@@ -55,16 +57,17 @@ for i in np.arange(100000):
               ampArr[4]*gauss2d(x, y, 6,  7, 0.5, 0.5) + \
               0.5*np.random.random(size = 659*494).reshape(494, 659)
     """
-    ampArr = np.random.random_integers(50,100,1)
-    rx, ry = np.random.random()*0.5+0.1, np.random.random()*0.5+0.1
-    px, py = np.random.random()*3+5, np.random.random()*3+4
+    #ampArr = np.random.random_integers(50,100,1)
+    ampArr = imgamppv.get()
+    rx, ry = np.random.random()*0.5+0.5, np.random.random()*0.5+0.3
+    px, py = np.random.random()*3+5, np.random.random()*2+4
     tmpdata1= ampArr*gauss2d(x, y, px, py, rx, ry) + \
-              0.5*np.random.random(size = 659*494).reshape(494, 659)
+              0.0*np.random.random(size = 659*494).reshape(494, 659)
 
     arrdata1 = np.array(tmpdata1, dtype = np.int8)
     inputArr1 = arrdata1.flatten()
     wfarrpv.put(inputArr1)
-    wfintpv.put(np.sum(inputArr1))
+    #wfintpv.put(np.sum(inputArr1))
     
     """
     #### laser test
