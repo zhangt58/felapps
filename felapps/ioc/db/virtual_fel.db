@@ -41,3 +41,23 @@ record(calc, "$(PREFIX):NOISE")
         field(PREC, "4")
         field(CALC, "(SIN(A)+COS(A))*0.003")
 }
+
+# fake ai record to control intensity
+record(ai, "$(PREFIX):AMP:SET")
+{
+    field(DTYP, "Soft Channel")
+    field(VAL, "100")
+    field(UDF, 1)
+    field(PREC, "4")
+    field(FLNK, "$(PREFIX):AMP")
+}
+
+record(calc, "$(PREFIX):AMP")
+{
+    field(INPA, "$(PREFIX):AMP:SET")
+    field(INPB, "$(PREFIX):NOISE")
+    field(SCAN, ".1 second")
+    field(PREC, "4")
+    field(CALC, "A*(1+B*2)")
+}
+
