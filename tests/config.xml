@@ -4,7 +4,7 @@
     </group>
 
     <group name="Control">
-        <properties frequency="1" imgsrcPV="UN-BI:PROF19:ARR" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF19:ARR  UN-BI:PROF25:ARR" />
+        <properties frequency="5" imgsrcPV="UN-BI:PROF19:ARR" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF19:ARR  UN-BI:PROF25:ARR" />
     </group>
 
     <group name="Style">

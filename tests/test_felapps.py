@@ -3,6 +3,6 @@
 
 import felapps
 
-felapps.imageviewer.run(maximize = True,logon = False)
-#felapps.felformula.run(maximize = True, logon = False)
-#felapps.cornalyzer.run(maximize = True, logon = False)
+#felapps.imageviewer.run(maximize = True, logon = False, debug = False)
+#felapps.felformula.run(maximize = True, logon = False, debug = True)
+felapps.cornalyzer.run(maximize = True, logon = False, debug = True)
