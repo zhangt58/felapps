@@ -1863,10 +1863,35 @@ class ScanAnalyzer(wx.Frame):
         self.yrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
         self.yrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
         self.yrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
+
+        shotnum_st = funutils.createwxStaticText(self.panel_l, label = 'Shot#'  )
+        waitmse_st = funutils.createwxStaticText(self.panel_l, label = 'WaitSec')
+        daqfreq_st = funutils.createwxStaticText(self.panel_l, label = 'daqRep' )
+        profreq_st = funutils.createwxStaticText(self.panel_l, label = 'profRep')
+        self.shotnum_sc = wx.SpinCtrl(self.panel_l, value = '5', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS)
+        self.waitmse_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS)
+        self.daqfreq_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
+        self.profreq_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
+        self.waitmse_calc = funutils.createwxStaticText(self.panel_l, label = '1000.0')
+        waitmse_unit = funutils.createwxStaticText(self.panel_l, label = 'msec')
+
         gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.yrange_max_tc, pos = (4, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.yrange_num_tc, pos = (4, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        gs.Add(shotnum_st, pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(waitmse_st, pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(daqfreq_st, pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(profreq_st, pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        gs.Add(self.shotnum_sc, pos = (5, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.waitmse_sc, pos = (6, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.daqfreq_sc, pos = (7, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.profreq_sc, pos = (8, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+
+        gs.Add(self.waitmse_calc, pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
         gs.AddGrowableCol(1, 0)
         gs.AddGrowableCol(2, 0)
@@ -1877,6 +1902,7 @@ class ScanAnalyzer(wx.Frame):
         self.scan2flag = wx.CheckBox(self.panel_l, label = u'Two Dimensional')
         self.swapxz    = wx.CheckBox(self.panel_l, label = u'Swap XZ')
         self.swapxy    = wx.CheckBox(self.panel_l, label = u'Swap XY')
+
         gsm.Add(self.scan2flag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsm.Add(self.swapxz,    pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT |  wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsm.Add(self.swapxy,    pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
@@ -2090,6 +2116,10 @@ class ScanAnalyzer(wx.Frame):
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_min)
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_max)
         self.Bind(wx.EVT_COMBOBOX,   self.onSetImgCM,     self.imgcm_cb    )
+        self.Bind(wx.EVT_SPINCTRL,   self.onSetWaitTime,  self.waitmse_sc  )
+        self.Bind(wx.EVT_SPINCTRL,   self.onSetShotNum,   self.shotnum_sc  )
+        self.Bind(wx.EVT_SPINCTRL,   self.onSetDaqFreq,   self.daqfreq_sc  )
+        self.Bind(wx.EVT_SPINCTRL,   self.onSetProFreq,   self.profreq_sc  )
 
     def postInit(self):
         # initialization after UI creation
@@ -2140,9 +2170,11 @@ class ScanAnalyzer(wx.Frame):
 
         self.wait_msec = 1000 # time wait after every scan data setup, in millisecond
         self.shotnum = 10 # shots number to be recorded for each scan data setup
-        self.reprate = 5 # rep-rate of machine, [Hz]
-        self.daqdelt_msec = 1000.0/float(self.reprate) # daq timer interval
-        self.scandelt_msec = self.wait_msec + (self.shotnum + 1)* self.daqdelt_msec
+        self.scandaqfreq_val = 5 # scan rep-rate [Hz]
+        self.profdaqfreq_val = 5 # prof rep-rate [Hz]
+        self.scandaqdelt_msec = 1000.0/float(self.scandaqfreq_val) # scan daq timer interval [ms]
+        self.profdaqdelt_msec = 1000.0/float(self.profdaqfreq_val) # prof daq timer interval [ms]
+        self.scandelt_msec = self.wait_msec + (self.shotnum + 1)* self.scandaqdelt_msec
 
         # scan dimension
         self.scanndim = 1
@@ -2224,7 +2256,7 @@ class ScanAnalyzer(wx.Frame):
             self.profdaqtimer.Stop()
             btnobj.SetLabel('Prof DAQ START')
         else:
-            self.profdaqtimer.Start(self.daqdelt_msec)
+            self.profdaqtimer.Start(self.profdaqdelt_msec)
             btnobj.SetLabel('Prof DAQ STOP')
 
     def onProfDAQ(self, event):
@@ -2245,7 +2277,7 @@ class ScanAnalyzer(wx.Frame):
                 assert self.xidx < self.scanX_range_num
                 self.scanX_PV.put(self.scanX_range[self.xidx])
                 wx.MilliSleep(self.wait_msec)
-                self.startScanDAQ(self.daqdelt_msec, self.xidx)
+                self.startScanDAQ(self.scandaqdelt_msec, self.xidx)
                 self.xidx += 1
             except AssertionError:
                 self.scanctrltimer.Stop()
@@ -2334,6 +2366,19 @@ class ScanAnalyzer(wx.Frame):
             dirpath = dlg.GetPath()
             self.imgconfig_pathvalue_tc.SetValue(dirpath)
         dlg.Destroy()
+
+    def onSetWaitTime(self, event):
+        self.wait_msec = 500.0*float(event.GetEventObject().GetValue())  
+        self.waitmse_calc.SetLabel(str(self.wait_msec))
+
+    def onSetShotNum(self, event):
+        self.shotnum = int(event.GetEventObject().GetValue())
+
+    def onSetDaqFreq(self, event):
+        self.scandaqfreq_val = int(event.GetEventObject().GetValue())
+
+    def onSetProFreq(self, event):
+        self.profdaqfreq_val = int(event.GetEventObject().GetValue())
 
     def onScanfigClear(self, event):
         self.x = []
