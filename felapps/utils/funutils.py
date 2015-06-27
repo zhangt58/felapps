@@ -329,11 +329,11 @@ class ScanDataFactor(object): # will write into C module, 2015-06-17
 
     def getXerrbar(self):
         self.xerr = [self.scandata[i,:,:][:,0].std() for i in range(0, self.scanshape[0])]
-        return self.xerr
+        return np.array(self.xerr)
 
     def getYerrbar(self):
         self.yerr = [self.scandata[i,:,:][:,1].std() for i in range(0, self.scanshape[0])]
-        return self.yerr
+        return np.array(self.yerr)
 
     def getXavg(self):
         return self.scanmean[:,0]
