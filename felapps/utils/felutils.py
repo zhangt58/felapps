@@ -1849,8 +1849,8 @@ class ScanAnalyzer(wx.Frame):
         gs.Add(self.zaxis_tc, pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
         # X-AXIS range: min, max, num
-        xrange_st = funutils.createwxStaticText(self.panel_l, label = 'X-Range')
-        self.xrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
+        xrange_st = funutils.createwxStaticText(self.panel_l, label = 'X-Range[min:max:num]')
+        self.xrange_min_tc = wx.TextCtrl(self.panel_l, value = '0.5', style = wx.TE_PROCESS_ENTER)
         self.xrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
         self.xrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
         gs.Add(xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
@@ -1859,21 +1859,24 @@ class ScanAnalyzer(wx.Frame):
         gs.Add(self.xrange_num_tc, pos = (3, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
         # Y-AXIS range: min, max, num
-        self.yrange_st = funutils.createwxStaticText(self.panel_l, label = 'Y-Range')
+        self.yrange_st = funutils.createwxStaticText(self.panel_l, label = 'Y-Range[min:max:num]')
         self.yrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
         self.yrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
         self.yrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
 
-        shotnum_st = funutils.createwxStaticText(self.panel_l, label = 'Shot#'  )
-        waitmse_st = funutils.createwxStaticText(self.panel_l, label = 'WaitSec')
-        daqfreq_st = funutils.createwxStaticText(self.panel_l, label = 'daqRep' )
-        profreq_st = funutils.createwxStaticText(self.panel_l, label = 'profRep')
+        shotnum_st = funutils.createwxStaticText(self.panel_l, label = 'Shot Number')
+        waitmse_st = funutils.createwxStaticText(self.panel_l, label = 'Wait Second')
+        daqfreq_st = funutils.createwxStaticText(self.panel_l, label = 'Scan DAQ rep-rate')
+        profreq_st = funutils.createwxStaticText(self.panel_l, label = 'Prof DAQ rep-rate')
         self.shotnum_sc = wx.SpinCtrl(self.panel_l, value = '5', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS)
         self.waitmse_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS)
         self.daqfreq_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
         self.profreq_sc = wx.SpinCtrl(self.panel_l, value = '2', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
         self.waitmse_calc = funutils.createwxStaticText(self.panel_l, label = '1000.0')
         waitmse_unit = funutils.createwxStaticText(self.panel_l, label = 'msec')
+        shotnum_unit = funutils.createwxStaticText(self.panel_l, label = 'per iteration')
+        daqfreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
+        profreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
 
         gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
@@ -1890,8 +1893,11 @@ class ScanAnalyzer(wx.Frame):
         gs.Add(self.daqfreq_sc, pos = (7, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.profreq_sc, pos = (8, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
+        gs.Add(shotnum_unit,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(self.waitmse_calc, pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gs.Add(waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(daqfreq_unit,      pos = (7, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(profreq_unit,      pos = (8, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
         gs.AddGrowableCol(1, 0)
         gs.AddGrowableCol(2, 0)
@@ -1936,14 +1942,42 @@ class ScanAnalyzer(wx.Frame):
         gsb.Add(self.close_btn,  pos = (0, 3), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsb.Add(self.profdaq_btn,pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
 
+        # splitter line 3
+        hline3 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
+
+        # log container
+        vboxlog = wx.BoxSizer(wx.VERTICAL)
+        logcnt_title   = funutils.createwxStaticText(self.panel_l, label = 'ShotNum Counter:')
+        self.logcnt_st = funutils.createwxStaticText(self.panel_l, label = '', fontcolor = 'red', fontsize = 20)
+        
+        hbox_logcnt = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_logcnt.Add(logcnt_title,   proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = 10)
+        hbox_logcnt.Add(self.logcnt_st, proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = 10)
+        
+        self.scanlog_tc = wx.TextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT)
+        self.scanlog_clear_btn  = funutils.createwxButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = 12)
+        vboxlog.Add(hbox_logcnt,     proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = 10)
+        vboxlog.Add(self.scanlog_tc, proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM,     border = 10)
+        vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_RIGHT, border = 10)
+
         # set layout
         controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
         controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+
         controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add((-1,20))
+
         controlpanel_sbsizer.Add(gsf,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+
         controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
         controlpanel_sbsizer.Add((-1,20))
+
         controlpanel_sbsizer.Add(gsb,    proportion = 0, flag = wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, border = 10)
+
+        controlpanel_sbsizer.Add(hline3, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add((-1,20))
+
+        controlpanel_sbsizer.Add(vboxlog,proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
 
         self.panel_l.SetSizerAndFit(controlpanel_sbsizer)
 
@@ -2038,7 +2072,7 @@ class ScanAnalyzer(wx.Frame):
         self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#CCCCFF'))
 
         self.clrfig_btn = funutils.createwxButton(self.panel_rd, label = u'Clear', fontsize = 12)
-        self.scan_cb = wx.CheckBox(self.panel_rd, label = u'Show Scan Fig')
+        self.scan_cb    = wx.CheckBox(self.panel_rd, label = u'Show Scan Fig')
 
         self.panel_rd.sfig_pos_st  = funutils.createwxStaticText(self.panel_rd, label = 'Current Pos:')
         self.panel_rd.sfig_pos     = funutils.createwxStaticText(self.panel_rd, label = '')
@@ -2052,9 +2086,9 @@ class ScanAnalyzer(wx.Frame):
         gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
 
         vr2hbox_lv.Add(self.scanfig,    proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr2hbox_rv.Add(self.scan_cb, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
+        vr2hbox_rv.Add(self.scan_cb,    proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
         vr2hbox_rv.Add(self.clrfig_btn, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
-        vr2hbox.Add(vr2hbox_lv, proportion = 8, flag = wx.EXPAND | wx.ALL, border = 10)
+        vr2hbox.Add(vr2hbox_lv, proportion = 6, flag = wx.EXPAND | wx.ALL, border = 10)
         vr2hbox.Add(vr2hbox_rv, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
 
         vr2vbox.Add(vr2hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
@@ -2069,12 +2103,12 @@ class ScanAnalyzer(wx.Frame):
         vright.Add(vright2, proportion = 3, flag = wx.EXPAND)
 
         hbox.Add(vleft,  proportion = 2, flag = wx.EXPAND)
-        hbox.Add(vright, proportion = 5, flag = wx.EXPAND)
+        hbox.Add(vright, proportion = 3, flag = wx.EXPAND)
 
         # set outer hbox
         self.panel.SetSizer(hbox)
         osizer = wx.BoxSizer(wx.HORIZONTAL)
-        osizer.SetMinSize((1080, 720))
+        osizer.SetMinSize((1280, 800))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
         
@@ -2112,6 +2146,7 @@ class ScanAnalyzer(wx.Frame):
         self.Bind(wx.EVT_BUTTON,     self.onPushProfDAQ,  self.profdaq_btn )
         self.Bind(wx.EVT_BUTTON,     self.onChoosePath,   self.imgconfig_pathchoose_btn)
         self.Bind(wx.EVT_BUTTON,     self.onScanfigClear, self.clrfig_btn  )
+        self.Bind(wx.EVT_BUTTON,     self.onScanlogClear, self.scanlog_clear_btn)
         self.Bind(wx.EVT_TEXT_ENTER, self.onSetImgPV,     self.imgpv_tc    )
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_min)
         self.Bind(wx.EVT_SCROLL,     self.onSetImgCR,     self.imgcr_fs_max)
@@ -2133,9 +2168,26 @@ class ScanAnalyzer(wx.Frame):
         self.yrange_num_tc.Disable()
         self.swapxy.Disable()
         self.fittype.Disable()
+        self.scan_cb.SetValue(True)
+
+        # log text
+        self.scanlog_tc.SetDefaultStyle(wx.TextAttr(wx.RED)) 
+        self.scanlog_tc.SetValue('')
 
         ## set image
         self.postSetImage()
+
+        ## set scan parameters
+        self.postSetScan()
+
+    def postSetScan(self):
+        self.waitmsec_val     = float(self.waitmse_calc.GetLabel()) # time wait after every scan data setup, in millisecond
+        self.shotnum_val      = self.shotnum_sc.GetValue() # shots number to be recorded for each scan data setup
+        self.scandaqfreq_val  = self.daqfreq_sc.GetValue() # scan rep-rate [Hz]
+        self.profdaqfreq_val  = self.profreq_sc.GetValue() # prof rep-rate [Hz]
+        self.scandaqdelt_msec = 1000.0/float(self.scandaqfreq_val) # scan daq timer interval [ms]
+        self.profdaqdelt_msec = 1000.0/float(self.profdaqfreq_val) # prof daq timer interval [ms]
+        self.scandelt_msec = self.waitmsec_val + (self.shotnum_val + 1)* self.scandaqdelt_msec
 
     def postSetImage(self):
         ## image color range setting
@@ -2166,15 +2218,7 @@ class ScanAnalyzer(wx.Frame):
         self.wpx, self.hpx = 494, 659
         self.roixy = [0, self.wpx, 0, self.hpx]
         
-        self.scanflag = 0 # monitor intensity by default, scan enabled when set to nonzero
-
-        self.wait_msec = 1000 # time wait after every scan data setup, in millisecond
-        self.shotnum = 10 # shots number to be recorded for each scan data setup
-        self.scandaqfreq_val = 5 # scan rep-rate [Hz]
-        self.profdaqfreq_val = 5 # prof rep-rate [Hz]
-        self.scandaqdelt_msec = 1000.0/float(self.scandaqfreq_val) # scan daq timer interval [ms]
-        self.profdaqdelt_msec = 1000.0/float(self.profdaqfreq_val) # prof daq timer interval [ms]
-        self.scandelt_msec = self.wait_msec + (self.shotnum + 1)* self.scandaqdelt_msec
+        self.scanflag = 1 # scan enabled when set to nonzero, by default
 
         # scan dimension
         self.scanndim = 1
@@ -2264,19 +2308,24 @@ class ScanAnalyzer(wx.Frame):
 
     def onScanDAQ(self, event):
         self.scandatatmp[self.daqcnt,:] = self.scanX_PV.get(), np.sum(self.mypv.get())
-        if self.daqcnt == self.shotnum-1:
+        if self.daqcnt == self.shotnum_val-1:
             self.scandaqtimer.Stop()
-            self.scanZ[self.scanidx*self.shotnum:(self.scanidx+1)*self.shotnum, :] = self.scandatatmp
+            # write scan log
+            logmsg = 'Scan #%02d is DONE, scan value is: %.3f\n' % (self.scanidx+1, self.scanX_range[self.xidx-1])
+            self.scanlog_tc.AppendText(logmsg)
+            self.scanZ[self.scanidx*self.shotnum_val:(self.scanidx+1)*self.shotnum_val, :] = self.scandatatmp
             self.updateScanfig()
         #print self.daqcnt, self.scanX_PV.get(), np.sum(self.mypv.get())
         self.daqcnt += 1
+        
+        self.logcnt_st.SetLabel(str(self.daqcnt))
 
     def onUpdateScan(self, event):
         if self.scanflag == 1:
             try:
                 assert self.xidx < self.scanX_range_num
                 self.scanX_PV.put(self.scanX_range[self.xidx])
-                wx.MilliSleep(self.wait_msec)
+                wx.MilliSleep(self.waitmsec_val)
                 self.startScanDAQ(self.scandaqdelt_msec, self.xidx)
                 self.xidx += 1
             except AssertionError:
@@ -2310,11 +2359,14 @@ class ScanAnalyzer(wx.Frame):
 
     def updateScanfig(self):
         if self.scanflag == 1:
-            scandata_ins = funutils.ScanDataFactor(self.scanZ, int(self.scanX_range_num), self.shotnum)
+            scandata_ins = funutils.ScanDataFactor(self.scanZ, int(self.scanX_range_num), self.shotnum_val)
             xerr_ins = scandata_ins.getXerrbar()
             yerr_ins = scandata_ins.getYerrbar()
-            self.scanfig.x = scandata_ins.getXavg()
-            self.scanfig.y = scandata_ins.getYavg()
+            idx = scandata_ins.getYavg().nonzero()
+            self.scanfig.x = scandata_ins.getXavg()[idx]
+            self.scanfig.y = scandata_ins.getYavg()[idx]
+            self.scanfig.xerrarr = xerr_ins[idx]
+            self.scanfig.yerrarr = yerr_ins[idx]
 
         else:
             scanshotdata = funutils.ImageDataFactor(self.imgprofile.z)
@@ -2324,12 +2376,12 @@ class ScanAnalyzer(wx.Frame):
             self.scanfig.x = np.array(self.x)
             self.scanfig.y = np.array(self.y)
 
-        self.scanfig.xyplot.set_marker(self.sf_mkshape)
-        self.scanfig.xyplot.set_markersize(self.sf_mksize)
-        self.scanfig.xyplot.set_markerfacecolor(self.sf_mkfacecolor)
-        self.scanfig.xyplot.set_markeredgecolor(self.sf_mkedgecolor)
-        self.scanfig.xyplot.set_linestyle(self.sf_linestyle)
-        self.scanfig.xyplot.set_color(self.sf_linecolor)
+        #self.scanfig.xyplot.set_marker(self.sf_mkshape)
+        #self.scanfig.xyplot.set_markersize(self.sf_mksize)
+        #self.scanfig.xyplot.set_markerfacecolor(self.sf_mkfacecolor)
+        #self.scanfig.xyplot.set_markeredgecolor(self.sf_mkedgecolor)
+        #self.scanfig.xyplot.set_linestyle(self.sf_linestyle)
+        #self.scanfig.xyplot.set_color(self.sf_linecolor)
         self.scanfig.repaint()
 
     def onSetImgPV(self, event):
@@ -2368,22 +2420,29 @@ class ScanAnalyzer(wx.Frame):
         dlg.Destroy()
 
     def onSetWaitTime(self, event):
-        self.wait_msec = 500.0*float(event.GetEventObject().GetValue())  
-        self.waitmse_calc.SetLabel(str(self.wait_msec))
+        self.waitmsec_val = 500.0*float(event.GetEventObject().GetValue())  
+        self.waitmse_calc.SetLabel(str(self.waitmsec_val))
+        self.postSetScan()
 
     def onSetShotNum(self, event):
-        self.shotnum = int(event.GetEventObject().GetValue())
+        self.shotnum_val = int(event.GetEventObject().GetValue())
+        self.postSetScan()
 
     def onSetDaqFreq(self, event):
         self.scandaqfreq_val = int(event.GetEventObject().GetValue())
+        self.postSetScan()
 
     def onSetProFreq(self, event):
         self.profdaqfreq_val = int(event.GetEventObject().GetValue())
+        self.postSetScan()
 
     def onScanfigClear(self, event):
         self.x = []
         self.y = []
         self.updateScanfig()
+
+    def onScanlogClear(self, event):
+        self.scanlog_tc.SetValue('')
 
     def onDEBUG1(self, event):
         self.Ddt[self.idx,:] = self.Dcnt, time.time() - self.Dt
@@ -2411,8 +2470,8 @@ class ScanAnalyzer(wx.Frame):
                 self.scanY_range_num = float(self.yrange_num_tc.GetValue())
                 self.scanY_range = np.linspace(self.scanY_range_min, self.scanY_range_max, self.scanY_range_num)
 
-            self.scanZ = np.zeros((self.scanX_range_num*self.shotnum, self.scanndim+1))
-            self.scandatatmp = np.zeros((self.shotnum, self.scanndim+1))
+            self.scanZ = np.zeros((self.scanX_range_num*self.shotnum_val, self.scanndim+1))
+            self.scandatatmp = np.zeros((self.shotnum_val, self.scanndim+1))
             
 #------------------------------------------------------------------------#
 
@@ -2495,6 +2554,70 @@ class ImagePanelxy(pltutils.ImagePanelxy):
         except TypeError:
             pass
 
+    def doPlot(self):
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111)
+        self.ebplot = self.axes.errorbar(self.x, self.y,
+                                         xerr = self.xerrarr, yerr = self.yerrarr,
+                                         fmt = self.eb_fmt, 
+                                         ecolor = self.eb_markercolor, capthick = self.eb_markersize)
+        self.avgplot, = self.axes.plot(self.x, self.y, 
+                                       linestyle = self.avg_linestyle, 
+                                       linewidth = self.avg_linewidth,
+                                       color     = self.avg_linecolor,
+                                       markerfacecolor = self.avg_markerfacecolor, 
+                                       markeredgecolor = self.avg_markeredgecolor,
+                                       markersize      = self.avg_markersize)
+        self.figure.canvas.draw()
+
+    def onGetData(self):
+        self.x, self.y, self.xerrarr, self.yerrarr = 1, 1, 0.1, 0.1
+
+    def onConfigPlot(self):
+        self.eb_fmt         = '--o'
+        self.eb_markercolor = 'r'
+        self.eb_markersize  = 8
+        self.avg_linestyle  = '--'
+        self.avg_linewidth  = 2
+        self.avg_linecolor  = 'b'
+        self.avg_markerfacecolor = 'b'
+        self.avg_markeredgecolor = 'b'
+        self.avg_markersize      = 8
+
+    def repaint(self):
+        self.avgplot.set_xdata(self.x)
+        self.avgplot.set_ydata(self.y)
+        self.adjustErrbar(self.ebplot, self.x, self.y, self.xerrarr, self.yerrarr)
+        self.axes.set_xlim(0.9*min(self.x), 1.1*max(self.x))
+        self.axes.set_ylim(0.9*min(self.y), 1.1*max(self.y))
+        self.figure.canvas.draw_idle()
+
+    def adjustErrbar(self, err, x, y, x_error, y_error):
+        ln, (errx_top, errx_bot, erry_top, erry_bot), (barsx, barsy) = err
+
+        x_base = x
+        y_base = y
+
+        xerr_top = x_base + x_error
+        xerr_bot = x_base - x_error
+        yerr_top = y_base + y_error
+        yerr_bot = y_base - y_error
+
+        errx_top.set_xdata(xerr_top)
+        errx_bot.set_xdata(xerr_bot)
+        errx_top.set_ydata(y_base)
+        errx_bot.set_ydata(y_base)
+
+        erry_top.set_xdata(x_base)
+        erry_bot.set_xdata(x_base)
+        erry_top.set_ydata(yerr_top)
+        erry_bot.set_ydata(yerr_bot)
+
+        new_segments_x = [np.array([[xt, y], [xb,y]]) for xt, xb, y in zip(xerr_top, xerr_bot, y_base)]
+        new_segments_y = [np.array([[x, yt], [x,yb]]) for x, yt, yb in zip(x_base, yerr_top, yerr_bot)]
+        barsx.set_segments(new_segments_x)
+        barsy.set_segments(new_segments_y)
+ 
 #------------------------------------------------------------------------#
 
 if __name__ == '__main__':
