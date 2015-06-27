@@ -1463,6 +1463,7 @@ class ImagePanelxy(wx.Panel):
         self.canvas = FigureCanvasWxAgg(self, -1, self.figure)
         self.setColor(self.bgcolor)
         self.onGetData()
+        self.onConfigPlot()
         self.doPlot()
         wx.CallAfter(self.fitCanvas) # fit canvas size after initialization
 
@@ -1471,6 +1472,12 @@ class ImagePanelxy(wx.Panel):
         self.canvas.mpl_connect('button_press_event',   self.onPress  )
         self.canvas.mpl_connect('button_release_event', self.onRelease)
         self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
+
+    def onConfigPlot(self):
+        pass
+
+    def onUpdatePlot(self):
+        pass
 
     def onPress(self, event):
         pass
