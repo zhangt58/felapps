@@ -54,6 +54,20 @@ def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LE
 
 #-------------------------------------------------------------------------#
 
+def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
+        fontname=wx.SYS_SYSTEM_FONT,
+        fontsize=10,
+        fontweight=wx.FONTWEIGHT_NORMAL,
+        fontcolor='black'):
+    font = wx.SystemSettings_GetFont(fontname)
+    font.SetPointSize(fontsize)
+    font.SetWeight(fontweight)
+    textctrl = wx.TextCtrl(parent = parent, 
+            value = value, style = style)
+    textctrl.SetDefaultStyle(wx.TextAttr(font = font, colText = fontcolor))
+    return textctrl
+
+#-------------------------------------------------------------------------#
 def createwxButton(parent, label,
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=10,
