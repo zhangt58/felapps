@@ -1,4 +1,4 @@
-from .utils import felutils, funutils, resutils
+from .utils import felutils, funutils, resutils, scanutils
 from .physics import felcalc, felbase
 from .facilities import dcls
 from .apps.imageviewer import imageviewer
