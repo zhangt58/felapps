@@ -156,11 +156,15 @@ class ScanAnalyzer(wx.Frame):
     def createPanel(self):
         # background panel
         self.panel    = funutils.createwxPanel(self,       funutils.hex2rgb('#B1B1B1'))
+        # background sizer
+        sizer1 = wx.BoxSizer(wx.HORIZONTAL) # put panel_l  wrapped sbsizer
+        sizer2 = wx.BoxSizer(wx.HORIZONTAL) # put panel_ru wrapped sbsizer
+        sizer3 = wx.BoxSizer(wx.HORIZONTAL) # put panel_rd wrapped sbsizer
 
         # three sub-panels
-        self.panel_l  = funutils.createwxPanel(self.panel, funutils.hex2rgb('#FFCCFF'))
-        self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb('#99FFFF'))
-        self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb('#CCCCFF'))
+        self.panel_l  = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+        self.panel_ru = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+        self.panel_rd = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
         
         ## --------hbox---------- 
         ##   vleft     vright
@@ -182,7 +186,7 @@ class ScanAnalyzer(wx.Frame):
         vright2  = wx.BoxSizer(wx.HORIZONTAL)
 
         # vleft
-        controlpanel_sb = funutils.createwxStaticBox(self.panel_l, label = 'Control Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        controlpanel_sb = funutils.createwxStaticBox(self.panel_l, label = 'Control Panel', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
         controlpanel_sbsizer = wx.StaticBoxSizer(controlpanel_sb, wx.VERTICAL)
 
         # grid sizer for horizontal entries
@@ -191,30 +195,30 @@ class ScanAnalyzer(wx.Frame):
         # X-AXIS input: PV name value
         xaxis_st      = funutils.createwxStaticText(self.panel_l, label = 'X-AXIS')
         self.xaxis_tc = wx.TextCtrl(self.panel_l, value = 'UN-BI:AMP:SET', style = wx.TE_PROCESS_ENTER)
-        gs.Add(xaxis_st,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.xaxis_tc, pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(xaxis_st,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.xaxis_tc, pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Y-AXIS input: PV name value
         self.yaxis_st = funutils.createwxStaticText(self.panel_l, label = 'Y-AXIS')
         self.yaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
-        gs.Add(self.yaxis_st, pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.yaxis_tc, pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yaxis_st, pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.yaxis_tc, pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Z-AXIS input: PV name value
         zaxis_st      = funutils.createwxStaticText(self.panel_l, label = 'Z-AXIS')
         self.zaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
-        gs.Add(zaxis_st,      pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.zaxis_tc, pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(zaxis_st,      pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.zaxis_tc, pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # X-AXIS range: min, max, num
         xrange_st = funutils.createwxStaticText(self.panel_l, label = 'X-Range[min:max:num]')
         self.xrange_min_tc = wx.TextCtrl(self.panel_l, value = '0.5', style = wx.TE_PROCESS_ENTER)
         self.xrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
         self.xrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
-        gs.Add(xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.xrange_min_tc, pos = (3, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.xrange_max_tc, pos = (3, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.xrange_num_tc, pos = (3, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.xrange_min_tc, pos = (3, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.xrange_max_tc, pos = (3, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.xrange_num_tc, pos = (3, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Y-AXIS range: min, max, num
         self.yrange_st = funutils.createwxStaticText(self.panel_l, label = 'Y-Range[min:max:num]')
@@ -236,26 +240,26 @@ class ScanAnalyzer(wx.Frame):
         daqfreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
         profreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
 
-        gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.yrange_max_tc, pos = (4, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.yrange_num_tc, pos = (4, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.yrange_max_tc, pos = (4, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.yrange_num_tc, pos = (4, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
-        gs.Add(shotnum_st, pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(waitmse_st, pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(daqfreq_st, pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(profreq_st, pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(shotnum_st, pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(waitmse_st, pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(daqfreq_st, pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(profreq_st, pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
-        gs.Add(self.shotnum_sc, pos = (5, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.waitmse_sc, pos = (6, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.daqfreq_sc, pos = (7, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.profreq_sc, pos = (8, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(self.shotnum_sc, pos = (5, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.waitmse_sc, pos = (6, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.daqfreq_sc, pos = (7, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.profreq_sc, pos = (8, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
-        gs.Add(shotnum_unit,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(self.waitmse_calc, pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(daqfreq_unit,      pos = (7, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gs.Add(profreq_unit,      pos = (8, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gs.Add(shotnum_unit,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.waitmse_calc, pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(daqfreq_unit,      pos = (7, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(profreq_unit,      pos = (8, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         gs.AddGrowableCol(1, 0)
         gs.AddGrowableCol(2, 0)
@@ -267,9 +271,9 @@ class ScanAnalyzer(wx.Frame):
         self.swapxz    = wx.CheckBox(self.panel_l, label = u'Swap XZ')
         self.swapxy    = wx.CheckBox(self.panel_l, label = u'Swap XY')
 
-        gsm.Add(self.scan2flag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsm.Add(self.swapxz,    pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT |  wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsm.Add(self.swapxy,    pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsm.Add(self.scan2flag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsm.Add(self.swapxz,    pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT |  wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsm.Add(self.swapxy,    pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsm.AddGrowableCol(0, 0)
 
         # splitter line 1
@@ -279,71 +283,74 @@ class ScanAnalyzer(wx.Frame):
         gsf = wx.GridBagSizer(5, 5)
         self.fitflag = wx.CheckBox(self.panel_l, label = u'Curve Fitting')
         self.fittype = wx.ComboBox(self.panel_l, value = 'Gaussian', choices = ['Gaussian','Polynomial'], style = wx.CB_READONLY)
-        gsf.Add(self.fitflag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsf.Add(self.fittype, pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsf.Add(self.fitflag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsf.Add(self.fittype, pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsf.AddGrowableCol(0, 0)
 
         # splitter line 2
         hline2 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
 
         # command pushbuttons
-        gsb = wx.GridBagSizer(5, 5)
-        self.start_btn  = funutils.createwxButton(self.panel_l, label = u'START',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
-        self.retake_btn = funutils.createwxButton(self.panel_l, label = u'RETAKE', fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)   
-        self.pause_btn  = funutils.createwxButton(self.panel_l, label = u'PAUSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
-        self.close_btn  = funutils.createwxButton(self.panel_l, label = u'CLOSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = 12)
-        self.profdaq_btn= funutils.createwxButton(self.panel_l, label = u'Prof DAQ START' ,fontcolor = funutils.hex2rgb('#000000'), fontsize = 12, size = (-1, -1))
+        gsb = wx.GridBagSizer(10, 10)
+        self.start_btn  = funutils.createwxButton(self.panel_l, label = u'START',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
+        self.retake_btn = funutils.createwxButton(self.panel_l, label = u'RETAKE', fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)   
+        self.pause_btn  = funutils.createwxButton(self.panel_l, label = u'PAUSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
+        self.close_btn  = funutils.createwxButton(self.panel_l, label = u'CLOSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
 
-        gsb.Add(self.start_btn,  pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsb.Add(self.retake_btn, pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsb.Add(self.pause_btn,  pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsb.Add(self.close_btn,  pos = (0, 3), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsb.Add(self.profdaq_btn,pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        self.profdaq_btn= funutils.createwxButton(self.panel_l, label = u'Prof DAQ START' ,fontcolor = funutils.hex2rgb('#000000'), fontsize = self.fontsize_button, size = (-1, -1))
+
+        gsb.Add(self.start_btn,  pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsb.Add(self.retake_btn, pos = (0, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsb.Add(self.pause_btn,  pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsb.Add(self.close_btn,  pos = (1, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsb.Add(self.profdaq_btn,pos = (0, 3), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # splitter line 3
         hline3 = wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL)
 
         # log container
         vboxlog = wx.BoxSizer(wx.VERTICAL)
-        logcnt_title   = funutils.createwxStaticText(self.panel_l, label = 'ShotNum Counter:')
-        self.logcnt_st = funutils.createwxStaticText(self.panel_l, label = '', fontcolor = 'red', fontsize = 20)
+        logcnt_title   = funutils.createwxStaticText(self.panel_l, label = 'Shot Number Counter:', fontsize = self.fontsize_statictext)
+        self.logcnt_st = funutils.createwxStaticText(self.panel_l, label = '', fontcolor = 'red',  fontsize = int(1.5*self.fontsize_statictext))
         
         hbox_logcnt = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_logcnt.Add(logcnt_title,   proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = 10)
-        hbox_logcnt.Add(self.logcnt_st, proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = 10)
+        hbox_logcnt.Add(logcnt_title,   proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = self.bordersize)
+        hbox_logcnt.Add(self.logcnt_st, proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
         
-        self.scanlog_tc = wx.TextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT)
-        self.scanlog_clear_btn  = funutils.createwxButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = 12)
-        vboxlog.Add(hbox_logcnt,     proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = 10)
-        vboxlog.Add(self.scanlog_tc, proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM,     border = 10)
-        vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_RIGHT, border = 10)
+        self.scanlog_tc = funutils.createwxTextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT, fontsize = self.fontsize_textctrl, fontcolor = 'red')
+        self.scanlog_clear_btn  = funutils.createwxButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = self.fontsize_button)
+        vboxlog.Add(hbox_logcnt,            proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = self.bordersize)
+        vboxlog.Add(self.scanlog_tc,        proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM,     border = self.bordersize)
+        vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.BOTTOM | wx.ALIGN_RIGHT,         border = self.bordersize)
 
         # set layout
-        controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
-        controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
+        controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         controlpanel_sbsizer.Add((-1,20))
 
-        controlpanel_sbsizer.Add(gsf,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(gsf,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         controlpanel_sbsizer.Add((-1,20))
 
-        controlpanel_sbsizer.Add(gsb,    proportion = 0, flag = wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(gsb,    proportion = 0, flag = wx.ALIGN_LEFT | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline3, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        controlpanel_sbsizer.Add(hline3, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         controlpanel_sbsizer.Add((-1,20))
 
-        controlpanel_sbsizer.Add(vboxlog,proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        controlpanel_sbsizer.Add(vboxlog,proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
 
-        self.panel_l.SetSizerAndFit(controlpanel_sbsizer)
+        sizer1.Add(controlpanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+
+        self.panel_l.SetSizerAndFit(sizer1)
 
         vleft.Add(self.panel_l,  proportion = 1, flag = wx.EXPAND)
 
         # vright1
 
-        imagepanel_sb      = funutils.createwxStaticBox(self.panel_ru, label = 'Image Monitor Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        imagepanel_sb      = funutils.createwxStaticBox(self.panel_ru, label = 'Image Monitor Panel', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
         imagepanel_sbsizer = wx.StaticBoxSizer(imagepanel_sb, wx.HORIZONTAL)
 
         vr1hbox    = wx.BoxSizer(wx.HORIZONTAL) # container for vr1hbox_l and vr1hbox_r
@@ -352,7 +359,7 @@ class ScanAnalyzer(wx.Frame):
 
         # imageviewer
 
-        self.imgprofile               = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#99FFFF'))
+        self.imgprofile               = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
         self.panel_ru.imgprof_pos_st  = funutils.createwxStaticText(self.panel_ru, label = 'Current Pos:')
         self.panel_ru.imgprof_pos     = funutils.createwxStaticText(self.panel_ru, label = '')
         self.panel_ru.imgprof_pos1_st = funutils.createwxStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
@@ -375,50 +382,51 @@ class ScanAnalyzer(wx.Frame):
         self.imgconfig_pathvalue_tc.SetToolTip(wx.ToolTip('Path where config file stays, push "Config Path" button to locate.'))
 
         gsimg = wx.GridBagSizer(5, 5)
-        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.ALIGN_RIGHT |  wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
-        gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgpv_st,     pos = (0, 0), span = (1, 1), flag = wx.ALIGN_RIGHT |  wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = self.bordersize)
+        gsimg.Add(self.imgpv_tc,     pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.TOP | wx.BOTTOM, border = self.bordersize)
         
-        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
-        gsimg.Add(self.imgcm_rcb,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
-        gsimg.Add(self.imgcm_cb,     pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = 10)
+        gsimg.Add(self.imgcm_st,     pos = (1, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = self.bordersize)
+        gsimg.Add(self.imgcm_rcb,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = self.bordersize)
+        gsimg.Add(self.imgcm_cb,     pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = self.bordersize)
         
-        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         
-        gsimg.Add(self.imgcr_fs_min_val, pos = (3, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
-        gsimg.Add(self.imgcr_fs_max_val, pos = (3, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = 10)
+        gsimg.Add(self.imgcr_fs_min_val, pos = (3, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = self.bordersize)
+        gsimg.Add(self.imgcr_fs_max_val, pos = (3, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE, border = self.bordersize)
         
-        gsimg.Add(self.imgconfig_pathchoose_btn, pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgconfig_pathvalue_tc,   pos = (4, 1), span = (1, 2), flag = wx.LEFT | wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgconfig_fetch_btn,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsimg.Add(self.imgconfig_dump_btn,       pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsimg.Add(self.imgconfig_pathchoose_btn, pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgconfig_pathvalue_tc,   pos = (4, 1), span = (1, 2), flag = wx.LEFT | wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgconfig_fetch_btn,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgconfig_dump_btn,       pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         gsimg.AddGrowableCol(1, 0)
         gsimg.AddGrowableCol(2, 0)
 
         vr1hbox_lv_gs = wx.GridBagSizer(5, 5)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
-        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = self.bordersize)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = self.bordersize)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = self.bordersize)
+        vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = self.bordersize)
 
         # set layout 
         vr1hbox_lv.Add(self.imgprofile, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
+        vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = max(int(self.bordersize*0.5), 5))
 
         vr1hbox_rv.Add(gsimg, proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT)
 
         vr1hbox.Add(vr1hbox_lv, proportion = 3, flag = wx.EXPAND | wx.ALIGN_CENTER)
         vr1hbox.Add(vr1hbox_rv, proportion = 2, flag = wx.EXPAND | wx.ALIGN_RIGHT)
 
-        imagepanel_sbsizer.Add(vr1hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
+        imagepanel_sbsizer.Add(vr1hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = self.bordersize)
 
-        self.panel_ru.SetSizerAndFit(imagepanel_sbsizer)
+        sizer2.Add(imagepanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        self.panel_ru.SetSizerAndFit(sizer2)
         vright1.Add(self.panel_ru, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
         
         # vright2
-        analysispanel_sb      = funutils.createwxStaticBox(self.panel_rd, label = 'Correlation Analysis Panel', fontcolor=funutils.hex2rgb('#4B4B4B'))
+        analysispanel_sb      = funutils.createwxStaticBox(self.panel_rd, label = 'Correlation Analysis Panel', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
         analysispanel_sbsizer = wx.StaticBoxSizer(analysispanel_sb, wx.VERTICAL)
 
         vr2vbox = wx.BoxSizer(wx.VERTICAL)
@@ -427,9 +435,9 @@ class ScanAnalyzer(wx.Frame):
         vr2hbox_lv = wx.BoxSizer(wx.VERTICAL  ) # container for scanfig
         vr2hbox_rv = wx.BoxSizer(wx.VERTICAL  ) # container for reserved space for other controls
 
-        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb('#CCCCFF'))
+        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
 
-        self.clrfig_btn = funutils.createwxButton(self.panel_rd, label = u'Clear', fontsize = 12)
+        self.clrfig_btn = funutils.createwxButton(self.panel_rd, label = u'Clear', fontsize = self.fontsize_button)
         self.scan_cb    = wx.CheckBox(self.panel_rd, label = u'Show Scan Fig')
 
         self.panel_rd.sfig_pos_st  = funutils.createwxStaticText(self.panel_rd, label = 'Current Pos:')
@@ -438,23 +446,24 @@ class ScanAnalyzer(wx.Frame):
         self.panel_rd.sfig_pos1    = funutils.createwxStaticText(self.panel_rd, label = '',            fontcolor = 'blue')
         
         gss = wx.GridBagSizer(5, 5)
-        gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
-        gss.Add(self.panel_rd.sfig_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
-        gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = 10)
-        gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 10)
+        gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = self.bordersize)
+        gss.Add(self.panel_rd.sfig_pos,     pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = self.bordersize)
+        gss.Add(self.panel_rd.sfig_pos1_st, pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = self.bordersize)
+        gss.Add(self.panel_rd.sfig_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = self.bordersize)
 
         vr2hbox_lv.Add(self.scanfig,    proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr2hbox_rv.Add(self.scan_cb,    proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
-        vr2hbox_rv.Add(self.clrfig_btn, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 20)
-        vr2hbox.Add(vr2hbox_lv, proportion = 6, flag = wx.EXPAND | wx.ALL, border = 10)
-        vr2hbox.Add(vr2hbox_rv, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        vr2hbox_rv.Add(self.scan_cb,    proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 2*self.bordersize)
+        vr2hbox_rv.Add(self.clrfig_btn, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 2*self.bordersize)
+        vr2hbox.Add(vr2hbox_lv, proportion = 6, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        vr2hbox.Add(vr2hbox_rv, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
 
         vr2vbox.Add(vr2hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
-        vr2vbox.Add(gss,     proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = 5)
+        vr2vbox.Add(gss,     proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = max(int(self.bordersize*0.5), 5))
 
-        analysispanel_sbsizer.Add(vr2vbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
+        analysispanel_sbsizer.Add(vr2vbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = self.bordersize)
 
-        self.panel_rd.SetSizerAndFit(analysispanel_sbsizer)
+        sizer3.Add(analysispanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        self.panel_rd.SetSizerAndFit(sizer3)
         vright2.Add(self.panel_rd, proportion = 1, flag = wx.EXPAND)
 
         vright.Add(vright1, proportion = 2, flag = wx.EXPAND)
@@ -529,7 +538,6 @@ class ScanAnalyzer(wx.Frame):
         self.scan_cb.SetValue(True)
 
         # log text
-        self.scanlog_tc.SetDefaultStyle(wx.TextAttr(wx.RED)) 
         self.scanlog_tc.SetValue('')
 
         ## set image
@@ -569,6 +577,14 @@ class ScanAnalyzer(wx.Frame):
 
     def preInit(self):
         # initialization before UI creation
+        self.fontsize_button     = 12 
+        self.fontsize_statictext = 12
+        self.fontsize_staticbox  = 10
+        self.fontsize_textctrl   = 12
+        self.backcolor_panel     = '#DDDDDD'
+        self.fontcolor_staticbox = '#4B4B4B'
+        self.bordersize          = 12
+
         self.imgcmin = 0
         self.imgcmax = 1
         self.rcmflag = ''
