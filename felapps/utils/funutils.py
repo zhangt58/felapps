@@ -18,7 +18,6 @@ import wx
 import numpy as np
 import os
 import matplotlib.colors as colors
-import threading
 import time
 
 from . import EnhancedStatusBar as ESB
@@ -392,21 +391,5 @@ class ProgressBarFrame(wx.Frame):
     def onTickTimer(self, event):
         fmt='%H:%M:%S'
         self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
-
-#-------------------------------------------------------------------------#
-class ShowPbThread(threading.Thread):
-    def __init__(self, target, countNum):
-        threading.Thread.__init__(self, target = target)
-        self.setDaemon(True)
-        self.cnt = countNum
-        self.target = target
-        self.pb = self.target.pb
-
-    def run(self):
-        for i in xrange(self.cnt):
-            wx.MilliSleep(30)
-            wx.CallAfter(self.pb.SetValue, i+1)
-        
-        wx.CallAfter(self.target.Close)
 
 #-------------------------------------------------------------------------#
