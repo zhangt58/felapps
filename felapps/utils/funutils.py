@@ -18,6 +18,8 @@ import wx
 import numpy as np
 import os
 import matplotlib.colors as colors
+import threading
+import time
 
 from . import EnhancedStatusBar as ESB
 
@@ -355,5 +357,56 @@ class ScanDataFactor(object): # will write into C module, 2015-06-17
     def getYavg(self):
         return self.scanmean[:,1]
 
+#-------------------------------------------------------------------------#
+
+class ProgressBarFrame(wx.Frame):
+    def __init__(self, parent, title, range = 100, *args, **kws) :
+        wx.Frame.__init__(self, parent = parent, title = title, *args, **kws)
+        self.range = range
+        self.createProgressbar()
+        self.SetMinSize((400, 10))
+        self.Centre()
+        self.Show()
+        self.t0 = time.time()
+        self.elapsed_time_timer.Start(1000)
+
+    def createProgressbar(self):
+        self.pb = wx.Gauge(self)
+        self.pb.SetRange(range = self.range)
+
+        self.elapsed_time_st  = createwxStaticText(self, 'Elapsed Time:', fontsize = 10)
+        self.elapsed_time_val = createwxStaticText(self, '00:00:00',      fontsize = 10, fontcolor = 'red')
+
+        vbox_main = wx.BoxSizer(wx.VERTICAL)
+        hbox_time = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_time.Add(self.elapsed_time_st,  0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        hbox_time.Add(self.elapsed_time_val, 0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        vbox_main.Add(self.pb,   0, wx.EXPAND | wx.ALL, 5)
+        vbox_main.Add(hbox_time, 0, wx.EXPAND | wx.ALL, 5)
+
+        self.SetSizerAndFit(vbox_main)
+
+        self.elapsed_time_timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onTickTimer, self.elapsed_time_timer)
+    
+    def onTickTimer(self, event):
+        fmt='%H:%M:%S'
+        self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
+
+#-------------------------------------------------------------------------#
+class ShowPbThread(threading.Thread):
+    def __init__(self, target, countNum):
+        threading.Thread.__init__(self, target = target)
+        self.setDaemon(True)
+        self.cnt = countNum
+        self.target = target
+        self.pb = self.target.pb
+
+    def run(self):
+        for i in xrange(self.cnt):
+            wx.MilliSleep(30)
+            wx.CallAfter(self.pb.SetValue, i+1)
+        
+        wx.CallAfter(self.target.Close)
 
 #-------------------------------------------------------------------------#
