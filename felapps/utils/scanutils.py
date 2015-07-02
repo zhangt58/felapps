@@ -20,7 +20,9 @@ import numpy as np
 from . import funutils
 from . import pltutils
 import matplotlib.pyplot as plt
+import threading
 
+#------------------------------------------------------------------------#
 class ScanAnalyzer(wx.Frame):
     def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs)
@@ -316,14 +318,16 @@ class ScanAnalyzer(wx.Frame):
         vboxlog = wx.BoxSizer(wx.VERTICAL)
         logcnt_title   = funutils.createwxStaticText(self.panel_l, label = 'Shot Number Counter:', fontsize = self.fontsize_statictext)
         self.logcnt_st = funutils.createwxStaticText(self.panel_l, label = '', fontcolor = 'red',  fontsize = int(1.5*self.fontsize_statictext))
+        self.logcnt_gauge = wx.Gauge(self.panel_l)
         
         hbox_logcnt = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_logcnt.Add(logcnt_title,   proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = self.bordersize)
-        hbox_logcnt.Add(self.logcnt_st, proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
+        hbox_logcnt.Add(logcnt_title,      proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = self.bordersize)
+        hbox_logcnt.Add(self.logcnt_st,    proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
+        hbox_logcnt.Add(self.logcnt_gauge, proportion = 2, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
         
         self.scanlog_tc = funutils.createwxTextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT, fontsize = self.fontsize_textctrl, fontcolor = 'red')
         self.scanlog_clear_btn  = funutils.createwxButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = self.fontsize_button)
-        vboxlog.Add(hbox_logcnt,            proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = self.bordersize)
+        vboxlog.Add(hbox_logcnt,            proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = self.bordersize)
         vboxlog.Add(self.scanlog_tc,        proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM,     border = self.bordersize)
         vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.BOTTOM | wx.ALIGN_RIGHT,         border = self.bordersize)
 
@@ -541,8 +545,11 @@ class ScanAnalyzer(wx.Frame):
         self.fittype.Disable()
         self.scan_cb.SetValue(True)
 
-        # log text
+        # scan log 
         self.scanlog_tc.SetValue('')
+        self.scanX_range_num = int(self.xrange_num_tc.GetValue())
+        self.shotnum_val     = self.shotnum_sc.GetValue()
+        self.logcnt_gauge.SetRange(range = self.scanX_range_num*self.shotnum_val)
 
         ## set image
         self.postSetImage()
@@ -646,9 +653,11 @@ class ScanAnalyzer(wx.Frame):
     def onPushStart(self, event):
         if not isinstance(self.mypv, epics.pv.PV):
             self.mypv = epics.PV(self.imgpv_tc.GetValue(), auto_monitor = True)
-        
+        # set up parameters for scan
         self.setScanParams()
-            
+
+        # start scan
+        self.accumScanNum = 0
         self.scanctrltimer.Start(self.scandelt_msec)
         
         # for debug only
@@ -694,10 +703,12 @@ class ScanAnalyzer(wx.Frame):
             self.scanZ[self.scanidx*self.shotnum_val:(self.scanidx+1)*self.shotnum_val, :] = self.scandatatmp
             self.updateScanfig()
         self.daqcnt += 1
-        
+        self.accumScanNum += 1
+        self.logcnt_gauge.SetValue(self.accumScanNum)
         self.logcnt_st.SetLabel(str(self.daqcnt))
 
     def onUpdateScan(self, event):
+        self.logcnt_gauge.SetRange(range = self.scanX_range_num*self.shotnum_val)
         if self.scanflag == 1:
             try:
                 assert self.xidx < self.scanX_range_num
@@ -838,7 +849,7 @@ class ScanAnalyzer(wx.Frame):
             self.scanXget_PV = epics.PV(self.xaxis_get_tc.GetValue())
             self.scanX_range_min = float(self.xrange_min_tc.GetValue())
             self.scanX_range_max = float(self.xrange_max_tc.GetValue())
-            self.scanX_range_num = float(self.xrange_num_tc.GetValue())
+            self.scanX_range_num = int(self.xrange_num_tc.GetValue())
             self.scanX_range = np.linspace(self.scanX_range_min, self.scanX_range_max, self.scanX_range_num)
 
             if self.scanndim == 2: # two-dimensional scan enabled
@@ -851,6 +862,30 @@ class ScanAnalyzer(wx.Frame):
             self.scanZ = np.zeros((self.scanX_range_num*self.shotnum_val, self.scanndim+1))
             self.scandatatmp = np.zeros((self.shotnum_val, self.scanndim+1))
             
+#------------------------------------------------------------------------#
+# do not use right now
+class ScanThread(threading.Thread):
+    """
+    Thread do scan routine, as well as show the progress bar.
+    
+    Dated: Jul. 1, 2015
+    """
+    def __init__(self, target):
+        threading.Thread.__init__(self, target = target)
+        self.setDaemon(True)
+        self.target = target
+        self.pb = self.target.pbframe.pb
+
+    def run(self):
+        for xidx in xrange(self.target.scanX_range_num):
+            wx.MilliSleep(self.target.waitmsec_val)
+            #wx.CallAfter(self.target.startScanDAQ, self.target.scandaqdelt_msec, xidx+1)
+            wx.CallAfter(self.pb.SetValue, xidx)
+        
+        #self.target.scanctrltimer.Stop()
+        #self.target.scandaqtimer.Stop()
+        wx.CallAfter(self.target.pbframe.Close)
+
 #------------------------------------------------------------------------#
 class ImagePanel(pltutils.ImagePanel):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
@@ -952,8 +987,6 @@ class ImagePanelxy(pltutils.ImagePanelxy):
         self.adjustErrbar(self.ebplot, self.x, self.y, self.xerrarr, self.yerrarr)
         self.axes.set_xlim(0.9*min(self.x), 1.1*max(self.x))
         self.axes.set_ylim(0.1*min(self.y), 2.0*max(self.y))
-        #self.axes.set_xlim(auto=True)
-        #self.axes.set_ylim(auto=True)
         self.figure.canvas.draw_idle()
 
     def adjustErrbar(self, err, x, y, x_error, y_error):
