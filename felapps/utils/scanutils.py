@@ -148,9 +148,9 @@ class ScanAnalyzer(wx.Frame):
         self.statusbar.SetFieldsCount(3)
         self.SetStatusBar(self.statusbar)
         self.statusbar.SetStatusWidths([-7,-2,-1])
-        self.statusbar.appinfo = wx.StaticText(self.statusbar, wx.ID_ANY, "Correlation Analyzer powered by Python")
-        self.timenow_st        = wx.StaticText(self.statusbar, wx.ID_ANY, "2015-06-05 14:00:00 CST")
-        appversion             = wx.StaticText(self.statusbar, wx.ID_ANY, " (Version: " + self.appversion + ")")
+        self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "Correlation Analyzer powered by Python")
+        self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "2015-06-05 14:00:00 CST")
+        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = " (Version: " + self.appversion + ")")
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
@@ -195,77 +195,82 @@ class ScanAnalyzer(wx.Frame):
         gs = wx.GridBagSizer(5, 5)
 
         # X-AXIS input: PV name value
-        xaxis_set_st      = funutils.createwxStaticText(self.panel_l, label = 'X-AXIS (SET TO)')
-        xaxis_get_st      = funutils.createwxStaticText(self.panel_l, label = 'X-AXIS (GET FROM)')
-        self.xaxis_set_tc = wx.TextCtrl(self.panel_l, value = 'UN-BI:AMP:SET', style = wx.TE_PROCESS_ENTER)
-        self.xaxis_get_tc = wx.TextCtrl(self.panel_l, value = 'UN-BI:AMP',     style = wx.TE_PROCESS_ENTER)
-        gs.Add(xaxis_set_st,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        self.xaxis_set_st      = funutils.MyStaticText(self.panel_l, label = 'X-AXIS (SET TO)'  )
+        self.xaxis_get_st      = funutils.MyStaticText(self.panel_l, label = 'X-AXIS (GET FROM)')
+        self.xaxis_set_tc = funutils.MyTextCtrl(self.panel_l, value = 'UN-BI:AMP:SET', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        self.xaxis_get_tc = funutils.MyTextCtrl(self.panel_l, value = 'UN-BI:AMP',     style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        gs.Add(self.xaxis_set_st,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.xaxis_set_tc, pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(xaxis_get_st,      pos = (0, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.xaxis_get_st,      pos = (0, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.xaxis_get_tc, pos = (0, 3), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Y-AXIS input: PV name value
-        self.yaxis_st = funutils.createwxStaticText(self.panel_l, label = 'Y-AXIS')
-        self.yaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
+        self.yaxis_st = funutils.MyStaticText(self.panel_l, label = 'Y-AXIS')
+        self.yaxis_tc = funutils.MyTextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
         gs.Add(self.yaxis_st, pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.yaxis_tc, pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Z-AXIS input: PV name value
-        zaxis_st      = funutils.createwxStaticText(self.panel_l, label = 'Z-AXIS')
-        self.zaxis_tc = wx.TextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER)
-        gs.Add(zaxis_st,      pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        self.zaxis_st      = funutils.MyStaticText(self.panel_l, label = 'Z-AXIS')
+        self.zaxis_tc = funutils.MyTextCtrl(self.panel_l, value = '', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        gs.Add(self.zaxis_st,      pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.zaxis_tc, pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # X-AXIS range: min, max, num
-        xrange_st = funutils.createwxStaticText(self.panel_l, label = 'X-Range[min:max:num]')
-        self.xrange_min_tc = wx.TextCtrl(self.panel_l, value = '10', style = wx.TE_PROCESS_ENTER)
-        self.xrange_max_tc = wx.TextCtrl(self.panel_l, value = '50', style = wx.TE_PROCESS_ENTER)
-        self.xrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
-        gs.Add(xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        self.xrange_st = funutils.MyStaticText(self.panel_l, label = 'X-Range[min:max:num]')
+        self.xrange_min_tc = funutils.MyTextCtrl(self.panel_l, value = '10', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        self.xrange_max_tc = funutils.MyTextCtrl(self.panel_l, value = '50', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        self.xrange_num_tc = funutils.MyTextCtrl(self.panel_l, value = '10', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        gs.Add(self.xrange_st,          pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.xrange_min_tc, pos = (3, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.xrange_max_tc, pos = (3, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.xrange_num_tc, pos = (3, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         # Y-AXIS range: min, max, num
-        self.yrange_st = funutils.createwxStaticText(self.panel_l, label = 'Y-Range[min:max:num]')
-        self.yrange_min_tc = wx.TextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER)
-        self.yrange_max_tc = wx.TextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER)
-        self.yrange_num_tc = wx.TextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER)
+        self.yrange_st = funutils.MyStaticText(self.panel_l, label = 'Y-Range[min:max:num]')
+        self.yrange_min_tc = funutils.MyTextCtrl(self.panel_l, value = '0',   style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        self.yrange_max_tc = funutils.MyTextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
+        self.yrange_num_tc = funutils.MyTextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
 
-        shotnum_st = funutils.createwxStaticText(self.panel_l, label = 'Shot Number')
-        waitmse_st = funutils.createwxStaticText(self.panel_l, label = 'Wait Second')
-        daqfreq_st = funutils.createwxStaticText(self.panel_l, label = 'Scan DAQ rep-rate')
-        profreq_st = funutils.createwxStaticText(self.panel_l, label = 'Prof DAQ rep-rate')
-        self.shotnum_sc = wx.SpinCtrl(self.panel_l, value = '10', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS)
-        self.waitmse_sc = wx.SpinCtrl(self.panel_l, value = '1', min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS)
-        self.daqfreq_sc = wx.SpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
-        self.profreq_sc = wx.SpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS)
-        self.waitmse_calc = funutils.createwxStaticText(self.panel_l, label = '1000.0')
-        waitmse_unit = funutils.createwxStaticText(self.panel_l, label = 'msec')
-        shotnum_unit = funutils.createwxStaticText(self.panel_l, label = 'per iteration')
-        daqfreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
-        profreq_unit = funutils.createwxStaticText(self.panel_l, label = 'Hz')
+        self.shotnum_st = funutils.MyStaticText(self.panel_l, label = 'Shot Number')
+        self.waitmse_st = funutils.MyStaticText(self.panel_l, label = 'Wait Second')
+        self.daqfreq_st = funutils.MyStaticText(self.panel_l, label = 'Scan DAQ rep-rate')
+        self.profreq_st = funutils.MyStaticText(self.panel_l, label = 'Prof DAQ rep-rate')
+        self.shotnum_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.waitmse_sc = funutils.MySpinCtrl(self.panel_l, value = '1',  min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.daqfreq_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.profreq_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.waitmse_calc = funutils.MyStaticText(self.panel_l, label = '500.0')
+        self.waitmse_unit = funutils.MyStaticText(self.panel_l, label = 'msec')
+        self.shotnum_unit = funutils.MyStaticText(self.panel_l, label = 'per iteration')
+        self.daqfreq_unit = funutils.MyStaticText(self.panel_l, label = 'Hz')
+        self.profreq_unit = funutils.MyStaticText(self.panel_l, label = 'Hz')
+
+        fontbtn = funutils.MyButton(self.panel_l, label = 'Choose Font')
 
         gs.Add(self.yrange_st,     pos = (4, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.yrange_min_tc, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.yrange_max_tc, pos = (4, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.yrange_num_tc, pos = (4, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
-        gs.Add(shotnum_st, pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(waitmse_st, pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(daqfreq_st, pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(profreq_st, pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.shotnum_st, pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.waitmse_st, pos = (6, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.daqfreq_st, pos = (7, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.profreq_st, pos = (8, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+
+        gs.Add(fontbtn, pos = (8, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        fontbtn.Bind(wx.EVT_BUTTON, self.onChooseFont)
 
         gs.Add(self.shotnum_sc, pos = (5, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.waitmse_sc, pos = (6, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.daqfreq_sc, pos = (7, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.profreq_sc, pos = (8, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
-        gs.Add(shotnum_unit,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.shotnum_unit,      pos = (5, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gs.Add(self.waitmse_calc, pos = (6, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(daqfreq_unit,      pos = (7, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
-        gs.Add(profreq_unit,      pos = (8, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.waitmse_unit,      pos = (6, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.daqfreq_unit,      pos = (7, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gs.Add(self.profreq_unit,      pos = (8, 2), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
 
         gs.AddGrowableCol(1, 0)
         gs.AddGrowableCol(2, 0)
@@ -273,9 +278,10 @@ class ScanAnalyzer(wx.Frame):
 
         # tick control methods
         gsm = wx.GridBagSizer(5, 5)
-        self.scan2flag = wx.CheckBox(self.panel_l, label = u'Two Dimensional')
-        self.swapxz    = wx.CheckBox(self.panel_l, label = u'Swap XZ')
-        self.swapxy    = wx.CheckBox(self.panel_l, label = u'Swap XY')
+        self.scan2flag = funutils.MyCheckBox(self.panel_l, label = u'Two Dimensional')
+        self.scan2flag.SetFont(self.font)
+        self.swapxz    = funutils.MyCheckBox(self.panel_l, label = u'Swap XZ')
+        self.swapxy    = funutils.MyCheckBox(self.panel_l, label = u'Swap XY')
 
         gsm.Add(self.scan2flag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsm.Add(self.swapxz,    pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT |  wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
@@ -287,7 +293,7 @@ class ScanAnalyzer(wx.Frame):
 
         # mathematical methods control
         gsf = wx.GridBagSizer(5, 5)
-        self.fitflag = wx.CheckBox(self.panel_l, label = u'Curve Fitting')
+        self.fitflag = funutils.MyCheckBox(self.panel_l, label = u'Curve Fitting')
         self.fittype = wx.ComboBox(self.panel_l, value = 'Gaussian', choices = ['Gaussian','Polynomial'], style = wx.CB_READONLY)
         gsf.Add(self.fitflag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsf.Add(self.fittype, pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
@@ -298,12 +304,12 @@ class ScanAnalyzer(wx.Frame):
 
         # command pushbuttons
         gsb = wx.GridBagSizer(10, 10)
-        self.start_btn  = funutils.createwxButton(self.panel_l, label = u'START',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
-        self.retake_btn = funutils.createwxButton(self.panel_l, label = u'RETAKE', fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)   
-        self.pause_btn  = funutils.createwxButton(self.panel_l, label = u'PAUSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
-        self.close_btn  = funutils.createwxButton(self.panel_l, label = u'CLOSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
+        self.start_btn  = funutils.MyButton(self.panel_l, label = u'START',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
+        self.retake_btn = funutils.MyButton(self.panel_l, label = u'RETAKE', fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)   
+        self.pause_btn  = funutils.MyButton(self.panel_l, label = u'PAUSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
+        self.close_btn  = funutils.MyButton(self.panel_l, label = u'CLOSE',  fontcolor=funutils.hex2rgb('#1111FF'), fontsize = self.fontsize_button)
 
-        self.profdaq_btn= funutils.createwxButton(self.panel_l, label = u'Prof DAQ START' ,fontcolor = funutils.hex2rgb('#000000'), fontsize = self.fontsize_button, size = (-1, -1))
+        self.profdaq_btn= funutils.MyButton(self.panel_l, label = u'Prof DAQ START' ,fontcolor = funutils.hex2rgb('#000000'), fontsize = self.fontsize_button, size = (-1, -1))
 
         gsb.Add(self.start_btn,  pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsb.Add(self.retake_btn, pos = (0, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
@@ -316,37 +322,37 @@ class ScanAnalyzer(wx.Frame):
 
         # log container
         vboxlog = wx.BoxSizer(wx.VERTICAL)
-        logcnt_title   = funutils.createwxStaticText(self.panel_l, label = 'Shot Number Counter:', fontsize = self.fontsize_statictext)
-        self.logcnt_st = funutils.createwxStaticText(self.panel_l, label = '', fontcolor = 'red',  fontsize = int(1.5*self.fontsize_statictext))
+        self.logcnt_title   = funutils.MyStaticText(self.panel_l, label = 'Shot Number Counter:')
+        self.logcnt_st = funutils.MyStaticText(self.panel_l, label = '', fontcolor = 'red',  fontsize = int(1.5*self.fontsize_statictext))
         self.logcnt_gauge = wx.Gauge(self.panel_l)
         
         hbox_logcnt = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_logcnt.Add(logcnt_title,      proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = self.bordersize)
+        hbox_logcnt.Add(self.logcnt_title,      proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_LEFT, border = self.bordersize)
         hbox_logcnt.Add(self.logcnt_st,    proportion = 1, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
-        hbox_logcnt.Add(self.logcnt_gauge, proportion = 2, flag = wx.TOP | wx.EXPAND | wx.RIGHT | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
+        hbox_logcnt.Add(self.logcnt_gauge, proportion = 2, flag = wx.TOP | wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER, border = self.bordersize)
         
-        self.scanlog_tc = funutils.createwxTextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT, fontsize = self.fontsize_textctrl, fontcolor = 'red')
-        self.scanlog_clear_btn  = funutils.createwxButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = self.fontsize_button)
-        vboxlog.Add(hbox_logcnt,            proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.ALIGN_LEFT, border = self.bordersize)
-        vboxlog.Add(self.scanlog_tc,        proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM,     border = self.bordersize)
-        vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.BOTTOM | wx.ALIGN_RIGHT,         border = self.bordersize)
+        self.scanlog_tc = funutils.MyTextCtrl(self.panel_l, value = 'SCAN LOG GOES', style = wx.TE_MULTILINE | wx.TE_READONLY | wx.TE_LEFT, fontsize = self.fontsize_textctrl, fontcolor = 'red')
+        self.scanlog_clear_btn  = funutils.MyButton(self.panel_l, label = u'Clear Log',  fontcolor=funutils.hex2rgb('#000000'), fontsize = self.fontsize_button)
+        vboxlog.Add(hbox_logcnt,            proportion = 0, flag = wx.EXPAND | wx.BOTTOM | wx.ALIGN_LEFT, border = self.bordersize)
+        vboxlog.Add(self.scanlog_tc,        proportion = 1, flag = wx.EXPAND | wx.BOTTOM | wx.ALIGN_CENTER_VERTICAL, border = self.bordersize)
+        vboxlog.Add(self.scanlog_clear_btn, proportion = 0, flag = wx.ALIGN_RIGHT, border = self.bordersize)
 
         # set layout
         controlpanel_sbsizer.Add(gs,     proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         controlpanel_sbsizer.Add(gsm,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
-        controlpanel_sbsizer.Add((-1,20))
+        controlpanel_sbsizer.Add(hline1, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = self.bordersize)
+        controlpanel_sbsizer.Add((-1,10))
 
         controlpanel_sbsizer.Add(gsf,    proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
-        controlpanel_sbsizer.Add((-1,20))
+        controlpanel_sbsizer.Add(hline2, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = self.bordersize)
+        controlpanel_sbsizer.Add((-1,10))
 
         controlpanel_sbsizer.Add(vboxlog,proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
 
-        controlpanel_sbsizer.Add(hline3, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
-        controlpanel_sbsizer.Add((-1,20))
+        controlpanel_sbsizer.Add(hline3, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = self.bordersize)
+        controlpanel_sbsizer.Add((-1,10))
 
         controlpanel_sbsizer.Add(gsb,    proportion = 0, flag = wx.ALIGN_LEFT | wx.TOP | wx.BOTTOM, border = self.bordersize)
 
@@ -367,26 +373,26 @@ class ScanAnalyzer(wx.Frame):
 
         # imageviewer
 
-        self.imgprofile               = ImagePanel(self.panel_ru, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
-        self.panel_ru.imgprof_pos_st  = funutils.createwxStaticText(self.panel_ru, label = 'Current Pos:')
-        self.panel_ru.imgprof_pos     = funutils.createwxStaticText(self.panel_ru, label = '')
-        self.panel_ru.imgprof_pos1_st = funutils.createwxStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
-        self.panel_ru.imgprof_pos1    = funutils.createwxStaticText(self.panel_ru, label = '',            fontcolor = 'red')
-        self.imgpv_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Image PV:')
-        self.imgpv_tc                 = wx.TextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
-        self.imgcm_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Color Map:')
+        self.imgprofile               = ImagePanel(self.panel_ru, figsize = (4, 4), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+        self.panel_ru.imgprof_pos_st  = funutils.MyStaticText(self.panel_ru, label = 'Current Pos:')
+        self.panel_ru.imgprof_pos     = funutils.MyStaticText(self.panel_ru, label = '')
+        self.panel_ru.imgprof_pos1_st = funutils.MyStaticText(self.panel_ru, label = 'Picked Pos:', fontcolor = 'red')
+        self.panel_ru.imgprof_pos1    = funutils.MyStaticText(self.panel_ru, label = '',            fontcolor = 'red')
+        self.imgpv_st                 = funutils.MyStaticText(self.panel_ru, label = 'Image PV:')
+        self.imgpv_tc                 = funutils.MyTextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
+        self.imgcm_st                 = funutils.MyStaticText(self.panel_ru, label = 'Color Map:')
         self.imgcm_cb                 = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
-        self.imgcm_rcb                = wx.CheckBox(self.panel_ru, label = u'Reverse:')
-        self.imgcr_st                 = funutils.createwxStaticText(self.panel_ru, label = 'Color Range:')
+        self.imgcm_rcb                = funutils.MyCheckBox(self.panel_ru, label = u'Reverse:')
+        self.imgcr_st                 = funutils.MyStaticText(self.panel_ru, label = 'Color Range:')
         self.imgcr_fs_min             = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
         self.imgcr_fs_max             = funutils.FloatSlider(self.panel_ru, value = self.imgcmax, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
-        self.imgcr_fs_min_val         = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmin)), style = wx.ALIGN_CENTER)
-        self.imgcr_fs_max_val         = funutils.createwxStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmax)), style = wx.ALIGN_CENTER)
+        self.imgcr_fs_min_val         = funutils.MyStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmin)), style = wx.ALIGN_CENTER, fontsize = int(self.fontsize_statictext*0.8))
+        self.imgcr_fs_max_val         = funutils.MyStaticText(self.panel_ru, label = ('%.1f' % (self.imgcmax)), style = wx.ALIGN_CENTER, fontsize = int(self.fontsize_statictext*0.8))
 
-        self.imgconfig_pathvalue_tc   = wx.TextCtrl(self.panel_ru, value = os.path.abspath(os.path.expanduser(os.curdir)), style = wx.CB_READONLY)
-        self.imgconfig_pathchoose_btn = funutils.createwxButton(self.panel_ru, label = u'Config Path:' , fontcolor = funutils.hex2rgb('#000000'), fontsize = 12)
-        self.imgconfig_fetch_btn      = funutils.createwxButton(self.panel_ru, label = u'Fetch Setting', fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
-        self.imgconfig_dump_btn       = funutils.createwxButton(self.panel_ru, label = u'Dump Setting' , fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
+        self.imgconfig_pathvalue_tc   = funutils.MyTextCtrl(self.panel_ru, value = os.path.abspath(os.path.expanduser(os.curdir)), style = wx.CB_READONLY)
+        self.imgconfig_pathchoose_btn = funutils.MyButton(self.panel_ru, label = u'Config Path:' , fontcolor = funutils.hex2rgb('#000000'), fontsize = 12)
+        self.imgconfig_fetch_btn      = funutils.MyButton(self.panel_ru, label = u'Fetch Setting', fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
+        self.imgconfig_dump_btn       = funutils.MyButton(self.panel_ru, label = u'Dump Setting' , fontcolor = funutils.hex2rgb('#1111FF'), fontsize = 12, size = (120, -1))
         self.imgconfig_pathvalue_tc.SetToolTip(wx.ToolTip('Path where config file stays, push "Config Path" button to locate.'))
 
         gsimg = wx.GridBagSizer(5, 5)
@@ -397,7 +403,7 @@ class ScanAnalyzer(wx.Frame):
         gsimg.Add(self.imgcm_rcb,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = self.bordersize)
         gsimg.Add(self.imgcm_cb,     pos = (1, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL | wx.BOTTOM, border = self.bordersize)
         
-        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
+        gsimg.Add(self.imgcr_st,     pos = (2, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsimg.Add(self.imgcr_fs_min, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsimg.Add(self.imgcr_fs_max, pos = (2, 2), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         
@@ -419,12 +425,13 @@ class ScanAnalyzer(wx.Frame):
         vr1hbox_lv_gs.Add(self.panel_ru.imgprof_pos1,    pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.ALIGN_CENTRE_VERTICAL | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = self.bordersize)
 
         # set layout 
-        vr1hbox_lv.Add(self.imgprofile, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr1hbox_lv.Add(self.imgprofile, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTRE)
         vr1hbox_lv.Add(vr1hbox_lv_gs,   proportion = 0, flag = wx.ALIGN_LEFT | wx.ALL, border = max(int(self.bordersize*0.5), 5))
 
         vr1hbox_rv.Add(gsimg, proportion = 0, flag = wx.EXPAND | wx.ALIGN_RIGHT)
 
         vr1hbox.Add(vr1hbox_lv, proportion = 3, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        vr1hbox.Add(wx.StaticLine(self.panel_ru, style = wx.LI_VERTICAL), flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         vr1hbox.Add(vr1hbox_rv, proportion = 2, flag = wx.EXPAND | wx.ALIGN_RIGHT)
 
         imagepanel_sbsizer.Add(vr1hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = self.bordersize)
@@ -443,15 +450,15 @@ class ScanAnalyzer(wx.Frame):
         vr2hbox_lv = wx.BoxSizer(wx.VERTICAL  ) # container for scanfig
         vr2hbox_rv = wx.BoxSizer(wx.VERTICAL  ) # container for reserved space for other controls
 
-        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (5, 5), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (4, 4), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
 
-        self.clrfig_btn = funutils.createwxButton(self.panel_rd, label = u'Clear', fontsize = self.fontsize_button)
-        self.scan_cb    = wx.CheckBox(self.panel_rd, label = u'Show Scan Fig')
+        self.clrfig_btn = funutils.MyButton(self.panel_rd, label = u'Clear', fontsize = self.fontsize_button)
+        self.scan_cb    = funutils.MyCheckBox(self.panel_rd, label = u'Show Scan Fig')
 
-        self.panel_rd.sfig_pos_st  = funutils.createwxStaticText(self.panel_rd, label = 'Current Pos:')
-        self.panel_rd.sfig_pos     = funutils.createwxStaticText(self.panel_rd, label = '')
-        self.panel_rd.sfig_pos1_st = funutils.createwxStaticText(self.panel_rd, label = 'Picked Pos:', fontcolor = 'blue')
-        self.panel_rd.sfig_pos1    = funutils.createwxStaticText(self.panel_rd, label = '',            fontcolor = 'blue')
+        self.panel_rd.sfig_pos_st  = funutils.MyStaticText(self.panel_rd, label = 'Current Pos:')
+        self.panel_rd.sfig_pos     = funutils.MyStaticText(self.panel_rd, label = '')
+        self.panel_rd.sfig_pos1_st = funutils.MyStaticText(self.panel_rd, label = 'Picked Pos:', fontcolor = 'blue')
+        self.panel_rd.sfig_pos1    = funutils.MyStaticText(self.panel_rd, label = '',            fontcolor = 'blue')
         
         gss = wx.GridBagSizer(5, 5)
         gss.Add(self.panel_rd.sfig_pos_st,  pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTRE_VERTICAL | wx.LEFT | wx.ALIGN_RIGHT, border = self.bordersize)
@@ -463,6 +470,7 @@ class ScanAnalyzer(wx.Frame):
         vr2hbox_rv.Add(self.scan_cb,    proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 2*self.bordersize)
         vr2hbox_rv.Add(self.clrfig_btn, proportion = 0, flag = wx.TOP | wx.ALIGN_CENTER, border = 2*self.bordersize)
         vr2hbox.Add(vr2hbox_lv, proportion = 6, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        vr2hbox.Add(wx.StaticLine(self.panel_rd, style = wx.LI_VERTICAL), flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = self.bordersize)
         vr2hbox.Add(vr2hbox_rv, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
 
         vr2vbox.Add(vr2hbox, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
@@ -531,6 +539,26 @@ class ScanAnalyzer(wx.Frame):
         self.Bind(wx.EVT_SPINCTRL,   self.onSetDaqFreq,   self.daqfreq_sc  )
         self.Bind(wx.EVT_SPINCTRL,   self.onSetProFreq,   self.profreq_sc  )
 
+    def onChooseFont(self, event):
+        fontdata = wx.FontData()
+        fontdata.EnableEffects(True)
+        fontdata.SetInitialFont(self.Font)
+        dial = wx.FontDialog(self, fontdata)
+        if dial.ShowModal() == wx.ID_OK:
+            self.font = dial.GetFontData().GetChosenFont()
+            self.updateFont(self.font)
+        else:
+            dial.Destroy()
+
+    def updateFont(self, font):
+        for classtype in (wx.SpinCtrl, wx.StaticText, wx.TextCtrl, wx.CheckBox, wx.Button):
+            objs = funutils.findObj(self, classtype)
+            for iobj in objs:
+                try:
+                    iobj.setFontAndUpdateUI(self.font)
+                except:
+                    pass
+
     def postInit(self):
         # initialization after UI creation
         
@@ -595,6 +623,10 @@ class ScanAnalyzer(wx.Frame):
         self.backcolor_panel     = '#DDDDDD'
         self.fontcolor_staticbox = '#4B4B4B'
         self.bordersize          = 12
+        
+        self.font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font_textctrl   = self.font
+        self.font_statictext = self.font
 
         self.imgcmin = 0
         self.imgcmax = 1
@@ -894,16 +926,10 @@ class ImagePanel(pltutils.ImagePanel):
     def doPlot(self):
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111)
-        #self.linex, = self.axes.plot(self.xx, self.histx/self.histx.max()*self.maxidy*self.hratio, 'w--')
-        #self.liney, = self.axes.plot(self.histy/self.histy.max()*self.maxidx*self.hratio, self.yy, 'w--')
-
-        #self.axes.set_title(r'$f(x,y)=\sin x + \cos y$')
         self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
                                    origin = 'lower left', vmin = self.cmin, vmax = self.cmax)
-        #self.im.set_extent(self.xyscalar)
-        self.figure.colorbar(self.im)
-        #self.linex.set_visible(False)
-        #self.liney.set_visible(False)
+        self.figure.colorbar(self.im, orientation = 'horizontal', aspect = 20, shrink = 0.95, 
+                             fraction = 0.05, pad = 0.1)
         self.figure.canvas.draw()
 
     def onGetData(self):
@@ -957,33 +983,36 @@ class ImagePanelxy(pltutils.ImagePanelxy):
         self.ebplot = self.axes.errorbar(self.x, self.y,
                                          xerr = self.xerrarr, yerr = self.yerrarr,
                                          fmt = self.eb_fmt, 
+
+                                         color      = 'g',
+                                         linewidth  = 1,
+                                         linestyle = '-',
+                                         marker     = 'H',
+                                         markersize = 10,
+                                         markerfacecolor = 'b',
+                                         markeredgecolor = 'b',
+
+                                         elinewidth = 2,
                                          ecolor = self.eb_markercolor, capthick = self.eb_markersize)
-        self.avgplot, = self.axes.plot(self.x, self.y, 
-                                       linestyle = self.avg_linestyle, 
-                                       linewidth = self.avg_linewidth,
-                                       color     = self.avg_linecolor,
-                                       markerfacecolor = self.avg_markerfacecolor, 
-                                       markeredgecolor = self.avg_markeredgecolor,
-                                       markersize      = self.avg_markersize)
         self.figure.canvas.draw()
 
     def onGetData(self):
         self.x, self.y, self.xerrarr, self.yerrarr = 1, 1, 0.1, 0.1
 
     def onConfigPlot(self):
-        self.eb_fmt         = '--o'
+        self.eb_fmt         = ''
         self.eb_markercolor = 'r'
-        self.eb_markersize  = 8
+        self.eb_markersize  = 10
+        """
         self.avg_linestyle  = '--'
-        self.avg_linewidth  = 2
+        self.avg_linewidth  = 5
         self.avg_linecolor  = 'b'
         self.avg_markerfacecolor = 'b'
         self.avg_markeredgecolor = 'b'
         self.avg_markersize      = 8
+        """
 
     def repaint(self):
-        self.avgplot.set_xdata(self.x)
-        self.avgplot.set_ydata(self.y)
         self.adjustErrbar(self.ebplot, self.x, self.y, self.xerrarr, self.yerrarr)
         self.axes.set_xlim(0.9*min(self.x), 1.1*max(self.x))
         self.axes.set_ylim(0.1*min(self.y), 2.0*max(self.y))
@@ -991,6 +1020,8 @@ class ImagePanelxy(pltutils.ImagePanelxy):
 
     def adjustErrbar(self, err, x, y, x_error, y_error):
         ln, (errx_top, errx_bot, erry_top, erry_bot), (barsx, barsy) = err
+
+        ln.set_data(x, y)
 
         x_base = x
         y_base = y
@@ -1014,3 +1045,10 @@ class ImagePanelxy(pltutils.ImagePanelxy):
         new_segments_y = [np.array([[x, yt], [x,yb]]) for x, yt, yb in zip(x_base, yerr_top, yerr_bot)]
         barsx.set_segments(new_segments_x)
         barsy.set_segments(new_segments_y)
+
+class ScanConfigFile(funutils.ConfigFile):
+    def __init__(self, infilename = '.cornalyzer.conf', *args, **kwargs):
+        funutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
+
+    def parseConfigs(self):
+        pass
