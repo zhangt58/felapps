@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 #-------------------------------------------------------------------------#
@@ -39,6 +39,175 @@ def rescaleImage(image0, scaledFac):
 
 #-------------------------------------------------------------------------#
 
+def findObj(objroot, objclass):
+    """
+    Find all the objects that is instance of objclass belongs to objroot.
+    obj
+    """
+    objfound = []
+    for obj in dir(objroot):
+        obji = eval('objroot.' +  obj)
+        if isinstance(obji, objclass):
+            objfound.append(obji)
+    return objfound
+
+#-------------------------------------------------------------------------#
+
+class MySpinCtrl(wx.SpinCtrl):
+    """
+    font: wx.Font()
+    """
+    def __init__(self, parent, font = None, *args, **kws):
+        wx.SpinCtrl.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.updateUI()
+
+    def setFont(self, font):
+        self.font = font
+
+    def updateUI(self):
+        """
+        update font and other properties
+        """
+        self.SetFont(self.font)
+
+    def setFontAndUpdateUI(self, font):
+        self.setFont(font)
+        self.SetFont(self.font)
+
+#-------------------------------------------------------------------------#
+
+class MyStaticText(wx.StaticText):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
+        wx.StaticText.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.updateUI()
+
+    def setFontSize(self, fontsize):
+        self.font.SetPointSize(fontsize)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+
+    def setFont(self, font):
+        self.font = font
+
+    def updateUI(self):
+        """
+        update font and other properties
+        """
+        self.SetFont(self.font)
+        self.SetForegroundColour(self.fontcolor)
+
+    def setFontAndUpdateUI(self, font):
+        self.setFont(font)
+        self.SetFont(self.font)
+
+#-------------------------------------------------------------------------#
+
+class MyTextCtrl(wx.TextCtrl):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
+        wx.TextCtrl.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.updateUI()
+
+    def setFontSize(self, fontsize):
+        self.font.SetPointSize(fontsize)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+
+    def setFont(self, font):
+        self.font = font
+
+    def updateUI(self):
+        """
+        update font and other properties
+        """
+        self.SetFont(self.font)
+        self.SetDefaultStyle(wx.TextAttr(font = self.font, colText = self.fontcolor))
+
+    def setFontAndUpdateUI(self, font):
+        self.setFont(font)
+        self.SetFont(self.font)
+        self.SetDefaultStyle(wx.TextAttr(font = self.font, colText = self.fontcolor))
+
+#-------------------------------------------------------------------------#
+
+class MyCheckBox(wx.CheckBox):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
+        wx.CheckBox.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.updateUI()
+
+    def setFontSize(self, fontsize):
+        self.font.SetPointSize(fontsize)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+
+    def setFont(self, font):
+        self.font = font
+
+    def updateUI(self):
+        """
+        update font and other properties
+        """
+        self.SetFont(self.font)
+
+    def setFontAndUpdateUI(self, font):
+        self.setFont(font)
+        self.SetFont(self.font)
+
+#-------------------------------------------------------------------------#
+
+class MyButton(wx.Button):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
+        wx.Button.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.updateUI()
+
+    def setFontSize(self, fontsize):
+        self.font.SetPointSize(fontsize)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+
+    def setFont(self, font):
+        self.font = font
+
+    def updateUI(self):
+        """
+        update font and other properties
+        """
+        self.SetFont(self.font)
+        self.SetForegroundColour(self.fontcolor)
+
+    def setFontAndUpdateUI(self, font):
+        self.setFont(font)
+        self.SetFont(self.font)
+        self.SetForegroundColour(self.fontcolor)
+
+#-------------------------------------------------------------------------#
+
 def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LEFT, 
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=12,
@@ -65,6 +234,7 @@ def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
     font.SetWeight(fontweight)
     textctrl = wx.TextCtrl(parent = parent, 
             value = value, style = style)
+    textctrl.SetFont(font)
     textctrl.SetDefaultStyle(wx.TextAttr(font = font, colText = fontcolor))
     return textctrl
 
@@ -391,5 +561,28 @@ class ProgressBarFrame(wx.Frame):
     def onTickTimer(self, event):
         fmt='%H:%M:%S'
         self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
+
+#-------------------------------------------------------------------------#
+
+class ConfigFile(object):
+    def __init__(self, infilename='config.xml', *args, **kwargs):
+        self.xmlfile = infilename
+        self.namelist = {}
+        self.parseConfigs()
+
+    def parseConfigs(self):
+        pass
+
+    def getConfigs(self):
+        return self.namelist
+    
+    def updateConfigs(self, params_dict, savetofile=None):
+        if not savetofile:
+            savetofile = self.xmlfile
+        for p in self.root.iter('properties'):
+            for k in params_dict.keys():
+                if p.get(k):
+                    p.set(k, params_dict[k])
+        self.tree.write(savetofile)
 
 #-------------------------------------------------------------------------#
