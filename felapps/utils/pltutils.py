@@ -28,12 +28,9 @@ import xml.etree.cElementTree as ET
 from . import resutils
 from . import funutils
 
-class ConfigFile(object):
-
+class ImageConfigFile(funutils.ConfigFile):
     def __init__(self, infilename='config.xml', *args, **kwargs):
-        self.xmlfile = infilename
-        self.namelist = {}
-        self.parseConfigs()
+        funutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
 
     def parseConfigs(self):
         tree = ET.parse(self.xmlfile)
@@ -61,19 +58,6 @@ class ConfigFile(object):
         self.namelist.update(namelist_control)
         self.namelist.update(namelist_style)
         self.namelist.update(namelist_histplot)
-
-    def getConfigs(self):
-        return self.namelist
-    
-    def updateConfigs(self, params_dict, savetofile=None):
-        if not savetofile:
-            savetofile = self.xmlfile
-        for p in self.root.iter('properties'):
-            for k in params_dict.keys():
-                if p.get(k):
-                    p.set(k, params_dict[k])
-        self.tree.write(savetofile)
-        #print ET.tostring(self.root)
 
 class ImageViewer(wx.Frame):
     def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
@@ -113,7 +97,7 @@ class ImageViewer(wx.Frame):
     def loadConfig(self, configfilename = 'config.xml'):
         if (configfilename == None) or (not os.path.isfile(configfilename)):
             configfilename = funutils.getFilename(self)
-        self.xmlconfig = ConfigFile(configfilename)
+        self.xmlconfig = ImageConfigFile(configfilename)
         namelist = self.xmlconfig.getConfigs()
 
         # Image
@@ -1192,6 +1176,7 @@ class ImagePanel(wx.Panel):
         self.cmaptype = 'jet'
         self.setColor(self.bgcolor)
         self.onGetData()
+        self.onConfigPlot()
         self.doPlot()
         wx.CallAfter(self.fitCanvas) # fit canvas size after initialization
 
@@ -1201,6 +1186,9 @@ class ImagePanel(wx.Panel):
         self.canvas.mpl_connect('button_press_event',   self.onPress  )
         self.canvas.mpl_connect('button_release_event', self.onRelease)
         self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
+
+    def onConfigPlot(self):
+        pass
 
     def onPress(self, event):
         pass
