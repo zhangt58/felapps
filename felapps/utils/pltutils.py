@@ -234,7 +234,7 @@ class ImageViewer(wx.Frame):
     def onConfigApps(self, event):
         self.menuAppConfig = AppConfigPanel(self)
         self.menuAppConfig.SetTitle('Application Preferences')
-        #self.menuAppConfig.SetSize((580,450))
+        self.menuAppConfig.SetMinSize((600, -1))
         self.menuAppConfig.Show()
 
     def onConfigLoad(self, event):
@@ -968,16 +968,24 @@ class StyleConfigPanel(wx.Panel):
     def createPanel(self):
         vboxsizer = wx.BoxSizer(wx.VERTICAL)
         
-        bkgdcolorst  = wx.StaticText(self, label = u'Background Color',  style = wx.ALIGN_LEFT)
-
+        bkgdcolorst  = funutils.MyStaticText(self, label = u'Background Color',  style = wx.ALIGN_LEFT)
         self.bkgdcolortc  = wx.TextCtrl(self, value = funutils.rgb2hex(self.thisapp.bkgdcolor).upper(), style = wx.CB_READONLY)
-        self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color')
+        self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color', size = (130, -1))
 
-        hboxbtn = wx.BoxSizer(wx.HORIZONTAL)
-        hboxbtn.Add(bkgdcolorst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hboxbtn.Add(self.bkgdcolortc,  proportion = 3, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hboxbtn.Add(self.bkgdcolorbtn, proportion = 2, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        vboxsizer.Add(hboxbtn, flag = wx.EXPAND | wx.ALL, border = 15)
+        fontst  = funutils.MyStaticText(self, label = u'Font',  style = wx.ALIGN_LEFT)
+        self.fonttc  = funutils.MyTextCtrl(self, value = u'')
+        self.fontbtn = funutils.MyButton(self, label = 'Choose Font', size = (130, -1))
+
+        gsstyle = wx.GridBagSizer(5, 5)
+        gsstyle.Add(bkgdcolorst,       pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsstyle.Add(self.bkgdcolortc,  pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.Add(self.bkgdcolorbtn, pos = (0, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.Add(fontst,       pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
+        gsstyle.Add(self.fonttc,  pos = (1, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.Add(self.fontbtn, pos = (1, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.AddGrowableCol(1, 0)
+
+        vboxsizer.Add(gsstyle, flag = wx.EXPAND | wx.ALL, border = 15)
 
         vboxsizer.Add((-1, 10))
         
@@ -986,6 +994,7 @@ class StyleConfigPanel(wx.Panel):
         
         ## bind events
         self.Bind(wx.EVT_BUTTON, self.onChooseColor, self.bkgdcolorbtn)
+        self.Bind(wx.EVT_BUTTON, self.onChooseFont,  self.fontbtn     )
 
     def onChooseColor(self, event):
         dlg = wx.ColourDialog(self)
@@ -994,6 +1003,17 @@ class StyleConfigPanel(wx.Panel):
             color = dlg.GetColourData().GetColour()
             self.bkgdcolortc.SetValue(color.GetAsString(wx.C2S_HTML_SYNTAX))
         dlg.Destroy()
+
+    def onChooseFont(self, event):
+        fontdata = wx.FontData()
+        fontdata.EnableEffects(True)
+        #fontdata.SetInitialFont(self.font)
+        dial = wx.FontDialog(self, fontdata)
+        if dial.ShowModal() == wx.ID_OK:
+            self.font = dial.GetFontData().GetChosenFont()
+            print self.font
+        else:
+            dial.Destroy()
 
 class ControlConfigPanel(wx.Panel):
     def __init__(self, parent, **kwargs):
@@ -1018,19 +1038,20 @@ class ControlConfigPanel(wx.Panel):
         # frequency
         freqst       = wx.StaticText(self, label = u'Monitor Frequency [Hz]',   style = wx.ALIGN_RIGHT)
         self.freqtc  = wx.SpinCtrl(self, value = str(self.thisapp.timer_freq),  min = 1, max = 50, initial = 1, style = wx.SP_ARROW_KEYS)
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        hbox1.Add(freqst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hbox1.Add(self.freqtc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        vboxsizer.Add(hbox1, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
 
         # PV list
         imgsrcPVst      = wx.StaticText(self, label = u'Image PV Name', style = wx.ALIGN_RIGHT)
         self.imgsrcPVcb = wx.ComboBox(self, value = self.thisapp.imgsrcPV,  style = wx.CB_READONLY,
                                             choices = sorted(self.thisapp.imgsrcPVlist))
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        hbox2.Add(imgsrcPVst,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hbox2.Add(self.imgsrcPVcb,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        vboxsizer.Add(hbox2, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
+
+        gsctrl = wx.GridBagSizer(5, 5)
+        gsctrl.Add(freqst,          pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(self.freqtc,     pos = (0, 2), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(imgsrcPVst,      pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(self.imgsrcPVcb, pos = (1, 2), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.AddGrowableCol(2, 0)
+
+        vboxsizer.Add(gsctrl, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
         
         vboxsizer.Add((-1, 10))
         
@@ -1060,10 +1081,13 @@ class HistPlotConfigPanel(wx.Panel):
         # height ratio
         heightratiost       = wx.StaticText(self, label = u'Height Ratio',   style = wx.ALIGN_RIGHT)
         self.heightratiotc  = fs.FloatSpin(self, value = str(self.thisapp.heightRatio),  min_val = 0.0, max_val = 0.95, increment = 0.05, digits = 2, style = fs.FS_LEFT)
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        hbox1.Add(heightratiost,       proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hbox1.Add(self.heightratiotc,  proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        vboxsizer.Add(hbox1, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 10)
+
+        gshist = wx.GridBagSizer(5, 5)
+        gshist.Add(heightratiost,      pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gshist.Add(self.heightratiotc, pos = (0, 2), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gshist.AddGrowableCol(2, 0)
+
+        vboxsizer.Add(gshist, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 15 )
 
         vboxsizer.Add((-1, 10))
 
