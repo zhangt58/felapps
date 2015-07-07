@@ -57,25 +57,34 @@ class MySpinCtrl(wx.SpinCtrl):
     """
     font: wx.Font()
     """
-    def __init__(self, parent, font = None, *args, **kws):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
         wx.SpinCtrl.__init__(self, parent = parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
-        self.updateUI()
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
+
+    def setFontSize(self, fontsize):
+        self.fontsize = fontsize
+        self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+        self.SetForegroundColour(self.fontcolor)
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
 
     def setFont(self, font):
         self.font = font
-
-    def updateUI(self):
-        """
-        update font and other properties
-        """
-        self.SetFont(self.font)
-
-    def setFontAndUpdateUI(self, font):
-        self.setFont(font)
-        self.SetFont(self.font)
+        self.SetFont(font)
 
 #-------------------------------------------------------------------------#
 
@@ -195,6 +204,38 @@ class MyButton(wx.Button):
     def setFontColor(self, fontcolor):
         self.fontcolor = fontcolor
         self.SetForegroundColour(fontcolor)
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
+
+    def setFont(self, font):
+        self.font = font
+        self.SetFont(font)
+
+#-------------------------------------------------------------------------#
+
+class MyComboBox(wx.ComboBox):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
+        wx.ComboBox.__init__(self, parent = parent, *args, **kws)
+        if font == None:
+            font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
+        self.font = font
+        self.fontcolor = fontcolor
+        self.fontsize  = fontsize
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
+
+    def setFontSize(self, fontsize):
+        self.fontsize = fontsize
+        self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
+
+    def setFontColor(self, fontcolor):
+        self.fontcolor = fontcolor
+        self.SetForegroundColour(self.fontcolor)
 
     def setFontFaceName(self, facename):
         self.facename = facename
