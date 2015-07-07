@@ -80,34 +80,34 @@ class MySpinCtrl(wx.SpinCtrl):
 #-------------------------------------------------------------------------#
 
 class MyStaticText(wx.StaticText):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
+    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
         wx.StaticText.__init__(self, parent = parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
         self.fontcolor = fontcolor
         self.fontsize  = fontsize
-        self.updateUI()
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
 
     def setFontSize(self, fontsize):
+        self.fontsize = fontsize
         self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
 
     def setFontColor(self, fontcolor):
         self.fontcolor = fontcolor
+        self.SetForegroundColour(self.fontcolor)
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
 
     def setFont(self, font):
         self.font = font
-
-    def updateUI(self):
-        """
-        update font and other properties
-        """
-        self.SetFont(self.font)
-        self.SetForegroundColour(self.fontcolor)
-
-    def setFontAndUpdateUI(self, font):
-        self.setFont(font)
-        self.SetFont(self.font)
+        self.SetFont(font)
 
 #-------------------------------------------------------------------------#
 
@@ -119,28 +119,27 @@ class MyTextCtrl(wx.TextCtrl):
         self.font = font
         self.fontcolor = fontcolor
         self.fontsize  = fontsize
-        self.updateUI()
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
 
     def setFontSize(self, fontsize):
+        self.fontsize = fontsize
         self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
 
     def setFontColor(self, fontcolor):
         self.fontcolor = fontcolor
+        self.SetDefaultStyle(wx.TextAttr(colText = self.fontcolor))
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
 
     def setFont(self, font):
         self.font = font
-
-    def updateUI(self):
-        """
-        update font and other properties
-        """
-        self.SetFont(self.font)
-        self.SetDefaultStyle(wx.TextAttr(font = self.font, colText = self.fontcolor))
-
-    def setFontAndUpdateUI(self, font):
-        self.setFont(font)
-        self.SetFont(self.font)
-        self.SetDefaultStyle(wx.TextAttr(font = self.font, colText = self.fontcolor))
+        self.SetFont(font)
 
 #-------------------------------------------------------------------------#
 
@@ -152,26 +151,27 @@ class MyCheckBox(wx.CheckBox):
         self.font = font
         self.fontcolor = fontcolor
         self.fontsize  = fontsize
-        self.updateUI()
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
 
     def setFontSize(self, fontsize):
+        self.fontsize = fontsize
         self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
 
     def setFontColor(self, fontcolor):
         self.fontcolor = fontcolor
+        #self.SetDefaultStyle(wx.TextAttr(colText = self.fontcolor))
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
 
     def setFont(self, font):
         self.font = font
-
-    def updateUI(self):
-        """
-        update font and other properties
-        """
-        self.SetFont(self.font)
-
-    def setFontAndUpdateUI(self, font):
-        self.setFont(font)
-        self.SetFont(self.font)
+        self.SetFont(font)
 
 #-------------------------------------------------------------------------#
 
@@ -183,28 +183,27 @@ class MyButton(wx.Button):
         self.font = font
         self.fontcolor = fontcolor
         self.fontsize  = fontsize
-        self.updateUI()
+        self.setFont(self.font)
+        self.setFontSize(self.fontsize)
+        self.setFontColor(self.fontcolor)
 
     def setFontSize(self, fontsize):
+        self.fontsize = fontsize
         self.font.SetPointSize(fontsize)
+        self.SetFont(self.font)
 
     def setFontColor(self, fontcolor):
         self.fontcolor = fontcolor
+        self.SetForegroundColour(fontcolor)
+
+    def setFontFaceName(self, facename):
+        self.facename = facename
+        self.font.SetFaceName(facename)
+        self.SetFont(self.font)
 
     def setFont(self, font):
         self.font = font
-
-    def updateUI(self):
-        """
-        update font and other properties
-        """
-        self.SetFont(self.font)
-        self.SetForegroundColour(self.fontcolor)
-
-    def setFontAndUpdateUI(self, font):
-        self.setFont(font)
-        self.SetFont(self.font)
-        self.SetForegroundColour(self.fontcolor)
+        self.SetFont(font)
 
 #-------------------------------------------------------------------------#
 
