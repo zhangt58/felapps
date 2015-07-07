@@ -148,9 +148,9 @@ class ScanAnalyzer(wx.Frame):
         self.statusbar.SetFieldsCount(3)
         self.SetStatusBar(self.statusbar)
         self.statusbar.SetStatusWidths([-7,-2,-1])
-        self.statusbar.appinfo = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = "Correlation Analyzer powered by Python")
-        self.timenow_st        = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = "2015-06-05 14:00:00 CST")
-        appversion             = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = " (Version: " + self.appversion + ")")
+        self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "Correlation Analyzer powered by Python")
+        self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "2015-06-05 14:00:00 CST")
+        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = " (Version: " + self.appversion + ")")
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
@@ -552,7 +552,11 @@ class ScanAnalyzer(wx.Frame):
     def updateFont(self, font):
         for classtype in (wx.SpinCtrl, wx.StaticText, wx.TextCtrl, wx.CheckBox, wx.Button, wx.ComboBox):
             objs = funutils.findObj(self, classtype)
-            [iobj.setFont(self.font) for iobj in objs]
+            for iobj in objs:
+                try:
+                    iobj.setFont(self.font)
+                except:
+                    pass
 
     def postInit(self):
         # initialization after UI creation
