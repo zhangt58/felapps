@@ -148,9 +148,9 @@ class ScanAnalyzer(wx.Frame):
         self.statusbar.SetFieldsCount(3)
         self.SetStatusBar(self.statusbar)
         self.statusbar.SetStatusWidths([-7,-2,-1])
-        self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "Correlation Analyzer powered by Python")
-        self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = "2015-06-05 14:00:00 CST")
-        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = " (Version: " + self.appversion + ")")
+        self.statusbar.appinfo = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = "Correlation Analyzer powered by Python")
+        self.timenow_st        = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = "2015-06-05 14:00:00 CST")
+        appversion             = funutils.MyStaticText(self.statusbar, id = wx.ID_ANY, label = " (Version: " + self.appversion + ")")
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
@@ -232,14 +232,14 @@ class ScanAnalyzer(wx.Frame):
         self.yrange_max_tc = funutils.MyTextCtrl(self.panel_l, value = '1.0', style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
         self.yrange_num_tc = funutils.MyTextCtrl(self.panel_l, value = '10',  style = wx.TE_PROCESS_ENTER, fontsize = self.fontsize_textctrl)
 
-        self.shotnum_st = funutils.MyStaticText(self.panel_l, label = 'Shot Number')
-        self.waitmse_st = funutils.MyStaticText(self.panel_l, label = 'Wait Second')
-        self.daqfreq_st = funutils.MyStaticText(self.panel_l, label = 'Scan DAQ rep-rate')
-        self.profreq_st = funutils.MyStaticText(self.panel_l, label = 'Prof DAQ rep-rate')
-        self.shotnum_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
-        self.waitmse_sc = funutils.MySpinCtrl(self.panel_l, value = '1',  min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
-        self.daqfreq_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
-        self.profreq_sc = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.shotnum_st   = funutils.MyStaticText(self.panel_l, label = 'Shot Number')
+        self.waitmse_st   = funutils.MyStaticText(self.panel_l, label = 'Wait Second')
+        self.daqfreq_st   = funutils.MyStaticText(self.panel_l, label = 'Scan DAQ rep-rate')
+        self.profreq_st   = funutils.MyStaticText(self.panel_l, label = 'Prof DAQ rep-rate')
+        self.shotnum_sc   = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 100, initial = 5, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.waitmse_sc   = funutils.MySpinCtrl(self.panel_l, value = '1',  min = 1, max = 10,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.daqfreq_sc   = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
+        self.profreq_sc   = funutils.MySpinCtrl(self.panel_l, value = '10', min = 1, max = 50,  initial = 2, style = wx.SP_ARROW_KEYS, font = self.font_textctrl)
         self.waitmse_calc = funutils.MyStaticText(self.panel_l, label = '500.0')
         self.waitmse_unit = funutils.MyStaticText(self.panel_l, label = 'msec')
         self.shotnum_unit = funutils.MyStaticText(self.panel_l, label = 'per iteration')
@@ -279,7 +279,6 @@ class ScanAnalyzer(wx.Frame):
         # tick control methods
         gsm = wx.GridBagSizer(5, 5)
         self.scan2flag = funutils.MyCheckBox(self.panel_l, label = u'Two Dimensional')
-        self.scan2flag.SetFont(self.font)
         self.swapxz    = funutils.MyCheckBox(self.panel_l, label = u'Swap XZ')
         self.swapxy    = funutils.MyCheckBox(self.panel_l, label = u'Swap XY')
 
@@ -294,7 +293,7 @@ class ScanAnalyzer(wx.Frame):
         # mathematical methods control
         gsf = wx.GridBagSizer(5, 5)
         self.fitflag = funutils.MyCheckBox(self.panel_l, label = u'Curve Fitting')
-        self.fittype = wx.ComboBox(self.panel_l, value = 'Gaussian', choices = ['Gaussian','Polynomial'], style = wx.CB_READONLY)
+        self.fittype = funutils.MyComboBox(self.panel_l, value = 'Gaussian', choices = ['Gaussian','Polynomial'], style = wx.CB_READONLY)
         gsf.Add(self.fitflag, pos = (0, 0), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsf.Add(self.fittype, pos = (0, 2), span = (1, 1), flag = wx.EXPAND | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = self.bordersize)
         gsf.AddGrowableCol(0, 0)
@@ -381,7 +380,7 @@ class ScanAnalyzer(wx.Frame):
         self.imgpv_st                 = funutils.MyStaticText(self.panel_ru, label = 'Image PV:')
         self.imgpv_tc                 = funutils.MyTextCtrl(self.panel_ru, value = 'UN-BI:PROF19:ARR', style = wx.TE_PROCESS_ENTER)
         self.imgcm_st                 = funutils.MyStaticText(self.panel_ru, label = 'Color Map:')
-        self.imgcm_cb                 = wx.ComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
+        self.imgcm_cb                 = funutils.MyComboBox(self.panel_ru, value = 'jet', choices = ['jet', 'hot','gnuplot'], style = wx.CB_READONLY)
         self.imgcm_rcb                = funutils.MyCheckBox(self.panel_ru, label = u'Reverse:')
         self.imgcr_st                 = funutils.MyStaticText(self.panel_ru, label = 'Color Range:')
         self.imgcr_fs_min             = funutils.FloatSlider(self.panel_ru, value = self.imgcmin, minValue = self.imgcmin, maxValue = self.imgcmax, increment = 0.1)
@@ -551,13 +550,9 @@ class ScanAnalyzer(wx.Frame):
             dial.Destroy()
 
     def updateFont(self, font):
-        for classtype in (wx.SpinCtrl, wx.StaticText, wx.TextCtrl, wx.CheckBox, wx.Button):
+        for classtype in (wx.SpinCtrl, wx.StaticText, wx.TextCtrl, wx.CheckBox, wx.Button, wx.ComboBox):
             objs = funutils.findObj(self, classtype)
-            for iobj in objs:
-                try:
-                    iobj.setFont(self.font)
-                except:
-                    pass
+            [iobj.setFont(self.font) for iobj in objs]
 
     def postInit(self):
         # initialization after UI creation
