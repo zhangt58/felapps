@@ -44,7 +44,7 @@ class ImageConfigFile(funutils.ConfigFile):
         namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveImgDatName', 'saveImgDatExt', 'saveIntName', 'saveIntExt', 'cmFavor', 'imgIniFunc']
         namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
         namestring_histplot = ['heightRatio']
-        namestring_style    = ['backgroundColor']
+        namestring_style    = ['backgroundColor', 'fontpointsize', 'fontfamily', 'fontstyle', 'fontweight', 'fontfacename']
         for group in root.iter('group'):
             if group.get('name') == 'Image':
                 namelist_image = {s:group.find('properties').get(s) for s in namestring_image}
@@ -125,6 +125,17 @@ class ImageViewer(wx.Frame):
 
         # Style
         self.bkgdcolor    = funutils.hex2rgb(namelist['backgroundColor'])
+        self.fontptsize   = int(namelist['fontpointsize'])
+        self.fontfamily   = int(namelist['fontfamily'])
+        self.fontstyle    = int(namelist['fontstyle'])
+        self.fontweight   = int(namelist['fontweight'])
+        self.fontfacename = namelist['fontfacename']
+        self.font         = wx.Font(self.fontptsize, self.fontfamily, self.fontstyle, self.fontweight, faceName = self.fontfacename)
+        self.fontptsize_large  = int(self.fontptsize * 2.0)
+        self.fontptsize_big    = int(self.fontptsize * 1.2)
+        self.fontptsize_normal = int(self.fontptsize * 1.0)
+        self.fontptsize_small  = int(self.fontptsize * 0.8)
+        self.fontptsize_tiny   = int(self.fontptsize * 0.5)
 
         # HistPlot
         self.heightRatio  = float(namelist['heightRatio'])
@@ -283,6 +294,8 @@ class ImageViewer(wx.Frame):
         wx.AboutBox(info)
 
     def onUpdateUI(self):
+        self.updateFont()
+        
         self.imgsrc_tc.SetValue(self.imgsrcPV)
         self.panel.SetBackgroundColour(self.bkgdcolor)
         self.imgpanel.setColor(self.bkgdcolor) # make color as private var
@@ -291,6 +304,20 @@ class ImageViewer(wx.Frame):
         self.imgcm.setColor(self.bkgdcolor)
         self.imgcm.repaint()
 
+    def updateFont(self):
+        objs_large  = [self.title_st]
+        objs_big    = [self.timenow_st]
+        objs_small  = [self.min_st, self.max_st, self.min_value_st, self.max_value_st]
+        objs_normal = [self.imgsrc_st, self.cm_st, self.cr_st, self.inten_st, self.inten_val,
+                       self.imgcr_st, self.pos_st, self.pos_val, self.imgsrc_tc, 
+                       self.imgcr_min_tc, self.imgcr_max_tc, self.rcmchkbox]
+        objs = objs_large + objs_big + objs_small + objs_normal
+        [iobj.setFont(self.font) for iobj in objs]
+        [iobj.setFontSize(self.fontptsize_large)  for iobj in objs_large ]
+        [iobj.setFontSize(self.fontptsize_big)    for iobj in objs_big   ]
+        [iobj.setFontSize(self.fontptsize_normal) for iobj in objs_normal]
+        [iobj.setFontSize(self.fontptsize_small)  for iobj in objs_small ]
+        
     def createStatusbar(self):
         """
         self.statusbar = self.CreateStatusBar(2)
@@ -316,11 +343,11 @@ class ImageViewer(wx.Frame):
 
         vbox = wx.BoxSizer(wx.VERTICAL)
         ## title and horizontal line
-        title_st = funutils.createwxStaticText(self.panel,
+        self.title_st = funutils.MyStaticText(self.panel,
                 label = u'Image Viewer', style = wx.ALIGN_CENTER,
-                fontsize = 20, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font, fontsize = self.fontptsize_large, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
-        vbox.Add(title_st, flag = wx.LEFT | wx.RIGHT | wx.TOP | wx.ALIGN_CENTER, border = 10)
+        vbox.Add(self.title_st, flag = wx.LEFT | wx.RIGHT | wx.TOP | wx.ALIGN_CENTER, border = 10)
         hline = wx.StaticLine(self.panel, style = wx.LI_HORIZONTAL)
         vbox.Add((-1, 10))
         vbox.Add(hline, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 28)
@@ -332,9 +359,9 @@ class ImageViewer(wx.Frame):
         vboxleft  = wx.BoxSizer(wx.VERTICAL)
         
         ## StaticText for time indication
-        self.timenow_st = funutils.createwxStaticText(self.panel,
+        self.timenow_st = funutils.MyStaticText(self.panel,
                 label = u'2015-02-11 15:10:16 CST', style = wx.ALIGN_CENTER,
-                fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font, fontsize = self.fontptsize_big, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
 
         self.imgpanel = ImagePanel(self.panel, figsize = (12,12), dpi = 75, bgcolor = self.bkgdcolor, heightratio = self.heightRatio, func = self.imginifunc)
@@ -351,12 +378,13 @@ class ImageViewer(wx.Frame):
         ## right panel
         vboxright = wx.BoxSizer(wx.VERTICAL)
 
-        imgsrc_st = funutils.createwxStaticText(self.panel,
+        self.imgsrc_st = funutils.MyStaticText(self.panel,
                 label = u'Image Source:', style = wx.ALIGN_LEFT,
-                fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
         ## define pv value here!
-        self.imgsrc_tc = wx.TextCtrl(self.panel, value = self.imgsrcPV,style=wx.TE_PROCESS_ENTER)
+        self.imgsrc_tc = funutils.MyTextCtrl(self.panel, value = self.imgsrcPV, style=wx.TE_PROCESS_ENTER, 
+                font = self.font, fontsize = self.fontptsize_normal)
         
         ## add/remove pv from imgsrcPVlist
         self.addpvbtn = wx.BitmapButton(self.panel, bitmap = resutils.addicon.GetBitmap())
@@ -368,9 +396,9 @@ class ImageViewer(wx.Frame):
         pvbox.Add(self.rmpvbtn,   flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 6)
         
         ## color map
-        cm_st = funutils.createwxStaticText(self.panel,
+        self.cm_st = funutils.MyStaticText(self.panel,
                 label = u'Color Map:', style = wx.ALIGN_LEFT,
-                fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
         ## combobox for color maps
         self.cmlist_cb = wx.ComboBox(self.panel, value = 'Favorites', choices = sorted(self.cmlist.keys()), style = wx.CB_READONLY)
@@ -382,38 +410,37 @@ class ImageViewer(wx.Frame):
         self.bookbtn   = wx.BitmapButton(self.panel, bitmap = resutils.addicon.GetBitmap())
         self.unbookbtn = wx.BitmapButton(self.panel, bitmap = resutils.delicon.GetBitmap())
         ## color range box
-        cr_st = funutils.createwxStaticText(self.panel,
+        self.cr_st = funutils.MyStaticText(self.panel,
                 label = u'Color Range:', style = wx.ALIGN_LEFT,
-                fontsize = 10, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
-        min_st = funutils.createwxStaticText(self.panel,
-                label = u'min:', style = wx.ALIGN_LEFT,
-                fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
+        self.min_st = funutils.MyStaticText(self.panel,
+                label = u'min:', style = wx.ALIGN_LEFT, font = self.font,
+                fontsize = self.fontptsize_small, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
-        max_st = funutils.createwxStaticText(self.panel,
-                label = u'max:', style = wx.ALIGN_LEFT,
-                fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
+        self.max_st = funutils.MyStaticText(self.panel,
+                label = u'max:', style = wx.ALIGN_LEFT, font = self.font,
+                fontsize = self.fontptsize_small, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
         ### get the cmin and cmax from imgpanel object
         cmin_now = self.imgpanel.cmin
         cmax_now = self.imgpanel.cmax
         ### initial values for min&max sliders
-        self.min_value_st = funutils.createwxStaticText(self.panel,
+        self.min_value_st = funutils.MyStaticText(self.panel,
                 label = ('%.1f' % (cmin_now)), style = wx.ALIGN_RIGHT,
-                fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
+                font = self.font,
+                fontsize = self.fontptsize_small, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
-        self.max_value_st = funutils.createwxStaticText(self.panel,
+        self.max_value_st = funutils.MyStaticText(self.panel,
                 label = ('%.1f' % (cmax_now)), style = wx.ALIGN_RIGHT,
-                fontsize = 8, fontweight = wx.FONTWEIGHT_NORMAL,
+                fontsize = self.fontptsize_small, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'blue')
-        #self.min_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmin_now, minValue = cmin_now, maxValue = cmax_now)
-        #self.max_slider = wx.Slider(self.panel, id = wx.ID_ANY, value = cmax_now, minValue = cmin_now, maxValue = cmax_now)
         self.min_slider = funutils.FloatSlider(self.panel, value = cmin_now, minValue = cmin_now, maxValue = cmax_now, increment = 0.1)
         self.max_slider = funutils.FloatSlider(self.panel, value = cmax_now, minValue = cmin_now, maxValue = cmax_now, increment = 0.1)
         
         ## colormap line: st + combox for cm categories
         cmstbox = wx.BoxSizer(wx.HORIZONTAL)
-        cmstbox.Add(cm_st, flag = wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border = 10)
+        cmstbox.Add(self.cm_st, flag = wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, border = 10)
         cmstbox.Add(self.cmlist_cb, proportion = 1, flag = wx.ALIGN_RIGHT)
 
         ## selected colormap + add/remove to/from bookmarks btn
@@ -426,19 +453,19 @@ class ImageViewer(wx.Frame):
         self.imgcm = ImageColorMap(self.panel, figsize = (0.8,0.2),  dpi = 75, bgcolor = self.bkgdcolor)
         
         ## checkbox for reverse colormap
-        self.rcmchkbox = wx.CheckBox(self.panel, label = u'Reverse Colormap')
+        self.rcmchkbox = funutils.MyCheckBox(self.panel, label = u'Reverse Colormap', font = self.font, fontsize = self.fontptsize_normal)
 
         ## colorrange box
         crbox = wx.FlexGridSizer(2, 3, 6, 6)
-        crbox.Add(min_st,            proportion = 0, flag = wx.LEFT | wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        crbox.Add(self.min_st,       proportion = 0, flag = wx.LEFT | wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         crbox.Add(self.min_slider,   proportion = 1, flag = wx.EXPAND | wx.ALIGN_LEFT)
         crbox.Add(self.min_value_st, proportion = 0, flag = wx.ALIGN_RIGHT)
-        crbox.Add(max_st,            proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        crbox.Add(self.max_st,       proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         crbox.Add(self.max_slider,   proportion = 1, flag = wx.EXPAND | wx.ALIGN_LEFT)
         crbox.Add(self.max_value_st, proportion = 0, flag = wx.ALIGN_RIGHT)
         crbox.AddGrowableCol(1)
         ##
-        vboxright.Add(imgsrc_st,      flag = wx.TOP, border = 25)
+        vboxright.Add(self.imgsrc_st, flag = wx.TOP, border = 25)
         vboxright.Add(pvbox, flag = wx.EXPAND | wx.TOP, border = 10)
         ##
         vboxright.Add((-1,25))
@@ -454,21 +481,22 @@ class ImageViewer(wx.Frame):
         vboxright.Add(self.rcmchkbox, flag = wx.ALIGN_LEFT | wx.EXPAND | wx.TOP, border = 10)
         vboxright.Add(self.imgcm,     flag = wx.ALIGN_CENTER | wx.EXPAND | wx.TOP, border = 10)
         ##
-        vboxright.Add(cr_st, flag = wx.TOP, border = 25)
+        vboxright.Add(self.cr_st, flag = wx.TOP, border = 25)
         vboxright.Add(crbox, flag = wx.EXPAND | wx.TOP, border = 10)
 
         ## for debug: add a statictext and button to vboxright sizer 2015.Feb.11
-        self.inten_st   = wx.StaticText(self.panel, label = 'Intensity:')
-        self.inten_val  = wx.StaticText(self.panel, label = '0')
+        self.inten_st   = funutils.MyStaticText(self.panel, label = 'Intensity:', font = self.font, fontsize = self.fontptsize_normal)
+        self.inten_val  = funutils.MyStaticText(self.panel, label = '0',          font = self.font, fontsize = self.fontptsize_normal)
         self.daqtgl_btn = wx.Button(self.panel,     label = 'DAQ START')
         hbox_int = wx.BoxSizer(wx.HORIZONTAL)
         hbox_int.Add(self.inten_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_int.Add(self.inten_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
 
         ## add color range for imgsrc
-        self.imgcr_st     = wx.StaticText(self.panel, label = 'CR of Image:')
-        self.imgcr_min_tc = wx.TextCtrl(self.panel, value = '0'  )
-        self.imgcr_max_tc = wx.TextCtrl(self.panel, value = '200')
+        self.imgcr_st     = funutils.MyStaticText(self.panel, label = 'CR of Image:', 
+                                            font = self.font, fontsize = self.fontptsize_normal)
+        self.imgcr_min_tc = funutils.MyTextCtrl(self.panel, value = '0',   font = self.font, fontsize = self.fontptsize_normal)
+        self.imgcr_max_tc = funutils.MyTextCtrl(self.panel, value = '200', font = self.font, fontsize = self.fontptsize_normal)
         hbox_imgcr = wx.BoxSizer(wx.HORIZONTAL)
         hbox_imgcr.Add(self.imgcr_st,     proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_imgcr.Add(self.imgcr_min_tc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.RIGHT | wx.LEFT, border = 5)
@@ -480,8 +508,8 @@ class ImageViewer(wx.Frame):
 
         ### information display from image
         ## mouse position tracker
-        self.pos_st  = wx.StaticText(self.panel, label = 'Current pos (x,y):')
-        self.pos_val = wx.StaticText(self.panel, label = ''    )
+        self.pos_st  = funutils.MyStaticText(self.panel, label = 'Current pos (x,y):', font = self.font, fontsize = self.fontptsize_normal)
+        self.pos_val = funutils.MyStaticText(self.panel, label = '',                   font = self.font, fontsize = self.fontptsize_normal)
         hbox_pos = wx.BoxSizer(wx.HORIZONTAL)
         hbox_pos.Add(self.pos_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_pos.Add(self.pos_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
@@ -797,7 +825,20 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.save_int_ext_str   = self.imagePage.intnameexttc.GetValue()
 
         # stylePage
-        self.thisapp.bkgdcolor = funutils.hex2rgb(self.stylePage.bkgdcolortc.GetValue())
+        self.thisapp.bkgdcolor    = funutils.hex2rgb(self.stylePage.bkgdcolortc.GetValue())
+        self.thisapp.font         = self.stylePage.font
+        self.thisapp.fontptsize   = self.stylePage.font.GetPointSize()
+        self.thisapp.fontfamily   = self.stylePage.font.GetFamily()
+        self.thisapp.fontstyle    = self.stylePage.font.GetStyle()
+        self.thisapp.fontweight   = self.stylePage.font.GetWeight()
+        self.thisapp.fontfacename = self.stylePage.font.GetFaceName()
+
+        self.thisapp.font              = wx.Font(self.thisapp.fontptsize, self.thisapp.fontfamily, self.thisapp.fontstyle, self.thisapp.fontweight, faceName = self.thisapp.fontfacename)
+        self.thisapp.fontptsize_large  = int(self.thisapp.fontptsize * 2.0)
+        self.thisapp.fontptsize_big    = int(self.thisapp.fontptsize * 1.2)
+        self.thisapp.fontptsize_normal = int(self.thisapp.fontptsize * 1.0)
+        self.thisapp.fontptsize_small  = int(self.thisapp.fontptsize * 0.8)
+        self.thisapp.fontptsize_tiny   = int(self.thisapp.fontptsize * 0.5)
 
         # controlPage
         self.thisapp.timer_freq = int(self.controlPage.freqtc.GetValue())
@@ -824,6 +865,11 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.configdict['cmFavor'        ] = ' '.join(str(i) + ' ' for i in self.thisapp.cmlist_favo).rstrip()
         self.thisapp.configdict['backgroundColor'] = self.stylePage.bkgdcolortc.GetValue()
         self.thisapp.configdict['heightRatio'    ] = str(self.thisapp.heightRatio)
+        self.thisapp.configdict['fontpointsize'  ] = str(self.thisapp.fontptsize)
+        self.thisapp.configdict['fontfamily'     ] = str(self.thisapp.fontfamily)
+        self.thisapp.configdict['fontstyle'      ] = str(self.thisapp.fontstyle)
+        self.thisapp.configdict['fontweight'     ] = str(self.thisapp.fontweight)
+        self.thisapp.configdict['fontfacename'   ] = self.thisapp.fontfacename
         self.thisapp.xmlconfig.updateConfigs(self.thisapp.configdict)
         self.thisapp.onUpdateUI()
         
@@ -964,6 +1010,7 @@ class StyleConfigPanel(wx.Panel):
         self.fontcolor   = wx.BLACK
         self.fontptsize  = 10
         self.fontweight  = wx.FONTWEIGHT_NORMAL
+        self.font        = self.thisapp.font
 
     def createPanel(self):
         vboxsizer = wx.BoxSizer(wx.VERTICAL)
@@ -973,16 +1020,16 @@ class StyleConfigPanel(wx.Panel):
         self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color', size = (130, -1))
 
         fontst  = funutils.MyStaticText(self, label = u'Font',  style = wx.ALIGN_LEFT)
-        self.fonttc  = funutils.MyTextCtrl(self, value = u'')
-        self.fontbtn = funutils.MyButton(self, label = 'Choose Font', size = (130, -1))
+        self.chosenfonttc  = funutils.MyTextCtrl(self, value = u'Do it Pythonicly.', style = wx.TE_READONLY, font = self.font)
+        self.choosefontbtn = funutils.MyButton(self, label = 'Choose Font', size = (130, -1))
 
         gsstyle = wx.GridBagSizer(5, 5)
         gsstyle.Add(bkgdcolorst,       pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
         gsstyle.Add(self.bkgdcolortc,  pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gsstyle.Add(self.bkgdcolorbtn, pos = (0, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gsstyle.Add(fontst,       pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTRE_VERTICAL, border = 10)
-        gsstyle.Add(self.fonttc,  pos = (1, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gsstyle.Add(self.fontbtn, pos = (1, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.Add(self.chosenfonttc,  pos = (1, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsstyle.Add(self.choosefontbtn, pos = (1, 3), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
         gsstyle.AddGrowableCol(1, 0)
 
         vboxsizer.Add(gsstyle, flag = wx.EXPAND | wx.ALL, border = 15)
@@ -993,8 +1040,8 @@ class StyleConfigPanel(wx.Panel):
         self.SetSizer(vboxsizer)
         
         ## bind events
-        self.Bind(wx.EVT_BUTTON, self.onChooseColor, self.bkgdcolorbtn)
-        self.Bind(wx.EVT_BUTTON, self.onChooseFont,  self.fontbtn     )
+        self.Bind(wx.EVT_BUTTON, self.onChooseColor, self.bkgdcolorbtn )
+        self.Bind(wx.EVT_BUTTON, self.onChooseFont,  self.choosefontbtn)
 
     def onChooseColor(self, event):
         dlg = wx.ColourDialog(self)
@@ -1007,11 +1054,11 @@ class StyleConfigPanel(wx.Panel):
     def onChooseFont(self, event):
         fontdata = wx.FontData()
         fontdata.EnableEffects(True)
-        #fontdata.SetInitialFont(self.font)
+        fontdata.SetInitialFont(self.font)
         dial = wx.FontDialog(self, fontdata)
         if dial.ShowModal() == wx.ID_OK:
             self.font = dial.GetFontData().GetChosenFont()
-            print self.font
+            self.chosenfonttc.SetFont(self.font)
         else:
             dial.Destroy()
 
