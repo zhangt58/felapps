@@ -310,7 +310,9 @@ class ImageViewer(wx.Frame):
         objs_small  = [self.min_st, self.max_st, self.min_value_st, self.max_value_st]
         objs_normal = [self.imgsrc_st, self.cm_st, self.cr_st, self.inten_st, self.inten_val,
                        self.imgcr_st, self.pos_st, self.pos_val, self.imgsrc_tc, 
-                       self.imgcr_min_tc, self.imgcr_max_tc, self.rcmchkbox]
+                       self.imgcr_min_tc, self.imgcr_max_tc, self.rcmchkbox,
+                       self.cmlist_cb, self.cm_cb,
+                       self.daqtgl_btn, self.roi_btn, self.reset_roi_btn]
         objs = objs_large + objs_big + objs_small + objs_normal
         [iobj.setFont(self.font) for iobj in objs]
         [iobj.setFontSize(self.fontptsize_large)  for iobj in objs_large ]
@@ -401,9 +403,11 @@ class ImageViewer(wx.Frame):
                 font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
         ## combobox for color maps
-        self.cmlist_cb = wx.ComboBox(self.panel, value = 'Favorites', choices = sorted(self.cmlist.keys()), style = wx.CB_READONLY)
+        self.cmlist_cb = funutils.MyComboBox(self.panel, value = 'Favorites', choices = sorted(self.cmlist.keys()), style = wx.CB_READONLY, 
+                font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL, fontcolor = 'black')
         ## list one of classified color map 
-        self.cm_cb = wx.ComboBox(self.panel, value = self.cmlist['Favorites'][0], choices = self.cmlist['Favorites'], style = wx.CB_READONLY)
+        self.cm_cb = funutils.MyComboBox(self.panel, value = self.cmlist['Favorites'][0], choices = self.cmlist['Favorites'], style = wx.CB_READONLY,
+                font = self.font, fontsize = self.fontptsize_normal, fontweight = wx.FONTWEIGHT_NORMAL, fontcolor = 'black')
         ## book and unbook btn
         #self.bookbtn   = wx.BitmapButton(self.panel, bitmap = wx.BitmapFromImage(wx.Image('add.png')))
         #self.unbookbtn = wx.BitmapButton(self.panel, bitmap = wx.BitmapFromImage(wx.Image('remove.png')))
@@ -487,7 +491,7 @@ class ImageViewer(wx.Frame):
         ## for debug: add a statictext and button to vboxright sizer 2015.Feb.11
         self.inten_st   = funutils.MyStaticText(self.panel, label = 'Intensity:', font = self.font, fontsize = self.fontptsize_normal)
         self.inten_val  = funutils.MyStaticText(self.panel, label = '0',          font = self.font, fontsize = self.fontptsize_normal)
-        self.daqtgl_btn = wx.Button(self.panel,     label = 'DAQ START')
+        self.daqtgl_btn = funutils.MyButton(self.panel,     label = 'DAQ START',  font = self.font, fontsize = self.fontptsize_normal)
         hbox_int = wx.BoxSizer(wx.HORIZONTAL)
         hbox_int.Add(self.inten_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_int.Add(self.inten_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
@@ -514,8 +518,8 @@ class ImageViewer(wx.Frame):
         hbox_pos.Add(self.pos_st,  proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_pos.Add(self.pos_val, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
 
-        self.roi_btn = wx.Button(self.panel, label = 'Choose ROI')
-        self.reset_roi_btn = wx.Button(self.panel, label = 'Reset ROI')
+        self.roi_btn       = funutils.MyButton(self.panel, label = 'Choose ROI', font = self.font, fontsize = self.fontptsize_normal)
+        self.reset_roi_btn = funutils.MyButton(self.panel, label = 'Reset ROI',  font = self.font, fontsize = self.fontptsize_normal)
         hbox_roi = wx.BoxSizer(wx.HORIZONTAL)
         hbox_roi.Add(self.roi_btn,       proportion = 0, flag = wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
         hbox_roi.Add(self.reset_roi_btn, proportion = 1, flag = wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT, border = 10)
