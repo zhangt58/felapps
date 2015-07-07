@@ -555,7 +555,7 @@ class ScanAnalyzer(wx.Frame):
             objs = funutils.findObj(self, classtype)
             for iobj in objs:
                 try:
-                    iobj.setFontAndUpdateUI(self.font)
+                    iobj.setFont(self.font)
                 except:
                     pass
 
