@@ -580,7 +580,7 @@ class ImageViewer(wx.Frame):
         self.timernow.Start(1000)
 
     def onResetROI(self, event):
-        self.roixy = [0,self.wpx, 0, self.hpx]
+        self.roixy = [0, self.wpx, 0, self.hpx]
 
     def onChooseROI(self, event):
         self.roiFrame = ChooseROIFrame(self, self.imgpanel)
@@ -613,7 +613,6 @@ class ImageViewer(wx.Frame):
         if self.mypv.connected == True:
             self.inten_val.SetLabel("%.5e" % (np.sum(self.mypv.get())))
 
-            #self.wpx, self.hpx = 494, 659
             self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
             try:
                 cmin_now = float(self.imgcr_min_tc.GetValue())
@@ -636,7 +635,7 @@ class ImageViewer(wx.Frame):
         set image data source and show in the image panel
         """
         self.mypv = epics.PV(event.GetEventObject().GetValue(), auto_monitor = True)
-        #self.wpx, self.hpx = 494, 659
+        
         self.imgpanel.z = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
         self.imgpanel.cmin = self.imgpanel.z.min()
         self.imgpanel.cmax = self.imgpanel.z.max()
@@ -819,6 +818,7 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.imginifunc         = self.imagePage.imginifunccb.GetValue()
         self.thisapp.wpx                = int(self.imagePage.imgwpxtc.GetValue())
         self.thisapp.hpx                = int(self.imagePage.imghpxtc.GetValue())
+        self.thisapp.roixy              = [0, self.thisapp.wpx, 0, self.thisapp.hpx]
         self.thisapp.save_path_str_head = os.path.expanduser(self.imagePage.pathtc.GetValue())
         self.thisapp.save_path_str      = os.path.join(self.thisapp.save_path_str_head, time.strftime('%Y%m%d', time.localtime()))
         self.thisapp.save_img_name_str  = self.imagePage.imgnamepretc.GetValue()
