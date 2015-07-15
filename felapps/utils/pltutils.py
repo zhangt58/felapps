@@ -60,7 +60,7 @@ class ImageConfigFile(funutils.ConfigFile):
         self.namelist.update(namelist_histplot)
 
 class ImageViewer(wx.Frame):
-    def __init__(self, parent, size = (800, 600), appversion = '1.0', **kwargs):
+    def __init__(self, parent, config = 'config.xml', size = (800, 600), appversion = '1.0', **kwargs):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.parent = parent
         self.appversion = appversion
@@ -87,16 +87,14 @@ class ImageViewer(wx.Frame):
         self.configlist = {} # configurations dict
         self.xmlconfig = {} # xml config class
 
-        self.loadConfig()
+        self.loadConfig(configfilename = config)
         #self.printConfig() # just for debug
 
         self.Bind(wx.EVT_CLOSE, self.onExit)
         self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.InitUI()
 
-    def loadConfig(self, configfilename = 'config.xml'):
-        if (configfilename == None) or (not os.path.isfile(configfilename)):
-            configfilename = funutils.getFilename(self)
+    def loadConfig(self, configfilename):
         self.xmlconfig = ImageConfigFile(configfilename)
         namelist = self.xmlconfig.getConfigs()
 

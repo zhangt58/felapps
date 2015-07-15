@@ -10,8 +10,10 @@ Created: Feb. 3rd, 2015
 
 from ...utils import pltutils
 from ...utils import miscutils
+from ...utils import funutils
 import wx
 import wx.lib.mixins.inspection as wit
+import os
 
 __version__ =  miscutils.AppVersions().getVersion('imageviewer')
 __author__  = "Tong Zhang"
@@ -33,10 +35,15 @@ def run(maximize = True, logon = False, debug=True):
         app.MainLoop()
     else:
         app = wx.App(redirect = logon, filename='log')
+
+        configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
+        if not os.path.isfile(configFile):
+            configFile = funutils.getFilename(None)
+
         if maximize == True:
-            myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = pltutils.ImageViewer(None, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         app.MainLoop()
 
