@@ -61,7 +61,10 @@ class FELcalc(PhysicalConstants):
             _avgBetaFunc          = 20.0,
             _radWavelength        = 1.0e-10,
             _normEmittance        = 0.4e-6,
-            _peakCurrent          = 3500.0):
+            _peakCurrent          = 3500.0,
+            _bunchCharge          = 0.5e-9,
+            _undulatorLength      = 10.0,
+            _bunchShape           = 'gaussian'):
         """
         Initialized parameters:
         beamEnergy 	 [MeV]
@@ -71,6 +74,9 @@ class FELcalc(PhysicalConstants):
 	radWavelength 	 [m]
 	normEmittance 	 [m]
 	peakCurrent 	 [A]
+        bunchCharge      [C]
+        undulatorLength  [m]
+        bunchShape: gaussian or flattop
 	"""
         self.beamEnergy 	  = _beamEnergy
         self.relativeEnergySpread = _relativeEnergySpread
@@ -79,10 +85,18 @@ class FELcalc(PhysicalConstants):
 	self.radWavelength 	  = _radWavelength
 	self.normEmittance 	  = _normEmittance
         self.peakCurrent 	  = _peakCurrent
-        
-    def MXieFormulae(self):
+        self.bunchCharge          = _bunchCharge
+        self.undulatorLength      = _undulatorLength
+        self.bunchShape           = _bunchShape
+
+        if self.bunchShape == 'gaussian':
+            self.bunchratio = np.sqrt(2.0*np.pi)
+        elif self.bunchShape == 'flattop':
+            self.bunchratio = 1.0
+
+    def onFELAnalyse(self):
         """
-        M. Xie formulae for FEL analytical estimation
+        Apply M. Xie formulae for FEL analytical estimation
         """
 	# Xie Ming Formulae fitted cofs
         a1  = 0.45
@@ -112,6 +126,7 @@ class FELcalc(PhysicalConstants):
         lambdas  = self.radWavelength
         epsilonn = self.normEmittance
         Ipk      = self.peakCurrent
+        lu       = self.undulatorLength
 
         sigmaBeam = np.sqrt(beta*epsilonn/gamma0)
         au    = np.sqrt(lambdas*2.0*gamma0**2.0/lambdau-1)
@@ -130,9 +145,9 @@ class FELcalc(PhysicalConstants):
 	      + a10*etad**a11*etag**a12 \
 	      + a13*etad**a14*etae**a15 \
 	      + a16*etad**a17*etae**a18*etag**a19
-        Lg3D  = Lg1D*(1+capLambda)
-        rho3D = lambdau/4/np.pi/np.sqrt(3)/Lg3D
-        Psat  = 1.6*rho1D*(Lg1D/Lg3D)**2*gamma0*0.511*Ipk*1e6 #W
+        Lg3D  = Lg1D*(1.0+capLambda)
+        rho3D = lambdau/4.0/np.pi/np.sqrt(3)/Lg3D
+        Psat  = 1.6*rho1D*(Lg1D/Lg3D)**2.0*gamma0*0.511*Ipk*1.0e6 #W
         
         # update and return calculated parameters
         self.au     = au
@@ -146,8 +161,18 @@ class FELcalc(PhysicalConstants):
         self.Psat   = Psat
         Nlambda     = Ipk*lambdas/self.e0/self.c0
         Pshot       = 3*np.sqrt(4*np.pi)*rho1D**2*self.beamEnergy*Ipk/Nlambda/np.sqrt(np.log(Nlambda/rho1D)) * 1e6
-        Pss         = 1.0/9*Pshot*np.exp(20)
+        Lsat        = Lg3D*self.findSatFactor(Nlambda, Lg3D, lambdau)
+        Pss         = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)
         
+        sigmat    = self.bunchCharge/Ipk/self.bunchratio # bunch length (rms) for gaussian, full lenth for rectangle
+        bandwidth = np.sqrt(3.0*np.sqrt(3)*rho3D*lambdau/lu)
+        
+        #Pexit = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)
+
+        pulseEnergy = self.bunchratio*sigmat*Psat # J
+        photonEnergy = self.h0*self.c0/self.e0/lambdas # eV
+        Np = pulseEnergy/photonEnergy/self.e0 # photon per pulse
+
         return {"au"    : self.au, 
                 "bu"    : self.Bu,
                 "gap"   : self.gu,
@@ -158,9 +183,42 @@ class FELcalc(PhysicalConstants):
                 "Lg3D"  : Lg3D,
                 "Psat"  : Psat,
                 "Pshot" : Pshot,
-                "Pss"   : Pss}
+                "Pss"   : Pss,
+                #"Pexit" : Pexit,
+                "sigmat": sigmat*1e15,
+                "bandwidth"   : bandwidth*100,
+                "Lsat"        : Lsat,
+                "PulseEnergy" : pulseEnergy*1e6,
+                "PhotonEnergy": photonEnergy,
+                "ppp"         : Np,
+                }
 
+    def findSatFactor(self, nl, l3, xlamd, factor0 = 20):
+        """
+        factor0: initial saturation factor, saturation length over power gain length
+        nl     : electron count within one unit of FEL wavelength
+        l3     : power gain length (3D)
+        xlamd  : undulator period
+        """
+        fx = lambda x: 6.0*np.sqrt(3.0*np.pi)*nl*l3*np.sqrt(x) - xlamd*np.exp(x)
+        return fsolve(fx, x0 = factor0*np.ones(np.size(self.Lg3D)))
 
-def test():
-    inst = FELcalc()
-    print inst.MXieFormulae().items()
+def test1():
+    inst = FELcalc(17500, 8.5714e-5, 0.08, 15, 1.3e-9, 1.4e-6, 5000, 1.0e-9, 100)
+    for (key,val) in inst.onFELAnalyse().items():
+        print key, '\t=\t', val
+
+def test2():
+    energy = np.linspace(17000, 18000, 3)
+    inst = FELcalc(energy, 8.5714e-5, 0.08, 15, 1.3e-9, 1.4e-6, 5000, 1.0e-9, 100)
+    result = inst.onFELAnalyse()
+    print result['ppp']
+
+def test3():
+    bunchCharge = np.linspace(0.5e-9, 1e-9, 3)
+    inst = FELcalc(17500, 8.5714e-5, 0.08, 15, 1.3e-9, 1.4e-6, 5000, bunchCharge, 100)
+    result = inst.onFELAnalyse()
+    print result['sigmat']
+
+if __name__ == '__main__':
+    test3()
