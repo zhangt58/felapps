@@ -49,7 +49,8 @@ xchoice = {'Beam Energy'     : '$E_b\ \mathrm{[MeV]}$',
            'Peak Current'    : '$I_p\ \mathrm{[A]}$',
            'Undulator Period': '$\lambda_u\ \mathrm{[m]}$', 
            'FEL Wavelength'  : '$\lambda_s\ \mathrm{[m]}$',
-           'Avg. Beta Func.' : '$avg.beta\ \mathrm{[m]}$'}
+           'Avg. Beta Func.' : '$\langle{\\beta}\\rangle\ \mathrm{[m]}$'}
+
 ychoice = {'au'     : '$a_u$',
            'bu'     : '$B_u\ \mathrm{[T]}$',
            'gap'    : '$\mathrm{Gap\ [mm]}$',
@@ -58,7 +59,9 @@ ychoice = {'au'     : '$a_u$',
            'rho1D'  : '$\\rho^{\mathrm{1D}}$',
            'rho3D'  : '$\\rho^{\mathrm{3D}}$',
            'sigmar' : '$\sigma_r\ \mathrm{[m]}$',
-           'Psat'   : '$P_{\mathrm{sat}}\ \mathrm{[W]}$'}
+           'Psat'   : '$P_{\mathrm{sat}}\ \mathrm{[W]}$',
+           'Pshot'  : '$P_{\mathrm{shot}}\ \mathrm{[W]}$',
+           'Pss'    : '$P_{\mathrm{ss}}\ \mathrm{[W]}$'}
 
 #------------------------------------------------------------------------#
 

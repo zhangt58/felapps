@@ -145,7 +145,7 @@ class FELcalc(PhysicalConstants):
         self.Lg3D   = Lg3D
         self.Psat   = Psat
         Nlambda     = Ipk*lambdas/self.e0/self.c0
-        Pshot       = 3*np.sqrt(4*np.pi)*rho1D**2*self.beamEnergy*Ipk/Nlambda/np.sqrt(np.log(Nlambda/rho1D))
+        Pshot       = 3*np.sqrt(4*np.pi)*rho1D**2*self.beamEnergy*Ipk/Nlambda/np.sqrt(np.log(Nlambda/rho1D)) * 1e6
         Pss         = 1.0/9*Pshot*np.exp(20)
         
         return {"au"    : self.au, 
