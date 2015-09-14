@@ -33,6 +33,7 @@ ID_AVG_BETA      = wx.NewId()
 ID_PEAK_CURRENT  = wx.NewId()
 ID_UNDU_PERIOD   = wx.NewId()
 ID_FEL_WVLTH     = wx.NewId()
+ID_BUNCH_CHARGE  = wx.NewId()
 ID_SCANFLAG      = wx.NewId()
 ID_SCANPARM      = wx.NewId() 
 ID_CALCBTN       = wx.NewId() 
@@ -50,21 +51,28 @@ xchoice = {'Beam Energy'     : '$E_b\ \mathrm{[MeV]}$',
            'Energy Spread'   : '$\sigma_\gamma/\gamma_0$',
            'Norm. Emittance' : '$\epsilon_n\ \mathrm{[m]}$',
            'Peak Current'    : '$I_p\ \mathrm{[A]}$',
-           'Undulator Period': '$\lambda_u\ \mathrm{[m]}$', 
+           'Undulator Period': '$\lambda_u\ \mathrm{[m]}$',
            'FEL Wavelength'  : '$\lambda_s\ \mathrm{[m]}$',
-           'Avg. Beta Func.' : '$\langle{\\beta}\\rangle\ \mathrm{[m]}$'}
+           'Avg. Beta Func.' : '$\langle{\\beta}\\rangle\ \mathrm{[m]}$',
+           'Bunch Charge'    : '$Q\ \mathrm{[C]}$'}
 
-ychoice = {'au'     : '$a_u$',
-           'bu'     : '$B_u\ \mathrm{[T]}$',
-           'gap'    : '$\mathrm{Gap\ [mm]}$',
-           'Lg1D'   : '$L_g^{\mathrm{1D}}\ \mathrm{[m]}$',
-           'Lg3D'   : '$L_g^{\mathrm{3D}}\ \mathrm{[m]}$',
-           'rho1D'  : '$\\rho^{\mathrm{1D}}$',
-           'rho3D'  : '$\\rho^{\mathrm{3D}}$',
-           'sigmar' : '$\sigma_r\ \mathrm{[m]}$',
-           'Psat'   : '$P_{\mathrm{sat}}\ \mathrm{[W]}$',
-           'Pshot'  : '$P_{\mathrm{shot}}\ \mathrm{[W]}$',
-           'Pss'    : '$P_{\mathrm{ss}}\ \mathrm{[W]}$'}
+ychoice = {'au'     : ['$a_u$',                             'Normalized undulator parameter, or K/sqrt(2).'],
+           'bu'     : ['$B_u\ \mathrm{[T]}$',               'Undulator magnetic peak field [T].'],
+           'gap'    : ['$\mathrm{Gap\ [mm]}$',              'Permanent undulator gap [mm].'],
+           'Lg1D'   : ['$L_g^{\mathrm{1D}}\ \mathrm{[m]}$', 'FEL power gain length (1D) [m].'],
+           'Lg3D'   : ['$L_g^{\mathrm{3D}}\ \mathrm{[m]}$', 'FEL power gain length (3D) [m].'],
+           'rho1D'  : ['$\\rho^{\mathrm{1D}}$',             'FEL parameter or Pierce parameter (1D).'],
+           'rho3D'  : ['$\\rho^{\mathrm{3D}}$',             'FEL parameter or Pierce parameter (3D).'],
+           'sigmar' : ['$\sigma_r\ \mathrm{[m]}$',          'Electron transverse beam radius size (rms) [m].'],
+           'sigmat' : ['$\sigma_t\ \mathrm{[fs]}$',         'Temporal bunch length (rms) [fs].'],
+           'Psat'   : ['$P_{\mathrm{sat}}\ \mathrm{[W]}$',  'FEL saturation power (M.Xie formulae) [W].'],
+           'Pshot'  : ['$P_{\mathrm{shot}}\ \mathrm{[W]}$', 'FEL initial shotnoise power [W].'],
+           'Pss'    : ['$P_{\mathrm{ss}}\ \mathrm{[W]}$',   'FEL saturation power (SASE) [W].'],
+           'Lsat'   : ['$L_{\mathrm{sat}}\ \mathrm{[m]}$',  'FEL saturation length (SASE) [m].'],
+           'bandwidth'   : ['$\Delta\lambda/\lambda}\ \mathrm{[\\%]}$',  'FEL bandwidth [%].'],
+           'PulseEnergy': ['$W\ \mathrm{[\mu J]}$',  'FEL pulse energy [micro J].'],
+           'ppp': ['$\mathrm{Photon\ \#/pulse}$',  'FEL photon number per pulse.'],
+           }
 
 #------------------------------------------------------------------------#
 
@@ -185,7 +193,7 @@ class MainFrame(wx.Frame):
         sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
 
         ## sbsizer1: 'Beam Parameters'  StaticBoxSizer
-        box1 = wx.FlexGridSizer(7, 2, 8, 40)
+        box1 = wx.FlexGridSizer(10, 2, 8, 40)
 
         b1st1 = wx.StaticText(panel, label = 'Beam Energy [MeV]',    style = wx.ALIGN_LEFT)
         b1st2 = wx.StaticText(panel, label = 'Energy Spread',        style = wx.ALIGN_LEFT)
@@ -194,6 +202,9 @@ class MainFrame(wx.Frame):
         b1st5 = wx.StaticText(panel, label = 'Peak Current [A]',     style = wx.ALIGN_LEFT)
         b1st6 = wx.StaticText(panel, label = 'Undulator Period [m]', style = wx.ALIGN_LEFT)
         b1st7 = wx.StaticText(panel, label = 'FEL Wavelength [m]',   style = wx.ALIGN_LEFT)
+        b1st8 = wx.StaticText(panel, label = 'Bunch Charge [C]',     style = wx.ALIGN_LEFT)
+        b1st9 = wx.StaticText(panel, label = 'Undulator Length [m]', style = wx.ALIGN_LEFT)
+        b1st10 = wx.StaticText(panel, label = 'Bunch Shape',         style = wx.ALIGN_LEFT)
 
         self.b1tc1 = wx.TextCtrl(panel, id = ID_BEAM_ENERGY,   value = '150'   , style = wx.TE_PROCESS_ENTER)
         self.b1tc2 = wx.TextCtrl(panel, id = ID_ENERGY_SPREAD, value = '0.0001', style = wx.TE_PROCESS_ENTER)
@@ -202,6 +213,9 @@ class MainFrame(wx.Frame):
         self.b1tc5 = wx.TextCtrl(panel, id = ID_PEAK_CURRENT,  value = '100'   , style = wx.TE_PROCESS_ENTER)
         self.b1tc6 = wx.TextCtrl(panel, id = ID_UNDU_PERIOD,   value = '0.025' , style = wx.TE_PROCESS_ENTER)
         self.b1tc7 = wx.TextCtrl(panel, id = ID_FEL_WVLTH,     value = '350e-9', style = wx.TE_PROCESS_ENTER)
+        self.b1tc8 = wx.TextCtrl(panel, id = ID_BUNCH_CHARGE,  value = '0.2e-9', style = wx.TE_PROCESS_ENTER)
+        self.b1tc9 = wx.TextCtrl(panel,                        value = '10',     style = wx.TE_PROCESS_ENTER)
+        self.b1cb10 = wx.ComboBox(panel, value = 'gaussian', choices = ['gaussian', 'flattop'], style = wx.CB_READONLY)
 
         box1.Add(b1st1,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
         box1.Add(self.b1tc1, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
@@ -217,6 +231,12 @@ class MainFrame(wx.Frame):
         box1.Add(self.b1tc6, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
         box1.Add(b1st7,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
         box1.Add(self.b1tc7, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
+        box1.Add(b1st8,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
+        box1.Add(self.b1tc8, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
+        box1.Add(b1st9,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
+        box1.Add(self.b1tc9, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
+        box1.Add(b1st10,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
+        box1.Add(self.b1cb10, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
 
         box1.AddGrowableCol(1)
 
@@ -297,7 +317,7 @@ class MainFrame(wx.Frame):
                 choices = ['Beam Energy','Energy Spread', 
                            'Norm. Emittance', 'Peak Current', 
                            'Undulator Period', 'FEL Wavelength',
-                           'Avg. Beta Func.'],
+                           'Avg. Beta Func.', 'Bunch Charge'],
                 style = wx.CB_READONLY)
         self.combobox31.Disable()
 
@@ -403,10 +423,12 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_PEAK_CURRENT )
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_UNDU_PERIOD  )
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_FEL_WVLTH    )
+        self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_BUNCH_CHARGE )
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_SCAN_MIN     )
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_SCAN_MAX     )
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_SCAN_NUM     )
         self.Bind(wx.EVT_CHECKBOX,   self.onEnableScan, id = ID_SCANFLAG     )
+        self.Bind(wx.EVT_COMBOBOX,   self.onSetInitalScanRange, id = ID_SCANPARM)
 
 #------------------------------------------------------------------------#
 
@@ -418,7 +440,10 @@ class MainFrame(wx.Frame):
         peakCurrent  = float(self.b1tc5.GetValue())
         unduPeriod   = float(self.b1tc6.GetValue())
         FELwvlth     = float(self.b1tc7.GetValue())
-
+        bunchCharge  = float(self.b1tc8.GetValue())
+        unduLength   = float(self.b1tc9.GetValue())
+        bunchShape   = self.b1cb10.GetStringSelection()
+        
         if not self.chkbox31.IsChecked():
             instFEL = felbase.FELcalc(beamEnergy,
                                       energySpread,
@@ -426,8 +451,11 @@ class MainFrame(wx.Frame):
                                       avgBeta,
                                       FELwvlth,
                                       normEmit,
-                                      peakCurrent)
-            result = instFEL.MXieFormulae()
+                                      peakCurrent,
+                                      bunchCharge,
+                                      unduLength,
+                                      bunchShape)
+            result = instFEL.onFELAnalyse()
             self.b2sb1vst1.SetLabel('%.3f' % (result['bu']))
             self.b2sb1vst2.SetLabel('%.3f' % (result['gap'][0]))
             self.b2sb1vst3.SetLabel('%.3f' % (result['au']*2.0**0.5))
@@ -463,6 +491,9 @@ class MainFrame(wx.Frame):
                 avgBeta    = np.linspace(scanmin,scanmax,scanpoint)
                 self.scanX = avgBeta
                 #print self.scanX
+            elif scanparam == u'Bunch Charge':
+                bunchCharge = np.linspace(scanmin,scanmax,scanpoint)
+                self.scanX  = bunchCharge
             else:
                 print('Scan parameters ERROR!')
 
@@ -472,8 +503,39 @@ class MainFrame(wx.Frame):
                                       avgBeta,
                                       FELwvlth,
                                       normEmit,
-                                      peakCurrent)
-            self.result = instFEL.MXieFormulae()
+                                      peakCurrent,
+                                      bunchCharge,
+                                      unduLength,
+                                      bunchShape)
+            self.result = instFEL.onFELAnalyse()
+            
+            print self.result
+
+#------------------------------------------------------------------------#
+    
+    def onSetInitalScanRange(self, event):
+        scanparam = event.GetEventObject().GetStringSelection()
+        if scanparam == u'Beam Energy':
+            sval0 = float(self.b1tc1.GetValue())
+        elif scanparam == u'Energy Spread':
+            sval0 = float(self.b1tc2.GetValue())
+        elif scanparam == u'Norm. Emittance':
+            sval0 = float(self.b1tc3.GetValue())
+        elif scanparam == u'Peak Current':
+            sval0 = float(self.b1tc5.GetValue())
+        elif scanparam == u'Undulator Period':
+            sval0 = float(self.b1tc6.GetValue())
+        elif scanparam == u'FEL Wavelength':
+            sval0 = float(self.b1tc7.GetValue())
+        elif scanparam == u'Avg. Beta Func.':
+            sval0 = float(self.b1tc4.GetValue())
+        elif scanparam == u'Bunch Charge':
+            sval0 = float(self.b1tc8.GetValue())
+
+        vmin, vmax = sval0*0.7, sval0*1.3
+        self.smintc.SetValue('%.3e' % vmin)
+        self.smaxtc.SetValue('%.3e' % vmax)
+        
 
 #------------------------------------------------------------------------#
 
@@ -580,6 +642,7 @@ class PlotFrame(wx.Frame):
 
         # figure panel
         self.dpi = 100
+        self.ongrid = False
         self.fig = Figure((5.0, 4.0), dpi = self.dpi)
         self.axes = self.fig.add_subplot(111)
         self.canvas = FigureCanvas(self.panel, wx.ID_ANY, self.fig)
@@ -589,17 +652,28 @@ class PlotFrame(wx.Frame):
         self.plotparamcombo = wx.ComboBox(self.panel, id = wx.ID_ANY, value = params[0],
                 choices = params, style = wx.CB_READONLY | wx.CB_SORT)
         st1 = wx.StaticText(self.panel, id = wx.ID_ANY, label = 'Choose Y Axis to plot:', style = wx.ALIGN_LEFT)
+        self.plotparam_hint = wx.StaticText(self.panel, id = wx.ID_ANY, label = '', style = wx.ALIGN_RIGHT)
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add(st1, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        hbox.Add(self.plotparamcombo, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.TOP | wx.BOTTOM, border = 10)
+        hbox.Add(self.plotparamcombo, flag = wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 10)
+        hbox.Add(self.plotparam_hint, proportion = 1, flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.ALL, border = 10)
 
         self.vbox.Add(self.canvas, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 0)
-        self.vbox.Add(hbox, flag = wx.LEFT, border = 10)
+        self.vbox.Add(hbox,        proportion = 0, flag = wx.LEFT, border = 10)
 
         self.panel.SetSizer(self.vbox)
         
         self.Bind(wx.EVT_COMBOBOX, self.onPlotChoice, self.plotparamcombo)
+        self.canvas.mpl_connect('motion_notify_event', self.onMotion)
+
+#------------------------------------------------------------------------#
+        
+    def onMotion(self, event):
+        try:
+            print "x:%.4f y:%.4f" % (event.xdata, event.ydata)
+        except TypeError:
+            pass
 
 #------------------------------------------------------------------------#
     
@@ -609,8 +683,33 @@ class PlotFrame(wx.Frame):
         tw, th = self.toolbar.GetSizeTuple()
         fw, fh = self.canvas.GetSizeTuple()
         self.toolbar.SetSize(wx.Size(fw, th))
-        self.vbox.Add(self.toolbar, proportion = 0, flag = wx.LEFT | wx.EXPAND, border = 10)
+
+        grid_chkbox = wx.CheckBox(self.panel, label = 'Show Grid')
+        
+        toolbarbox = wx.BoxSizer(wx.HORIZONTAL)
+        toolbarbox.Add(self.toolbar, proportion = 0 ,flag = wx.LEFT | wx.EXPAND)
+        toolbarbox.Add(grid_chkbox,  proportion = 0 ,flag = wx.EXPAND | wx.LEFT, border = 20)
+
+        self.vbox.Add(toolbarbox, proportion = 0, flag = wx.LEFT | wx.BOTTOM | wx.EXPAND, border = 10)
         self.toolbar.update()
+
+        self.Bind(wx.EVT_CHECKBOX, self.onGridCheck, grid_chkbox)
+
+#------------------------------------------------------------------------#
+        
+    def repaint(self):
+        self.canvas.draw_idle()
+
+#------------------------------------------------------------------------#
+    
+    def onGridCheck(self, event):
+        if event.GetEventObject().IsChecked():
+            self.ongrid = True
+        else:
+            self.ongrid = False
+        
+        self.axes.grid(self.ongrid)
+        self.repaint()
 
 #------------------------------------------------------------------------#
 
@@ -623,8 +722,10 @@ class PlotFrame(wx.Frame):
         try:
             self.axes.plot(x,y,'r')
             self.axes.set_xlabel(r''+xchoice[xkey]+'')
-            self.axes.set_ylabel(r''+ychoice[ykey]+'')
-            self.canvas.draw()
+            self.axes.set_ylabel(r''+ychoice[ykey][0]+'')
+            self.axes.grid(self.ongrid)
+            self.plotparam_hint.SetLabel(ychoice[ykey][1])
+            self.repaint()
         except ValueError:
             pass
 
