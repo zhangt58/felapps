@@ -14,12 +14,15 @@ first version is written in MATLAB on Dec. 25th, 2014.
 import wx
 from wx.lib.wordwrap import wordwrap
 from . import felbase
-#import felbase
 import numpy as np
 
 import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
+from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+
+import os
+import time
 
 #------------------------------------------------------------------------#
 
@@ -528,12 +531,25 @@ class PlotFrame(wx.Frame):
                 id = wx.ID_ANY, title = title, **kwargs)
         self.parent = parent
         self.InitUI()
+        self.setColor()
     
+#------------------------------------------------------------------------#
+    
+    def setColor(self, rgbtuple = None):
+        if rgbtuple is None:
+            rgbtuple = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
+        
+        clr = [c/255. for c in rgbtuple]
+        self.fig.set_facecolor(clr)
+        self.fig.set_edgecolor(clr)
+        self.canvas.SetBackgroundColour(wx.Colour(*rgbtuple))
+
 #------------------------------------------------------------------------#
 
     def InitUI(self):
         self.createMenu ()
         self.createPanel()
+        self.createToolbar()
 
 #------------------------------------------------------------------------#
 
@@ -560,7 +576,7 @@ class PlotFrame(wx.Frame):
     def createPanel(self):
         self.panel = wx.Panel(self, id = wx.ID_ANY)
 
-        vbox = wx.BoxSizer(wx.VERTICAL)
+        self.vbox = wx.BoxSizer(wx.VERTICAL)
 
         # figure panel
         self.dpi = 100
@@ -572,18 +588,29 @@ class PlotFrame(wx.Frame):
         params = self.parent.result.keys()
         self.plotparamcombo = wx.ComboBox(self.panel, id = wx.ID_ANY, value = params[0],
                 choices = params, style = wx.CB_READONLY | wx.CB_SORT)
-        st1 = wx.StaticText(self.panel, id = wx.ID_ANY, label = 'Y Axis:', style = wx.ALIGN_LEFT)
+        st1 = wx.StaticText(self.panel, id = wx.ID_ANY, label = 'Choose Y Axis to plot:', style = wx.ALIGN_LEFT)
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add(st1, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
         hbox.Add(self.plotparamcombo, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.TOP | wx.BOTTOM, border = 10)
 
-        vbox.Add(self.canvas, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 0)
-        vbox.Add(hbox, flag = wx.LEFT, border = 10)
+        self.vbox.Add(self.canvas, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 0)
+        self.vbox.Add(hbox, flag = wx.LEFT, border = 10)
 
-        self.panel.SetSizer(vbox)
+        self.panel.SetSizer(self.vbox)
         
         self.Bind(wx.EVT_COMBOBOX, self.onPlotChoice, self.plotparamcombo)
+
+#------------------------------------------------------------------------#
+    
+    def createToolbar(self):
+        self.toolbar = NavigationToolbar2Wx(self.canvas)
+        self.toolbar.Realize()
+        tw, th = self.toolbar.GetSizeTuple()
+        fw, fh = self.canvas.GetSizeTuple()
+        self.toolbar.SetSize(wx.Size(fw, th))
+        self.vbox.Add(self.toolbar, proportion = 0, flag = wx.LEFT | wx.EXPAND, border = 10)
+        self.toolbar.update()
 
 #------------------------------------------------------------------------#
 
@@ -609,7 +636,14 @@ class PlotFrame(wx.Frame):
 #------------------------------------------------------------------------#
 
     def onSavePlot(self, event):
-        pass
+        fighead = 'figure'
+        figext  = 'jpg'
+        figname = fighead + time.strftime('%H%m%S', time.localtime()) + '.' + figext
+        filefullpath = os.path.join(os.getcwdu(), figname)
+        self.fig.savefig(filefullpath)
+        dial = wx.MessageDialog(self, message = 'Figure is saved as ' + filefullpath, caption = "File Saved Message", style = wx.OK)
+        if dial.ShowModal() == wx.ID_YES:
+            self.Destroy()
 
 #------------------------------------------------------------------------#
 
