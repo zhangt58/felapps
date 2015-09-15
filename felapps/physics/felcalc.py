@@ -14,12 +14,14 @@ first version is written in MATLAB on Dec. 25th, 2014.
 import wx
 from wx.lib.wordwrap import wordwrap
 from . import felbase
+from ..utils import funutils
 import numpy as np
 
 import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+import matplotlib.ticker as tick
 
 import os
 import time
@@ -56,22 +58,23 @@ xchoice = {'Beam Energy'     : '$E_b\ \mathrm{[MeV]}$',
            'Avg. Beta Func.' : '$\langle{\\beta}\\rangle\ \mathrm{[m]}$',
            'Bunch Charge'    : '$Q\ \mathrm{[C]}$'}
 
-ychoice = {'au'     : ['$a_u$',                             'Normalized undulator parameter, or K/sqrt(2).'],
-           'bu'     : ['$B_u\ \mathrm{[T]}$',               'Undulator magnetic peak field [T].'],
-           'gap'    : ['$\mathrm{Gap\ [mm]}$',              'Permanent undulator gap [mm].'],
-           'Lg1D'   : ['$L_g^{\mathrm{1D}}\ \mathrm{[m]}$', 'FEL power gain length (1D) [m].'],
-           'Lg3D'   : ['$L_g^{\mathrm{3D}}\ \mathrm{[m]}$', 'FEL power gain length (3D) [m].'],
-           'rho1D'  : ['$\\rho^{\mathrm{1D}}$',             'FEL parameter or Pierce parameter (1D).'],
-           'rho3D'  : ['$\\rho^{\mathrm{3D}}$',             'FEL parameter or Pierce parameter (3D).'],
-           'sigmar' : ['$\sigma_r\ \mathrm{[m]}$',          'Electron transverse beam radius size (rms) [m].'],
-           'sigmat' : ['$\sigma_t\ \mathrm{[fs]}$',         'Temporal bunch length (rms) [fs].'],
-           'Psat'   : ['$P_{\mathrm{sat}}\ \mathrm{[W]}$',  'FEL saturation power (M.Xie formulae) [W].'],
-           'Pshot'  : ['$P_{\mathrm{shot}}\ \mathrm{[W]}$', 'FEL initial shotnoise power [W].'],
-           'Pss'    : ['$P_{\mathrm{ss}}\ \mathrm{[W]}$',   'FEL saturation power (SASE) [W].'],
-           'Lsat'   : ['$L_{\mathrm{sat}}\ \mathrm{[m]}$',  'FEL saturation length (SASE) [m].'],
-           'bandwidth'   : ['$\Delta\lambda/\lambda}\ \mathrm{[\\%]}$',  'FEL bandwidth [%].'],
-           'PulseEnergy': ['$W\ \mathrm{[\mu J]}$',  'FEL pulse energy [micro J].'],
-           'ppp': ['$\mathrm{Photon\ \#/pulse}$',  'FEL photon number per pulse.'],
+ychoice = {'01-au'     : ['$a_u$',                             'Normalized undulator parameter, or K/sqrt(2).'],
+           '02-Bu'     : ['$B_u\ \mathrm{[T]}$',               'Undulator magnetic peak field [T].'],
+           '03-gap'    : ['$\mathrm{Gap\ [mm]}$',              'Permanent undulator gap [mm].'],
+           '04-rho1D'  : ['$\\rho^{\mathrm{1D}}$',             'FEL parameter or Pierce parameter (1D).'],
+           '05-rho3D'  : ['$\\rho^{\mathrm{3D}}$',             'FEL parameter or Pierce parameter (3D).'],
+           '06-Lg1D'   : ['$L_g^{\mathrm{1D}}\ \mathrm{[m]}$', 'FEL power gain length (1D) [m].'],
+           '07-Lg3D'   : ['$L_g^{\mathrm{3D}}\ \mathrm{[m]}$', 'FEL power gain length (3D) [m].'],
+           '08-Psat'   : ['$P_{\mathrm{sat}}\ \mathrm{[W]}$',  'FEL saturation power (M.Xie formulae) [W].'],
+           '09-Pshot'  : ['$P_{\mathrm{shot}}\ \mathrm{[W]}$', 'FEL initial shotnoise power [W].'],
+           '10-Pss'    : ['$P_{\mathrm{ss}}\ \mathrm{[W]}$',   'FEL saturation power (SASE) [W].'],
+           '11-Lsat'   : ['$L_{\mathrm{sat}}\ \mathrm{[m]}$',  'FEL saturation length (SASE) [m].'],
+           '12-sigmar' : ['$\sigma_r\ \mathrm{[\mu m]}$',      'Transverse e-beam radius size (rms) [micro m].'],
+           '13-sigmat' : ['$\sigma_t\ \mathrm{[fs]}$',         'Temporal bunch length (rms) [fs].'],
+           '14-bandWidth'      : ['$\Delta\lambda/\lambda$ [%]', 'FEL bandwidth [%].'],
+           '15-PhotonEnergy'   : ['$E_p\ \mathrm{[eV]}$',        'FEL photon energy [eV].'],
+           '16-PulseEnergy'    : ['$W\ \mathrm{[\mu J]}$',       'FEL pulse energy [micro J].'],
+           '17-PhotonPerPulse' : ['$\mathrm{Photon\ \#/pulse}$', 'FEL photon number per pulse.'],
            }
 
 #------------------------------------------------------------------------#
@@ -193,7 +196,7 @@ class MainFrame(wx.Frame):
         sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
 
         ## sbsizer1: 'Beam Parameters'  StaticBoxSizer
-        box1 = wx.FlexGridSizer(10, 2, 8, 40)
+        box1 = wx.FlexGridSizer(10, 2, 4, 40)
 
         b1st1 = wx.StaticText(panel, label = 'Beam Energy [MeV]',    style = wx.ALIGN_LEFT)
         b1st2 = wx.StaticText(panel, label = 'Energy Spread',        style = wx.ALIGN_LEFT)
@@ -217,26 +220,26 @@ class MainFrame(wx.Frame):
         self.b1tc9 = wx.TextCtrl(panel,                        value = '10',     style = wx.TE_PROCESS_ENTER)
         self.b1cb10 = wx.ComboBox(panel, value = 'gaussian', choices = ['gaussian', 'flattop'], style = wx.CB_READONLY)
 
-        box1.Add(b1st1,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc1, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st2,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc2, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st3,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc3, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st4,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc4, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st5,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc5, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st6,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc6, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st7,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc7, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st8,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc8, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st9,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1tc9, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
-        box1.Add(b1st10,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 15)
-        box1.Add(self.b1cb10, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 15)
+        box1.Add(b1st1,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc1, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st2,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc2, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st3,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc3, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st4,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc4, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st5,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc5, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st6,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc6, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st7,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc7, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st8,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc8, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st9,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
+        box1.Add(self.b1tc9, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st10,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        box1.Add(self.b1cb10, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
 
         box1.AddGrowableCol(1)
 
@@ -490,7 +493,6 @@ class MainFrame(wx.Frame):
             elif scanparam == u'Avg. Beta Func.':
                 avgBeta    = np.linspace(scanmin,scanmax,scanpoint)
                 self.scanX = avgBeta
-                #print self.scanX
             elif scanparam == u'Bunch Charge':
                 bunchCharge = np.linspace(scanmin,scanmax,scanpoint)
                 self.scanX  = bunchCharge
@@ -509,7 +511,7 @@ class MainFrame(wx.Frame):
                                       bunchShape)
             self.result = instFEL.onFELAnalyse()
             
-            print self.result
+            #print self.result
 
 #------------------------------------------------------------------------#
     
@@ -652,7 +654,7 @@ class PlotFrame(wx.Frame):
         self.plotparamcombo = wx.ComboBox(self.panel, id = wx.ID_ANY, value = params[0],
                 choices = params, style = wx.CB_READONLY | wx.CB_SORT)
         st1 = wx.StaticText(self.panel, id = wx.ID_ANY, label = 'Choose Y Axis to plot:', style = wx.ALIGN_LEFT)
-        self.plotparam_hint = wx.StaticText(self.panel, id = wx.ID_ANY, label = '', style = wx.ALIGN_RIGHT)
+        self.plotparam_hint = funutils.MyStaticText(self.panel, label = u'', style = wx.ALIGN_RIGHT, fontcolor = 'blue')
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         hbox.Add(st1, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
@@ -671,7 +673,7 @@ class PlotFrame(wx.Frame):
         
     def onMotion(self, event):
         try:
-            print "x:%.4f y:%.4f" % (event.xdata, event.ydata)
+            self.xyposlabel_val.SetLabel("(%.4g, %.4g)" % (event.xdata, event.ydata))
         except TypeError:
             pass
 
@@ -684,13 +686,17 @@ class PlotFrame(wx.Frame):
         fw, fh = self.canvas.GetSizeTuple()
         self.toolbar.SetSize(wx.Size(fw, th))
 
-        grid_chkbox = wx.CheckBox(self.panel, label = 'Show Grid')
+        grid_chkbox         = wx.CheckBox(self.panel, label = 'Show Grid')
+        xyposlabel          = funutils.MyStaticText(self.panel, label = u'(x, y): ', style = wx.ALIGN_RIGHT)
+        self.xyposlabel_val = funutils.MyStaticText(self.panel, label = u'',         style = wx.ALIGN_RIGHT, fontcolor = 'red')
         
         toolbarbox = wx.BoxSizer(wx.HORIZONTAL)
-        toolbarbox.Add(self.toolbar, proportion = 0 ,flag = wx.LEFT | wx.EXPAND)
-        toolbarbox.Add(grid_chkbox,  proportion = 0 ,flag = wx.EXPAND | wx.LEFT, border = 20)
+        toolbarbox.Add(self.toolbar,        proportion = 0 ,flag = wx.LEFT | wx.ALIGN_LEFT)
+        toolbarbox.Add(xyposlabel,          proportion = 0 ,flag = wx.LEFT | wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 20)
+        toolbarbox.Add(self.xyposlabel_val, proportion = 2 ,flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        toolbarbox.Add(grid_chkbox,         proportion = 1 ,flag = wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, border = 20)
 
-        self.vbox.Add(toolbarbox, proportion = 0, flag = wx.LEFT | wx.BOTTOM | wx.EXPAND, border = 10)
+        self.vbox.Add(toolbarbox, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
         self.toolbar.update()
 
         self.Bind(wx.EVT_CHECKBOX, self.onGridCheck, grid_chkbox)
@@ -716,6 +722,7 @@ class PlotFrame(wx.Frame):
     def onPlotChoice(self, event):
         ykey = self.plotparamcombo.GetValue()
         xkey = self.parent.combobox31.GetValue() 
+        self.plotparam_hint.SetLabel(ychoice[ykey][1])
         x = self.parent.scanX
         y = self.parent.result[ykey]
         self.axes.clear()
@@ -723,8 +730,9 @@ class PlotFrame(wx.Frame):
             self.axes.plot(x,y,'r')
             self.axes.set_xlabel(r''+xchoice[xkey]+'')
             self.axes.set_ylabel(r''+ychoice[ykey][0]+'')
+            #self.axes.ticklabel_format(style = 'scientific', axis = 'both')
+            #self.axes.yaxis.set_major_formatter(tick.FormatStrFormatter('%g'))
             self.axes.grid(self.ongrid)
-            self.plotparam_hint.SetLabel(ychoice[ykey][1])
             self.repaint()
         except ValueError:
             pass
