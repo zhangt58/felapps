@@ -669,10 +669,10 @@ class InfoFrame(wx.Frame):
                       "1: Input the parameters in 'Beam Parameters' panel;\n" + \
                       "2: Push 'Calculate' button to show the calculated results;\n" + \
                       "3: If 'Enable Scan' is checked, scan function is enabled;\n" + \
-                      "  3.1: Choose the scan parameter and the scan range;\n" + \
-                      "  3.2: Push 'Calculate' button, then 'Show Plot' to check plot." + \
-                      "  3.3: In 'Scan Data Visualization' frame, Ctrl+S can save figure" + \
-                      "       into '.jpg' format or use the toolbar at the bottom."
+                      " 3.1: Choose the scan parameter and the scan range;\n" + \
+                      " 3.2: Push 'Calculate' button, then 'Show Plot' to check plot;\n" + \
+                      " 3.3: In 'Scan Data Visualization' frame, Ctrl+S can save figure\n" + \
+                      "      into '.jpg' format or use the toolbar at the bottom."
         aboutinfo = funutils.MyStaticText(panel, label = aboutstring, style = wx.ALIGN_LEFT | wx.TE_MULTILINE)
         vbox.Add(aboutinfo, flag = wx.ALIGN_CENTER | wx.ALL, border = 10)
         panel.SetSizer(vbox)
