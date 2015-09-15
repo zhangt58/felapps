@@ -103,13 +103,39 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onExit,   id = wx.ID_EXIT)
 
         helpMenu = wx.Menu()
-        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tF1', 'About this application')
+        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tCtrl-I',    'About this application')
+        infoItem  = helpMenu.Append(wx.ID_ANY,   '&Info\tF1', 'Show brief guide')
         self.Bind(wx.EVT_MENU, self.onAbout, id = wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.onInfo,  infoItem)
 
         self.menubar.Append(fileMenu, '&File')
         self.menubar.Append(helpMenu, '&Help')
         
         self.SetMenuBar(self.menubar)
+
+    def createStatusbar(self):
+        self.statusbar = funutils.ESB.EnhancedStatusBar(self)
+        self.statusbar.SetFieldsCount(2)
+        self.SetStatusBar(self.statusbar)
+        self.statusbar.SetStatusWidths([-4,-1])
+        self.statusbar.appinfo= wx.StaticText(self.statusbar, wx.ID_ANY,
+                label = 'FEL formula powered by Python')
+        versionfield = wx.StaticText(self.statusbar, wx.ID_ANY,
+                label = time.strftime('%Y-%m-%d', time.localtime()) + ' ' + ' (Version: ' + self.appversion + ')')
+        self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(versionfield,  funutils.ESB.ESB_ALIGN_RIGHT)
+
+    def onMenuHL(self, event):
+        try:
+            hltext = event.GetEventObject().GetHelpString(event.GetMenuId())
+            self.statusbar.appinfo.SetLabel(hltext)
+        except:
+            pass
+
+    def onInfo(self, event):
+        infoframe = InfoFrame(self, title = 'Brief Guide to this Application')
+        infoframe.Show()
+        infoframe.Centre()
 
 #------------------------------------------------------------------------#
 
@@ -145,9 +171,11 @@ class MainFrame(wx.Frame):
 #------------------------------------------------------------------------#
 
     def initUI(self):
-
         self.createMenu()
+        self.createStatusbar()
+        self.createPanel()
 
+    def createPanel(self):
         ## statictext result color
         resultcolor = 'red'
         
@@ -158,21 +186,10 @@ class MainFrame(wx.Frame):
         sbcolor = 'MAGENTA'
 
         panel = wx.Panel(self, id = wx.ID_ANY)
-        gbsizer = wx.GridBagSizer(vgap = 8, hgap = 8)
         
-        font = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font.SetPointSize(18)
-        font.SetWeight(wx.FONTWEIGHT_BOLD)
-        st0 = wx.StaticText(panel, 
-                label = 'Cheat Sheet for FEL Physics', style = wx.ALIGN_CENTRE)
-        st0.SetForegroundColour(wx.BLUE)
-        st0.SetFont(font)
-        gbsizer.Add(st0, pos = (0, 0), span = (1, 2), 
-                flag = wx.ALIGN_CENTER | wx.LEFT | wx.TOP | wx.BOTTOM, border = 10)
+        st0 = funutils.MyStaticText(panel, label = 'Cheat Sheet for FEL Physics', style = wx.ALIGN_CENTRE, fontcolor = 'blue', fontsize = 18, fontweight = wx.FONTWEIGHT_BOLD)
 
         sl1 = wx.StaticLine(panel, style = wx.LI_HORIZONTAL)
-        gbsizer.Add(sl1, pos = (1, 0), span = (1, 2),
-                flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
 
         sbox1 = wx.StaticBox(panel, id = wx.ID_ANY, 
                 label = 'Beam Parameters')
@@ -180,20 +197,20 @@ class MainFrame(wx.Frame):
                 label = 'FEL Calculations')
         sbox3 = wx.StaticBox(panel, id = wx.ID_ANY,
                 label = 'Operations')
-        sbox4 = wx.StaticBox(panel, id = wx.ID_ANY,
-                label = 'Brief Guide')
+        #sbox4 = wx.StaticBox(panel, id = wx.ID_ANY,
+        #        label = 'Brief Guide')
         sbox1.SetFont(sbfont)
         sbox2.SetFont(sbfont)
         sbox3.SetFont(sbfont)
-        sbox4.SetFont(sbfont)
+        #sbox4.SetFont(sbfont)
         sbox1.SetForegroundColour(sbcolor)
         sbox2.SetForegroundColour(sbcolor)
         sbox3.SetForegroundColour(sbcolor)
-        sbox4.SetForegroundColour(sbcolor)
+        #sbox4.SetForegroundColour(sbcolor)
         sbsizer1 = wx.StaticBoxSizer(sbox1, orient = wx.VERTICAL)
         sbsizer2 = wx.StaticBoxSizer(sbox2, orient = wx.VERTICAL)
         sbsizer3 = wx.StaticBoxSizer(sbox3, orient = wx.VERTICAL)
-        sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
+        #sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
 
         ## sbsizer1: 'Beam Parameters'  StaticBoxSizer
         box1 = wx.FlexGridSizer(10, 2, 4, 40)
@@ -248,28 +265,46 @@ class MainFrame(wx.Frame):
         ## sbsizer2: 'FEL Calculations' StaticBoxSizer
 
         ### undulator
-        b2sb1 = wx.StaticBox(panel, id = wx.ID_ANY, label = 'Undulator')
+        b2sb1 = wx.StaticBox(panel, id = wx.ID_ANY, label = 'Undulator and E-beam')
         b2sb1sizer = wx.StaticBoxSizer(b2sb1, orient = wx.VERTICAL)
 
-        b2sb1st1 = wx.StaticText(panel, label = 'Field [T]:', style = wx.ALIGN_LEFT)
-        b2sb1st2 = wx.StaticText(panel, label = 'Gap [mm]:',  style = wx.ALIGN_LEFT)
-        b2sb1st3 = wx.StaticText(panel, label = 'K:',         style = wx.ALIGN_LEFT)
+        b2sb1st1 = wx.StaticText(panel, label = 'Field [T]:',    style = wx.ALIGN_LEFT)
+        b2sb1st2 = wx.StaticText(panel, label = 'Gap [mm]:',     style = wx.ALIGN_LEFT)
+        b2sb1st3 = wx.StaticText(panel, label = 'K:',            style = wx.ALIGN_LEFT)
+        b2sb1st4 = wx.StaticText(panel, label = 'au:',           style = wx.ALIGN_LEFT)
+        b2sb1st5 = wx.StaticText(panel, label = 'Bunch length (fs):', style = wx.ALIGN_LEFT)
+        b2sb1st6 = wx.StaticText(panel, label = 'Bunch length (um):', style = wx.ALIGN_LEFT)
+        b2sb1st5_note = funutils.MyStaticText(panel, label = 'gaussian: rms width', style = wx.ALIGN_LEFT, fontcolor = 'grey')
+        b2sb1st6_note = funutils.MyStaticText(panel, label = 'flattop: full width', style = wx.ALIGN_LEFT, fontcolor = 'grey')
+        b2sb1st7 = wx.StaticText(panel, label = 'Beam size (um):',    style = wx.ALIGN_LEFT)
 
-        self.b2sb1vst1 = wx.StaticText(panel, label = '0.720', style = wx.ALIGN_LEFT)
-        self.b2sb1vst2 = wx.StaticText(panel, label = '7.801', style = wx.ALIGN_LEFT)
-        self.b2sb1vst3 = wx.StaticText(panel, label = '1.681', style = wx.ALIGN_LEFT)
-        self.b2sb1vst1.SetForegroundColour(resultcolor)
-        self.b2sb1vst2.SetForegroundColour(resultcolor) 
-        self.b2sb1vst3.SetForegroundColour(resultcolor) 
+        self.b2sb1vst1 = funutils.MyStaticText(panel, label = '0.720', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst2 = funutils.MyStaticText(panel, label = '7.801', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst3 = funutils.MyStaticText(panel, label = '1.681', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst4 = funutils.MyStaticText(panel, label = '1.189', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst5 = funutils.MyStaticText(panel, label = '797.9', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst6 = funutils.MyStaticText(panel, label = '239.4', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb1vst7 = funutils.MyStaticText(panel, label = '233.5', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
         
-        b2sb1fgs = wx.FlexGridSizer(3, 2, 10, 20)
-        b2sb1fgs.Add(b2sb1st1,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb1fgs.Add(self.b2sb1vst1, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb1fgs.Add(b2sb1st2,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb1fgs.Add(self.b2sb1vst2, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb1fgs.Add(b2sb1st3,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb1fgs.Add(self.b2sb1vst3, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
+        b2sb1fgs = wx.GridBagSizer(10, 4)
+        b2sb1fgs.Add(b2sb1st1,       pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst1, pos = (0, 1), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st2,       pos = (0, 2), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst2, pos = (0, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st3,       pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst3, pos = (1, 1), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st4,       pos = (1, 2), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst4, pos = (1, 3), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st5,       pos = (2, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst5, pos = (2, 1), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st5_note,  pos = (2, 2), span = (1, 2), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st6,       pos = (3, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst6, pos = (3, 1), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st6_note,  pos = (3, 2), span = (1, 2), flag = wx.EXPAND | wx.RIGHT, border = 20)
+        b2sb1fgs.Add(b2sb1st7,       pos = (4, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb1fgs.Add(self.b2sb1vst7, pos = (4, 1), span = (1, 1), flag = wx.EXPAND | wx.RIGHT, border = 20)
         b2sb1fgs.AddGrowableCol(1)
+        b2sb1fgs.AddGrowableCol(3)
         
         b2sb1sizer.Add(b2sb1fgs, proportion = 1, flag = wx.ALIGN_CENTER | wx.EXPAND | wx.ALL, border = 10)
 
@@ -280,35 +315,62 @@ class MainFrame(wx.Frame):
         b2sb2st2 = wx.StaticText(panel, label = 'FEL parameter (3D):',       style = wx.ALIGN_LEFT)
         b2sb2st3 = wx.StaticText(panel, label = 'FEL gainlength (1D) [m]:',  style = wx.ALIGN_LEFT)
         b2sb2st4 = wx.StaticText(panel, label = 'FEL gainlength (3D) [m]:',  style = wx.ALIGN_LEFT)
-        b2sb2st5 = wx.StaticText(panel, label = 'FEL saturation power [W]:', style = wx.ALIGN_LEFT)
+        b2sb2st5 = wx.StaticText(panel, label = 'FEL saturation power  (MXie) [W]:', style = wx.ALIGN_LEFT)
+        b2sb2st6 = wx.StaticText(panel, label = 'FEL saturation power  (SASE) [W]:', style = wx.ALIGN_LEFT)
+        b2sb2st13= wx.StaticText(panel, label = 'FEL output power      (SASE) [W]:', style = wx.ALIGN_LEFT)
+        b2sb2st7 = wx.StaticText(panel, label = 'FEL saturation length (SASE) [m]:', style = wx.ALIGN_LEFT)
+        b2sb2st12= wx.StaticText(panel, label = 'FEL shotnoise power (SASE) [W]:',   style = wx.ALIGN_LEFT)
+        b2sb2st8 = wx.StaticText(panel, label = 'FEL photon energy [eV]:', style = wx.ALIGN_LEFT)
+        b2sb2st9 = wx.StaticText(panel, label = 'FEL bandwidth [%]:',      style = wx.ALIGN_LEFT)
+        b2sb2st10= wx.StaticText(panel, label = 'FEL pulse energy  [uJ]:', style = wx.ALIGN_LEFT)
+        b2sb2st11= wx.StaticText(panel, label = 'FEL photons per pulse:',  style = wx.ALIGN_LEFT)
 
-        self.b2sb2vst1 = wx.StaticText(panel, label = '2.022e-03', style = wx.ALIGN_LEFT)
-        self.b2sb2vst2 = wx.StaticText(panel, label = '1.622e-03', style = wx.ALIGN_LEFT)
-        self.b2sb2vst3 = wx.StaticText(panel, label = '0.568',     style = wx.ALIGN_LEFT)
-        self.b2sb2vst4 = wx.StaticText(panel, label = '0.708',     style = wx.ALIGN_LEFT)
-        self.b2sb2vst5 = wx.StaticText(panel, label = '3.121e+07', style = wx.ALIGN_LEFT)
-        self.b2sb2vst1.SetForegroundColour(resultcolor)
-        self.b2sb2vst2.SetForegroundColour(resultcolor)
-        self.b2sb2vst3.SetForegroundColour(resultcolor)
-        self.b2sb2vst4.SetForegroundColour(resultcolor)
-        self.b2sb2vst5.SetForegroundColour(resultcolor)
+        self.b2sb2vst1 = funutils.MyStaticText(panel, label = '2.022e-03', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst2 = funutils.MyStaticText(panel, label = '1.622e-03', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst3 = funutils.MyStaticText(panel, label = '0.568',     style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst4 = funutils.MyStaticText(panel, label = '0.708',     style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst5 = funutils.MyStaticText(panel, label = '3.121e+07', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst6 = funutils.MyStaticText(panel, label = '3.932e+07', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst7 = funutils.MyStaticText(panel, label = '15.08',     style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst8 = funutils.MyStaticText(panel, label = '3.5',       style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst9 = funutils.MyStaticText(panel, label = '0.46',      style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst10= funutils.MyStaticText(panel, label = '0.061',     style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst11= funutils.MyStaticText(panel, label = '1.07e+11',  style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst12= funutils.MyStaticText(panel, label = '0.2',       style = wx.ALIGN_LEFT, fontcolor = resultcolor)
+        self.b2sb2vst13= funutils.MyStaticText(panel, label = '3.034e+04', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
         
-        b2sb2fgs = wx.FlexGridSizer(5, 2, 10, 30)
-        b2sb2fgs.Add(b2sb2st1,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb2fgs.Add(self.b2sb2vst1, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb2fgs.Add(b2sb2st2,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb2fgs.Add(self.b2sb2vst2, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb2fgs.Add(b2sb2st3,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb2fgs.Add(self.b2sb2vst3, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb2fgs.Add(b2sb2st4,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb2fgs.Add(self.b2sb2vst4, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
-        b2sb2fgs.Add(b2sb2st5,  proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
-        b2sb2fgs.Add(self.b2sb2vst5, proportion = 1, flag = wx.EXPAND | wx.RIGHT, border = 10)
+        b2sb2fgs = wx.FlexGridSizer(13, 2, 10, 40)
+        b2sb2fgs.Add(b2sb2st1,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst1, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st2,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst2, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st3,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst3, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st4,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst4, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st5,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst5, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st6,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst6, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st13,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst13,proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st7,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst7, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st12,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst12,proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st8,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst8, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st9,       proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst9, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st10,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst10,proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
+        b2sb2fgs.Add(b2sb2st11,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        b2sb2fgs.Add(self.b2sb2vst11,proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
         b2sb2fgs.AddGrowableCol(1)
 
         b2sb2sizer.Add(b2sb2fgs, proportion = 1, flag = wx.ALIGN_CENTER | wx.EXPAND | wx.ALL, border = 10)
 
-        sbsizer2.Add(b2sb1sizer, proportion = 1, flag = wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, border = 10)
+        sbsizer2.Add(b2sb1sizer, proportion = 0, flag = wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, border = 10)
         sbsizer2.Add(b2sb2sizer, proportion = 1, flag = wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, border = 10)
         
         ## sbsizer3: 'Operations'        StaticBoxSizer
@@ -378,44 +440,30 @@ class MainFrame(wx.Frame):
         sbsizer3.Add(b3sb1sizer, proportion = 1, flag = wx.ALIGN_CENTER | wx.EXPAND | wx.ALL, border = 10)
         sbsizer3.Add(b3sb2sizer, proportion = 0, flag = wx.ALIGN_CENTER | wx.EXPAND | wx.ALL, border = 10)
         
-        ## sbsizer4: 'Brief Guide'            StaticBoxSizer
-        aboutstring = "How to use this application:\n" + \
-                      "1: Input the parameters in 'Beam Parameters' panel;\n" + \
-                      "2: Push 'Calculate' button to show the calculated results;\n" + \
-                      "3: If 'Enable Scan' is checked, scan function is enabled;\n" + \
-                      "  3.1: Choose the scan parameter and the scan range;\n" + \
-                      "  3.2: Push 'Calculate' button, then 'Show Plot' to check plot."
-        aboutinfo = wx.StaticText(panel, label = aboutstring, style = wx.ALIGN_LEFT | wx.TE_MULTILINE)
-        font1 = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT)
-        font1.SetPointSize(10)
-        font1.SetWeight(wx.FONTWEIGHT_NORMAL)
-        aboutinfo.SetFont(font1)
-        aboutinfo.SetForegroundColour('gray')
-        sbsizer4.Add(aboutinfo, flag = wx.ALIGN_CENTER | wx.LEFT | wx.TOP, border = 5)
+        # set 4 sbsizers and title with one staticline
+        overallbox = wx.BoxSizer(wx.VERTICAL)
+        leftarightbox = wx.BoxSizer(wx.HORIZONTAL)
+        leftbox    = wx.BoxSizer(wx.VERTICAL)
+        rightbox   = wx.BoxSizer(wx.VERTICAL)
 
+        leftbox.Add(sbsizer1,  proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        leftbox.Add(sbsizer3,  proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
+        rightbox.Add(sbsizer2, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        leftarightbox.Add(leftbox,  proportion = 1, flag = wx.EXPAND)
+        leftarightbox.Add(rightbox, proportion = 1, flag = wx.EXPAND)
 
-        gbsizer.Add(sbsizer1, pos = (2, 0), span = (2, 1),
-                flag = wx.EXPAND | wx.LEFT, border = 15)
-        gbsizer.Add(sbsizer2, pos = (2, 1), span = (3, 1),
-                flag = wx.EXPAND | wx.RIGHT, border = 15)
-        gbsizer.Add(sbsizer3, pos = (4, 0), span = (2, 1),
-                flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 15)
-        gbsizer.Add(sbsizer4, pos = (5, 1), span = (1, 1),
-                flag = wx.EXPAND | wx.RIGHT | wx.BOTTOM, border = 15)
+        overallbox.Add(st0, proportion = 0, flag = wx.ALIGN_CENTER | wx.ALL, border = 10)
+        overallbox.Add(sl1, proportion = 0, flag = wx.EXPAND)
+        overallbox.Add(leftarightbox, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 0)
 
-        gbsizer.AddGrowableCol(0, 1)
-        gbsizer.AddGrowableCol(1, 1)
-        gbsizer.AddGrowableRow(2, 1)
-        gbsizer.AddGrowableRow(4, 1)
-        gbsizer.AddGrowableRow(5, 1)
-
-        panel.SetSizer(gbsizer)
+        panel.SetSizer(overallbox)
         osizer = wx.BoxSizer(wx.HORIZONTAL)
         osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
 
         # callback bindings
         self.Bind(wx.EVT_CLOSE,  self.onExit)
+        self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.Bind(wx.EVT_BUTTON, self.onCalc, id = ID_CALCBTN)
         self.Bind(wx.EVT_BUTTON, self.onExit, id = ID_EXITBTN)
         self.Bind(wx.EVT_BUTTON, self.onPlot, id = ID_PLOTBTN)
@@ -459,14 +507,35 @@ class MainFrame(wx.Frame):
                                       unduLength,
                                       bunchShape)
             result = instFEL.onFELAnalyse()
-            self.b2sb1vst1.SetLabel('%.3f' % (result['bu']))
-            self.b2sb1vst2.SetLabel('%.3f' % (result['gap'][0]))
-            self.b2sb1vst3.SetLabel('%.3f' % (result['au']*2.0**0.5))
-            self.b2sb2vst1.SetLabel('%.3e' % (result['rho1D']))
-            self.b2sb2vst2.SetLabel('%.3e' % (result['rho3D']))
-            self.b2sb2vst3.SetLabel('%.3f' % (result['Lg1D']))
-            self.b2sb2vst4.SetLabel('%.3f' % (result['Lg3D']))
-            self.b2sb2vst5.SetLabel('%.3e' % (result['Psat']))
+            self.b2sb1vst1.SetLabel('%.3f' % (result['02-Bu']))
+            self.b2sb1vst2.SetLabel('%.3f' % (result['03-gap'][0]))
+            self.b2sb1vst3.SetLabel('%.3f' % (result['01-au']*2.0**0.5))
+            self.b2sb1vst4.SetLabel('%.3f' % (result['01-au']))
+            self.b2sb1vst5.SetLabel('%.1f' % (result['13-sigmat']))
+            self.b2sb1vst6.SetLabel('%.1f' % (result['13-sigmat']*0.3))
+            self.b2sb1vst7.SetLabel('%.1f' % (result['12-sigmar']))
+
+            self.b2sb2vst1.SetLabel('%.3e' % (result['04-rho1D']))
+            self.b2sb2vst2.SetLabel('%.3e' % (result['05-rho3D']))
+            self.b2sb2vst3.SetLabel('%.3f' % (result['06-Lg1D']))
+            self.b2sb2vst4.SetLabel('%.3f' % (result['07-Lg3D']))
+            self.b2sb2vst5.SetLabel('%.3e' % (result['08-Psat']))
+            self.b2sb2vst6.SetLabel('%.3e' % (result['10-Pss']))
+            self.b2sb2vst7.SetLabel('%.2f' % (result['11-Lsat']))
+            self.b2sb2vst8.SetLabel('%.2g' % (result['15-PhotonEnergy']))
+            self.b2sb2vst9.SetLabel('%.2f' % (result['14-bandWidth']))
+            self.b2sb2vst12.SetLabel('%.2g' % (result['09-Pshot']))
+
+            Psat = result['10-Pss']
+            # power, power energy, photon per pulse at exit of undulator
+            Pexit = 1.0/9.0*result['09-Pshot']*np.exp(min(unduLength, result['11-Lsat'])/result['07-Lg3D'])
+            Wexit = result['16-PulseEnergy']/Psat*Pexit
+            Nexit = result['17-PhotonPerPulse']/Psat*Pexit
+
+            self.b2sb2vst10.SetLabel('%.2g' % (Wexit))
+            self.b2sb2vst11.SetLabel('%.2e' % (Nexit))
+            self.b2sb2vst13.SetLabel('%.3e' % (Pexit))
+
         else: # Scan is enabled
             scanparam = self.combobox31.GetStringSelection()
             scanmin   = float(self.smintc.GetValue())
@@ -542,8 +611,8 @@ class MainFrame(wx.Frame):
 #------------------------------------------------------------------------#
 
     def onPlot(self, event):
-        self.plotframe = PlotFrame(self,title = 'Plot Frame', 
-                size = (750, 700))
+        self.plotframe = PlotFrame(self, title = 'Plot Frame', 
+                size = (780, 700))
         self.plotframe.Show()
         self.plotframe.Centre()
 
@@ -583,6 +652,33 @@ class MainFrame(wx.Frame):
                                 caption = "Exit Warning", style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
         if dial.ShowModal() == wx.ID_YES:
             self.Destroy()
+
+#------------------------------------------------------------------------#
+
+class InfoFrame(wx.Frame):
+    def __init__(self, parent, title, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, title = title, **kwargs)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+        panel = wx.Panel(self)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        aboutstring = "How to use this application:\n" + \
+                      "1: Input the parameters in 'Beam Parameters' panel;\n" + \
+                      "2: Push 'Calculate' button to show the calculated results;\n" + \
+                      "3: If 'Enable Scan' is checked, scan function is enabled;\n" + \
+                      "  3.1: Choose the scan parameter and the scan range;\n" + \
+                      "  3.2: Push 'Calculate' button, then 'Show Plot' to check plot."
+        aboutinfo = funutils.MyStaticText(panel, label = aboutstring, style = wx.ALIGN_LEFT | wx.TE_MULTILINE)
+        vbox.Add(aboutinfo, flag = wx.ALIGN_CENTER | wx.ALL, border = 10)
+        panel.SetSizer(vbox)
+        osizer = wx.BoxSizer(wx.HORIZONTAL)
+        osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
+ 
+
 
 #------------------------------------------------------------------------#
 
@@ -650,7 +746,7 @@ class PlotFrame(wx.Frame):
         self.canvas = FigureCanvas(self.panel, wx.ID_ANY, self.fig)
 
         # combobox for result plot
-        params = self.parent.result.keys()
+        params = sorted(self.parent.result.keys())
         self.plotparamcombo = wx.ComboBox(self.panel, id = wx.ID_ANY, value = params[0],
                 choices = params, style = wx.CB_READONLY | wx.CB_SORT)
         st1 = wx.StaticText(self.panel, id = wx.ID_ANY, label = 'Choose Y Axis to plot:', style = wx.ALIGN_LEFT)
