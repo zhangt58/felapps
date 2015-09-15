@@ -169,7 +169,7 @@ class FELcalc(PhysicalConstants):
         
         #Pexit = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)
 
-        pulseEnergy = self.bunchratio*sigmat*Psat # J
+        pulseEnergy = self.bunchratio*sigmat*Pss # J
         photonEnergy = self.h0*self.c0/self.e0/lambdas # eV
         Np = pulseEnergy/photonEnergy/self.e0 # photon per pulse
 
