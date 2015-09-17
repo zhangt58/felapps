@@ -53,7 +53,7 @@ class ParamParser(object):
             self.parser.read(self.inifilename)
     
     def createTemplate(self, configfilename='config_sample.conf'):
-        dict_sample = dict([('00-info', {'author': 'Tong Zhang', 'email': 'zhangtong@sinap.ac.cn', 'time': time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())}), ('01-facility', {'country': 'China', 'name': 'SDUV', 'city': 'Shanghai'}), ('02-electron_beam', {'normalized_emittance(m)': '4e-6', 'peak_current(A)': '300', 'central_energy(MeV)': '150', 'average_beta_function(m)': '4', 'bunch_charge(C)': '0.2e-9', 'energy_spread': '1e-4', 'bunch_shape': 'gaussian'}), ('03-undulator', {'total_length(m)': '10', 'period_length(m)': '0.04'}), ('04-FEL_radiation', {'wavelength(m)': '350e-9'})])
+        dict_sample = dict([('00-info', {'author': 'Tong Zhang', 'note': '', 'created_time': time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())}), ('01-facility', {'country': 'China', 'name': 'SDUV', 'affiliation': 'SINAP'}), ('02-electron_beam', {'normalized_emittance(m)': '4e-6', 'peak_current(A)': '300', 'central_energy(MeV)': '150', 'average_beta_function(m)': '4', 'bunch_charge(C)': '0.2e-9', 'energy_spread': '1e-4', 'bunch_shape': 'gaussian'}), ('03-undulator', {'total_length(m)': '10', 'period_length(m)': '0.04'}), ('04-FEL_radiation', {'wavelength(m)': '350e-9'})])
         parser_sample = SafeConfigParser()
         for section_name in sorted(dict_sample.keys()):
             parser_sample.add_section(section_name)
