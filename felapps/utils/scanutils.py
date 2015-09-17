@@ -19,6 +19,7 @@ import os
 import numpy as np
 from . import funutils
 from . import pltutils
+from . import parseutils
 import matplotlib.pyplot as plt
 import threading
 
@@ -1045,9 +1046,9 @@ class ImagePanelxy(pltutils.ImagePanelxy):
         barsx.set_segments(new_segments_x)
         barsy.set_segments(new_segments_y)
 
-class ScanConfigFile(funutils.ConfigFile):
+class ScanConfigFile(parseutils.ConfigFile):
     def __init__(self, infilename = '.cornalyzer.conf', *args, **kwargs):
-        funutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
+        parseutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
 
     def parseConfigs(self):
         pass

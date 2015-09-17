@@ -27,10 +27,11 @@ import os
 import xml.etree.cElementTree as ET
 from . import resutils
 from . import funutils
+from . import parseutils
 
-class ImageConfigFile(funutils.ConfigFile):
+class ImageConfigFile(parseutils.ConfigFile):
     def __init__(self, infilename='config.xml', *args, **kwargs):
-        funutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
+        parseutils.ConfigFile.__init__(self, infilename = infilename, *args, **kwargs)
 
     def parseConfigs(self):
         tree = ET.parse(self.xmlfile)
