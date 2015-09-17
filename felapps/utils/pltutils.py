@@ -248,18 +248,21 @@ class ImageViewer(wx.Frame):
         self.menuAppConfig.Show()
 
     def onConfigLoad(self, event):
-        self.loadConfig(None)
-        self.onUpdateUI()
+        try:
+            xmlfile = funutils.getFileToLoad(self, ext = 'xml')
+            self.loadConfig(xmlfile)
+            self.onUpdateUI()
+        except:
+            return
 
     def onConfigSave(self, event):
-        dlg = wx.FileDialog(self, "Save present configurations as", wildcard = 'XML files (*.xml)|*.xml', style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-        if dlg.ShowModal() == wx.ID_CANCEL:
+        try:
+            savetofilename = funutils.getFileToSave(self, ext = 'xml')
+            self.xmlconfig.updateConfigs(self.configdict, savetofilename)
+            self.statusbar.appinfo.SetLabel('Present configurations were just saved to ' + savetofilename + '.')
+            #self.statusbar.SetStatusText('Present configurations were just saved to ' + savetofilename + '.')
+        except:
             return
-        savetofilename = dlg.GetPath()
-        self.xmlconfig.updateConfigs(self.configdict, savetofilename)
-        self.statusbar.appinfo.SetLabel('Present configurations were just saved to ' + savetofilename + '.')
-        #self.statusbar.SetStatusText('Present configurations were just saved to ' + savetofilename + '.')
-        dlg.Destroy()
 
     def onExit(self, event):
         dial = wx.MessageDialog(self, message = "Are you sure to exit this application?",
@@ -297,6 +300,9 @@ class ImageViewer(wx.Frame):
         
         self.imgsrc_tc.SetValue(self.imgsrcPV)
         self.panel.SetBackgroundColour(self.bkgdcolor)
+        self.imgpanel.func = self.imginifunc
+        self.imgpanel.onGetData()
+        self.imgpanel.doPlot()
         self.imgpanel.setColor(self.bkgdcolor) # make color as private var
         self.imgpanel.setHratio(self.heightRatio)
         self.imgpanel.repaint() # rewrite repaint func
