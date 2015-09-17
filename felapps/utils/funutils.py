@@ -413,16 +413,26 @@ def setPath(pathstr):
 
 #-------------------------------------------------------------------------#
 
-def getFilename(parent, ext='xml'):
+def getFileToLoad(parent, ext = '*'):
     wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
-    dial = wx.FileDialog(parent, message = "Please select the configuration file",
+    dial = wx.FileDialog(parent, message = "Please select file",
             defaultDir=".", defaultFile="", wildcard = wildcardpattern, style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
     if dial.ShowModal() == wx.ID_OK:
         fullfilename = os.path.join(dial.GetDirectory(),dial.GetFilename())
         return fullfilename
     dial.Destroy()
-    sys.exit(1)
 
+#-------------------------------------------------------------------------#
+
+def getFileToSave(parent, ext = '*'):
+    wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
+    dial = wx.FileDialog(parent, "Save it as", wildcard = wildcardpattern, style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
+    if dial.ShowModal() == wx.ID_CANCEL:
+        return
+    savetofilename = dial.GetPath()
+    return savetofilename
+    dial.Destroy()
+    
 #-------------------------------------------------------------------------#
 
 class SaveData(object):

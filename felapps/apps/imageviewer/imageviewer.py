@@ -24,7 +24,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
 
         configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
         if not os.path.isfile(configFile):
-            configFile = funutils.getFilename(None, ext = 'xml')
+            configFile = funutils.getFileToLoad(None, ext = 'xml')
 
         myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
@@ -43,7 +43,7 @@ def run(maximize = True, logon = False, debug=True):
 
         configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
         if not os.path.isfile(configFile):
-            configFile = funutils.getFilename(None, ext = 'xml')
+            configFile = funutils.getFileToLoad(None, ext = 'xml')
 
         if maximize == True:
             myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
