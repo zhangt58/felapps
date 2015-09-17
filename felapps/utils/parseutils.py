@@ -6,7 +6,7 @@ Author: Tong Zhang
 Created Time: 10:22, Sep. 17, 2015
 """
 
-from ConfigParser import SafeConfigParser
+from ConfigParser import SafeConfigParser, ConfigParser
 
 import os
 import sys
@@ -42,7 +42,10 @@ class ParamParser(object):
     """
     def __init__(self, inifilename = 'config.ini', *args, **kws):
         self.inifilename = inifilename
-        self.parser = SafeConfigParser()
+        self.parser = ConfigParser()
+        self.parser.optionxform = str
+
+    def readConfig(self):
         if not os.path.isfile(self.inifilename): 
             self.createTemplate()
             sys.exit(1)
@@ -50,7 +53,7 @@ class ParamParser(object):
             self.parser.read(self.inifilename)
     
     def createTemplate(self, configfilename='config_sample.conf'):
-        dict_sample = dict([('00-info', {'author': 'Tong Zhang', 'email': 'zhangtong@sinap.ac.cn', 'time': '2015-09-17 10:05:20 CST'}), ('01-facility', {'country': 'China', 'name': 'SDUV', 'city': 'Shanghai'}), ('02-electron_beam', {'normlized_emittance': '4e-6', 'peak_current': '300', 'energy': '150', 'average_beta_function': '4', 'charge': '0.2e-9', 'energy_spread': '1e-4', 'bunch_shape': 'gaussian'}), ('03-undulator', {'length': '10', 'period': '0.04'}), ('04-FEL_radiation', {'wavelength': '350e-9'})])
+        dict_sample = dict([('00-info', {'author': 'Tong Zhang', 'email': 'zhangtong@sinap.ac.cn', 'time': time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())}), ('01-facility', {'country': 'China', 'name': 'SDUV', 'city': 'Shanghai'}), ('02-electron_beam', {'normalized_emittance(m)': '4e-6', 'peak_current(A)': '300', 'central_energy(MeV)': '150', 'average_beta_function(m)': '4', 'bunch_charge(C)': '0.2e-9', 'energy_spread': '1e-4', 'bunch_shape': 'gaussian'}), ('03-undulator', {'total_length(m)': '10', 'period_length(m)': '0.04'}), ('04-FEL_radiation', {'wavelength(m)': '350e-9'})])
         parser_sample = SafeConfigParser()
         for section_name in sorted(dict_sample.keys()):
             parser_sample.add_section(section_name)
@@ -86,6 +89,7 @@ class ParamParser(object):
 
     def dumpDictToConfig(self, newhierdict, configfilename):
         newparser = SafeConfigParser()
+        newparser.optionxform = str
         for section_name in sorted(newhierdict.keys()):
             newparser.add_section(section_name)
             [newparser.set(section_name, k, v) for k, v in sorted(newhierdict[section_name].items())]
@@ -96,38 +100,35 @@ class ParamParser(object):
             filetosave = self.inifilename
         self.parser.write(open(filetosave, 'w'))
 
-def test():
-    testparser = ParamParser('config1.ini')
-
-    #print testparser.makeHierDict()['machine']['name']
-
-    #testparser.setOneParam('machine', 'name', 'SXFEL')
-    #testparser.saveConfig('newconfig.ini')
-    #print testparser.makeFlatDict()
-
-    # make hierarch dict from config file
-    odict = testparser.makeHierDict()
-    print odict
-    
-    # modify odict
-    odict['01-facility']['name'] = 'XFEL'
-    odict['03-undulator']['period'] = str(0.04)
-    odict['02-electron_beam']['peak_current'] = str(300)
-    if not odict.has_key('info'):
-        odict['00-info'] = {}
-    odict['00-info']['time'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
-    
-    
-    # update to parser
-    testparser.setAllParams(odict)
-
-    # print maked hierarch dict from parser
+def loadtest():
+    # test load config from file
+    testparser = ParamParser('config_sample.conf')
+    testparser.readConfig()
     print testparser.makeHierDict()
 
+def savetest():
+    # test save config to file
     # save parser into new config file
-    testparser.saveConfig('sxfel.conf')
 
-    testparser.dumpDictToConfig(odict, 'sxfel1.conf')
+    # get param dict from config_sample.conf which is parsed by readConfig method
+    testparser = ParamParser('config_sample.conf')
+    testparser.readConfig()
+    raw_dict = testparser.makeHierDict()
+
+    # modify parameters
+    raw_dict['01-facility']['name'] = 'XFEL'
+    raw_dict['03-undulator']['period_length(m)'] = str(0.04)
+    raw_dict['02-electron_beam']['peak_current(A)'] = str(300)
+    if not raw_dict.has_key('00-info'):
+        raw_dict['00-info'] = {}
+    raw_dict['00-info']['time'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+
+    # add options
+    raw_dict['04-FEL_radiation']['output_power(W)'] = '%.3e' % 1e8
+
+    # save to new config file
+    testparser.dumpDictToConfig(raw_dict, 'sxfel.conf')
 
 if __name__ == '__main__':
-    test()
+    #loadtest()
+    savetest()
