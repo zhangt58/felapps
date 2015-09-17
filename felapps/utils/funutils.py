@@ -19,6 +19,7 @@ import numpy as np
 import os
 import matplotlib.colors as colors
 import time
+import sys
 
 from . import EnhancedStatusBar as ESB
 
@@ -412,13 +413,15 @@ def setPath(pathstr):
 
 #-------------------------------------------------------------------------#
 
-def getFilename(parent):
+def getFilename(parent, ext='xml'):
+    wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
     dial = wx.FileDialog(parent, message = "Please select the configuration file",
-            defaultDir=".", defaultFile="", wildcard = "XML files (*.xml)|*.xml", style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
+            defaultDir=".", defaultFile="", wildcard = wildcardpattern, style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
     if dial.ShowModal() == wx.ID_OK:
         fullfilename = os.path.join(dial.GetDirectory(),dial.GetFilename())
+        return fullfilename
     dial.Destroy()
-    return fullfilename
+    sys.exit(1)
 
 #-------------------------------------------------------------------------#
 
@@ -604,25 +607,4 @@ class ProgressBarFrame(wx.Frame):
 
 #-------------------------------------------------------------------------#
 
-class ConfigFile(object):
-    def __init__(self, infilename='config.xml', *args, **kwargs):
-        self.xmlfile = infilename
-        self.namelist = {}
-        self.parseConfigs()
 
-    def parseConfigs(self):
-        pass
-
-    def getConfigs(self):
-        return self.namelist
-    
-    def updateConfigs(self, params_dict, savetofile=None):
-        if not savetofile:
-            savetofile = self.xmlfile
-        for p in self.root.iter('properties'):
-            for k in params_dict.keys():
-                if p.get(k):
-                    p.set(k, params_dict[k])
-        self.tree.write(savetofile)
-
-#-------------------------------------------------------------------------#
