@@ -15,6 +15,7 @@ import wx
 from wx.lib.wordwrap import wordwrap
 from . import felbase
 from ..utils import funutils
+from ..utils import parseutils
 import numpy as np
 
 import matplotlib
@@ -44,8 +45,6 @@ ID_PLOTBTN       = wx.NewId()
 ID_SCAN_MIN      = wx.NewId()
 ID_SCAN_MAX      = wx.NewId()
 ID_SCAN_NUM      = wx.NewId()
-ID_IMPORT        = wx.NewId()
-ID_EXPORT        = wx.NewId()
 
 #------------------------------------------------------------------------#
 
@@ -87,31 +86,43 @@ class MainFrame(wx.Frame):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs)
         self.parent = parent
         self.appversion = appversion
+        #self.paramdict = {'00-info':{}, ''} # hierach dict to keep input & output parameters
         self.initUI()
+
+#------------------------------------------------------------------------#
+
+    def initUI(self):
+        self.createMenu()
+        self.createStatusbar()
+        self.createPanel()
 
 #------------------------------------------------------------------------#
 
     def createMenu(self):
         self.menubar = wx.MenuBar()
+
         fileMenu = wx.Menu()
-        importItem = fileMenu.Append(ID_IMPORT, '&Import\tCtrl+I', 'Import parameters from file')
-        exportItem = fileMenu.Append(ID_EXPORT, '&Export\tCtrl+E', 'Export parameters to file')
+        importItem = fileMenu.Append(wx.ID_ANY, '&Import\tCtrl+I', 'Import parameters from file')
+        exportItem = fileMenu.Append(wx.ID_ANY, '&Export\tCtrl+E', 'Export parameters to file')
         fileMenu.AppendSeparator()
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit')
-        self.Bind(wx.EVT_MENU, self.onImport, id = ID_IMPORT)
-        self.Bind(wx.EVT_MENU, self.onExport, id = ID_EXPORT)
-        self.Bind(wx.EVT_MENU, self.onExit,   id = wx.ID_EXIT)
 
         helpMenu = wx.Menu()
         aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tCtrl-I',    'About this application')
         infoItem  = helpMenu.Append(wx.ID_ANY,   '&Info\tF1', 'Show brief guide')
-        self.Bind(wx.EVT_MENU, self.onAbout, id = wx.ID_ABOUT)
-        self.Bind(wx.EVT_MENU, self.onInfo,  infoItem)
 
         self.menubar.Append(fileMenu, '&File')
         self.menubar.Append(helpMenu, '&Help')
         
         self.SetMenuBar(self.menubar)
+
+        # event bindings
+        self.Bind(wx.EVT_MENU, self.onImport, importItem)
+        self.Bind(wx.EVT_MENU, self.onExport, exportItem)
+        self.Bind(wx.EVT_MENU, self.onExit,   id = wx.ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.onAbout,  id = wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.onInfo,   infoItem)
+        self.Bind(wx.EVT_MENU_HIGHLIGHT,      self.onMenuHL)
 
     def createStatusbar(self):
         self.statusbar = funutils.ESB.EnhancedStatusBar(self)
@@ -123,7 +134,7 @@ class MainFrame(wx.Frame):
         versionfield = wx.StaticText(self.statusbar, wx.ID_ANY,
                 label = time.strftime('%Y-%m-%d', time.localtime()) + ' ' + ' (Version: ' + self.appversion + ')')
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
-        self.statusbar.AddWidget(versionfield,  funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(versionfield, funutils.ESB.ESB_ALIGN_RIGHT)
 
     def onMenuHL(self, event):
         try:
@@ -137,18 +148,21 @@ class MainFrame(wx.Frame):
         infoframe.Show()
         infoframe.Centre()
 
-#------------------------------------------------------------------------#
-
     def onImport(self, event):
+        """
+        Import parameters from external configuration file
+        """
         pass
     
-#------------------------------------------------------------------------#
-
     def onExport(self, event):
-        pass
-
-#------------------------------------------------------------------------#
-
+        """
+        Export input parameters and output results into file (for next import or archive)
+        """
+        exportframe = ExportFrame(self, title = 'Export Parameters to File')
+        exportframe.SetMinSize((400, 300))
+        exportframe.Show()
+        exportframe.Centre()
+        
     def onAbout(self, event):
         # First we create and fill the info object
         info = wx.AboutDialogInfo()
@@ -169,11 +183,54 @@ class MainFrame(wx.Frame):
         wx.AboutBox(info)
 
 #------------------------------------------------------------------------#
+    
+    def collectAllParams(self):
+        # initial paramdict
+        self.paramdict = {'00-info':{}, '01-facility':{}, '02-electron_beam':{},
+                          '03-undulator':{}, '04-FEL_radiation':{}}
+        # 02-electron_beam section
+        ## input
+        self.paramdict['02-electron_beam']['average_beta_function(m)'] = self.b1tc4.GetValue()
+        self.paramdict['02-electron_beam']['bunch_charge(C)']          = self.b1tc8.GetValue()
+        self.paramdict['02-electron_beam']['central_energy(MeV)']      = self.b1tc1.GetValue()
+        self.paramdict['02-electron_beam']['energy_spread']            = self.b1tc2.GetValue()
+        self.paramdict['02-electron_beam']['normalized_emittance(m)']  = self.b1tc3.GetValue()
+        self.paramdict['02-electron_beam']['peak_current(A)']          = self.b1tc5.GetValue()
+        self.paramdict['02-electron_beam']['bunch_shape']              = self.b1cb10.GetStringSelection()
+        ## output
+        self.paramdict['02-electron_beam']['transverse_beam_size(m)']  = self.b2sb1vst7.GetLabel()
+        self.paramdict['02-electron_beam']['bunch_length_z(um)']       = self.b2sb1vst5.GetLabel()
+        self.paramdict['02-electron_beam']['bunch_length_t(fs)']       = self.b2sb1vst6.GetLabel()
+        
+        # 03-undulator section
+        ## input
+        self.paramdict['03-undulator']['period_length(m)'] = self.b1tc6.GetValue()
+        self.paramdict['03-undulator']['total_length(m)']  = self.b1tc9.GetValue()
+        ## output
+        self.paramdict['03-undulator']['peak_field(T)']    = self.b2sb1vst1.GetLabel()
+        self.paramdict['03-undulator']['gap(mm)']          = self.b2sb1vst2.GetLabel()
+        self.paramdict['03-undulator']['K']                = self.b2sb1vst3.GetLabel()
+        self.paramdict['03-undulator']['au']               = self.b2sb1vst4.GetLabel()
 
-    def initUI(self):
-        self.createMenu()
-        self.createStatusbar()
-        self.createPanel()
+        # 04-FEL_radiation section
+        ## input
+        self.paramdict['04-FEL_radiation']['wavelength(m)']             = self.b1tc7.GetValue()
+        ## output
+        self.paramdict['04-FEL_radiation']['photon_energy(eV)']         = self.b2sb2vst8.GetLabel()
+        self.paramdict['04-FEL_radiation']['FEL_parameter_1D']          = self.b2sb2vst1.GetLabel()
+        self.paramdict['04-FEL_radiation']['FEL_parameter_3D']          = self.b2sb2vst2.GetLabel()
+        self.paramdict['04-FEL_radiation']['gainlength_1D(m)']          = self.b2sb2vst3.GetLabel()
+        self.paramdict['04-FEL_radiation']['gainlength_3D(m)']          = self.b2sb2vst4.GetLabel()
+        self.paramdict['04-FEL_radiation']['saturation_power_MXie(W)']  = self.b2sb2vst5.GetLabel()
+        self.paramdict['04-FEL_radiation']['saturation_power_SASE(W)']  = self.b2sb2vst6.GetLabel()
+        self.paramdict['04-FEL_radiation']['saturation_length_SASE(m)'] = self.b2sb2vst7.GetLabel()
+        self.paramdict['04-FEL_radiation']['bandwidth(%)']              = self.b2sb2vst9.GetLabel()
+        self.paramdict['04-FEL_radiation']['pulse_energy(uJ)']          = self.b2sb2vst10.GetLabel()
+        self.paramdict['04-FEL_radiation']['shotnoise_power_SASE(W)']   = self.b2sb2vst12.GetLabel()
+        self.paramdict['04-FEL_radiation']['photon_per_pulse']          = self.b2sb2vst11.GetLabel()
+        self.paramdict['04-FEL_radiation']['output_power(W)']           = self.b2sb2vst13.GetLabel()
+
+#------------------------------------------------------------------------#
 
     def createPanel(self):
         ## statictext result color
@@ -463,7 +520,6 @@ class MainFrame(wx.Frame):
 
         # callback bindings
         self.Bind(wx.EVT_CLOSE,  self.onExit)
-        self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.Bind(wx.EVT_BUTTON, self.onCalc, id = ID_CALCBTN)
         self.Bind(wx.EVT_BUTTON, self.onExit, id = ID_EXITBTN)
         self.Bind(wx.EVT_BUTTON, self.onPlot, id = ID_PLOTBTN)
@@ -535,7 +591,7 @@ class MainFrame(wx.Frame):
             self.b2sb2vst10.SetLabel('%.2g' % (Wexit))
             self.b2sb2vst11.SetLabel('%.2e' % (Nexit))
             self.b2sb2vst13.SetLabel('%.3e' % (Pexit))
-
+            
         else: # Scan is enabled
             scanparam = self.combobox31.GetStringSelection()
             scanmin   = float(self.smintc.GetValue())
@@ -580,8 +636,6 @@ class MainFrame(wx.Frame):
                                       bunchShape)
             self.result = instFEL.onFELAnalyse()
             
-            #print self.result
-
 #------------------------------------------------------------------------#
     
     def onSetInitalScanRange(self, event):
@@ -655,6 +709,131 @@ class MainFrame(wx.Frame):
 
 #------------------------------------------------------------------------#
 
+class ExportFrame(wx.Frame):
+    def __init__(self, parent, title, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, title = title, **kwargs)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+        panel = wx.Panel(self)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+
+        ##
+        filepath_st      = funutils.MyStaticText(panel, label = u'Save To', style = wx.ALIGN_LEFT)
+        self.filepath_tc = funutils.MyTextCtrl(panel, value = os.path.join(os.getcwd(), 'fel.conf'), style = wx.CB_READONLY)
+        filepath_btn     = wx.Button(panel, label = 'Browse')
+
+        hbox_path = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_path.Add(filepath_st,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.TOP, border = 10)
+        hbox_path.Add(self.filepath_tc, proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, border = 10)
+        hbox_path.Add(filepath_btn,     proportion = 0, flag = wx.RIGHT | wx.TOP, border = 10)
+        ##
+        
+        ##
+        export_btn = wx.Button(panel, label = 'Export')
+        cancel_btn = wx.Button(panel, label = 'Cancel')
+
+        hbox_cmd = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_cmd.Add(cancel_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
+        hbox_cmd.Add(export_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
+        ##
+
+        ##
+        infosb = wx.StaticBox(panel, label = 'Other Information')
+        infosbsizer = wx.StaticBoxSizer(infosb, orient = wx.VERTICAL)
+
+        author_st                    = funutils.MyStaticText(panel, label = u'Author', style = wx.ALIGN_LEFT)
+        self.author_tc               = funutils.MyTextCtrl(panel, value = u'')
+        facility_st                  = funutils.MyStaticText(panel, label = u'FACILITY',    style = wx.ALIGN_LEFT)
+        facility_name_st             = funutils.MyStaticText(panel, label = u'Name',        style = wx.ALIGN_LEFT)
+        self.facility_name_tc        = funutils.MyTextCtrl(panel, value = u'')
+        facility_country_st          = funutils.MyStaticText(panel, label = u'Country',     style = wx.ALIGN_LEFT)
+        self.facility_country_tc     = funutils.MyTextCtrl(panel, value = u'')
+        facility_affiliation_st      = funutils.MyStaticText(panel, label = u'Affiliation', style = wx.ALIGN_LEFT)
+        self.facility_affiliation_tc = funutils.MyTextCtrl(panel, value = u'')
+        note_st      = funutils.MyStaticText(panel, label = u'Note', style = wx.ALIGN_LEFT)
+        self.note_tc = funutils.MyTextCtrl(panel, value = u'', style = wx.TE_MULTILINE)
+        
+        gbs = wx.GridBagSizer(4, 4)
+
+        gbs.Add(author_st,      pos = (0, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 8)
+        gbs.Add(self.author_tc, pos = (0, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 8)
+
+        gbs.Add(facility_st,                  pos = (1, 0), span = (1, 1), flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.ALIGN_LEFT, border = 8)
+        gbs.Add(facility_name_st,             pos = (2, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 8)
+        gbs.Add(self.facility_name_tc,        pos = (2, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 8)
+        gbs.Add(facility_country_st,          pos = (3, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 8)
+        gbs.Add(self.facility_country_tc,     pos = (3, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 8)
+        gbs.Add(facility_affiliation_st,      pos = (4, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 8)
+        gbs.Add(self.facility_affiliation_tc, pos = (4, 1), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 8)
+
+        gbs.Add(note_st,                      pos = (5, 0), span = (1, 1), flag = wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 8)
+        gbs.Add(self.note_tc,                 pos = (5, 1), span = (4, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 8)
+
+        gbs.AddGrowableCol(1)
+        infosbsizer.Add(gbs, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10) 
+        ##
+        
+        ##
+        vbox.Add(hbox_path,   proportion = 0, flag = wx.EXPAND | wx.ALL, border = 8)
+        vbox.Add(infosbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 8)
+        vbox.Add(hbox_cmd,    proportion = 0, flag = wx.ALIGN_RIGHT | wx.ALL, border = 4)
+
+        panel.SetSizer(vbox)
+        osizer = wx.BoxSizer(wx.HORIZONTAL)
+        osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
+        ##
+
+        self.Bind(wx.EVT_BUTTON, self.onChoose, filepath_btn)
+        self.Bind(wx.EVT_BUTTON, self.onExport, export_btn)
+        self.Bind(wx.EVT_BUTTON, self.onCancel, cancel_btn)
+
+    def onChoose(self, event):
+        filename = funutils.getFileToSave(self, ext = '*')
+        self.filepath_tc.SetValue(filename)
+
+    def onExport(self, event):
+        try:
+            # choose configfile
+            configfile = self.filepath_tc.GetValue()
+
+            # collect all the intput and output parameters into self.paramdict
+            self.parent.collectAllParams() 
+
+            self.parent.paramdict['00-info']['author']          = self.author_tc.GetValue()
+            self.parent.paramdict['00-info']['created_time']    = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+            self.parent.paramdict['00-info']['note']            = self.note_tc.GetValue()
+            self.parent.paramdict['01-facility']['name']        = self.facility_name_tc.GetValue()
+            self.parent.paramdict['01-facility']['country']     = self.facility_country_tc.GetValue()
+            self.parent.paramdict['01-facility']['affiliation'] = self.facility_affiliation_tc.GetValue()
+
+            # save to configfile
+            paramsconf = parseutils.ParamParser()
+            paramsconf.dumpDictToConfig(self.parent.paramdict, configfile)
+            
+            # show successful dialog
+            msg = "All parameters are exported to " + configfile + '.'
+            dlg = wx.MessageDialog(self, message = msg, caption = u'Export Succeed',
+                    style = wx.OK | wx.CANCEL | wx.CENTRE)
+            if dlg.ShowModal() == wx.ID_OK:
+                dlg.Destroy()
+        except:
+            msg = "Export Error"
+            dlg = wx.MessageDialog(self, message = msg, caption = u'Export Failed',
+                    style = wx.OK | wx.CANCEL | wx.CENTRE | wx.ICON_ERROR)
+            if dlg.ShowModal() == wx.ID_OK:
+                dlg.Destroy()
+        self.Close(True)
+
+    def onCancel(self, event):
+        self.Close(True)
+
+
+#------------------------------------------------------------------------#
+
 class InfoFrame(wx.Frame):
     def __init__(self, parent, title, **kwargs):
         super(self.__class__, self).__init__(parent = parent,
@@ -680,8 +859,6 @@ class InfoFrame(wx.Frame):
         osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
  
-
-
 #------------------------------------------------------------------------#
 
 class PlotFrame(wx.Frame):
