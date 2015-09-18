@@ -427,8 +427,8 @@ def getFileToLoad(parent, ext = '*'):
 def getFileToSave(parent, ext = '*'):
     wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
     dial = wx.FileDialog(parent, "Save it as", wildcard = wildcardpattern, style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-    if dial.ShowModal() == wx.ID_CANCEL:
-        return
+    if dial.ShowModal() != wx.ID_OK:
+        dial.Destroy()
     savetofilename = dial.GetPath()
     return savetofilename
     dial.Destroy()
