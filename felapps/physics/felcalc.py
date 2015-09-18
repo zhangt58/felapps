@@ -102,8 +102,8 @@ class MainFrame(wx.Frame):
         self.menubar = wx.MenuBar()
 
         fileMenu = wx.Menu()
-        importItem = fileMenu.Append(wx.ID_ANY, '&Import\tCtrl+I', 'Import parameters from file')
-        exportItem = fileMenu.Append(wx.ID_ANY, '&Export\tCtrl+E', 'Export parameters to file')
+        importItem = fileMenu.Append(wx.ID_ANY, '&Import\tCtrl+Shift+I', 'Import parameters from file')
+        exportItem = fileMenu.Append(wx.ID_ANY, '&Export\tCtrl+Shift+E', 'Export parameters to file')
         fileMenu.AppendSeparator()
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit')
 
@@ -152,14 +152,18 @@ class MainFrame(wx.Frame):
         """
         Import parameters from external configuration file
         """
-        pass
-    
+        configfile = funutils.getFileToLoad(self, ext = 'conf')
+        paramsconf = parseutils.ParamParser(configfile)
+        paramsconf.readConfig()
+        paramsdict = paramsconf.makeHierDict()
+        self.updateUI(paramsdict)
+
     def onExport(self, event):
         """
         Export input parameters and output results into file (for next import or archive)
         """
         exportframe = ExportFrame(self, title = 'Export Parameters to File')
-        exportframe.SetMinSize((400, 300))
+        exportframe.SetMinSize((500, 360))
         exportframe.Show()
         exportframe.Centre()
         
@@ -184,6 +188,85 @@ class MainFrame(wx.Frame):
 
 #------------------------------------------------------------------------#
     
+    def updateUI(self, paramsdict):
+        """
+        update UI with import parameters from .conf file
+        """
+        # 02-electron_beam
+        avgBeta      = paramsdict['02-electron_beam']['average_beta_function(m)']
+        bunchCharge  = paramsdict['02-electron_beam']['bunch_charge(C)']
+        beamEnergy   = paramsdict['02-electron_beam']['central_energy(MeV)']
+        energySpread = paramsdict['02-electron_beam']['energy_spread']
+        normEmit     = paramsdict['02-electron_beam']['normalized_emittance(m)']
+        bunchShape   = paramsdict['02-electron_beam']['bunch_shape']
+        peakCurrent  = paramsdict['02-electron_beam']['peak_current(A)']
+        sigmar       = paramsdict['02-electron_beam']['transverse_beam_size(m)']
+        sigma_z      = paramsdict['02-electron_beam']['bunch_length_z(um)']
+        sigma_t      = paramsdict['02-electron_beam']['bunch_length_t(fs)']
+
+        # 03-undulator
+        unduLength   = paramsdict['03-undulator']['total_length(m)']
+        unduPeriod   = paramsdict['03-undulator']['period_length(m)']
+        peakField    = paramsdict['03-undulator']['peak_field(T)']
+        gap          = paramsdict['03-undulator']['gap(mm)']
+        K            = paramsdict['03-undulator']['K']
+        au           = paramsdict['03-undulator']['au']
+
+        # 04-FEL_radiation
+        FELwvlth     = paramsdict['04-FEL_radiation']['wavelength(m)']
+
+        photonEnergy = paramsdict['04-FEL_radiation']['photon_energy(eV)']         
+        rho1D        = paramsdict['04-FEL_radiation']['FEL_parameter_1D']          
+        rho3D        = paramsdict['04-FEL_radiation']['FEL_parameter_3D']          
+        Lg1D         = paramsdict['04-FEL_radiation']['gainlength_1D(m)']          
+        Lg3D         = paramsdict['04-FEL_radiation']['gainlength_3D(m)']          
+        Psat_MXie    = paramsdict['04-FEL_radiation']['saturation_power_MXie(W)']  
+        Psat_SASE    = paramsdict['04-FEL_radiation']['saturation_power_SASE(W)']  
+        Lgsat_SASE   = paramsdict['04-FEL_radiation']['saturation_length_SASE(m)'] 
+        bw           = paramsdict['04-FEL_radiation']['bandwidth(%)']              
+        pulseEnergy  = paramsdict['04-FEL_radiation']['pulse_energy(uJ)']          
+        Pshot_SASE   = paramsdict['04-FEL_radiation']['shotnoise_power_SASE(W)']   
+        ppp          = paramsdict['04-FEL_radiation']['photon_per_pulse']          
+        Pexit        = paramsdict['04-FEL_radiation']['output_power(W)']           
+
+
+        # set up value
+        ## input
+        self.b1tc1.SetValue(beamEnergy)
+        self.b1tc2.SetValue(energySpread)
+        self.b1tc3.SetValue(normEmit)
+        self.b1tc4.SetValue(avgBeta)
+        self.b1tc5.SetValue(peakCurrent)
+        self.b1tc6.SetValue(unduPeriod)
+        self.b1tc7.SetValue(FELwvlth)
+        self.b1tc8.SetValue(bunchCharge)
+        self.b1tc9.SetValue(unduLength)
+        self.b1cb10.SetValue(bunchShape)
+
+        ## output
+        self.b2sb1vst1.SetLabel((peakField))
+        self.b2sb1vst2.SetLabel((gap))
+        self.b2sb1vst3.SetLabel((K))
+        self.b2sb1vst4.SetLabel((au))
+        self.b2sb1vst5.SetLabel((sigma_t))
+        self.b2sb1vst6.SetLabel((sigma_z))
+        self.b2sb1vst7.SetLabel((sigmar))
+        self.b2sb2vst1.SetLabel((rho1D))
+        self.b2sb2vst2.SetLabel((rho3D))
+        self.b2sb2vst3.SetLabel((Lg1D))
+        self.b2sb2vst4.SetLabel((Lg3D))
+        self.b2sb2vst5.SetLabel((Psat_MXie))
+        self.b2sb2vst6.SetLabel((Psat_SASE))
+        self.b2sb2vst7.SetLabel((Lgsat_SASE))
+        self.b2sb2vst8.SetLabel((photonEnergy))
+        self.b2sb2vst9.SetLabel((bw))
+        self.b2sb2vst12.SetLabel((Pshot_SASE))
+        self.b2sb2vst10.SetLabel((pulseEnergy))
+        self.b2sb2vst11.SetLabel((ppp))
+        self.b2sb2vst13.SetLabel((Pexit))
+
+#------------------------------------------------------------------------#
+    
     def collectAllParams(self):
         # initial paramdict
         self.paramdict = {'00-info':{}, '01-facility':{}, '02-electron_beam':{},
@@ -199,8 +282,8 @@ class MainFrame(wx.Frame):
         self.paramdict['02-electron_beam']['bunch_shape']              = self.b1cb10.GetStringSelection()
         ## output
         self.paramdict['02-electron_beam']['transverse_beam_size(m)']  = self.b2sb1vst7.GetLabel()
-        self.paramdict['02-electron_beam']['bunch_length_z(um)']       = self.b2sb1vst5.GetLabel()
-        self.paramdict['02-electron_beam']['bunch_length_t(fs)']       = self.b2sb1vst6.GetLabel()
+        self.paramdict['02-electron_beam']['bunch_length_z(um)']       = self.b2sb1vst6.GetLabel()
+        self.paramdict['02-electron_beam']['bunch_length_t(fs)']       = self.b2sb1vst5.GetLabel()
         
         # 03-undulator section
         ## input
@@ -798,7 +881,7 @@ class ExportFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.onCancel, cancel_btn)
 
     def onChoose(self, event):
-        filename = funutils.getFileToSave(self, ext = '*')
+        filename = funutils.getFileToSave(self, ext = 'conf')
         self.filepath_tc.SetValue(filename)
 
     def onExport(self, event):
