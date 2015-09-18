@@ -23,6 +23,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
 from matplotlib.backends.backend_wx import NavigationToolbar2Wx
 import matplotlib.ticker as tick
+import wx.lib.dialogs
 
 import os
 import time
@@ -108,8 +109,9 @@ class MainFrame(wx.Frame):
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit')
 
         helpMenu = wx.Menu()
-        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tCtrl-I',    'About this application')
-        infoItem  = helpMenu.Append(wx.ID_ANY,   '&Info\tF1', 'Show brief guide')
+        aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tCtrl-I',      'About this application')
+        infoItem  = helpMenu.Append(wx.ID_ANY,   '&Info\tF1',           'Show brief guide')
+        clogItem  = helpMenu.Append(wx.ID_ANY,   '&Change log\tCtrl-L', "See what's new" )
 
         self.menubar.Append(fileMenu, '&File')
         self.menubar.Append(helpMenu, '&Help')
@@ -117,11 +119,12 @@ class MainFrame(wx.Frame):
         self.SetMenuBar(self.menubar)
 
         # event bindings
-        self.Bind(wx.EVT_MENU, self.onImport, importItem)
-        self.Bind(wx.EVT_MENU, self.onExport, exportItem)
-        self.Bind(wx.EVT_MENU, self.onExit,   id = wx.ID_EXIT)
-        self.Bind(wx.EVT_MENU, self.onAbout,  id = wx.ID_ABOUT)
-        self.Bind(wx.EVT_MENU, self.onInfo,   infoItem)
+        self.Bind(wx.EVT_MENU, self.onImport,    importItem)
+        self.Bind(wx.EVT_MENU, self.onExport,    exportItem)
+        self.Bind(wx.EVT_MENU, self.onExit,      id = wx.ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.onAbout,     id = wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.onInfo,      infoItem)
+        self.Bind(wx.EVT_MENU, self.onChangelog, clogItem)
         self.Bind(wx.EVT_MENU_HIGHLIGHT,      self.onMenuHL)
 
     def createStatusbar(self):
@@ -144,9 +147,14 @@ class MainFrame(wx.Frame):
             pass
 
     def onInfo(self, event):
-        infoframe = InfoFrame(self, title = 'Brief Guide to this Application')
+        infoframe = InfoFrame(self, title = 'Brief Guide to This Application')
         infoframe.Show()
         infoframe.Centre()
+
+    def onChangelog(self, event):
+        clogframe = LogFrame(self, title = 'Changelog of This Application')
+        clogframe.Show()
+        clogframe.Centre()
 
     def onImport(self, event):
         """
@@ -940,7 +948,8 @@ class InfoFrame(wx.Frame):
                       " 3.1: Choose the scan parameter and the scan range;\n" + \
                       " 3.2: Push 'Calculate' button, then 'Show Plot' to check plot;\n" + \
                       " 3.3: In 'Scan Data Visualization' frame, Ctrl+S can save figure\n" + \
-                      "      into '.jpg' format or use the toolbar at the bottom."
+                      "      into '.jpg' format or use the toolbar at the bottom.\n" + \
+                      "4: Import and Export in File menu, use as how it guides."
         aboutinfo = funutils.MyStaticText(panel, label = aboutstring, style = wx.ALIGN_LEFT | wx.TE_MULTILINE)
         vbox.Add(aboutinfo, flag = wx.ALIGN_CENTER | wx.ALL, border = 10)
         panel.SetSizer(vbox)
@@ -948,6 +957,59 @@ class InfoFrame(wx.Frame):
         osizer.Add(panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
  
+#------------------------------------------------------------------------#
+
+class LogFrame(wx.Frame):
+    def __init__(self, parent, title, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, title = title, **kwargs)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+        panel = wx.Panel(self)
+        v12_btn = wx.Button(panel, label = 'Version 1.2')
+        v11_btn = wx.Button(panel, label = 'Version 1.1')
+        v12_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-18', fontcolor = 'blue')
+        v11_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-11', fontcolor = 'blue')
+
+        gs = wx.GridBagSizer(8, 4)
+        gs.Add(v12_btn, pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v12_st,  pos = (0, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v11_btn, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v11_st,  pos = (1, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.AddGrowableCol(1)
+
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        vbox.Add(gs, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.TOP, border = 20)
+        panel.SetSizer(vbox)
+        
+        self.msg_v12 = "1: Add more input parameters and more output results;\n" + \
+                       "2: Implement 'Import' and 'Export' features under 'File' menu;\n" + \
+                       "3: Imported or exported files are with ext of '.conf', could be viewd or archived;\n" + \
+                       "4: Update 'Scan Data Visulization' frame to support more parameters;\n" + \
+                       "5: Support save figure in 'Scan Data Visulization' frame;\n" + \
+                       "5.1: Type Ctrl+S to save figure as .jpg format;\n" +\
+                       "5.2: Use the save button in the bottom toolbar to save as other formats."
+
+        self.msg_v11 = "1: Calculate FEL radiation by applying analytical formulae;\n" + \
+                       "2: Scan results visulization."
+                
+
+        self.Bind(wx.EVT_BUTTON, self.onShowCLog, v12_btn)
+        self.Bind(wx.EVT_BUTTON, self.onShowCLog, v11_btn)
+
+    def onShowCLog(self, event):
+        label = event.GetEventObject().GetLabel()
+        if label == 'Version 1.2':
+            msg = self.msg_v12
+            caption = 'V1.2 Change Log'
+        elif label == 'Version 1.1':
+            msg = self.msg_v11
+            caption = 'V1.1 Change Log'
+
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg, caption)
+        dlg.ShowModal()
 #------------------------------------------------------------------------#
 
 class PlotFrame(wx.Frame):
