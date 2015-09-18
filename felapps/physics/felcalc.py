@@ -717,6 +717,12 @@ class ExportFrame(wx.Frame):
         self.InitUI()
 
     def InitUI(self):
+
+        ##
+        usernamepath = os.path.expanduser('~')
+        username = os.path.split(usernamepath)[-1]
+        ##
+
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
 
@@ -726,9 +732,9 @@ class ExportFrame(wx.Frame):
         filepath_btn     = wx.Button(panel, label = 'Browse')
 
         hbox_path = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_path.Add(filepath_st,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.TOP, border = 10)
-        hbox_path.Add(self.filepath_tc, proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, border = 10)
-        hbox_path.Add(filepath_btn,     proportion = 0, flag = wx.RIGHT | wx.TOP, border = 10)
+        hbox_path.Add(filepath_st,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.TOP, border = 4)
+        hbox_path.Add(self.filepath_tc, proportion = 1, flag = wx.EXPAND | wx.LEFT | wx.TOP | wx.RIGHT, border = 4)
+        hbox_path.Add(filepath_btn,     proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, border = 4)
         ##
         
         ##
@@ -741,11 +747,11 @@ class ExportFrame(wx.Frame):
         ##
 
         ##
-        infosb = wx.StaticBox(panel, label = 'Other Information')
+        infosb = wx.StaticBox(panel, label = 'Additional Information')
         infosbsizer = wx.StaticBoxSizer(infosb, orient = wx.VERTICAL)
 
         author_st                    = funutils.MyStaticText(panel, label = u'Author', style = wx.ALIGN_LEFT)
-        self.author_tc               = funutils.MyTextCtrl(panel, value = u'')
+        self.author_tc               = funutils.MyTextCtrl(panel, value = username)
         facility_st                  = funutils.MyStaticText(panel, label = u'FACILITY',    style = wx.ALIGN_LEFT)
         facility_name_st             = funutils.MyStaticText(panel, label = u'Name',        style = wx.ALIGN_LEFT)
         self.facility_name_tc        = funutils.MyTextCtrl(panel, value = u'')
@@ -777,7 +783,7 @@ class ExportFrame(wx.Frame):
         ##
         
         ##
-        vbox.Add(hbox_path,   proportion = 0, flag = wx.EXPAND | wx.ALL, border = 8)
+        vbox.Add(hbox_path,   proportion = 0, flag = wx.EXPAND | wx.ALL, border = 6)
         vbox.Add(infosbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 8)
         vbox.Add(hbox_cmd,    proportion = 0, flag = wx.ALIGN_RIGHT | wx.ALL, border = 4)
 
