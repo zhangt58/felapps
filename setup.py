@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 import os
 
 appName             = "felapps"
-appVersion          = "1.2.7"
+appVersion          = "1.3.0"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
@@ -37,7 +37,7 @@ setup(name             = appName,
       keywords         = appKeywords,
       packages         = find_packages(exclude=['contrib','tests*']),
       scripts          = appScripts,
-      install_requires = requiredpackages,
+      #install_requires = requiredpackages,
       classifiers = ['Programming Language :: Python', 
                      'Topic :: Software Development :: Libraries :: Python Modules', 
                      'Topic :: Scientific/Engineering :: Physics'],
