@@ -9,6 +9,7 @@ class AppVersions():
                          'cornalyzer'   : '1.0',
                          'felformula'   : '1.2',
                          'dataworkshop' : '1.0',
+                         'matchwizard'  : '1.0',
                          }
 
     def setVersion(self, verNum, appName = 'imageviewer'):
