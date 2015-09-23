@@ -45,4 +45,3 @@ setup(name             = appName,
       tests_require = ['nose'],
       include_package_data = True,
       )
-

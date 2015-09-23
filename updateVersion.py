@@ -30,6 +30,3 @@ with open(filename) as f:
 for k in versiondict.keys():
     cmd1 = 'sed -i ' + '"' + 's/\(' + "'" + k + "'" + ' *\:\)\(.*\)/\\1' + " '" + versiondict[k] + "\'," + '/"' + ' felapps/utils/miscutils.py'
     subprocess.call(cmd1, shell=True)
-
-
-
