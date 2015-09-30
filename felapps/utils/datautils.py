@@ -11,8 +11,13 @@ Created: Sep. 23rd, 2015
 
 import wx
 import time
+import numpy as np
+import matplotlib.pyplot as plt
 
 from . import funutils
+from . import pltutils
+from . import imageutils
+from . import resutils
 
 class DataWorkshop(wx.Frame):
     def __init__(self, parent, config = 'config.xml', size = (1000, 750), appversion = '1.0', **kwargs):
@@ -37,8 +42,9 @@ class DataWorkshop(wx.Frame):
     def initUI(self):
         self.preInit()
         self.createMenubar()
-        self.createStatusbar()
         self.createPanel()
+        self.createStatusbar()
+        self.createToolbar()
         self.postInit()
 
     def createMenubar(self):
@@ -110,7 +116,14 @@ class DataWorkshop(wx.Frame):
         wx.AboutBox(info)
 
     def preInit(self):
-        pass
+        self.fontsize_button     = 12 
+        self.fontsize_statictext = 12
+        self.fontsize_staticbox  = 10
+        self.fontsize_textctrl   = 12
+        self.backcolor_panel     = '#DDDDDD'
+        self.fontcolor_staticbox = '#4B4B4B'
+        self.bordersize          = 12
+ 
 
     def postInit(self):
         pass
@@ -125,7 +138,14 @@ class DataWorkshop(wx.Frame):
         pass
 
     def onOpen(self, event):
-        pass
+        """
+        select data files to be visulized in imagegrid panel
+        """
+        try:
+            datafile = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
+            self.visData(datafile)
+        except:
+            pass
 
     def onSave(self, event):
         pass
@@ -142,28 +162,204 @@ class DataWorkshop(wx.Frame):
 
     def createStatusbar(self):
         self.statusbar = funutils.ESB.EnhancedStatusBar(self)
-        self.statusbar.SetFieldsCount(3)
+        self.statusbar.SetFieldsCount(5)
         self.SetStatusBar(self.statusbar)
-        self.statusbar.SetStatusWidths([-7,-2,-1])
+        self.statusbar.SetStatusWidths([-4,-1,-2,-2,-1])
+
         self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"DataWorkshop powered by Python")
         self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"2015-06-05 14:00:00 CST")
         appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u" (Version: " + self.appversion + ")")
+        self.panel_r.img_pos_st= funutils.MyStaticText(self.statusbar, label = u'Current Pos: ', fontcolor = 'red')
+        self.panel_r.img_pos   = funutils.MyStaticText(self.statusbar, label = u'', fontcolor = 'red')
+
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(self.panel_r.img_pos_st,funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(self.panel_r.img_pos,   funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
+    def createToolbar(self):
+        pass
 
     def createPanel(self):
         # make background panel
         self.panel = funutils.createwxPanel(self, funutils.hex2rgb('#B1B1B1'))
 
-        #hbox = 
+        # layout
+        sizer_l = wx.BoxSizer(wx.HORIZONTAL) # put panel_l wrapped sbsizer
+        sizer_r = wx.BoxSizer(wx.HORIZONTAL) # put panel_r wrapped sbsizer
 
-        # set sizer
-        #self.panel.SetSizer(hbox)
+        # left and right panels
+        self.panel_l = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+        self.panel_r = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+
+        ## --------hbox-------
+        ## toolbar
+        ##   vleft    vright
+        ## |-------|----------|
+        ## |       |          |
+        ## |       |          |
+        ## |       |          |
+        ## |panel_l| panel_r  |
+        ## |       |          |
+        ## |       |          |
+        ## |       |          |
+        ## |-------|----------|
+        ## statusbar
+        ##
+
+        hbox   = wx.BoxSizer(wx.HORIZONTAL)
+        vleft  = wx.BoxSizer(wx.VERTICAL  )
+        vright = wx.BoxSizer(wx.VERTICAL  )
+
+        # vleft box
+        ## control panel
+        controlpanel_sb = funutils.createwxStaticBox(self.panel_l, label = 'Control Panel', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
+        controlpanel_sbsizer = wx.StaticBoxSizer(controlpanel_sb, wx.VERTICAL)
+
+
+        # push button controls for image post-processing
+        animate_btn = wx.Button(self.panel_l, label = 'Make Animation')
+
+        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox1.Add(animate_btn, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+
+        ## bindings
+        self.Bind(wx.EVT_BUTTON, self.onAnimate, animate_btn)
+
+        # image style controls
+        imgscale_st = funutils.MyStaticText(self.panel_l, label = 'Image Size (+/-)', fontcolor = 'blue')
+        scale_inc_btn = wx.BitmapButton(self.panel_l, bitmap = resutils.addicon.GetBitmap())
+        scale_dec_btn = wx.BitmapButton(self.panel_l, bitmap = resutils.delicon.GetBitmap())
+
+        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox2.Add(imgscale_st,   proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        hbox2.Add(scale_inc_btn, proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL,             border = 10)
+        hbox2.Add(scale_dec_btn, proportion = 0, flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL,  border = 10)
+        
+        ## bindings
+        self.Bind(wx.EVT_BUTTON, self.onScaleInc, scale_inc_btn)
+        self.Bind(wx.EVT_BUTTON, self.onScaleDec, scale_dec_btn)
+
+        # left panel sizer
+        controlpanel_sbsizer.Add(hbox1, flag = wx.ALIGN_CENTER | wx.ALL, proportion = 0, border = 10)
+        controlpanel_sbsizer.Add(wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL), flag = wx.EXPAND | wx.ALL, border = 10)
+        controlpanel_sbsizer.Add(hbox2, flag = wx.ALIGN_LEFT | wx.ALL, proportion = 0, border = 10)
+        
+        
+        # vright box
+        ## image grid panel
+        imagegridpanel_sb = funutils.createwxStaticBox(self.panel_r, label = 'Image Grid', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
+        imagegridpanel_sbsizer = wx.StaticBoxSizer(imagegridpanel_sb, wx.HORIZONTAL)
+
+        ## image plotting frame
+        #self.imggrid = ImageGrid(self.panel_r, figsize = (4, 4), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+        self.imggrid = imageutils.ImageGalleryPanel(self.panel_r)
+
+
+        gsr = wx.BoxSizer(wx.HORIZONTAL)
+        gsr.Add(self.imggrid, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+
+        imagegridpanel_sbsizer.Add(gsr, proportion = 1, flag = wx.EXPAND)
+
+
+
+        # set sizers
+
+        ## left
+        sizer_l.Add(controlpanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        self.panel_l.SetSizerAndFit(sizer_l)
+        vleft.Add(self.panel_l, proportion = 1, flag = wx.EXPAND)
+
+        ## right
+        sizer_r.Add(imagegridpanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.RIGHT, border = self.bordersize)
+        self.panel_r.SetSizerAndFit(sizer_r)
+        vright.Add(self.panel_r, proportion = 1, flag = wx.EXPAND)
+        
+        # main sizer
+        hbox.Add(vleft,  proportion = 1, flag = wx.EXPAND)
+        hbox.Add(vright, proportion = 3, flag = wx.EXPAND)
+        self.panel.SetSizer(hbox)
         osizer = wx.BoxSizer(wx.HORIZONTAL)
         osizer.SetMinSize((1000, 750))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
+
+    def onAnimate(self, event):
+        pass
+
+    def onScaleInc(self, event):
+        self.imggrid.onScaleInc(0.1)
+
+    def onScaleDec(self, event):
+        self.imggrid.onScaleDec(0.1)
+
+    def visData(self, datafilename):
+        """
+        read data file and show images on right panel
+        """
+        filenum = datafilename.__len__()
+        self.jpglist = []
+        for file in datafilename:
+            ftype = file.split('.')[-1]
+            if ftype == 'hdf5': # hdf5 data file
+                self.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
+            elif ftype == 'dat' or ftype == 'asc':
+                data = np.loadtxt(file)
+                self.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
+                
+        # show images on right panel
+        self.updateImageGrid()
+
+    def updateImageGrid(self):
+        self.imggrid.onUpdate(self.jpglist)
+
  
+class ImageGrid(pltutils.ImagePanel):
+    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+        pltutils.ImagePanel.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
+
+    def doPlot(self):
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111)
+        self.im = self.axes.imshow(self.z, aspect = 'equal', cmap = plt.get_cmap(self.cmaptype), 
+                                   origin = 'lower left', vmin = self.cmin, vmax = self.cmax)
+        #self.figure.colorbar(self.im, orientation = 'horizontal', aspect = 20, shrink = 0.95, 
+        #                     fraction = 0.05, pad = 0.1)
+        self.figure.canvas.draw()
+
+    def onGetData(self):
+        if self.func == 'peaks':
+            x = np.linspace(-np.pi, np.pi, 100)
+            y = np.linspace(-np.pi, np.pi, 100)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_peaks(self.x, self.y)
+        elif self.func == 'sinc':
+            x = np.linspace(-2*np.pi, 2*np.pi, 100)
+            y = np.linspace(-2*np.pi, 2*np.pi, 100)
+            self.x, self.y = np.meshgrid(x, y)
+            self.z = funutils.func_sinc(self.x, self.y)
+        self.cmin = self.z.min()
+        self.cmax = self.z.max()
+
+    def repaint(self):
+        self.figure.canvas.draw_idle()
+
+    def onMotion(self, event):
+        try:
+            x, y = event.xdata, event.ydata
+            idx, idy = int(x+0.5), int(y+0.5)
+            zval = self.z[idx, idy]
+            self.GetParent().img_pos.SetLabel("(%.4f, %.4f, %.4f)" % (x, y, zval))
+        except TypeError:
+            pass
+    
+    def onPress(self, event):
+        try:
+            x, y= event.xdata, event.ydata
+            idx, idy = int(x+0.5), int(y+0.5)
+            print x,y,idx,idy,self.x[idx,idy], self.y[idx,idy], self.z[idx,idy]
+            self.GetParent().img_pos.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
+        except TypeError:
+            pass
 
