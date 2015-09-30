@@ -1,0 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#
+# simple script to call matchwizard app
+# 2015-09-30
+#
+
+import felapps
+felapps.matchwizard.run(maximize = True,logon = False, debug = False)
