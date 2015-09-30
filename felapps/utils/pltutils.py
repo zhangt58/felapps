@@ -95,6 +95,13 @@ class ImageViewer(wx.Frame):
         self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.InitUI()
 
+        # save data settings
+        self.savedict = {}
+        self.saveTimerLife = 0
+        self.saveTimerCounter = 0
+        self.savetimer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onSaveTimer, self.savetimer)
+
     def loadConfig(self, configfilename):
         self.xmlconfig = ImageConfigFile(configfilename)
         namelist = self.xmlconfig.getConfigs()
@@ -174,14 +181,16 @@ class ImageViewer(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onConfigLoad, id = loadConfigItem.GetId())
         self.Bind(wx.EVT_MENU, self.onConfigSave, id = saveConfigItem.GetId())
         
-        ## Methods menu
+        ## Operations menu
         methMenu = wx.Menu()
         showIntItem   = methMenu.Append(wx.ID_ANY, 'Show intensity\tCtrl+Shift+V', 'Monitor intensity')
         showXhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-X\tAlt+X',           'Show histogram along X-axis', kind = wx.ITEM_CHECK)
         showYhistItem = methMenu.Append(wx.ID_ANY, 'Show hist-Y\tAlt+Y',           'Show histogram along Y-axis', kind = wx.ITEM_CHECK)
+        autoSaveItem  = methMenu.Append(wx.ID_ANY, 'Auto save\tAlt+S',             'Auto saving data&image')
         self.Bind(wx.EVT_MENU, self.onShowInt,   id =   showIntItem.GetId())
         self.Bind(wx.EVT_MENU, self.onShowXhist, id = showXhistItem.GetId())
         self.Bind(wx.EVT_MENU, self.onShowYhist, id = showYhistItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onAutoSave,  id = autoSaveItem.GetId() )
 
         ## Help menu
         helpMenu = wx.Menu()
@@ -191,7 +200,7 @@ class ImageViewer(wx.Frame):
         ## make menu
         self.menubar.Append(fileMenu,   '&File')
         self.menubar.Append(configMenu, '&Configurations')
-        self.menubar.Append(methMenu,   '&Methods')
+        self.menubar.Append(methMenu,   '&Operations')
         self.menubar.Append(helpMenu,   '&Help')
         
         ## set menu
@@ -241,10 +250,55 @@ class ImageViewer(wx.Frame):
         flag = not self.imgpanel.liney.get_visible()
         self.imgpanel.liney.set_visible(flag)
 
+    def onAutoSave(self, event):
+        self.statusbarcolor = self.statusbar.appinfo.GetForegroundColour()
+        self.menuAutoSaveFrame = AutoSavePanel(self)
+        self.menuAutoSaveFrame.SetTitle('Automatic Data-Save System')
+        self.menuAutoSaveFrame.Show()
+
+    def onSaveTimer(self, event):
+        self.saveTimerCounter += 1
+        """ for test only
+        fmt='%Y-%m-%d %H:%M:%S %Z'
+        print self.saveTimerLife, ' SAVE at ', time.strftime(fmt, time.localtime())
+        """
+
+        # perform saving task
+        filelabel = time.strftime('%H%M%S', time.localtime())
+        savetodatfilebasename = self.savedict['save_path'] + os.sep + self.save_dat_name_str + filelabel
+        savetoimgfilebasename = self.savedict['save_path'] + os.sep + self.save_img_name_str + filelabel
+
+        # save data
+        if self.savedict['save_datfmt_hdf5'] == 1: # save hdf5 fmt
+            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.hdf5', '.hdf5')
+        if self.savedict['save_datfmt_asc'] == 1: # save asc fmt
+            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.asc', '.asc')
+        if self.savedict['save_datfmt_sdds'] == 1: # save sdds fmt
+            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.sdds', '.sdds')
+
+        # save image
+        if self.savedict['save_imgfmt_jpg'] == 1: # save jpg fmt
+            self.imgpanel.figure.savefig(savetoimgfilebasename + '.jpg')
+        if self.savedict['save_imgfmt_eps'] == 1: # save eps fmt
+            self.imgpanel.figure.savefig(savetoimgfilebasename + '.eps')
+        if self.savedict['save_imgfmt_png'] == 1: # save png fmt
+            self.imgpanel.figure.savefig(savetoimgfilebasename + '.png')
+ 
+        # show hint at statusbar
+        hintText = 'Data file Record: %d was saved.' % self.saveTimerCounter
+        self.statusbar.appinfo.SetLabel(hintText)
+        self.statusbar.appinfo.SetForegroundColour('red')
+
+        if self.saveTimerCounter == self.saveTimerLife:
+            self.savetimer.Stop()
+            hintText = 'Total %d records are saved to directory %s.' % (self.saveTimerCounter, self.savedict['save_path'])
+            self.statusbar.appinfo.SetLabel(hintText)
+            self.statusbar.appinfo.SetForegroundColour(self.statusbarcolor)
+        
+
     def onConfigApps(self, event):
         self.menuAppConfig = AppConfigPanel(self)
         self.menuAppConfig.SetTitle('Application Preferences')
-        self.menuAppConfig.SetMinSize((600, -1))
         self.menuAppConfig.Show()
 
     def onConfigLoad(self, event):
@@ -631,8 +685,12 @@ class ImageViewer(wx.Frame):
         else:
             dial = wx.MessageDialog(self, message = u"Lost connection, may be caused by network error or the IOC server is down.",
                     caption = u"Lost Connection", 
-                    style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
+                    style = wx.OK | wx.ICON_ERROR | wx.CENTRE)
             if dial.ShowModal() == wx.ID_OK:
+                self.timer.Stop()
+                self.min_slider.Enable()
+                self.max_slider.Enable()
+                self.daqtgl_btn.SetLabel('DAQ START')
                 dial.Destroy()
     
     def onSetImgSrc(self, event):
@@ -736,6 +794,160 @@ class ConfigNoteBook(wx.Notebook):
         self.AddPage(self.stylePage,    'Style'   )
         self.AddPage(self.controlPage,  'Control' )
         self.AddPage(self.histPlotPage, 'HistPlot')
+
+class AutoSavePanel(wx.Frame):
+    def __init__(self, parent, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+        self.createPanel()
+        self.postInit()
+
+    def createPanel(self):
+        self.panel = wx.Panel(self)
+
+        # format choosing
+        sbox1 = funutils.createwxStaticBox(self.panel, label = 'Choose Saving Format', fontcolor = 'grey')
+        sbsizer1 = wx.StaticBoxSizer(sbox1, orient = wx.HORIZONTAL)
+
+        # data format: hdf5, asc, sdds, etc.
+        datahbox        = wx.BoxSizer(wx.VERTICAL)
+        data_st         = funutils.MyStaticText(self.panel, label = 'Data Format', fontsize = 12, fontcolor = 'blue')
+        self.hdf5_chbox = funutils.MyCheckBox(self.panel, label = 'hdf5', fontsize = 12)
+        self.asc_chbox  = funutils.MyCheckBox(self.panel, label = 'asc',  fontsize = 12)
+        self.sdds_chbox = funutils.MyCheckBox(self.panel, label = 'sdds', fontsize = 12)
+        datahbox.Add(data_st,         proportion = 0, flag = wx.ALL | wx.ALIGN_LEFT, border = 10)
+        datahbox.Add(self.hdf5_chbox, proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        datahbox.Add(self.asc_chbox,  proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        datahbox.Add(self.sdds_chbox, proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+
+        # image format: jpg, eps, png, etc.
+        imagehbox      = wx.BoxSizer(wx.VERTICAL)
+        image_st       = funutils.MyStaticText(self.panel, label = 'Image Format', fontsize = 12, fontcolor = 'blue')
+        self.jpg_chbox = funutils.MyCheckBox(self.panel, label = 'jpg', fontsize = 12)
+        self.eps_chbox = funutils.MyCheckBox(self.panel, label = 'eps', fontsize = 12)
+        self.png_chbox = funutils.MyCheckBox(self.panel, label = 'png', fontsize = 12)
+        imagehbox.Add(image_st,       proportion = 0, flag = wx.ALL | wx.ALIGN_LEFT, border = 10)
+        imagehbox.Add(self.jpg_chbox, proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        imagehbox.Add(self.eps_chbox, proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        imagehbox.Add(self.png_chbox, proportion = 0, flag = wx.ALIGN_LEFT | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        
+        sbsizer1.Add(datahbox,  proportion = 1, flag = wx.EXPAND | wx.ALL, border = 8)
+        sbsizer1.Add(wx.StaticLine(self.panel, style = wx.LI_VERTICAL), flag = wx.EXPAND | wx.TOP | wx.BOTTOM, border = 10)
+        sbsizer1.Add(imagehbox, proportion = 1, flag = wx.EXPAND | wx.RIGHT | wx.TOP | wx.BOTTOM, border = 8)
+        
+        # save timer/io setup
+        sbox2 = funutils.createwxStaticBox(self.panel, label = 'Options', fontcolor = 'grey')
+        sbsizer2 = wx.StaticBoxSizer(sbox2, orient = wx.VERTICAL)
+
+        ## saveto path
+        saveto_st          = funutils.MyStaticText(self.panel, label = 'Save to', fontcolor = 'black', style = wx.ALIGN_LEFT)
+        self.savetopath_tc = funutils.MyTextCtrl(self.panel, value = os.getcwd(), style = wx.CB_READONLY)
+        choosepath_btn     = funutils.MyButton(self.panel, label = 'Browse')
+
+        ## save freq setting
+        savefreq_st1 = funutils.MyStaticText(self.panel, label = 'Save',   fontcolor = 'black', style = wx.ALIGN_LEFT) 
+        savefreq_st2 = funutils.MyStaticText(self.panel, label = 'frame',  fontcolor = 'black', style = wx.ALIGN_LEFT) 
+        savefreq_st3 = funutils.MyStaticText(self.panel, label = 'every',  fontcolor = 'black', style = wx.ALIGN_LEFT) 
+        savefreq_st4 = funutils.MyStaticText(self.panel, label = 'second', fontcolor = 'black', style = wx.ALIGN_LEFT) 
+        self.savefreqcnt_sp  = wx.SpinCtrl(self.panel, value = '1',  min = 1, max = 10, initial = 1, style = wx.SP_ARROW_KEYS)
+        self.savefreqsec_fsp = fs.FloatSpin(self.panel, value = '2.0',  min_val = 1.0, max_val = 10000, increment = 0.5, digits = 1, style = fs.FS_LEFT)
+        savefreq_st5 = funutils.MyStaticText(self.panel, label = 'Total Saved Record Number', fontcolor = 'black', style = wx.ALIGN_LEFT) 
+        self.savefreqtot_sp  = wx.SpinCtrl(self.panel, value = '10',  min = 1, max = 10000, initial = 10, style = wx.SP_ARROW_KEYS)
+
+        savegsbox = wx.GridBagSizer(10, 5)
+        savegsbox.Add(saveto_st,            pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(self.savetopath_tc,   pos = (0, 1), span = (1, 4), flag = wx.EXPAND | wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(choosepath_btn,       pos = (0, 5), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(savefreq_st1,         pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(self.savefreqcnt_sp,  pos = (1, 1), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(savefreq_st2,         pos = (1, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(savefreq_st3,         pos = (1, 3), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(self.savefreqsec_fsp, pos = (1, 4), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(savefreq_st4,         pos = (1, 5), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER, border = 10)
+        savegsbox.Add(savefreq_st5,         pos = (2, 0), span = (1, 2), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        savegsbox.Add(self.savefreqtot_sp,  pos = (2, 2), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        savegsbox.AddGrowableCol(1)
+        savegsbox.AddGrowableCol(2)
+        savegsbox.AddGrowableCol(3)
+        savegsbox.AddGrowableCol(4)
+        
+        sbsizer2.Add(savegsbox, proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
+        
+        # cmd hbox sizer
+        cmdhbox = wx.BoxSizer(wx.HORIZONTAL)
+        startsave_btn = funutils.MyButton(self.panel, label = 'Start SAVE', fontcolor = 'red')
+        cancel_btn    = funutils.MyButton(self.panel, label = 'Cancel')
+        cmdhbox.Add(cancel_btn,    proportion = 0, flag = wx.RIGHT, border = 10)
+        cmdhbox.Add(startsave_btn, proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.RIGHT, border = 0)
+
+        # set sizers
+        mainsizer = wx.BoxSizer(wx.VERTICAL)
+        mainsizer.Add(sbsizer1, proportion = 4, flag = wx.EXPAND | wx.ALL, border = 10)
+        mainsizer.Add(sbsizer2, proportion = 3, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM, border = 10)
+        mainsizer.Add(cmdhbox,  proportion = 0, flag = wx.ALIGN_RIGHT | wx.BOTTOM | wx.RIGHT, border = 10)
+
+        self.panel.SetSizer(mainsizer)
+        osizer = wx.BoxSizer(wx.VERTICAL)
+        osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
+        
+        # event bindings
+        self.Bind(wx.EVT_BUTTON, self.onStart,      startsave_btn)
+        self.Bind(wx.EVT_BUTTON, self.onCancel,     cancel_btn)
+        self.Bind(wx.EVT_BUTTON, self.onChoosePath, choosepath_btn)
+
+    def postInit(self):
+        self.hdf5_chbox.SetValue(True)
+        self.asc_chbox.SetValue(False)
+        self.sdds_chbox.SetValue(False)
+        self.jpg_chbox.SetValue(False)
+        self.eps_chbox.SetValue(False)
+        self.png_chbox.SetValue(False)
+
+        # define a test timer for saving action
+        #self.testtimer = wx.Timer(self)
+        #self.Bind(wx.EVT_TIMER, self.onTestTimer, self.testtimer)
+    #def onTestTimer(self, event):
+    #    fmt='%Y-%m-%d %H:%M:%S %Z'
+    #    print 'SAVE at ', time.strftime(fmt, time.localtime())
+
+    def onStart(self, event):
+        tperiod_setval = self.savefreqsec_fsp.GetValue() # sec
+        cntpert_setval = self.savefreqcnt_sp.GetValue()
+        total_setval   = self.savefreqtot_sp.GetValue()
+        # return parameters
+        self.parent.savedict['save_total_record'] = total_setval
+        self.parent.savedict['save_tfreq_msec'  ] = tperiod_setval/cntpert_setval*1000
+        self.parent.savedict['save_path'        ] = self.savetopath_tc.GetValue()
+        self.parent.savedict['save_datfmt_hdf5' ] = self.hdf5_chbox.GetValue()
+        self.parent.savedict['save_datfmt_asc'  ] = self.asc_chbox.GetValue()
+        self.parent.savedict['save_datfmt_sdds' ] = self.sdds_chbox.GetValue()
+        self.parent.savedict['save_imgfmt_jpg'  ] = self.jpg_chbox.GetValue()
+        self.parent.savedict['save_imgfmt_eps'  ] = self.eps_chbox.GetValue()
+        self.parent.savedict['save_imgfmt_png'  ] = self.png_chbox.GetValue()
+        self.parent.saveTimerLife = total_setval
+        
+        #self.testtimer.Start(tperiod_setval/cntpert_setval*1000)
+        self.parent.savetimer.Start(self.parent.savedict['save_tfreq_msec'])
+        self.Close(True)
+
+    def onCancel(self, event):
+        self.Close(True)
+
+    def onChoosePath(self, event):
+        dlg = wx.DirDialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            dirpath = dlg.GetPath()
+            self.savetopath_tc.SetValue(dirpath)
+        dlg.Destroy()
+
+
+
 
 class AppConfigPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
