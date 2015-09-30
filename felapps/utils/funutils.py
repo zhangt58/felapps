@@ -20,6 +20,7 @@ import os
 import matplotlib.colors as colors
 import time
 import sys
+import h5py
 
 from . import EnhancedStatusBar as ESB
 
@@ -413,13 +414,24 @@ def setPath(pathstr):
 
 #-------------------------------------------------------------------------#
 
-def getFileToLoad(parent, ext = '*'):
+def getFileToLoad(parent, ext = '*', flag = 'single'):
+
     wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
-    dial = wx.FileDialog(parent, message = "Please select file",
-            defaultDir=".", defaultFile="", wildcard = wildcardpattern, style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
-    if dial.ShowModal() == wx.ID_OK:
-        fullfilename = os.path.join(dial.GetDirectory(),dial.GetFilename())
-        return fullfilename
+
+    if flag == 'single':
+        dial = wx.FileDialog(parent, message = "Please select file",
+                defaultDir=".", defaultFile="", wildcard = wildcardpattern, style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST)
+        if dial.ShowModal() == wx.ID_OK:
+            fullfilename = os.path.join(dial.GetDirectory(), dial.GetFilename())
+            return fullfilename
+
+    else: #flag = 'multi':
+        dial = wx.FileDialog(parent, message = "Please select file",
+                defaultDir=".", defaultFile="", wildcard = wildcardpattern, style = wx.FD_DEFAULT_STYLE | wx.FD_FILE_MUST_EXIST | wx.FD_MULTIPLE)
+        if dial.ShowModal() == wx.ID_OK:
+            fullfilenames = [os.path.join(dial.GetDirectory(), filename) for filename in dial.GetFilenames()]
+            return fullfilenames
+    
     dial.Destroy()
 
 #-------------------------------------------------------------------------#
@@ -453,7 +465,6 @@ class SaveData(object):
         np.savetxt(self.fname, self.data, fmt='%.16e', delimiter=' ')
 
     def onSaveHDF5(self):
-        import h5py
         f = h5py.File(self.fname,'w')
         dset = f.create_dataset('image/data', shape=self.data.shape, dtype=self.data.dtype)
         dset[...] = self.data
