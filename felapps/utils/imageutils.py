@@ -15,6 +15,7 @@ import h5py
 import os
 import wx
 import numpy as np
+import time
 from . import funutils
 
 import wx.lib.scrolledpanel as scrolled
@@ -48,6 +49,7 @@ def data2Image(filename, datatype = 'hdf5', figtype = 'jpg', width = None, heigh
 
     thumbname = '.'.join(filenamebase.split('.')[:-1] + [figtype])
     thumbfullpath = os.path.join(tmpdir, thumbname)
+
     thumbrelpath = os.path.join(cwdir, thumbname)
     
     fig = plt.figure()
@@ -147,7 +149,41 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         self.onClear()
         self.onUpdate()
 
-        
+class ProgressBarFrame(wx.Frame):
+    def __init__(self, parent, title, range = 100) :
+        wx.Frame.__init__(self, parent = parent, title = title)
+        self.range = range
+        self.createProgressbar()
+        self.SetMinSize((400, 10))
+        self.Centre()
+        self.t0 = time.time()
+        self.elapsed_time_timer.Start(1000)
+
+        self.Show()
+
+    def createProgressbar(self):
+        self.pb       = wx.Gauge(self)
+        self.pb.SetRange(range = self.range)
+
+        self.elapsed_time_st  = wx.StaticText(self, label = 'Elapsed Time:')
+        self.elapsed_time_val = wx.StaticText(self, label = '00:00:00')
+
+        vbox_main = wx.BoxSizer(wx.VERTICAL)
+        hbox_time = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_time.Add(self.elapsed_time_st,  0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        hbox_time.Add(self.elapsed_time_val, 0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        vbox_main.Add(self.pb,   0, wx.EXPAND | wx.ALL, 5)
+        vbox_main.Add(hbox_time, 0, wx.EXPAND | wx.ALL, 5)
+
+        self.SetSizerAndFit(vbox_main)
+
+        self.elapsed_time_timer = wx.Timer(self)
+        self.Bind(wx.EVT_TIMER, self.onTickTimer, self.elapsed_time_timer)
+    
+    def onTickTimer(self, event):
+        fmt='%H:%M:%S'
+        self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
+
 def resizeImage(imagepath, height, width = None, whflag = 'h', quality = wx.IMAGE_QUALITY_NORMAL):
     """
     resize image read from file, return wx.Image obj
