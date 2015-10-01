@@ -143,7 +143,9 @@ class DataWorkshop(wx.Frame):
         select data files to be visulized in imagegrid panel
         """
         datafile = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
-        self.visData(datafile)
+        self.imggrid.onClear()
+        self.visData_thread(datafile)
+        #self.visData(datafile)
 
     def onSave(self, event):
         pass
@@ -299,7 +301,7 @@ class DataWorkshop(wx.Frame):
         
         try:
             # create animation
-            fps = 10
+            fps = 2
             moviename = 'output.avi'
             cmdline = ' '.join(['mencoder', '-fps', str(fps), '"mf://' + newpathdir + os.sep + 'image%03d.jpg"', '-o', moviename, '-ovc copy -oac copy'])
             subprocess.call(cmdline, shell=True)
@@ -346,7 +348,6 @@ class DataWorkshop(wx.Frame):
             if ftype == 'hdf5': # hdf5 data file
                 self.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
             elif ftype == 'dat' or ftype == 'asc':
-                data = np.loadtxt(file)
                 self.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
 
             print "Loading: %d/%d" %(filecnt, filenum) # need to be realized in threading approach
@@ -357,10 +358,28 @@ class DataWorkshop(wx.Frame):
     def updateImageGrid(self):
         self.imggrid.onUpdate(self.jpglist)
 
+    def visData_thread(self, datafilename):
+        """
+        read data file and show images on right panel
+        """
+        filenum = datafilename.__len__()
+        self.jpglist = []
+
+        self.progressbar = imageutils.ProgressBarFrame(self, 'Loading Data...', filenum)
+        self.progressbar.MakeModal(True)
+        self.dataProcessWorker = WorkerThread(self, self.progressbar, filenum, datafilename)
+        self.dataProcessWorker.start()
+        
+        # show images on right panel
+        #self.updateImageGrid()
+    def onStopWorker(self):
+        self.dataProcessWorker.stop()
+        self.info.SetLabel('Complete loading data')
+
 class WorkerThread(threading.Thread):
     def __init__(self, parent, target, countNum, datafilename):
         threading.Thread.__init__(self, target = target)
-        self.setDaemon(True)
+        #self.setDaemon(True)
         self.parent = parent # point to the parent, here is DataWorkshop
         self.cnt = countNum
         self.target = target # point to progressbarframe
@@ -368,14 +387,22 @@ class WorkerThread(threading.Thread):
         self.datafilename = datafilename
         self.filecnt = 0
 
+        self.quitflag = threading.Event()
+        self.quitflag.clear()
+    
+    def stop(self):
+        self.quitflag.set()
+
     def run(self):
         for file in self.datafilename:
+            if self.quitflag.isSet():
+                break
             self.filecnt += 1
             ftype = file.split('.')[-1]
             if ftype == 'hdf5': # hdf5 data file
+                #time.sleep(0.2)
                 self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
             elif ftype == 'dat' or ftype == 'asc':
-                data = np.loadtxt(file)
                 self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
             wx.CallAfter(self.pb.SetValue, self.filecnt)
 
@@ -383,6 +410,7 @@ class WorkerThread(threading.Thread):
         wx.CallAfter(self.target.MakeModal, False)
         wx.CallAfter(self.target.Close)
         wx.CallAfter(self.parent.updateImageGrid)
+        wx.CallAfter(self.parent.onStopWorker)
 
 
 # ImageGrid: do not use this now
