@@ -20,6 +20,8 @@ from . import funutils
 
 import wx.lib.scrolledpanel as scrolled
 
+from scipy.misc import imsave
+
 def data2Image(filename, datatype = 'hdf5', figtype = 'jpg', width = None, height = None, whflag = 'h', cmtype = 'hot', *args, **kwargs):
     """
     generate image thumbnails from data file, by default from hdf5 array.
@@ -52,12 +54,15 @@ def data2Image(filename, datatype = 'hdf5', figtype = 'jpg', width = None, heigh
 
     thumbrelpath = os.path.join(cwdir, thumbname)
     
+    """
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.set_axis_off()
     im = ax.imshow(data, cmap = cmtype, aspect = 'equal')
     extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
     plt.savefig(thumbfullpath, bbox_inches = extent, pad_inches = 0)
+    """
+    imsave(thumbfullpath, data)
 
     # use PIL to resize image in accurate pixel
     rawimg = Image.open(thumbfullpath)
@@ -82,7 +87,7 @@ def data2Image(filename, datatype = 'hdf5', figtype = 'jpg', width = None, heigh
 
     resizedimg.save(thumbrelpath)
 
-    plt.close(fig)
+    #plt.close(fig)
     
     return thumbrelpath
 
