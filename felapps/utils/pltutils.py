@@ -23,6 +23,7 @@ from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg
 from matplotlib.patches import Rectangle
 import epics
 import time
+from datetime import datetime
 import os
 import xml.etree.cElementTree as ET
 from . import resutils
@@ -264,17 +265,19 @@ class ImageViewer(wx.Frame):
         """
 
         # perform saving task
-        filelabel = time.strftime('%H%M%S', time.localtime())
+        #filelabel = time.strftime('%H%M%S', time.localtime())
+        filelabel = datetime.now().strftime('%H%M%S.%f')
         savetodatfilebasename = self.savedict['save_path'] + os.sep + self.save_dat_name_str + filelabel
         savetoimgfilebasename = self.savedict['save_path'] + os.sep + self.save_img_name_str + filelabel
 
+        datatosave = self.mypv.get()[0:self.wpx*self.hpx].reshape((self.wpx,self.hpx))[self.roixy[0]:self.roixy[1],self.roixy[2]:self.roixy[3]]
         # save data
         if self.savedict['save_datfmt_hdf5'] == 1: # save hdf5 fmt
-            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.hdf5', '.hdf5')
+            saveins = funutils.SaveData(datatosave, savetodatfilebasename + '.hdf5', '.hdf5')
         if self.savedict['save_datfmt_asc'] == 1: # save asc fmt
-            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.asc', '.asc')
+            saveins = funutils.SaveData(datatosave, savetodatfilebasename + '.asc', '.asc')
         if self.savedict['save_datfmt_sdds'] == 1: # save sdds fmt
-            saveins = funutils.SaveData(self.imgpanel.z, savetodatfilebasename + '.sdds', '.sdds')
+            saveins = funutils.SaveData(datatosave, savetodatfilebasename + '.sdds', '.sdds')
 
         # save image
         if self.savedict['save_imgfmt_jpg'] == 1: # save jpg fmt
@@ -922,7 +925,7 @@ class AutoSavePanel(wx.Frame):
         total_setval   = self.savefreqtot_sp.GetValue()
         # return parameters
         self.parent.savedict['save_total_record'] = total_setval
-        self.parent.savedict['save_tfreq_msec'  ] = tperiod_setval/cntpert_setval*1000
+        self.parent.savedict['save_tfreq_msec'  ] = tperiod_setval*1000.0/cntpert_setval
         self.parent.savedict['save_path'        ] = self.savetopath_tc.GetValue()
         self.parent.savedict['save_datfmt_hdf5' ] = self.hdf5_chbox.GetValue()
         self.parent.savedict['save_datfmt_asc'  ] = self.asc_chbox.GetValue()
@@ -945,9 +948,6 @@ class AutoSavePanel(wx.Frame):
             dirpath = dlg.GetPath()
             self.savetopath_tc.SetValue(dirpath)
         dlg.Destroy()
-
-
-
 
 class AppConfigPanel(wx.Frame):
     def __init__(self, parent, **kwargs):
