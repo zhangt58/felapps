@@ -11,6 +11,7 @@ Created: Sep. 23rd, 2015
 
 import wx
 import time
+import threading
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -141,11 +142,8 @@ class DataWorkshop(wx.Frame):
         """
         select data files to be visulized in imagegrid panel
         """
-        try:
-            datafile = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
-            self.visData(datafile)
-        except:
-            pass
+        datafile = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
+        self.visData(datafile)
 
     def onSave(self, event):
         pass
@@ -164,17 +162,17 @@ class DataWorkshop(wx.Frame):
         self.statusbar = funutils.ESB.EnhancedStatusBar(self)
         self.statusbar.SetFieldsCount(5)
         self.SetStatusBar(self.statusbar)
-        self.statusbar.SetStatusWidths([-4,-1,-2,-2,-1])
+        self.statusbar.SetStatusWidths([-3,-1,-4,-1,-1])
 
         self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"DataWorkshop powered by Python")
         self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"2015-06-05 14:00:00 CST")
         appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u" (Version: " + self.appversion + ")")
-        self.panel_r.img_pos_st= funutils.MyStaticText(self.statusbar, label = u'Current Pos: ', fontcolor = 'red')
-        self.panel_r.img_pos   = funutils.MyStaticText(self.statusbar, label = u'', fontcolor = 'red')
+        self.info_st = funutils.MyStaticText(self.statusbar, label = u'Status: ', fontcolor = 'red')
+        self.info    = funutils.MyStaticText(self.statusbar, label = u'',         fontcolor = 'red')
 
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
-        self.statusbar.AddWidget(self.panel_r.img_pos_st,funutils.ESB.ESB_ALIGN_RIGHT)
-        self.statusbar.AddWidget(self.panel_r.img_pos,   funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(self.info_st,           funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(self.info,              funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
@@ -263,7 +261,6 @@ class DataWorkshop(wx.Frame):
         imagegridpanel_sbsizer.Add(gsr, proportion = 1, flag = wx.EXPAND)
 
 
-
         # set sizers
 
         ## left
@@ -286,7 +283,39 @@ class DataWorkshop(wx.Frame):
         self.SetSizerAndFit(osizer)
 
     def onAnimate(self, event):
-        pass
+        import shutil, glob, os, subprocess
+        newpathdir = './imagetemp/'
+        if not os.path.exists(newpathdir):
+            os.mkdir(newpathdir)
+        cnt = 0
+        for imagefile in sorted(self.jpglist):
+            cnt += 1
+            shutil.copyfile(imagefile, os.path.join(newpathdir, ('image%03d.jpg' % cnt)))
+
+        """
+        for file in glob.glob(newpathdir + '/' + 'image0*.jpg'):
+             print file
+        """
+        
+        try:
+            # create animation
+            fps = 10
+            moviename = 'output.avi'
+            cmdline = ' '.join(['mencoder', '-fps', str(fps), '"mf://' + newpathdir + os.sep + 'image%03d.jpg"', '-o', moviename, '-ovc copy -oac copy'])
+            subprocess.call(cmdline, shell=True)
+        
+            # show indication message
+            dial = wx.MessageDialog(self, message = u"Animation successfully created!",
+                    caption = u"Job done", 
+                    style = wx.OK | wx.CANCEL | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+        except:
+            dial = wx.MessageDialog(self, message = u"Animation creation failed!",
+                    caption = u"Job failed", 
+                    style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
 
     def onScaleInc(self, event):
         self.imggrid.onScaleInc(0.1)
@@ -300,13 +329,27 @@ class DataWorkshop(wx.Frame):
         """
         filenum = datafilename.__len__()
         self.jpglist = []
+
+        """
+        # threading approach, fancy
+        self.progressbar = imageutils.ProgressBarFrame(self, 'Loading Data...', filenum)
+        self.progressbar.MakeModal(True)
+        dataProcessWorker = WorkerThread(self, self.progressbar, filenum, datafilename)
+        dataProcessWorker.start()
+        """
+        
+        # normal approach, not user-friendly, especially loading bunch of data files
+        filecnt = 0
         for file in datafilename:
+            filecnt += 1
             ftype = file.split('.')[-1]
             if ftype == 'hdf5': # hdf5 data file
                 self.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
             elif ftype == 'dat' or ftype == 'asc':
                 data = np.loadtxt(file)
                 self.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
+
+            print "Loading: %d/%d" %(filecnt, filenum) # need to be realized in threading approach
                 
         # show images on right panel
         self.updateImageGrid()
@@ -314,7 +357,35 @@ class DataWorkshop(wx.Frame):
     def updateImageGrid(self):
         self.imggrid.onUpdate(self.jpglist)
 
- 
+class WorkerThread(threading.Thread):
+    def __init__(self, parent, target, countNum, datafilename):
+        threading.Thread.__init__(self, target = target)
+        self.setDaemon(True)
+        self.parent = parent # point to the parent, here is DataWorkshop
+        self.cnt = countNum
+        self.target = target # point to progressbarframe
+        self.pb = self.target.pb # point to progressbarframe.gauge
+        self.datafilename = datafilename
+        self.filecnt = 0
+
+    def run(self):
+        for file in self.datafilename:
+            self.filecnt += 1
+            ftype = file.split('.')[-1]
+            if ftype == 'hdf5': # hdf5 data file
+                self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
+            elif ftype == 'dat' or ftype == 'asc':
+                data = np.loadtxt(file)
+                self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
+            wx.CallAfter(self.pb.SetValue, self.filecnt)
+
+        #wx.CallAfter(self.target.info.SetLabel, ("%d of %d loaded." % (self.filecnt, self.cnt)))
+        wx.CallAfter(self.target.MakeModal, False)
+        wx.CallAfter(self.target.Close)
+        wx.CallAfter(self.parent.updateImageGrid)
+
+
+# ImageGrid: do not use this now
 class ImageGrid(pltutils.ImagePanel):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
         pltutils.ImagePanel.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
