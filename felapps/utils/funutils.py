@@ -454,12 +454,22 @@ class SaveData(object):
         """
         self.data  = data
         self.fname = fname
+
+        self.onDataProcess()
+
         if type == ".asc":
             self.onSaveASC()
         elif type == '.hdf5':
             self.onSaveHDF5()
         elif type == '.sdds':
             self.onSaveSDDS()
+
+    def onDataProcess(self):
+        xx, yy = np.sum(self.data, 0), np.sum(self.data, 1)
+        idx, idy = np.where(xx == xx.max()), np.where(yy == yy.max())
+        self.xpos, self.ypos = idx[0][0], idy[0][0]
+        self.maxint = self.data.max()
+        self.sumint = self.data.sum()
 
     def onSaveASC(self):
         np.savetxt(self.fname, self.data, fmt='%.16e', delimiter=' ')
@@ -468,6 +478,10 @@ class SaveData(object):
         f = h5py.File(self.fname,'w')
         dset = f.create_dataset('image/data', shape=self.data.shape, dtype=self.data.dtype)
         dset[...] = self.data
+        dset.attrs['xypos']  = (self.xpos, self.ypos)
+        dset.attrs['sumint'] = self.sumint
+        dset.attrs['maxint'] = self.maxint
+        f.close()
 
     def onSaveSDDS(self):
         print 'save sdds format to be implemented.'
