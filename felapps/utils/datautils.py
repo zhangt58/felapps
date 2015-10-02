@@ -14,6 +14,7 @@ import time
 import threading
 import numpy as np
 import matplotlib.pyplot as plt
+import h5py
 
 from . import funutils
 from . import pltutils
@@ -142,9 +143,9 @@ class DataWorkshop(wx.Frame):
         """
         select data files to be visulized in imagegrid panel
         """
-        datafile = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
+        self.datafiles = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
         self.imggrid.onClear()
-        self.visData_thread(datafile)
+        self.visData_thread(self.datafiles)
         #self.visData(datafile)
 
     def onSave(self, event):
@@ -219,13 +220,16 @@ class DataWorkshop(wx.Frame):
 
 
         # push button controls for image post-processing
-        animate_btn = wx.Button(self.panel_l, label = 'Make Animation')
+        animate_btn    = wx.Button(self.panel_l, label = 'Make Animation')
+        statistics_btn = wx.Button(self.panel_l, label = 'Statistics'    )
 
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
-        hbox1.Add(animate_btn, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        hbox1 = wx.BoxSizer(wx.VERTICAL)
+        hbox1.Add(animate_btn,    proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
+        hbox1.Add(statistics_btn, proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
 
         ## bindings
-        self.Bind(wx.EVT_BUTTON, self.onAnimate, animate_btn)
+        self.Bind(wx.EVT_BUTTON, self.onAnimate,    animate_btn   )
+        self.Bind(wx.EVT_BUTTON, self.onStatistics, statistics_btn)
 
         # image style controls
         imgscale_st = funutils.MyStaticText(self.panel_l, label = 'Image Size (+/-)', fontcolor = 'blue')
@@ -318,6 +322,12 @@ class DataWorkshop(wx.Frame):
                     style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
             if dial.ShowModal() == wx.ID_OK:
                 dial.Destroy()
+
+    def onStatistics(self, event):
+        self.statFrame = StatPanel(self, self.datafiles)
+        self.statFrame.SetTitle('Statistical Analysis')
+        #self.statFrame.SetMinSize((800, 600))
+        self.statFrame.Show()
 
     def onScaleInc(self, event):
         self.imggrid.onScaleInc(0.1)
@@ -412,6 +422,151 @@ class WorkerThread(threading.Thread):
         wx.CallAfter(self.parent.updateImageGrid)
         wx.CallAfter(self.parent.onStopWorker)
 
+class StatPanel(wx.Frame):
+    def __init__(self, parent, datafiles, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
+        self.parent = parent
+        self.datafiles = datafiles
+        self.shotIDArray = np.arange(1, self.datafiles.__len__()+1)
+        self.InitUI()
+
+    def InitUI(self):
+        self.createPanel()
+        self.postInit()
+
+    def createPanel(self):
+        self.panel = wx.Panel(self)
+
+        # layout:
+        #    lv_hbox
+        # lvbox | rvbox
+        #
+
+        # left hbox
+        showinthist_btn = wx.Button(self.panel, label = 'Intensity',   size = (120, -1), style = wx.BU_LEFT)
+        showxypos_btn   = wx.Button(self.panel, label = 'Central Pos', size = (120, -1), style = wx.BU_LEFT)
+        showradius_btn  = wx.Button(self.panel, label = 'Radius',      size = (120, -1), style = wx.BU_LEFT)
+
+        showinthist_st = funutils.MyStaticText(self.panel, label = 'Intensity hist',   size = (160, -1))
+        showxypos_st   = funutils.MyStaticText(self.panel, label = 'Central position', size = (160, -1))
+        showradius_st  = funutils.MyStaticText(self.panel, label = 'Radius',           size = (160, -1))
+        
+        gbs = wx.GridBagSizer(10, 5)
+        gbs.Add(showinthist_btn, pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showinthist_st,  pos = (0, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showxypos_btn,   pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showxypos_st,    pos = (1, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showradius_btn,  pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showradius_st,   pos = (2, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.AddGrowableCol(1)
+        gbs.AddGrowableCol(2)
+
+        lvbox = wx.BoxSizer(wx.VERTICAL)
+        lvbox.Add(gbs, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        
+        # right vbox
+        self.plotpanel = PlotPanel(self.panel, figsize=(5,5), dpi = 80, bgcolor = None)
+
+        rvbox = wx.BoxSizer(wx.VERTICAL)
+        rvbox.Add(self.plotpanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 4)
+        
+        # left and right hbox
+        lr_hbox = wx.BoxSizer(wx.HORIZONTAL)
+        lr_hbox.Add(lvbox, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 4)
+        lr_hbox.Add(rvbox, proportion = 2, flag = wx.EXPAND | wx.ALL, border = 4)
+
+        # cmd hbox sizer
+        cmdhbox    = wx.BoxSizer(wx.HORIZONTAL)
+        ok_btn     = funutils.MyButton(self.panel, label = 'OK')
+        cancel_btn = funutils.MyButton(self.panel, label = 'Cancel')
+        cmdhbox.Add(cancel_btn, proportion = 0, flag = wx.RIGHT, border = 10)
+        cmdhbox.Add(ok_btn,     proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.RIGHT, border = 0)
+        
+        # main sizer
+        mainsizer = wx.BoxSizer(wx.VERTICAL)
+        mainsizer.Add(lr_hbox, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        mainsizer.Add(wx.StaticLine(self.panel, wx.LI_HORIZONTAL), 0, wx.EXPAND | wx.ALL, 10)
+        mainsizer.Add((-1, 10))
+        mainsizer.Add(cmdhbox,  proportion = 0, flag = wx.ALIGN_RIGHT | wx.BOTTOM | wx.RIGHT, border = 10)
+
+        self.panel.SetSizer(mainsizer)
+        osizer = wx.BoxSizer(wx.VERTICAL)
+        osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
+        self.SetSizerAndFit(osizer)
+        
+        # event bindings
+        self.Bind(wx.EVT_BUTTON, self.onIntensityStat,  showinthist_btn)
+        self.Bind(wx.EVT_BUTTON, self.onCentralPosStat, showxypos_btn  )
+        self.Bind(wx.EVT_BUTTON, self.onRadiusStat,     showradius_btn )
+        self.Bind(wx.EVT_BUTTON, self.onOK,             ok_btn         )
+        self.Bind(wx.EVT_BUTTON, self.onCancel,         cancel_btn     )
+    
+    def onOK(self, event):
+        self.Close(True)
+
+    def onCancel(self, event):
+        self.Close(True)
+
+    def postInit(self):
+        pass
+
+    def onIntensityStat(self, event):
+        self.statIntArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['sumint'] for file in self.datafiles])
+
+        self.plotpanel.x = self.shotIDArray
+        self.plotpanel.y = self.statIntArray
+        """
+        self.plotpanel.xyplot.set_marker('o')
+        self.plotpanel.xyplot.set_markersize(4)
+        self.plotpanel.xyplot.set_markerfacecolor('b')
+        self.plotpanel.xyplot.set_markeredgecolor('b')
+        self.plotpanel.xyplot.set_linestyle('-')
+        self.plotpanel.xyplot.set_color('r')
+        """
+        self.plotpanel.clear()
+        self.plotpanel.doXYplot()
+        self.plotpanel.axes.set_title('Intensity')
+        self.plotpanel.axes.set_xlabel('shot ID')
+        self.plotpanel.axes.set_ylabel('[a.u.]')
+        self.plotpanel.refresh()
+
+    def onCentralPosStat(self, event):
+        self.statXYPosArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['xypos'] for file in self.datafiles])
+
+        self.plotpanel.x = self.statXYPosArray[:,0]
+        self.plotpanel.y = self.statXYPosArray[:,1]
+
+        self.plotpanel.clear()
+        self.plotpanel.doScatter()
+        self.plotpanel.axes.set_title('XY pos')
+        self.plotpanel.axes.set_xlabel('X')
+        self.plotpanel.axes.set_ylabel('Y')
+        self.plotpanel.refresh()
+
+    def onRadiusStat(self, event):
+        pass
+
+class PlotPanel(pltutils.ImagePanelxy):
+    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+        pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
+#        self.axes.set_aspect('equal')
+
+    def doXYplot(self):
+        self.axes = self.figure.add_subplot(111)
+        self.axes.plot(self.x, self.y)
+        self.figure.canvas.draw()
+
+    def doScatter(self):
+        self.axes = self.figure.add_subplot(111)
+        self.axes.scatter(self.x, self.y)
+        self.figure.canvas.draw()
+    
+    def clear(self):
+        self.figure.clear()
+
+    def refresh(self):
+        self.figure.canvas.draw_idle()
 
 # ImageGrid: do not use this now
 class ImageGrid(pltutils.ImagePanel):
