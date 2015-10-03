@@ -13,6 +13,7 @@ import wx
 import time
 
 from . import funutils
+from . import pltutils
 
 class MatchWizard(wx.Frame):
     def __init__(self, parent, config = 'config.xml', size = (1000, 750), appversion = '1.0', **kwargs):
@@ -109,11 +110,14 @@ class MatchWizard(wx.Frame):
         info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
         wx.AboutBox(info)
 
-    def preInit(self):
-        pass
-
     def postInit(self):
-        pass
+        self.matchsec_udn_flag_cb.SetValue(False)
+        self.matchsec_udn_tc.Disable()
+        self.matchsec_udn_btn.Disable()
+        self.matchsec1_rb.Enable()
+        self.matchsec2_rb.Enable()
+        self.matchsec3_rb.Enable()
+        self.matchsec4_rb.Enable()
 
     def onConfigLoad(self, event):
         pass
@@ -152,18 +156,112 @@ class MatchWizard(wx.Frame):
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
-
+    def preInit(self):
+        self.fontsize_button     = 12 
+        self.fontsize_statictext = 12
+        self.fontsize_staticbox  = 10
+        self.fontsize_textctrl   = 12
+        self.backcolor_panel     = '#DDDDDD'
+        self.fontcolor_staticbox = '#4B4B4B'
+        self.bordersize          = 12
+ 
     def createPanel(self):
         # make background panel
         self.panel = funutils.createwxPanel(self, funutils.hex2rgb('#B1B1B1'))
 
-        #hbox = 
+        # vertical box sizer for holding panel_u and panel_d
+        topbox    = wx.BoxSizer(wx.VERTICAL)
+        bottombox = wx.BoxSizer(wx.VERTICAL)
+
+        # top and bottom panels
+        self.panel_u = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+        self.panel_d = funutils.createwxPanel(self.panel, funutils.hex2rgb(self.backcolor_panel))
+
+        # hbox in top panel 
+        latvispanel_sb      = funutils.createwxStaticBox(self.panel_u, label = 'Lattice Visualization', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
+        latvispanel_sbsizer = wx.StaticBoxSizer(latvispanel_sb, wx.HORIZONTAL)
+
+        # up left
+        # choose matching section
+        self.matchsec1_rb = wx.RadioButton(self.panel_u, label = 'Beamline #1', style = wx.RB_GROUP)
+        self.matchsec2_rb = wx.RadioButton(self.panel_u, label = 'Beamline #2')
+        self.matchsec3_rb = wx.RadioButton(self.panel_u, label = 'Beamline #3')
+        self.matchsec4_rb = wx.RadioButton(self.panel_u, label = 'Beamline #4')
+        self.matchsec_udn_flag_cb = wx.CheckBox(self.panel_u, label = 'User defined')
+        self.matchsec_udn_tc = wx.TextCtrl(self.panel_u, value = '')
+        self.matchsec_udn_btn = wx.Button(self.panel_u, label = 'Browse')
+
+        matchsec_udn_hbox = wx.BoxSizer(wx.HORIZONTAL)
+        matchsec_udn_hbox.Add(self.matchsec_udn_tc, 1, wx.ALIGN_CENTER_VERTICAL, 10)
+        matchsec_udn_hbox.Add(self.matchsec_udn_btn, 0, wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, 10)
+        
+        matchbl_sb = funutils.createwxStaticBox(self.panel_u, label = 'Choose Beamline', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox*0.8)
+        matchbl_sbsizer = wx.StaticBoxSizer(matchbl_sb, wx.VERTICAL)
+        matchbl_sbsizer.Add(self.matchsec1_rb, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        matchbl_sbsizer.Add(self.matchsec2_rb, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        matchbl_sbsizer.Add(self.matchsec3_rb, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        matchbl_sbsizer.Add(self.matchsec4_rb, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        matchbl_sbsizer.Add(self.matchsec_udn_flag_cb, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        matchbl_sbsizer.Add(matchsec_udn_hbox, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
+        
+        # up right
+        self.beamlineviz = LatVisPanel(self.panel_u, figsize=(5,3), dpi = 80, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+
+        # set sizer for panel_u
+        latvispanel_sbsizer.Add(matchbl_sbsizer,  proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        latvispanel_sbsizer.Add(self.beamlineviz, proportion = 3, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.RIGHT, border = 10)
+
+        sizer_u = wx.BoxSizer(wx.VERTICAL)
+        sizer_u.Add(latvispanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
+        self.panel_u.SetSizerAndFit(sizer_u)
+        topbox.Add(self.panel_u, proportion = 1, flag = wx.EXPAND)
+
+        #--------------------------------------------------------------------------------------------#
+
+        # hbox in bottom panel
+        matchpanel_sb      = funutils.createwxStaticBox(self.panel_d, label = 'Matching Operation', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
+        matchpanel_sbsizer = wx.StaticBoxSizer(matchpanel_sb, wx.HORIZONTAL)
+
+        # set sizer for panel_d
+        sizer_d = wx.BoxSizer(wx.VERTICAL)
+        sizer_d.Add(matchpanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border = self.bordersize)
+        self.panel_d.SetSizerAndFit(sizer_d)
+        bottombox.Add(self.panel_d, proportion = 1, flag = wx.EXPAND)
 
         # set sizer
-        #self.panel.SetSizer(hbox)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        vbox.Add(topbox,    proportion = 2, flag = wx.EXPAND | wx.ALL)
+        vbox.Add(bottombox, proportion = 3, flag = wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT)
+        self.panel.SetSizer(vbox)
         osizer = wx.BoxSizer(wx.HORIZONTAL)
         osizer.SetMinSize((1000, 750))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
- 
+
+        # event bindings
+        self.Bind(wx.EVT_CHECKBOX, self.onCheckUserDefinedBL, self.matchsec_udn_flag_cb)
+        self.Bind(wx.EVT_BUTTON,   self.onChooseBL,           self.matchsec_udn_btn    )
+
+    def onCheckUserDefinedBL(self, event):
+        if event.GetEventObject().IsChecked():
+            self.matchsec_udn_btn.Enable()
+            self.matchsec_udn_tc.Enable()
+            self.matchsec1_rb.Disable()
+            self.matchsec2_rb.Disable()
+            self.matchsec3_rb.Disable()
+            self.matchsec4_rb.Disable()
+        else:
+            self.matchsec_udn_tc.Disable()
+            self.matchsec_udn_btn.Disable()
+            self.matchsec1_rb.Enable()
+            self.matchsec2_rb.Enable()
+            self.matchsec3_rb.Enable()
+            self.matchsec4_rb.Enable()
+
+    def onChooseBL(self, event):
+        pass
+
+class LatVisPanel(pltutils.ImagePanelxy):
+    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+        pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
 
