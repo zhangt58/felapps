@@ -444,21 +444,25 @@ class StatPanel(wx.Frame):
         #
 
         # left hbox
-        showinthist_btn = wx.Button(self.panel, label = 'Intensity',   size = (120, -1), style = wx.BU_LEFT)
-        showxypos_btn   = wx.Button(self.panel, label = 'Central Pos', size = (120, -1), style = wx.BU_LEFT)
-        showradius_btn  = wx.Button(self.panel, label = 'Radius',      size = (120, -1), style = wx.BU_LEFT)
+        showint_btn     = wx.Button(self.panel, label = 'Intensity Plot', size = (120, -1), style = wx.BU_LEFT)
+        showinthist_btn = wx.Button(self.panel, label = 'Intensity Hist', size = (120, -1), style = wx.BU_LEFT)
+        showxypos_btn   = wx.Button(self.panel, label = 'Central Pos',    size = (120, -1), style = wx.BU_LEFT)
+        showradius_btn  = wx.Button(self.panel, label = 'Radius',         size = (120, -1), style = wx.BU_LEFT)
 
+        showint_st     = funutils.MyStaticText(self.panel, label = 'Intensity',        size = (160, -1))
         showinthist_st = funutils.MyStaticText(self.panel, label = 'Intensity hist',   size = (160, -1))
         showxypos_st   = funutils.MyStaticText(self.panel, label = 'Central position', size = (160, -1))
         showradius_st  = funutils.MyStaticText(self.panel, label = 'Radius',           size = (160, -1))
         
         gbs = wx.GridBagSizer(10, 5)
-        gbs.Add(showinthist_btn, pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
-        gbs.Add(showinthist_st,  pos = (0, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
-        gbs.Add(showxypos_btn,   pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
-        gbs.Add(showxypos_st,    pos = (1, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
-        gbs.Add(showradius_btn,  pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
-        gbs.Add(showradius_st,   pos = (2, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showint_btn,     pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showint_st,      pos = (0, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showinthist_btn, pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showinthist_st,  pos = (1, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showxypos_btn,   pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showxypos_st,    pos = (2, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showradius_btn,  pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 8)
+        gbs.Add(showradius_st,   pos = (3, 1), span = (1, 3), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 8)
         gbs.AddGrowableCol(1)
         gbs.AddGrowableCol(2)
 
@@ -496,11 +500,12 @@ class StatPanel(wx.Frame):
         self.SetSizerAndFit(osizer)
         
         # event bindings
-        self.Bind(wx.EVT_BUTTON, self.onIntensityStat,  showinthist_btn)
-        self.Bind(wx.EVT_BUTTON, self.onCentralPosStat, showxypos_btn  )
-        self.Bind(wx.EVT_BUTTON, self.onRadiusStat,     showradius_btn )
-        self.Bind(wx.EVT_BUTTON, self.onOK,             ok_btn         )
-        self.Bind(wx.EVT_BUTTON, self.onCancel,         cancel_btn     )
+        self.Bind(wx.EVT_BUTTON, self.onIntensityStat,     showint_btn    )
+        self.Bind(wx.EVT_BUTTON, self.onIntensityStatHist, showinthist_btn)
+        self.Bind(wx.EVT_BUTTON, self.onCentralPosStat,    showxypos_btn  )
+        self.Bind(wx.EVT_BUTTON, self.onRadiusStat,        showradius_btn )
+        self.Bind(wx.EVT_BUTTON, self.onOK,                ok_btn         )
+        self.Bind(wx.EVT_BUTTON, self.onCancel,            cancel_btn     )
     
     def onOK(self, event):
         self.Close(True)
@@ -510,6 +515,17 @@ class StatPanel(wx.Frame):
 
     def postInit(self):
         pass
+
+    def onIntensityStatHist(self, event):
+        self.statIntArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['sumint'] for file in self.datafiles])
+
+        self.plotpanel.y = self.statIntArray
+        self.plotpanel.clear()
+        self.plotpanel.doHist()
+        self.plotpanel.axes.set_title('Intensity Histogram')
+        self.plotpanel.axes.set_xlabel('Intensity value [a.u.]')
+        self.plotpanel.axes.set_ylabel('Count')
+        self.plotpanel.refresh()
 
     def onIntensityStat(self, event):
         self.statIntArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['sumint'] for file in self.datafiles])
@@ -555,6 +571,11 @@ class PlotPanel(pltutils.ImagePanelxy):
     def doXYplot(self):
         self.axes = self.figure.add_subplot(111)
         self.axes.plot(self.x, self.y)
+        self.figure.canvas.draw()
+
+    def doHist(self):
+        self.axes = self.figure.add_subplot(111)
+        self.axes.hist(self.y, 100)
         self.figure.canvas.draw()
 
     def doScatter(self):
