@@ -5,10 +5,10 @@
 class AppVersions():
     def __init__(self):
         self.versions = {
-                         'imageviewer'  : '1.2',
+                         'imageviewer'  : '1.3',
                          'cornalyzer'   : '1.0',
                          'felformula'   : '1.2',
-                         'dataworkshop' : '1.0',
+                         'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
                          }
 
