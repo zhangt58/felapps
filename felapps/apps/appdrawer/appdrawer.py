@@ -179,7 +179,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
 
-        myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 Collect all the apps from felapps (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         self.SetTopWindow(myframe)
         return True
@@ -195,9 +195,9 @@ def run(maximize = True, logon = False, debug=True):
         app = wx.App(redirect = logon, filename='log')
 
         if maximize == True:
-            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 Collect all the apps from felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 Collect all the apps from felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         app.MainLoop()
 
