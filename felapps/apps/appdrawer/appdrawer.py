@@ -33,7 +33,6 @@ class AppDrawerFrame(wx.Frame):
         # initialize UI
         self.initUI()
 
-
     def onExit(self, event):
         self.exitApp()
 
@@ -84,16 +83,17 @@ class AppDrawerFrame(wx.Frame):
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
-        panel = AppDrawerPanel(self)
+        panel = AppDrawerPanel(self, self.appversion)
 
         osizer = wx.BoxSizer(wx.HORIZONTAL)
         osizer.Add(panel, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
         self.SetSizerAndFit(osizer)
 
 class AppDrawerPanel(wx.Panel):
-    def __init__(self, parent, *args, **kwargs):
+    def __init__(self, parent, version, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        self.version = version
 
         self.timefmt='%Y-%m-%d %H:%M:%S %Z'
 
@@ -104,9 +104,12 @@ class AppDrawerPanel(wx.Panel):
         bkcolor = '#E1E1E1'
         self.SetBackgroundColour(funutils.hex2rgb(bkcolor))
 
-        apptitle = funutils.MyStaticText(self, label = u"felapps \u2014 High-level Applications for FEL",
+        apptitle_st = funutils.MyStaticText(self, label = u"felapps \u2014 High-level Applications for FEL",
                                 style = wx.ALIGN_CENTER, fontsize = 20, fontweight = wx.FONTWEIGHT_NORMAL,
                                 fontcolor = 'black')
+        appver_st = funutils.MyStaticText(self, label = self.version, 
+                                style = wx.ALIGN_CENTER, fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
+                                fontcolor = 'grey')
         self.timenow_st = funutils.MyStaticText(self, label = time.strftime(self.timefmt, time.localtime()), 
                                 style = wx.ALIGN_CENTER, fontsize = 14, fontweight = wx.FONTWEIGHT_NORMAL,
                                 fontcolor = 'grey')
@@ -132,9 +135,10 @@ class AppDrawerPanel(wx.Panel):
             gsizer.Add(appobj, flag = wx.LEFT | wx.RIGHT, border = 10)
 
         mainsizer = wx.BoxSizer(wx.VERTICAL)
-        mainsizer.Add(apptitle, flag = wx.ALIGN_CENTER | wx.TOP | wx.BOTTOM, border = 5)
+        mainsizer.Add(apptitle_st,     flag = wx.ALIGN_CENTER | wx.TOP, border = 5)
+        mainsizer.Add(appver_st,       flag = wx.ALIGN_CENTER | wx.BOTTOM | wx.TOP, border = 1)
         mainsizer.Add(self.timenow_st, flag = wx.ALIGN_CENTER | wx.BOTTOM, border = 5)
-        mainsizer.Add(gsizer)
+        mainsizer.Add(gsizer, flag = wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 5)
         mainsizer.Add((-1, 10))
         self.SetSizer(mainsizer)
 
