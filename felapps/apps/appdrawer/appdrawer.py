@@ -100,7 +100,6 @@ class AppDrawerPanel(wx.Panel):
         self.createPanel()
 
     def createPanel(self):
-        #bkcolor = '#BFBFEE'
         bkcolor = '#E1E1E1'
         self.SetBackgroundColour(funutils.hex2rgb(bkcolor))
 
@@ -125,12 +124,19 @@ class AppDrawerPanel(wx.Panel):
                         self.onClickAppF,
                         self.onClickAppI,
                         self.onClickAppM]
+        applisthint = ['run Correlation Analyzer',
+                       'run Data Workshop',
+                       'run FEL Formula',
+                       'run Image Viewer',
+                       'run Match Wizard']
         self.nameicondict  = dict(zip(applistname, applisticon))
         self.nameeventdict = dict(zip(applistname, applistevent)) 
+        self.namehintdict  = dict(zip(applistname, applisthint))
         
         gsizer = wx.GridSizer(1, 5, 0, 0)
         for appname in self.nameicondict.keys():
             appobj = wx.BitmapButton(self, bitmap = self.nameicondict[appname], style = wx.BORDER_NONE)
+            appobj.SetToolTip(wx.ToolTip(self.namehintdict[appname]))
             self.Bind(wx.EVT_BUTTON, self.nameeventdict[appname], appobj)
             gsizer.Add(appobj, flag = wx.LEFT | wx.RIGHT, border = 10)
 
