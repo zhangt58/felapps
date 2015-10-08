@@ -16,6 +16,7 @@ from . import funutils
 from . import pltutils
 
 import beamline
+import os
 
 class MatchWizard(wx.Frame):
     def __init__(self, parent, config = 'config.xml', size = (1000, 750), appversion = '1.0', **kwargs):
@@ -193,8 +194,8 @@ class MatchWizard(wx.Frame):
         self.matchsec3_rb = wx.RadioButton(self.panel_u, label = 'Beamline #3')
         self.matchsec4_rb = wx.RadioButton(self.panel_u, label = 'Beamline #4')
         self.matchsec_udn_flag_cb = wx.CheckBox(self.panel_u, label = 'User defined')
-        self.matchsec_udn_tc = wx.TextCtrl(self.panel_u, value = '')
-        self.matchsec_udn_btn = wx.Button(self.panel_u, label = 'Browse')
+        self.matchsec_udn_tc      = wx.TextCtrl(self.panel_u, value = '', style = wx.TE_READONLY)
+        self.matchsec_udn_btn     = wx.Button(self.panel_u, label = 'Browse')
 
         matchsec_udn_hbox = wx.BoxSizer(wx.HORIZONTAL)
         matchsec_udn_hbox.Add(self.matchsec_udn_tc, 1, wx.ALIGN_CENTER_VERTICAL, 10)
@@ -227,6 +228,12 @@ class MatchWizard(wx.Frame):
         matchpanel_sb      = funutils.createwxStaticBox(self.panel_d, label = 'Matching Operation', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
         matchpanel_sbsizer = wx.StaticBoxSizer(matchpanel_sb, wx.HORIZONTAL)
 
+
+        # to be implemented
+        test_statictext = funutils.MyStaticText(self.panel_d, label = 'TO BE IMPLEMENTED...', fontsize = 30, fontcolor = 'grey')
+        matchpanel_sbsizer.Add(test_statictext, flag = wx.ALIGN_CENTER | wx.ALL, border = 30)
+
+
         # set sizer for panel_d
         sizer_d = wx.BoxSizer(wx.VERTICAL)
         sizer_d.Add(matchpanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.BOTTOM | wx.LEFT | wx.RIGHT, border = self.bordersize)
@@ -247,7 +254,6 @@ class MatchWizard(wx.Frame):
         self.Bind(wx.EVT_CHECKBOX,    self.onCheckUserDefinedBL, self.matchsec_udn_flag_cb)
         self.Bind(wx.EVT_BUTTON,      self.onChooseBL,           self.matchsec_udn_btn    )
         self.Bind(wx.EVT_RADIOBUTTON, self.onVisLattice)
-        #self.matchsec1_rb        )
 
     def onVisLattice(self, event):
         rblabel = event.GetEventObject().GetLabel()
@@ -292,7 +298,24 @@ class MatchWizard(wx.Frame):
             self.matchsec4_rb.Enable()
 
     def onChooseBL(self, event):
-        pass
+        try:
+            latfile = funutils.getFileToLoad(self, ext = '*', flag = 'single')
+            self.matchsec_udn_tc.SetValue(latfile)
+
+            bllist = beamline.blparser.madParser(latfile, 'BL')
+            vistitle = os.path.basename(latfile)
+
+            blpatchlist, xlim, ylim = beamline.makeBeamline(bllist, startpoint = (5, 5))
+
+            self.blvizpanel.blpatchlist = blpatchlist
+            self.blvizpanel.xranges = xlim
+            self.blvizpanel.yranges = ylim
+            self.blvizpanel.clear()
+            self.blvizpanel.visBeamline()
+            self.blvizpanel.axes.set_title(vistitle)
+            self.blvizpanel.refresh()
+        except:
+            pass
 
 class LatVisPanel(pltutils.ImagePanelxy):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
