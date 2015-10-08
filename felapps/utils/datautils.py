@@ -126,7 +126,6 @@ class DataWorkshop(wx.Frame):
         self.fontcolor_staticbox = '#4B4B4B'
         self.bordersize          = 12
  
-
     def postInit(self):
         pass
 
