@@ -15,6 +15,8 @@ import time
 from . import funutils
 from . import pltutils
 
+import beamline
+
 class MatchWizard(wx.Frame):
     def __init__(self, parent, config = 'config.xml', size = (1000, 750), appversion = '1.0', **kwargs):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
@@ -164,6 +166,9 @@ class MatchWizard(wx.Frame):
         self.backcolor_panel     = '#DDDDDD'
         self.fontcolor_staticbox = '#4B4B4B'
         self.bordersize          = 12
+
+        # beamline filenames
+        self.latticefile = './lattice/testbl.list'
  
     def createPanel(self):
         # make background panel
@@ -205,11 +210,11 @@ class MatchWizard(wx.Frame):
         matchbl_sbsizer.Add(matchsec_udn_hbox, proportion = 0, flag = wx.EXPAND | wx.TOP | wx.LEFT | wx.ALIGN_LEFT, border = 10)
         
         # up right
-        self.beamlineviz = LatVisPanel(self.panel_u, figsize=(5,3), dpi = 80, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+        self.blvizpanel = LatVisPanel(self.panel_u, figsize=(5, 3), dpi = 80, bgcolor = funutils.hex2rgb(self.backcolor_panel))
 
         # set sizer for panel_u
-        latvispanel_sbsizer.Add(matchbl_sbsizer,  proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
-        latvispanel_sbsizer.Add(self.beamlineviz, proportion = 3, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.RIGHT, border = 10)
+        latvispanel_sbsizer.Add(matchbl_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        latvispanel_sbsizer.Add(self.blvizpanel, proportion = 3, flag = wx.EXPAND | wx.TOP | wx.BOTTOM | wx.RIGHT, border = 10)
 
         sizer_u = wx.BoxSizer(wx.VERTICAL)
         sizer_u.Add(latvispanel_sbsizer, proportion = 1, flag = wx.EXPAND | wx.ALL, border = self.bordersize)
@@ -239,8 +244,36 @@ class MatchWizard(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         # event bindings
-        self.Bind(wx.EVT_CHECKBOX, self.onCheckUserDefinedBL, self.matchsec_udn_flag_cb)
-        self.Bind(wx.EVT_BUTTON,   self.onChooseBL,           self.matchsec_udn_btn    )
+        self.Bind(wx.EVT_CHECKBOX,    self.onCheckUserDefinedBL, self.matchsec_udn_flag_cb)
+        self.Bind(wx.EVT_BUTTON,      self.onChooseBL,           self.matchsec_udn_btn    )
+        self.Bind(wx.EVT_RADIOBUTTON, self.onVisLattice)
+        #self.matchsec1_rb        )
+
+    def onVisLattice(self, event):
+        rblabel = event.GetEventObject().GetLabel()
+
+        if rblabel == 'Beamline #1':
+            bllist = beamline.blparser.madParser(self.latticefile, 'BL1')
+            vistitle = 'Lattice #1'
+        elif rblabel == 'Beamline #2':
+            bllist = beamline.blparser.madParser(self.latticefile, 'BL2')
+            vistitle = 'Lattice #2'
+        elif rblabel == 'Beamline #3':
+            bllist = beamline.blparser.madParser(self.latticefile, 'BL3')
+            vistitle = 'Lattice #3'
+        elif rblabel == 'Beamline #4':
+            bllist = beamline.blparser.madParser(self.latticefile, 'BL4')
+            vistitle = 'Lattice #4'
+
+        blpatchlist, xlim, ylim = beamline.makeBeamline(bllist, startpoint = (5, 5))
+
+        self.blvizpanel.blpatchlist = blpatchlist
+        self.blvizpanel.xranges = xlim
+        self.blvizpanel.yranges = ylim
+        self.blvizpanel.clear()
+        self.blvizpanel.visBeamline()
+        self.blvizpanel.axes.set_title(vistitle)
+        self.blvizpanel.refresh()
 
     def onCheckUserDefinedBL(self, event):
         if event.GetEventObject().IsChecked():
@@ -265,3 +298,26 @@ class LatVisPanel(pltutils.ImagePanelxy):
     def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
         pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
 
+    def clear(self):
+        self.figure.clear()
+
+    def refresh(self):
+        self.figure.canvas.draw_idle()
+
+    def visBeamline(self, zoomfac = 1.5): 
+        # define self.blpatchlist first
+        # and xranges = (xmin, xmax), yranges = (ymin, ymax) if set x, y ranges
+        self.axes = self.figure.add_subplot(111)
+        for ins in self.blpatchlist:
+            [self.axes.add_patch(inspatch) for inspatch in ins.patch]
+        
+        x1, x2 = self.xranges
+        y1, y2 = self.yranges
+        minx = 0.5 * (x2 + x1) - 0.5 * zoomfac * (x2 - x1)
+        maxx = 0.5 * (x2 + x1) + 0.5 * zoomfac * (x2 - x1)
+        miny = 0.5 * (y2 + y1) - 0.5 * zoomfac * (y2 - y1)
+        maxy = 0.5 * (y2 + y1) + 0.5 * zoomfac * (y2 - y1)
+        self.axes.set_xlim([minx, maxx])
+        self.axes.set_ylim([miny, maxy])
+
+        self.figure.canvas.draw()
