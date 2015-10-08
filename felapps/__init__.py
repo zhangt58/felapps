@@ -12,6 +12,7 @@ from .apps.cornalyzer   import cornalyzer
 from .apps.felformula   import felformula
 from .apps.dataworkshop import dataworkshop
 from .apps.matchwizard  import matchwizard
+from .apps.appdrawer    import appdrawer
 
 #__all__ = [imageviewer]
 
