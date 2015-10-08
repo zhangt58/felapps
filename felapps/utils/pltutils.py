@@ -424,7 +424,8 @@ class ImageViewer(wx.Frame):
         
         ## StaticText for time indication
         self.timenow_st = funutils.MyStaticText(self.panel,
-                label = u'2015-02-11 15:10:16 CST', style = wx.ALIGN_CENTER,
+                label = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime()),
+                style = wx.ALIGN_CENTER,
                 font = self.font, fontsize = self.fontptsize_big, fontweight = wx.FONTWEIGHT_NORMAL,
                 fontcolor = 'black')
 
