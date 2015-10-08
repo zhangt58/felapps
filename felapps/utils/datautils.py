@@ -304,7 +304,7 @@ class DataWorkshop(wx.Frame):
         
         try:
             # create animation
-            fps = 2
+            fps = 1
             moviename = 'output.avi'
             cmdline = ' '.join(['mencoder', '-fps', str(fps), '"mf://' + newpathdir + os.sep + 'image%03d.jpg"', '-o', moviename, '-ovc copy -oac copy'])
             subprocess.call(cmdline, shell=True)

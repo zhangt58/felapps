@@ -134,7 +134,7 @@ class AppDrawerPanel(wx.Panel):
         self.namehintdict  = dict(zip(applistname, applisthint))
         
         gsizer = wx.GridSizer(1, 5, 0, 0)
-        for appname in self.nameicondict.keys():
+        for appname in sorted(self.nameicondict.keys()):
             appobj = wx.BitmapButton(self, bitmap = self.nameicondict[appname], style = wx.BORDER_NONE)
             appobj.SetToolTip(wx.ToolTip(self.namehintdict[appname]))
             self.Bind(wx.EVT_BUTTON, self.nameeventdict[appname], appobj)
