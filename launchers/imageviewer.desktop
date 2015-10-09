@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=2.0
+Name=Image Viewer
+GenericName=FEL High-level Application
+X-GNOME-FULLNAME=ImageViewer
+Comment=Generic Image Viewer And Profile Monitor
+Type=Application
+Categories=FEL;
+Exec=/home/tong/Programming/projects/felapps/scripts/imageviewer
+Terminal=false
+Icon=/home/tong/Programming/projects/felapps/launchers/icons/original/imageviewer.png
+

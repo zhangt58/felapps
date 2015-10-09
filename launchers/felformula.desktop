@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=2.0
+Name=FEL Formula
+GenericName=FEL High-level Application
+X-GNOME-FULLNAME=FELFormula
+Comment=Calculator for FEL physics
+Type=Application
+Categories=FEL;
+Exec=/home/tong/Programming/projects/felapps/scripts/felformula
+Terminal=false
+Icon=/home/tong/Programming/projects/felapps/launchers/icons/original/felformula.png
+

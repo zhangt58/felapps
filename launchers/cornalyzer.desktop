@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=2.0
+Name=Correlation Analyzer
+GenericName=FEL High-level Application
+X-GNOME-FULLNAME=Cornalyzer
+Comment=Generic correlation analyzer
+Type=Application
+Categories=FEL;
+Exec=/home/tong/Programming/projects/felapps/scripts/cornalyzer
+Terminal=false
+Icon=/home/tong/Programming/projects/felapps/launchers/icons/original/cornalyzer.png
+
