@@ -308,6 +308,7 @@ class ImageViewer(wx.Frame):
         try:
             xmlfile = funutils.getFileToLoad(self, ext = 'xml')
             self.loadConfig(xmlfile)
+            self.onUpdateUIInit()
             self.onUpdateUI()
         except:
             return
@@ -352,14 +353,20 @@ class ImageViewer(wx.Frame):
         info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
         wx.AboutBox(info)
 
+
+    def onUpdateUIInit(self):
+        self.imgpanel.func = self.imginifunc
+        self.imgpanel.onGetData()
+        self.imgpanel.doPlot()
+
     def onUpdateUI(self):
         self.updateFont()
         
         self.imgsrc_tc.SetValue(self.imgsrcPV)
         self.panel.SetBackgroundColour(self.bkgdcolor)
-        self.imgpanel.func = self.imginifunc
-        self.imgpanel.onGetData()
-        self.imgpanel.doPlot()
+        #self.imgpanel.func = self.imginifunc
+        #self.imgpanel.onGetData()
+        #self.imgpanel.doPlot()
         self.imgpanel.setColor(self.bkgdcolor) # make color as private var
         self.imgpanel.setHratio(self.heightRatio)
         self.imgpanel.repaint() # rewrite repaint func

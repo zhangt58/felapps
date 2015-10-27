@@ -19,7 +19,7 @@ __author__  = "Tong Zhang"
 class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
-        myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         self.SetTopWindow(myframe)
         return True
@@ -34,9 +34,9 @@ def run(maximize = True, logon = False, debug = True):
     else:
         app = wx.App(redirect = logon, filename = 'log')
         if maximize == True:
-            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another correlation analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         app.MainLoop()
 

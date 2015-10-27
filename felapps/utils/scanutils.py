@@ -450,7 +450,7 @@ class ScanAnalyzer(wx.Frame):
         vr2hbox_lv = wx.BoxSizer(wx.VERTICAL  ) # container for scanfig
         vr2hbox_rv = wx.BoxSizer(wx.VERTICAL  ) # container for reserved space for other controls
 
-        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (4, 4), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
+        self.scanfig = ImagePanelxy(self.panel_rd, figsize = (3, 3), dpi = 75, bgcolor = funutils.hex2rgb(self.backcolor_panel))
 
         self.clrfig_btn = funutils.MyButton(self.panel_rd, label = u'Clear', fontsize = self.fontsize_button)
         self.scan_cb    = funutils.MyCheckBox(self.panel_rd, label = u'Show Scan Fig')

@@ -10,7 +10,7 @@ Created: Sep. 23rd, 2015
 
 from ...utils import matchutils
 from ...utils import miscutils
-#from ...utils import funutils
+from ...utils import funutils
 import wx
 import wx.lib.mixins.inspection as wit
 import os

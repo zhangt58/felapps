@@ -10,7 +10,7 @@ class AppVersions():
                          'felformula'   : '1.2',
                          'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
-                         'appdrawer'    : '1.5.0',
+                         'appdrawer'    : '1.5.1',
                          }
 
     def setVersion(self, verNum, appName = 'imageviewer'):

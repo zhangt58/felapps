@@ -160,11 +160,14 @@ class MainFrame(wx.Frame):
         """
         Import parameters from external configuration file
         """
-        configfile = funutils.getFileToLoad(self, ext = 'conf')
-        paramsconf = parseutils.ParamParser(configfile)
-        paramsconf.readConfig()
-        paramsdict = paramsconf.makeHierDict()
-        self.updateUI(paramsdict)
+        try:
+            configfile = funutils.getFileToLoad(self, ext = '*')
+            paramsconf = parseutils.ParamParser(configfile)
+            paramsconf.readConfig()
+            paramsdict = paramsconf.makeHierDict()
+            self.updateUI(paramsdict)
+        except:
+            pass
 
     def onExport(self, event):
         """
