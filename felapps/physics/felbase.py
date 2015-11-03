@@ -64,7 +64,8 @@ class FELcalc(PhysicalConstants):
             _peakCurrent          = 3500.0,
             _bunchCharge          = 0.5e-9,
             _undulatorLength      = 10.0,
-            _bunchShape           = 'gaussian'):
+            _bunchShape           = 'gaussian',
+            _undulatorType        = 'planar'):
         """
         Initialized parameters:
         beamEnergy 	 [MeV]
@@ -88,6 +89,7 @@ class FELcalc(PhysicalConstants):
         self.bunchCharge          = _bunchCharge
         self.undulatorLength      = _undulatorLength
         self.bunchShape           = _bunchShape
+        self.undulatorType        = _undulatorType
 
         if self.bunchShape == 'gaussian':
             self.bunchratio = np.sqrt(2.0*np.pi)
@@ -129,10 +131,15 @@ class FELcalc(PhysicalConstants):
         lu       = self.undulatorLength
 
         sigmaBeam = np.sqrt(beta*epsilonn/gamma0)
-        au    = np.sqrt(lambdas*2.0*gamma0**2.0/lambdau-1)
-        b     = au**2.0/2.0/(1+au**2)
-        JJ    = sp.jn(0,b) - sp.jn(1,b)
-        rho1D = ((1.0/2.0/gamma0)**3.0*Ipk/self.currentA*(au*lambdau*JJ/2.0/np.pi/sigmaBeam)**2)**(1.0/3.0)
+        au = np.sqrt(lambdas*2.0*gamma0**2.0/lambdau-1)
+        
+        if self.undulatorType == 'planar':
+            b  = au**2.0/2.0/(1+au**2)
+            JJ = sp.jn(0,b) - sp.jn(1,b)
+        else: # helical
+            JJ = 1.0
+
+        rho1D = ((1.0/2.0/gamma0)**3.0*Ipk/self.currentA*(au*JJ*lambdau/2.0/np.pi/sigmaBeam)**2)**(1.0/3.0)
         Lg1D  = lambdau/4.0/np.pi/np.sqrt(3)/rho1D
         
         etad = Lg1D/(4.0*np.pi*sigmaBeam**2.0/lambdas)
@@ -150,8 +157,14 @@ class FELcalc(PhysicalConstants):
         Psat  = 1.6*rho1D*(Lg1D/Lg3D)**2.0*gamma0*0.511*Ipk*1.0e6 #W
         
         # update and return calculated parameters
-        self.au     = au
-        self.Bu     = au*np.sqrt(2)/0.934/(100*lambdau)
+        self.au = au
+        if self.undulatorType == 'planar':
+            self.K  = au*np.sqrt(2.0)
+            self.Bu = self.K/0.934/(100*lambdau)
+        else: # helical
+            self.K  = au
+            self.Bu = self.K/0.934/(100*lambdau)
+
         self.gu     = HalbachPerm(_lambdau = lambdau*1000, _Bu = self.Bu).findGap(gap0=5)
         self.sigmar = sigmaBeam
         self.rho1D  = rho1D
@@ -160,12 +173,12 @@ class FELcalc(PhysicalConstants):
         self.Lg3D   = Lg3D
         self.Psat   = Psat
         Nlambda     = Ipk*lambdas/self.e0/self.c0
-        Pshot       = 3*np.sqrt(4*np.pi)*rho1D**2*self.beamEnergy*Ipk/Nlambda/np.sqrt(np.log(Nlambda/rho1D)) * 1e6
+        Pshot       = 3.0*np.sqrt(4.0*np.pi)*rho1D**2.0*self.beamEnergy*Ipk/Nlambda/np.sqrt(np.log(Nlambda/rho1D)) * 1e6
         Lsat        = Lg3D*self.findSatFactor(Nlambda, Lg3D, lambdau)
         Pss         = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)
         
         sigmat    = self.bunchCharge/Ipk/self.bunchratio # bunch length (rms) for gaussian, full lenth for rectangle
-        bandwidth = np.sqrt(3.0*np.sqrt(3)*rho3D*lambdau/lu)
+        bandwidth = np.sqrt(3.0*np.sqrt(3.0)*rho3D*lambdau/lu)
         
         #Pexit = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)
 
@@ -174,22 +187,23 @@ class FELcalc(PhysicalConstants):
         Np = pulseEnergy/photonEnergy/self.e0 # photon per pulse
 
         return {"01-au"             : self.au, 
-                "02-Bu"             : self.Bu,
-                "03-gap"            : self.gu,
-                "04-rho1D"          : rho1D,
-                "05-rho3D"          : rho3D,
-                "06-Lg1D"           : Lg1D,
-                "07-Lg3D"           : Lg3D,
-                "08-Psat"           : Psat,
-                "09-Pshot"          : Pshot,
-                "10-Pss"            : Pss,
-                "11-Lsat"           : Lsat,
-                "12-sigmar"         : sigmaBeam*1e6, 
-                "13-sigmat"         : sigmat*1e15,
-                "14-bandWidth"      : bandwidth*100,
-                "15-PhotonEnergy"   : photonEnergy,
-                "16-PulseEnergy"    : pulseEnergy*1e6,
-                "17-PhotonPerPulse" : Np,
+                "02-K"              : self.K,
+                "03-Bu"             : self.Bu,
+                "04-gap"            : self.gu,
+                "05-rho1D"          : rho1D,
+                "06-rho3D"          : rho3D,
+                "07-Lg1D"           : Lg1D,
+                "08-Lg3D"           : Lg3D,
+                "09-Psat"           : Psat,
+                "10-Pshot"          : Pshot,
+                "11-Pss"            : Pss,
+                "12-Lsat"           : Lsat,
+                "13-sigmar"         : sigmaBeam*1e6, 
+                "14-sigmat"         : sigmat*1e15,
+                "15-bandWidth"      : bandwidth*100,
+                "16-PhotonEnergy"   : photonEnergy,
+                "17-PulseEnergy"    : pulseEnergy*1e6,
+                "18-PhotonPerPulse" : Np,
                 }
 
     def findSatFactor(self, nl, l3, xlamd, factor0 = 20):

@@ -58,23 +58,24 @@ xchoice = {'Beam Energy'     : '$E_b\ \mathrm{[MeV]}$',
            'Avg. Beta Func.' : '$\langle{\\beta}\\rangle\ \mathrm{[m]}$',
            'Bunch Charge'    : '$Q\ \mathrm{[C]}$'}
 
-ychoice = {'01-au'     : ['$a_u$',                             'Normalized undulator parameter, or K/sqrt(2).'],
-           '02-Bu'     : ['$B_u\ \mathrm{[T]}$',               'Undulator magnetic peak field [T].'],
-           '03-gap'    : ['$\mathrm{Gap\ [mm]}$',              'Permanent undulator gap [mm].'],
-           '04-rho1D'  : ['$\\rho^{\mathrm{1D}}$',             'FEL parameter or Pierce parameter (1D).'],
-           '05-rho3D'  : ['$\\rho^{\mathrm{3D}}$',             'FEL parameter or Pierce parameter (3D).'],
-           '06-Lg1D'   : ['$L_g^{\mathrm{1D}}\ \mathrm{[m]}$', 'FEL power gain length (1D) [m].'],
-           '07-Lg3D'   : ['$L_g^{\mathrm{3D}}\ \mathrm{[m]}$', 'FEL power gain length (3D) [m].'],
-           '08-Psat'   : ['$P_{\mathrm{sat}}\ \mathrm{[W]}$',  'FEL saturation power (M.Xie formulae) [W].'],
-           '09-Pshot'  : ['$P_{\mathrm{shot}}\ \mathrm{[W]}$', 'FEL initial shotnoise power [W].'],
-           '10-Pss'    : ['$P_{\mathrm{ss}}\ \mathrm{[W]}$',   'FEL saturation power (SASE) [W].'],
-           '11-Lsat'   : ['$L_{\mathrm{sat}}\ \mathrm{[m]}$',  'FEL saturation length (SASE) [m].'],
-           '12-sigmar' : ['$\sigma_r\ \mathrm{[\mu m]}$',      'Transverse e-beam radius size (rms) [micro m].'],
-           '13-sigmat' : ['$\sigma_t\ \mathrm{[fs]}$',         'Temporal bunch length (rms) [fs].'],
-           '14-bandWidth'      : ['$\Delta\lambda/\lambda$ [%]', 'FEL bandwidth [%].'],
-           '15-PhotonEnergy'   : ['$E_p\ \mathrm{[eV]}$',        'FEL photon energy [eV].'],
-           '16-PulseEnergy'    : ['$W\ \mathrm{[\mu J]}$',       'FEL pulse energy [micro J].'],
-           '17-PhotonPerPulse' : ['$\mathrm{Photon\ \#/pulse}$', 'FEL photon number per pulse.'],
+ychoice = {'01-au'     : ['$a_u$',                             'Normalized undulator parameter.'],
+           '02-K'      : ['$K$',                               'Undulator parameter.'],
+           '03-Bu'     : ['$B_u\ \mathrm{[T]}$',               'Undulator magnetic peak field [T].'],
+           '04-gap'    : ['$\mathrm{Gap\ [mm]}$',              'Permanent undulator gap [mm].'],
+           '05-rho1D'  : ['$\\rho^{\mathrm{1D}}$',             'FEL parameter or Pierce parameter (1D).'],
+           '06-rho3D'  : ['$\\rho^{\mathrm{3D}}$',             'FEL parameter or Pierce parameter (3D).'],
+           '07-Lg1D'   : ['$L_g^{\mathrm{1D}}\ \mathrm{[m]}$', 'FEL power gain length (1D) [m].'],
+           '08-Lg3D'   : ['$L_g^{\mathrm{3D}}\ \mathrm{[m]}$', 'FEL power gain length (3D) [m].'],
+           '09-Psat'   : ['$P_{\mathrm{sat}}\ \mathrm{[W]}$',  'FEL saturation power (M.Xie formulae) [W].'],
+           '10-Pshot'  : ['$P_{\mathrm{shot}}\ \mathrm{[W]}$', 'FEL initial shotnoise power [W].'],
+           '11-Pss'    : ['$P_{\mathrm{ss}}\ \mathrm{[W]}$',   'FEL saturation power (SASE) [W].'],
+           '12-Lsat'   : ['$L_{\mathrm{sat}}\ \mathrm{[m]}$',  'FEL saturation length (SASE) [m].'],
+           '13-sigmar' : ['$\sigma_r\ \mathrm{[\mu m]}$',      'Transverse e-beam radius size (rms) [micro m].'],
+           '14-sigmat' : ['$\sigma_t\ \mathrm{[fs]}$',         'Temporal bunch length (rms) [fs].'],
+           '15-bandWidth'      : ['$\Delta\lambda/\lambda$ [%]', 'FEL bandwidth [%].'],
+           '16-PhotonEnergy'   : ['$E_p\ \mathrm{[eV]}$',        'FEL photon energy [eV].'],
+           '17-PulseEnergy'    : ['$W\ \mathrm{[\mu J]}$',       'FEL pulse energy [micro J].'],
+           '18-PhotonPerPulse' : ['$\mathrm{Photon\ \#/pulse}$', 'FEL photon number per pulse.'],
            }
 
 #------------------------------------------------------------------------#
@@ -222,6 +223,7 @@ class MainFrame(wx.Frame):
         gap          = paramsdict['03-undulator']['gap(mm)']
         K            = paramsdict['03-undulator']['K']
         au           = paramsdict['03-undulator']['au']
+        utype        = paramsdict['03-undulator']['type']
 
         # 04-FEL_radiation
         FELwvlth     = paramsdict['04-FEL_radiation']['wavelength(m)']
@@ -253,6 +255,7 @@ class MainFrame(wx.Frame):
         self.b1tc8.SetValue(bunchCharge)
         self.b1tc9.SetValue(unduLength)
         self.b1cb10.SetValue(bunchShape)
+        self.b1cb11.SetValue(utype)
 
         ## output
         self.b2sb1vst1.SetLabel((peakField))
@@ -300,6 +303,7 @@ class MainFrame(wx.Frame):
         ## input
         self.paramdict['03-undulator']['period_length(m)'] = self.b1tc6.GetValue()
         self.paramdict['03-undulator']['total_length(m)']  = self.b1tc9.GetValue()
+        self.paramdict['03-undulator']['type']             = self.b1cb11.GetStringSelection()
         ## output
         self.paramdict['03-undulator']['peak_field(T)']    = self.b2sb1vst1.GetLabel()
         self.paramdict['03-undulator']['gap(mm)']          = self.b2sb1vst2.GetLabel()
@@ -364,7 +368,7 @@ class MainFrame(wx.Frame):
         #sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
 
         ## sbsizer1: 'Beam Parameters'  StaticBoxSizer
-        box1 = wx.FlexGridSizer(10, 2, 4, 40)
+        box1 = wx.FlexGridSizer(11, 2, 4, 40)
 
         b1st1 = wx.StaticText(panel, label = 'Beam Energy [MeV]',    style = wx.ALIGN_LEFT)
         b1st2 = wx.StaticText(panel, label = 'Energy Spread',        style = wx.ALIGN_LEFT)
@@ -376,6 +380,7 @@ class MainFrame(wx.Frame):
         b1st8 = wx.StaticText(panel, label = 'Bunch Charge [C]',     style = wx.ALIGN_LEFT)
         b1st9 = wx.StaticText(panel, label = 'Undulator Length [m]', style = wx.ALIGN_LEFT)
         b1st10 = wx.StaticText(panel, label = 'Bunch Shape',         style = wx.ALIGN_LEFT)
+        b1st11 = wx.StaticText(panel, label = 'Undulator Type',      style = wx.ALIGN_LEFT)
 
         self.b1tc1 = wx.TextCtrl(panel, id = ID_BEAM_ENERGY,   value = '150'   , style = wx.TE_PROCESS_ENTER)
         self.b1tc2 = wx.TextCtrl(panel, id = ID_ENERGY_SPREAD, value = '0.0001', style = wx.TE_PROCESS_ENTER)
@@ -387,6 +392,7 @@ class MainFrame(wx.Frame):
         self.b1tc8 = wx.TextCtrl(panel, id = ID_BUNCH_CHARGE,  value = '0.2e-9', style = wx.TE_PROCESS_ENTER)
         self.b1tc9 = wx.TextCtrl(panel,                        value = '10',     style = wx.TE_PROCESS_ENTER)
         self.b1cb10 = wx.ComboBox(panel, value = 'gaussian', choices = ['gaussian', 'flattop'], style = wx.CB_READONLY)
+        self.b1cb11 = wx.ComboBox(panel, value = 'planar',   choices = ['planar', 'helical'],   style = wx.CB_READONLY)
 
         box1.Add(b1st1,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
         box1.Add(self.b1tc1, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
@@ -406,6 +412,8 @@ class MainFrame(wx.Frame):
         box1.Add(self.b1tc8, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
         box1.Add(b1st9,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT,  border = 10)
         box1.Add(self.b1tc9, proportion = 1, flag = wx.EXPAND | wx.RIGHT,                border = 10)
+        box1.Add(b1st11,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
+        box1.Add(self.b1cb11, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
         box1.Add(b1st10,      proportion = 0, flag = wx.ALIGN_CENTER_VERTICAL | wx.LEFT, border = 10)
         box1.Add(self.b1cb10, proportion = 1, flag = wx.EXPAND | wx.RIGHT,               border = 10)
 
@@ -466,15 +474,15 @@ class MainFrame(wx.Frame):
         b2sb2st2 = wx.StaticText(panel, label = 'FEL parameter (3D):',       style = wx.ALIGN_LEFT)
         b2sb2st3 = wx.StaticText(panel, label = 'FEL gainlength (1D) [m]:',  style = wx.ALIGN_LEFT)
         b2sb2st4 = wx.StaticText(panel, label = 'FEL gainlength (3D) [m]:',  style = wx.ALIGN_LEFT)
-        b2sb2st5 = wx.StaticText(panel, label = 'FEL saturation power  (MXie) [W]:', style = wx.ALIGN_LEFT)
-        b2sb2st6 = wx.StaticText(panel, label = 'FEL saturation power  (SASE) [W]:', style = wx.ALIGN_LEFT)
-        b2sb2st13= wx.StaticText(panel, label = 'FEL output power      (SASE) [W]:', style = wx.ALIGN_LEFT)
+        b2sb2st5 = wx.StaticText(panel, label = 'FEL saturation power (MXie) [W]:',  style = wx.ALIGN_LEFT)
+        b2sb2st6 = wx.StaticText(panel, label = 'FEL saturation power (SASE) [W]:',  style = wx.ALIGN_LEFT)
+        b2sb2st13= wx.StaticText(panel, label = 'FEL output power (SASE) [W]:',      style = wx.ALIGN_LEFT)
         b2sb2st7 = wx.StaticText(panel, label = 'FEL saturation length (SASE) [m]:', style = wx.ALIGN_LEFT)
         b2sb2st12= wx.StaticText(panel, label = 'FEL shotnoise power (SASE) [W]:',   style = wx.ALIGN_LEFT)
-        b2sb2st8 = wx.StaticText(panel, label = 'FEL photon energy [eV]:', style = wx.ALIGN_LEFT)
-        b2sb2st9 = wx.StaticText(panel, label = 'FEL bandwidth [%]:',      style = wx.ALIGN_LEFT)
-        b2sb2st10= wx.StaticText(panel, label = 'FEL pulse energy  [uJ]:', style = wx.ALIGN_LEFT)
-        b2sb2st11= wx.StaticText(panel, label = 'FEL photons per pulse:',  style = wx.ALIGN_LEFT)
+        b2sb2st8 = wx.StaticText(panel, label = 'FEL photon energy [eV]:',           style = wx.ALIGN_LEFT)
+        b2sb2st9 = wx.StaticText(panel, label = 'FEL bandwidth [%]:',                style = wx.ALIGN_LEFT)
+        b2sb2st10= wx.StaticText(panel, label = 'FEL pulse energy [uJ]:',            style = wx.ALIGN_LEFT)
+        b2sb2st11= wx.StaticText(panel, label = 'FEL photons per pulse (saturation):',  style = wx.ALIGN_LEFT)
 
         self.b2sb2vst1 = funutils.MyStaticText(panel, label = '2.022e-03', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
         self.b2sb2vst2 = funutils.MyStaticText(panel, label = '1.622e-03', style = wx.ALIGN_LEFT, fontcolor = resultcolor)
@@ -630,6 +638,8 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_TEXT_ENTER, self.onTextEnter,  id = ID_SCAN_NUM     )
         self.Bind(wx.EVT_CHECKBOX,   self.onEnableScan, id = ID_SCANFLAG     )
         self.Bind(wx.EVT_COMBOBOX,   self.onSetInitalScanRange, id = ID_SCANPARM)
+        self.Bind(wx.EVT_COMBOBOX,   self.onCalc, self.b1cb11)
+        self.Bind(wx.EVT_COMBOBOX,   self.onCalc, self.b1cb10)
 
 #------------------------------------------------------------------------#
 
@@ -644,6 +654,9 @@ class MainFrame(wx.Frame):
         bunchCharge  = float(self.b1tc8.GetValue())
         unduLength   = float(self.b1tc9.GetValue())
         bunchShape   = self.b1cb10.GetStringSelection()
+        utype        = self.b1cb11.GetStringSelection()
+        
+        print utype
         
         if not self.chkbox31.IsChecked():
             instFEL = felbase.FELcalc(beamEnergy,
@@ -655,32 +668,33 @@ class MainFrame(wx.Frame):
                                       peakCurrent,
                                       bunchCharge,
                                       unduLength,
-                                      bunchShape)
+                                      bunchShape,
+                                      utype)
             result = instFEL.onFELAnalyse()
-            self.b2sb1vst1.SetLabel('%.3f' % (result['02-Bu']))
-            self.b2sb1vst2.SetLabel('%.3f' % (result['03-gap'][0]))
-            self.b2sb1vst3.SetLabel('%.3f' % (result['01-au']*2.0**0.5))
+            self.b2sb1vst1.SetLabel('%.3f' % (result['03-Bu']))
+            self.b2sb1vst2.SetLabel('%.3f' % (result['04-gap'][0]))
+            self.b2sb1vst3.SetLabel('%.3f' % (result['02-K']))
             self.b2sb1vst4.SetLabel('%.3f' % (result['01-au']))
-            self.b2sb1vst5.SetLabel('%.1f' % (result['13-sigmat']))
-            self.b2sb1vst6.SetLabel('%.1f' % (result['13-sigmat']*0.3))
-            self.b2sb1vst7.SetLabel('%.1f' % (result['12-sigmar']))
+            self.b2sb1vst5.SetLabel('%.1f' % (result['14-sigmat']))
+            self.b2sb1vst6.SetLabel('%.1f' % (result['14-sigmat']*0.3))
+            self.b2sb1vst7.SetLabel('%.1f' % (result['13-sigmar']))
 
-            self.b2sb2vst1.SetLabel('%.3e' % (result['04-rho1D']))
-            self.b2sb2vst2.SetLabel('%.3e' % (result['05-rho3D']))
-            self.b2sb2vst3.SetLabel('%.3f' % (result['06-Lg1D']))
-            self.b2sb2vst4.SetLabel('%.3f' % (result['07-Lg3D']))
-            self.b2sb2vst5.SetLabel('%.3e' % (result['08-Psat']))
-            self.b2sb2vst6.SetLabel('%.3e' % (result['10-Pss']))
-            self.b2sb2vst7.SetLabel('%.2f' % (result['11-Lsat']))
-            self.b2sb2vst8.SetLabel('%.2g' % (result['15-PhotonEnergy']))
-            self.b2sb2vst9.SetLabel('%.2f' % (result['14-bandWidth']))
-            self.b2sb2vst12.SetLabel('%.2g' % (result['09-Pshot']))
+            self.b2sb2vst1.SetLabel('%.3e' % (result['05-rho1D']))
+            self.b2sb2vst2.SetLabel('%.3e' % (result['06-rho3D']))
+            self.b2sb2vst3.SetLabel('%.3f' % (result['07-Lg1D']))
+            self.b2sb2vst4.SetLabel('%.3f' % (result['08-Lg3D']))
+            self.b2sb2vst5.SetLabel('%.3e' % (result['09-Psat']))
+            self.b2sb2vst6.SetLabel('%.3e' % (result['11-Pss']))
+            self.b2sb2vst7.SetLabel('%.2f' % (result['12-Lsat']))
+            self.b2sb2vst8.SetLabel('%.2g' % (result['16-PhotonEnergy']))
+            self.b2sb2vst9.SetLabel('%.2f' % (result['15-bandWidth']))
+            self.b2sb2vst12.SetLabel('%.2g' % (result['10-Pshot']))
 
-            Psat = result['10-Pss']
+            Psat = result['11-Pss']
             # power, power energy, photon per pulse at exit of undulator
-            Pexit = 1.0/9.0*result['09-Pshot']*np.exp(min(unduLength, result['11-Lsat'])/result['07-Lg3D'])
-            Wexit = result['16-PulseEnergy']/Psat*Pexit
-            Nexit = result['17-PhotonPerPulse']/Psat*Pexit
+            Pexit = 1.0/9.0*result['10-Pshot']*np.exp(min(unduLength, result['11-Lsat'])/result['07-Lg3D'])
+            Wexit = result['17-PulseEnergy']/Psat*Pexit
+            Nexit = result['18-PhotonPerPulse']/Psat*Pexit
 
             self.b2sb2vst10.SetLabel('%.2g' % (Wexit))
             self.b2sb2vst11.SetLabel('%.2e' % (Nexit))
@@ -727,7 +741,8 @@ class MainFrame(wx.Frame):
                                       peakCurrent,
                                       bunchCharge,
                                       unduLength,
-                                      bunchShape)
+                                      bunchShape,
+                                      utype)
             self.result = instFEL.onFELAnalyse()
             
 #------------------------------------------------------------------------#
@@ -971,22 +986,28 @@ class LogFrame(wx.Frame):
 
     def InitUI(self):
         panel = wx.Panel(self)
+        v13_btn = wx.Button(panel, label = 'Version 1.3')
         v12_btn = wx.Button(panel, label = 'Version 1.2')
         v11_btn = wx.Button(panel, label = 'Version 1.1')
+        v13_st  = funutils.MyStaticText(panel, label = u'Released: 2015-11-03', fontcolor = 'blue')
         v12_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-18', fontcolor = 'blue')
         v11_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-11', fontcolor = 'blue')
 
         gs = wx.GridBagSizer(8, 4)
-        gs.Add(v12_btn, pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
-        gs.Add(v12_st,  pos = (0, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
-        gs.Add(v11_btn, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
-        gs.Add(v11_st,  pos = (1, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v13_btn, pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v13_st,  pos = (0, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v12_btn, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v12_st,  pos = (1, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v11_btn, pos = (2, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v11_st,  pos = (2, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
         gs.AddGrowableCol(1)
 
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(gs, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.TOP, border = 20)
         panel.SetSizer(vbox)
         
+        self.msg_v13 = "1: Add undulator type parameter;\n" + \
+                       "2: Add callbacks to undulator type/bunch shape switch."
         self.msg_v12 = "1: Add more input parameters and more output results;\n" + \
                        "2: Implement 'Import' and 'Export' features under 'File' menu;\n" + \
                        "3: Imported or exported files are with ext of '.conf', could be viewd or archived;\n" + \
@@ -999,12 +1020,16 @@ class LogFrame(wx.Frame):
                        "2: Scan results visulization."
                 
 
+        self.Bind(wx.EVT_BUTTON, self.onShowCLog, v13_btn)
         self.Bind(wx.EVT_BUTTON, self.onShowCLog, v12_btn)
         self.Bind(wx.EVT_BUTTON, self.onShowCLog, v11_btn)
 
     def onShowCLog(self, event):
         label = event.GetEventObject().GetLabel()
-        if label == 'Version 1.2':
+        if label == 'Version 1.3':
+            msg = self.msg_v13
+            caption = 'V1.3 Change Log'
+        elif label == 'Version 1.2':
             msg = self.msg_v12
             caption = 'V1.2 Change Log'
         elif label == 'Version 1.1':
