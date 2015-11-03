@@ -7,10 +7,10 @@ class AppVersions():
         self.versions = {
                          'imageviewer'  : '1.3',
                          'cornalyzer'   : '1.0',
-                         'felformula'   : '1.2',
+                         'felformula'   : '1.3',
                          'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
-                         'appdrawer'    : '1.5.1',
+                         'appdrawer'    : '1.5.2',
                          }
 
     def setVersion(self, verNum, appName = 'imageviewer'):

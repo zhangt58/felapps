@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 import os
 
 appName             = "felapps"
-appVersion          = "1.5.1"
+appVersion          = "1.5.2"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'

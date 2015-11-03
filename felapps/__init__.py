@@ -14,5 +14,7 @@ from .apps.dataworkshop import dataworkshop
 from .apps.matchwizard  import matchwizard
 from .apps.appdrawer    import appdrawer
 
+__version__ = appdrawer.__version__
+
 #__all__ = [imageviewer]
 
