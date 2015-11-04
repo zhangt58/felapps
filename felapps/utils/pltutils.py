@@ -1807,7 +1807,7 @@ class ImagePanelxy(wx.Panel):
     def onGetData(self):
         #x = np.linspace(-np.pi, np.pi, 100)
         #y = np.sin(x)
-        x = y = None
+        x = y = [] 
         self.x, self.y = x, y
 
     def fitCanvas(self):
