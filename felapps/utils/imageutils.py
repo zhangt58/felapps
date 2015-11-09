@@ -9,7 +9,7 @@ Author: Tong Zhang
 Created: Sep. 28, 2015
 """
 
-import Image
+from PIL import Image
 import matplotlib.pyplot as plt
 import h5py
 import os
