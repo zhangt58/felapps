@@ -13,7 +13,7 @@ def testApp(appname = None):
     if appname == 'imageviewer':
         felapps.imageviewer.run(maximize = True, logon = False, debug = True)
     elif appname == 'felformula':
-        felapps.felformula.run(maximize = True, logon = False, debug = False)
+        felapps.felformula.run(maximize = True, logon = True, debug = False)
     elif appname == 'cornalyzer':
         felapps.cornalyzer.run(maximize = True, logon = False, debug = True)
     elif appname == 'dataworkshop':
