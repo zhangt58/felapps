@@ -656,8 +656,6 @@ class MainFrame(wx.Frame):
         bunchShape   = self.b1cb10.GetStringSelection()
         utype        = self.b1cb11.GetStringSelection()
         
-        print utype
-        
         if not self.chkbox31.IsChecked():
             instFEL = felbase.FELcalc(beamEnergy,
                                       energySpread,
@@ -692,7 +690,7 @@ class MainFrame(wx.Frame):
 
             Psat = result['11-Pss']
             # power, power energy, photon per pulse at exit of undulator
-            Pexit = 1.0/9.0*result['10-Pshot']*np.exp(min(unduLength, result['11-Lsat'])/result['07-Lg3D'])
+            Pexit = 1.0/9.0*result['10-Pshot']*np.exp(min(unduLength, result['12-Lsat'])/result['08-Lg3D'])
             Wexit = result['17-PulseEnergy']/Psat*Pexit
             Nexit = result['18-PhotonPerPulse']/Psat*Pexit
 
