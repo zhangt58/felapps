@@ -66,6 +66,7 @@ class ImageViewer(wx.Frame):
         super(self.__class__, self).__init__(parent = parent, size = size, id = wx.ID_ANY, **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.parent = parent
         self.appversion = appversion
+        self.cmlist_unis = ['viridis', 'inferno', 'plasma', 'magma']
         self.cmlist_seq1 = ['Blues', 'BuGn', 'BuPu', 'GnBu', 'Greens', 'Greys', 'Oranges', 
                             'OrRd', 'PuBu', 'PuBuGn', 'PuRd', 'Purples', 'RdPu','Reds', 
                             'YlGn', 'YlGnBu', 'YlOrBr', 'YlOrRd']
@@ -79,7 +80,8 @@ class ImageViewer(wx.Frame):
                             'brg', 'CMRmap', 'cubehelix', 'gnuplot', 'gnuplot2', 
                             'gist_ncar', 'nipy_spectral', 'jet', 'rainbow',
                             'gist_rainbow', 'hsv', 'flag', 'prism']
-        self.cmlist = {'Sequential-I' : self.cmlist_seq1,
+        self.cmlist = {'Uni Sequential': self.cmlist_unis,
+                       'Sequential-I' : self.cmlist_seq1,
                        'Sequential-II': self.cmlist_seq2,
                        'Diverging'    : self.cmlist_dive,
                        'Qualitative'  : self.cmlist_qual,
