@@ -80,7 +80,7 @@ class ImageViewer(wx.Frame):
                             'brg', 'CMRmap', 'cubehelix', 'gnuplot', 'gnuplot2', 
                             'gist_ncar', 'nipy_spectral', 'jet', 'rainbow',
                             'gist_rainbow', 'hsv', 'flag', 'prism']
-        self.cmlist = {'Uni Sequential': self.cmlist_unis,
+        self.cmlist = {'Sequential-NEW': self.cmlist_unis,
                        'Sequential-I' : self.cmlist_seq1,
                        'Sequential-II': self.cmlist_seq2,
                        'Diverging'    : self.cmlist_dive,
