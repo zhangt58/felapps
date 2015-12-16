@@ -127,7 +127,7 @@ class ImageViewer(wx.Frame):
         self.cmlist['Favorites'] = self.cmlist_favo
 
         # Control
-        self.timer_freq = int(float(namelist['frequency']))
+        self.timer_freq = float(namelist['frequency'])
         self.timer_msec = 1./self.timer_freq*1000 
         self.imgsrcPV     = namelist['imgsrcPV']
         self.imgsrcPVlist = namelist['imgsrcPVlist'].split()
@@ -1072,7 +1072,7 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.fontptsize_tiny   = int(self.thisapp.fontptsize * 0.5)
 
         # controlPage
-        self.thisapp.timer_freq = int(self.controlPage.freqtc.GetValue())
+        self.thisapp.timer_freq = self.controlPage.freqtc.GetValue()
         self.thisapp.timer_msec = 1.0/self.thisapp.timer_freq * 1000
         self.thisapp.imgsrcPV   = self.controlPage.imgsrcPVcb.GetValue()
 
@@ -1315,7 +1315,8 @@ class ControlConfigPanel(wx.Panel):
         
         # frequency
         freqst       = wx.StaticText(self, label = u'Monitor Frequency [Hz]',   style = wx.ALIGN_RIGHT)
-        self.freqtc  = wx.SpinCtrl(self, value = str(self.thisapp.timer_freq),  min = 1, max = 50, initial = 1, style = wx.SP_ARROW_KEYS)
+        #self.freqtc  = wx.SpinCtrl(self, value = str(self.thisapp.timer_freq),  min = 1, max = 50, initial = 1, style = wx.SP_ARROW_KEYS)
+        self.freqtc  = fs.FloatSpin(self, value = str(self.thisapp.timer_freq),  min_val = 0.1, max_val = 50, increment = 0.05, digits = 2, style = fs.FS_LEFT)
 
         # PV list
         imgsrcPVst      = wx.StaticText(self, label = u'Image PV Name', style = wx.ALIGN_RIGHT)
