@@ -106,6 +106,8 @@ class MainFrame(wx.Frame):
         fileMenu = wx.Menu()
         importItem = fileMenu.Append(wx.ID_ANY, '&Import\tCtrl+Shift+I', 'Import parameters from file')
         exportItem = fileMenu.Append(wx.ID_ANY, '&Export\tCtrl+Shift+E', 'Export parameters to file')
+        # database
+        #exportJsonItem = fileMenu.Append(wx.ID_ANY, '&Export as String\tCtrl+Shift+J', 'Export parameters to as a string to file')
         fileMenu.AppendSeparator()
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit')
 
@@ -122,6 +124,7 @@ class MainFrame(wx.Frame):
         # event bindings
         self.Bind(wx.EVT_MENU, self.onImport,    importItem)
         self.Bind(wx.EVT_MENU, self.onExport,    exportItem)
+        #self.Bind(wx.EVT_MENU, self.onExportJ,   exportJsonItem)
         self.Bind(wx.EVT_MENU, self.onExit,      id = wx.ID_EXIT)
         self.Bind(wx.EVT_MENU, self.onAbout,     id = wx.ID_ABOUT)
         self.Bind(wx.EVT_MENU, self.onInfo,      infoItem)
@@ -148,12 +151,12 @@ class MainFrame(wx.Frame):
             pass
 
     def onInfo(self, event):
-        infoframe = InfoFrame(self, title = 'Brief Guide to This Application')
+        infoframe = InfoFrame(self, title='Brief Guide to This Application', style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         infoframe.Show()
         infoframe.Centre()
 
     def onChangelog(self, event):
-        clogframe = LogFrame(self, title = 'Changelog of This Application')
+        clogframe = LogFrame(self, title='Changelogs', style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         clogframe.Show()
         clogframe.Centre()
 
@@ -178,19 +181,25 @@ class MainFrame(wx.Frame):
         exportframe.SetMinSize((500, 360))
         exportframe.Show()
         exportframe.Centre()
+
+    def onExportJ(self, event):
+        """
+        Export input parameters and output results as a json string to file
+        """
+        pass
         
     def onAbout(self, event):
         # First we create and fill the info object
         info = wx.AboutDialogInfo()
         info.Name = "FEL Formula"
         info.Version = self.appversion
-        info.Copyright = "(C) 2014-2015 Tong Zhang, SINAP, CAS"
+        info.Copyright = "(C) 2014-2016 Tong Zhang, SINAP, CAS"
         info.Description = wordwrap(
             "This program is designed for fast FEL physics calculations.\n"
 
-            "It is designed by Python language, using GUI module of wxPython.",
+            "It is designed by Python language, using wxPython as the GUI package.",
             350, wx.ClientDC(self))
-        info.WebSite = ("http://everyfame.me", "FEL Formula home page")
+        #info.WebSite = ("", "FEL Formula home page")
         info.Developers = [ "Tong Zhang <zhangtong@sinap.ac.cn>"]
         licenseText = "FEL Formula is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n" + "\nFEL Formula is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n" + "\nYou should have received a copy of the GNU General Public License along with FEL Formula; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"
         info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
@@ -368,7 +377,7 @@ class MainFrame(wx.Frame):
         #sbsizer4 = wx.StaticBoxSizer(sbox4, orient = wx.VERTICAL)
 
         ## sbsizer1: 'Beam Parameters'  StaticBoxSizer
-        box1 = wx.FlexGridSizer(11, 2, 4, 40)
+        box1 = wx.FlexGridSizer(11, 2, 1, 40)
 
         b1st1 = wx.StaticText(panel, label = 'Beam Energy [MeV]',    style = wx.ALIGN_LEFT)
         b1st2 = wx.StaticText(panel, label = 'Energy Spread',        style = wx.ALIGN_LEFT)
@@ -557,14 +566,14 @@ class MainFrame(wx.Frame):
         self.smintc.Disable()
         self.smaxtc.Disable()
         self.snumtc.Disable()
-        scanfgs = wx.FlexGridSizer(2, 3, 4, 4)
-        scanfgs.Add(self.sminst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT, border = 10)
-        scanfgs.Add(self.smaxst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT, border = 10)
-        scanfgs.Add(self.snumst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.RIGHT, border = 10)
-        scanfgs.Add(self.smintc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT, border = 10)
-        scanfgs.Add(self.smaxtc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT, border = 10)
-        scanfgs.Add(self.snumtc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.RIGHT, border = 10)
-        scansbsizer.Add(scanfgs, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 10)
+        scanfgs = wx.FlexGridSizer(2, 3, 2, 4)
+        scanfgs.Add(self.sminst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT, border = 6)
+        scanfgs.Add(self.smaxst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT, border = 6)
+        scanfgs.Add(self.snumst, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.RIGHT, border = 6)
+        scanfgs.Add(self.smintc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT, border = 6)
+        scanfgs.Add(self.smaxtc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT, border = 6)
+        scanfgs.Add(self.snumtc, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.RIGHT, border = 6)
+        scansbsizer.Add(scanfgs, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.ALL, border = 8)
         scanfgs.AddGrowableCol(0)
         scanfgs.AddGrowableCol(1)
         scanfgs.AddGrowableCol(2)
@@ -584,9 +593,9 @@ class MainFrame(wx.Frame):
 
         ### command box
         cmdgbs = wx.GridBagSizer(5, 5)
-        self.calcbtn = wx.Button(panel ,id = ID_CALCBTN, label = '&Calculate', size = (90, 40))
-        self.exitbtn = wx.Button(panel ,id = ID_EXITBTN, label = 'E&xit',      size = (90, 40))
-        self.plotbtn = wx.Button(panel, id = ID_PLOTBTN, label = 'Show &Plot', size = (90, 40))
+        self.calcbtn = wx.Button(panel ,id = ID_CALCBTN, label = '&Calculate', size = (104, 44))
+        self.exitbtn = wx.Button(panel ,id = ID_EXITBTN, label = 'E&xit',      size = (104, 44))
+        self.plotbtn = wx.Button(panel, id = ID_PLOTBTN, label = 'Show &Plot', size = (104, 44))
         self.plotbtn.Disable()
 
         cmdgbs.Add(self.calcbtn, pos = (0, 0), span = (1, 1), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
@@ -859,7 +868,7 @@ class ExportFrame(wx.Frame):
 
         author_st                    = funutils.MyStaticText(panel, label = u'Author', style = wx.ALIGN_LEFT)
         self.author_tc               = funutils.MyTextCtrl(panel, value = username)
-        facility_st                  = funutils.MyStaticText(panel, label = u'FACILITY',    style = wx.ALIGN_LEFT)
+        facility_st                  = funutils.MyStaticText(panel, label = u'FACILITY INFO', style = wx.ALIGN_LEFT, fontcolor='blue')
         facility_name_st             = funutils.MyStaticText(panel, label = u'Name',        style = wx.ALIGN_LEFT)
         self.facility_name_tc        = funutils.MyTextCtrl(panel, value = u'')
         facility_country_st          = funutils.MyStaticText(panel, label = u'Country',     style = wx.ALIGN_LEFT)
@@ -1072,11 +1081,13 @@ class PlotFrame(wx.Frame):
     def createMenu(self):
         self.menubar = wx.MenuBar()
         fileMenu = wx.Menu()
-        saveItem = fileMenu.Append(wx.ID_SAVE, '&Save plot\tCtrl-S', 'Save plot to file')
+        savefigItem  = fileMenu.Append(wx.ID_SAVE, '&Save plot\tCtrl-S', 'Save plot figure to file')
+        savedataItem = fileMenu.Append(wx.ID_ANY,  'Save data\tCtrl-Shift-S', 'Save plot data to file')
         fileMenu.AppendSeparator()
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl-W', 'Exit')
         self.Bind(wx.EVT_MENU, self.onSavePlot, id = wx.ID_SAVE)
         self.Bind(wx.EVT_MENU, self.onExitPlot, id = wx.ID_EXIT)
+        self.Bind(wx.EVT_MENU, self.onSaveData, id = savedataItem.GetId())
 
         helpMenu = wx.Menu()
         self.aboutItem = helpMenu.Append(wx.ID_ANY, '&About\tCtrl-A', 'Show about information')
@@ -1208,12 +1219,112 @@ class PlotFrame(wx.Frame):
 
 #------------------------------------------------------------------------#
 
+    def onSaveData(self, event):
+        #print self.parent.combobox31.GetValue(), 
+        savedataframe = DataSaveFrame(self, self.parent, title = 'Save Data to File')
+        savedataframe.SetMinSize((800, 450))
+        savedataframe.Show()
+        savedataframe.Centre()
+
+        
+#------------------------------------------------------------------------#
+
     def onAboutPlot(self, event):
         dial = wx.MessageDialog(self.panel, message = "This panel is designed to show the plot figure.",
                 caption = 'About plot panel', style = wx.ICON_INFORMATION)
         dial.ShowModal()
 
 #------------------------------------------------------------------------#
+
+class DataSaveFrame(wx.Frame):
+    def __init__(self, parent, dataparent, title, **kwargs):
+        super(self.__class__,self).__init__(parent=parent, id=wx.ID_ANY, title=title, **kwargs)
+        self.parent = parent
+        self.gparent = dataparent
+        self.fmt = 'txt'  # save to ascii format by default
+        self.InitUI()
+
+    def InitUI(self):
+        panel = wx.Panel(self)
+        vbox = wx.BoxSizer(wx.VERTICAL)
+
+        data_fmt_st  = funutils.MyStaticText(panel, label=u'Data File Format', style=wx.ALIGN_LEFT)
+        data_fmt_cb  = wx.ComboBox(panel, value='txt', choices=['txt','hdf5'], style=wx.CB_READONLY)
+        data_pth_st  = funutils.MyStaticText(panel, label=u'Data File Path', style=wx.ALIGN_LEFT)
+        self.data_pth_tc = data_pth_tc = funutils.MyTextCtrl(panel, value=os.path.join(os.getcwd(), 'data.txt'), style=wx.CB_READONLY)
+        data_pth_btn = wx.Button(panel, label='Browse')
+        data_cols_st = funutils.MyStaticText(panel, label=u'Available Data Columns:', style=wx.ALIGN_LEFT, fontcolor='blue')
+
+        self.chb_dict = {}
+        xkey = '00-' + self.gparent.combobox31.GetValue()
+        chb_tmp = wx.CheckBox(panel, label=xkey) 
+        #data_cols_ws = wx.WrapSizer(orient=wx.HORIZONTAL)
+        data_cols_ws = wx.FlexGridSizer(5, 4, 2, 10)
+        data_cols_ws.Add(chb_tmp, flag=wx.LEFT | wx.EXPAND, border=5)
+        chb_tmp.SetValue(True)
+        self.chb_dict[xkey] = {'val':self.gparent.scanX, 'obj':chb_tmp}
+
+        for k,v in self.gparent.result.items():
+            if isinstance(v, np.ndarray):
+                chb_tmp = wx.CheckBox(panel, label=k.split('-')[1]) 
+                chb_tmp.SetValue(True)
+                data_cols_ws.Add(chb_tmp, flag=wx.LEFT | wx.EXPAND, border=5)
+                self.chb_dict[k] = {'val':self.gparent.result[k], 'obj':chb_tmp}
+            else:
+                chb_tmp = wx.CheckBox(panel, label=k.split('-')[1]) 
+                chb_tmp.Disable()
+                data_cols_ws.Add(chb_tmp, flag=wx.LEFT | wx.EXPAND, border=5)
+        data_cols_ws.Add(wx.StaticText(panel, label=''), flag=wx.LEFT | wx.EXPAND, border=5)
+
+        gbs = wx.GridBagSizer(10, 0)
+        gbs.Add(data_fmt_st,   pos=(0, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT,  border=10)
+        gbs.Add(data_fmt_cb,   pos=(0, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                             border=10)
+        gbs.Add(data_pth_st,   pos=(1, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,             border=10)
+        gbs.Add(data_pth_tc,   pos=(1, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                            border=10)
+        gbs.Add(data_pth_btn,  pos=(1, 3), span=(1, 1), flag=wx.LEFT | wx.RIGHT,                 border=10)
+        gbs.Add(data_cols_st,  pos=(2, 0), span=(1, 4), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,             border=10)
+        gbs.Add(data_cols_ws,  pos=(3, 0), span=(3, 4), flag=wx.LEFT | wx.RIGHT | wx.EXPAND, border=10)
+        gbs.AddGrowableCol(1)
+        gbs.AddGrowableRow(3)
+
+        vbox.Add(gbs, 1, wx.EXPAND | wx.ALL, 10)
+
+        save_btn = wx.Button(panel, label = 'Save')
+        exit_btn = wx.Button(panel,   label = 'Exit')
+        hbox_cmd = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_cmd.Add(save_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
+        hbox_cmd.Add(exit_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
+
+        vbox.Add(hbox_cmd, proportion=0, flag=wx.ALIGN_RIGHT | wx.ALL, border=5)
+
+        panel.SetSizer(vbox)
+        osizer = wx.BoxSizer(wx.VERTICAL)
+        osizer.Add(panel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        self.SetSizerAndFit(osizer)
+
+        self.Bind(wx.EVT_BUTTON, self.onChoose, data_pth_btn)
+        self.Bind(wx.EVT_BUTTON, self.onSave,   save_btn)
+        self.Bind(wx.EVT_BUTTON, self.onExit,   exit_btn)
+
+    def onChoose(self, event):
+        self.datafilename = funutils.getFileToSave(self, ext=self.fmt)
+        self.data_pth_tc.SetValue(self.datafilename)
+
+    def onExit(self, event):
+        self.Close()
+
+    def onSave(self, event):
+        cols_selected_val  = []
+        cols_selected_name = []
+        for k,v in sorted(self.chb_dict.items()):
+            if isinstance(v['obj'], wx._controls.CheckBox) and v['obj'].IsChecked():
+                cols_selected_val.append(v['val'])
+                cols_selected_name.append(k)
+        np.savetxt(self.datafilename, np.vstack(cols_selected_val).T, header=' '.join(cols_selected_name), fmt='%.8e')
+        dial = wx.MessageDialog(self, message = 'Saved data to ' + self.datafilename, caption = "Data Saved Message", style = wx.OK)
+        if dial.ShowModal() == wx.ID_YES:
+            self.Destroy()
+        self.Close()
 
 def run():
     app = wx.App(redirect = True)
