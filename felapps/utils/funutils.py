@@ -21,6 +21,7 @@ import matplotlib.colors as colors
 import time
 import sys
 import h5py
+import shutil
 
 from . import EnhancedStatusBar as ESB
 
@@ -642,4 +643,26 @@ class ProgressBarFrame(wx.Frame):
 
 #-------------------------------------------------------------------------#
 
+def handleConfig(config_name='imageviewer.xml'):
+    """
+    handle configuration files issues:
+        1 load configuration files from app data
+        2 create user specific configuration files
+    :param config_name: configuration file name, by default is 'imageviewer.xml' (for app Image Viewer)
+    reutrn valid configuration file at default user location
+    """
+    default_location    = os.path.expanduser("~/.felapps/config/")
+    default_configfile  = os.path.join(default_location, config_name)
+    optional_configfile = os.path.join(sys.prefix, 'local/share/felapps/', config_name)
+    if os.path.isfile(default_configfile):  # configuration file is found at default location
+        retval = default_configfile
+    elif os.path.isfile(optional_configfile):  # load from system location, copy to default user location
+        shutil.copy2(optional_configfile, default_configfile)
+        retval = default_configfile
+    else:  # pop window to let user select config file and copy to default user location
+        config_selected = funutils.getFileToLoad(None, ext = 'xml')
+        shutil.copy2(config_selected, default_configfile)
+        retval = default_configfile
 
+    return retval
+ 
