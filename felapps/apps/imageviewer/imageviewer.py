@@ -21,12 +21,8 @@ __author__  = "Tong Zhang"
 class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
-
-        configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
-        if not os.path.isfile(configFile):
-            configFile = funutils.getFileToLoad(None, ext = 'xml')
-
-        myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        configFile = funutils.handleConfig(config_name = 'imageviewer.xml')
+        myframe = pltutils.ImageViewer(None, config = configFile, title = u"ImageViewer" + ' ' + "Another Profile Monitor (debug mode, CTRL+ALT+I)", appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         self.SetTopWindow(myframe)
         return True
@@ -39,12 +35,8 @@ def run(maximize = True, logon = False, debug=True):
         app = InspectApp()
         app.MainLoop()
     else:
-        app = wx.App(redirect = logon, filename='log')
-
-        configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
-        if not os.path.isfile(configFile):
-            configFile = funutils.getFileToLoad(None, ext = 'xml')
-
+        app = wx.App(redirect = logon, filename = 'log')
+        configFile = funutils.handleConfig(config_name = 'imageviewer.xml')
         if maximize == True:
             myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
