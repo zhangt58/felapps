@@ -27,6 +27,7 @@ import wx.lib.dialogs
 
 import os
 import time
+import h5py
 
 #------------------------------------------------------------------------#
 
@@ -973,7 +974,8 @@ class InfoFrame(wx.Frame):
                       " 3.1: Choose the scan parameter and the scan range;\n" + \
                       " 3.2: Push 'Calculate' button, then 'Show Plot' to check plot;\n" + \
                       " 3.3: In 'Scan Data Visualization' frame, Ctrl+S can save figure\n" + \
-                      "      into '.jpg' format or use the toolbar at the bottom.\n" + \
+                      "      into '.jpg' format or use the toolbar at the bottom;\n" + \
+                      "      use Ctrl+Shift+S to save scan data as guided;\n" + \
                       "4: Import and Export in File menu, use as how it guides."
         aboutinfo = funutils.MyStaticText(panel, label = aboutstring, style = wx.ALIGN_LEFT | wx.TE_MULTILINE)
         vbox.Add(aboutinfo, flag = wx.ALIGN_CENTER | wx.ALL, border = 10)
@@ -993,26 +995,31 @@ class LogFrame(wx.Frame):
 
     def InitUI(self):
         panel = wx.Panel(self)
+        v14_btn = wx.Button(panel, label = 'Version 1.4')
         v13_btn = wx.Button(panel, label = 'Version 1.3')
         v12_btn = wx.Button(panel, label = 'Version 1.2')
         v11_btn = wx.Button(panel, label = 'Version 1.1')
+        v14_st  = funutils.MyStaticText(panel, label = u'Released: 2016-05-19', fontcolor = 'blue')
         v13_st  = funutils.MyStaticText(panel, label = u'Released: 2015-11-03', fontcolor = 'blue')
         v12_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-18', fontcolor = 'blue')
         v11_st  = funutils.MyStaticText(panel, label = u'Released: 2015-09-11', fontcolor = 'blue')
 
         gs = wx.GridBagSizer(8, 4)
-        gs.Add(v13_btn, pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
-        gs.Add(v13_st,  pos = (0, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
-        gs.Add(v12_btn, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
-        gs.Add(v12_st,  pos = (1, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
-        gs.Add(v11_btn, pos = (2, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
-        gs.Add(v11_st,  pos = (2, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v14_btn, pos = (0, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v14_st,  pos = (0, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v13_btn, pos = (1, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v13_st,  pos = (1, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v12_btn, pos = (2, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v12_st,  pos = (2, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
+        gs.Add(v11_btn, pos = (3, 0), span = (1, 1), flag = wx.EXPAND | wx.LEFT | wx.RIGHT, border = 10)
+        gs.Add(v11_st,  pos = (3, 1), span = (1, 2), flag = wx.ALIGN_CENTER | wx.LEFT, border = 10)
         gs.AddGrowableCol(1)
 
         vbox = wx.BoxSizer(wx.VERTICAL)
         vbox.Add(gs, proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.TOP, border = 20)
         panel.SetSizer(vbox)
         
+        self.msg_v14 = "1: Add save data menuitem for Scan Data Visualization frame, support 'txt' and 'hdf5'."
         self.msg_v13 = "1: Add undulator type parameter;\n" + \
                        "2: Add callbacks to undulator type/bunch shape switch."
         self.msg_v12 = "1: Add more input parameters and more output results;\n" + \
@@ -1027,13 +1034,17 @@ class LogFrame(wx.Frame):
                        "2: Scan results visulization."
                 
 
+        self.Bind(wx.EVT_BUTTON, self.onShowCLog, v14_btn)
         self.Bind(wx.EVT_BUTTON, self.onShowCLog, v13_btn)
         self.Bind(wx.EVT_BUTTON, self.onShowCLog, v12_btn)
         self.Bind(wx.EVT_BUTTON, self.onShowCLog, v11_btn)
 
     def onShowCLog(self, event):
         label = event.GetEventObject().GetLabel()
-        if label == 'Version 1.3':
+        if label == 'Version 1.4':
+            msg = self.msg_v14
+            caption = 'V1.4 Change Log'
+        elif label == 'Version 1.3':
             msg = self.msg_v13
             caption = 'V1.3 Change Log'
         elif label == 'Version 1.2':
@@ -1252,22 +1263,25 @@ class DataSaveFrame(wx.Frame):
         data_fmt_cb  = wx.ComboBox(panel, value='txt', choices=['txt','hdf5'], style=wx.CB_READONLY)
         data_pth_st  = funutils.MyStaticText(panel, label=u'Data File Path', style=wx.ALIGN_LEFT)
         self.data_pth_tc = data_pth_tc = funutils.MyTextCtrl(panel, value=os.path.join(os.getcwd(), 'data.txt'), style=wx.CB_READONLY)
-        data_pth_btn = wx.Button(panel, label='Browse')
+        data_pth_btn = wx.Button(panel, label=u'Browse')
         data_cols_st = funutils.MyStaticText(panel, label=u'Available Data Columns:', style=wx.ALIGN_LEFT, fontcolor='blue')
+        data_cols_ck1 = wx.CheckBox(panel, label=u'Select All')
+        data_cols_ck2 = wx.CheckBox(panel, label=u'Inverse Select')
+        self.data_fmt_cb = data_fmt_cb
+        self.datafilename = os.path.join(os.getcwd(), 'data.txt')
 
         self.chb_dict = {}
-        xkey = '00-' + self.gparent.combobox31.GetValue()
+        xkey = self.gparent.combobox31.GetValue()
         chb_tmp = wx.CheckBox(panel, label=xkey) 
-        #data_cols_ws = wx.WrapSizer(orient=wx.HORIZONTAL)
         data_cols_ws = wx.FlexGridSizer(5, 4, 2, 10)
         data_cols_ws.Add(chb_tmp, flag=wx.LEFT | wx.EXPAND, border=5)
-        chb_tmp.SetValue(True)
-        self.chb_dict[xkey] = {'val':self.gparent.scanX, 'obj':chb_tmp}
+        chb_tmp.SetValue(False)
+        self.chb_dict['00-' + xkey] = {'val':self.gparent.scanX, 'obj':chb_tmp}
 
         for k,v in self.gparent.result.items():
             if isinstance(v, np.ndarray):
                 chb_tmp = wx.CheckBox(panel, label=k.split('-')[1]) 
-                chb_tmp.SetValue(True)
+                chb_tmp.SetValue(False)
                 data_cols_ws.Add(chb_tmp, flag=wx.LEFT | wx.EXPAND, border=5)
                 self.chb_dict[k] = {'val':self.gparent.result[k], 'obj':chb_tmp}
             else:
@@ -1277,37 +1291,64 @@ class DataSaveFrame(wx.Frame):
         data_cols_ws.Add(wx.StaticText(panel, label=''), flag=wx.LEFT | wx.EXPAND, border=5)
 
         gbs = wx.GridBagSizer(10, 0)
-        gbs.Add(data_fmt_st,   pos=(0, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT,  border=10)
-        gbs.Add(data_fmt_cb,   pos=(0, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                             border=10)
-        gbs.Add(data_pth_st,   pos=(1, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,             border=10)
-        gbs.Add(data_pth_tc,   pos=(1, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                            border=10)
-        gbs.Add(data_pth_btn,  pos=(1, 3), span=(1, 1), flag=wx.LEFT | wx.RIGHT,                 border=10)
-        gbs.Add(data_cols_st,  pos=(2, 0), span=(1, 4), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,             border=10)
-        gbs.Add(data_cols_ws,  pos=(3, 0), span=(3, 4), flag=wx.LEFT | wx.RIGHT | wx.EXPAND, border=10)
+        gbs.Add(data_fmt_st,  pos=(0, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, border=10)
+        gbs.Add(data_fmt_cb,  pos=(0, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                border=10)
+        gbs.Add(data_pth_st,  pos=(1, 0), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,            border=10)
+        gbs.Add(data_pth_tc,  pos=(1, 1), span=(1, 2), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                border=10)
+        gbs.Add(data_pth_btn, pos=(1, 3), span=(1, 1), flag=wx.LEFT | wx.RIGHT,                            border=10)
+        gbs.Add(data_cols_st, pos=(2, 0), span=(1, 2), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,            border=10)
+        gbs.Add(data_cols_ck1,pos=(2, 2), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,            border=10)
+        gbs.Add(data_cols_ck2,pos=(2, 3), span=(1, 1), flag=wx.ALIGN_CENTER_VERTICAL | wx.LEFT,            border=10)
+        gbs.Add(data_cols_ws, pos=(3, 0), span=(3, 4), flag=wx.LEFT | wx.RIGHT | wx.EXPAND,                border=10)
         gbs.AddGrowableCol(1)
         gbs.AddGrowableRow(3)
 
-        vbox.Add(gbs, 1, wx.EXPAND | wx.ALL, 10)
+        vbox.Add(gbs, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
 
-        save_btn = wx.Button(panel, label = 'Save')
-        exit_btn = wx.Button(panel,   label = 'Exit')
+        save_btn = wx.Button(panel, label='Save')
+        exit_btn = wx.Button(panel, label='Exit')
         hbox_cmd = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_cmd.Add(save_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
-        hbox_cmd.Add(exit_btn, proportion = 0, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border = 6)
+        hbox_cmd.Add(save_btn, proportion=0, flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border=6)
+        hbox_cmd.Add(exit_btn, proportion=0, flag=wx.ALIGN_RIGHT | wx.RIGHT | wx.BOTTOM, border=6)
 
         vbox.Add(hbox_cmd, proportion=0, flag=wx.ALIGN_RIGHT | wx.ALL, border=5)
 
         panel.SetSizer(vbox)
         osizer = wx.BoxSizer(wx.VERTICAL)
-        osizer.Add(panel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
+        osizer.Add(panel, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
         self.SetSizerAndFit(osizer)
 
-        self.Bind(wx.EVT_BUTTON, self.onChoose, data_pth_btn)
-        self.Bind(wx.EVT_BUTTON, self.onSave,   save_btn)
-        self.Bind(wx.EVT_BUTTON, self.onExit,   exit_btn)
+        self.Bind(wx.EVT_BUTTON,   self.onChoosePth,  data_pth_btn)
+        self.Bind(wx.EVT_BUTTON,   self.onSave,       save_btn)
+        self.Bind(wx.EVT_BUTTON,   self.onExit,       exit_btn)
+        self.Bind(wx.EVT_COMBOBOX, self.onChooseFmt,  data_fmt_cb)
+        self.Bind(wx.EVT_CHECKBOX, self.onCheckCols1, data_cols_ck1)
+        self.Bind(wx.EVT_CHECKBOX, self.onCheckCols2, data_cols_ck2)
 
-    def onChoose(self, event):
+    def onCheckCols1(self, event):
+        if event.GetEventObject().IsChecked():
+            for v in self.chb_dict.values():
+                if isinstance(v['obj'], wx._controls.CheckBox) and not v['obj'].IsChecked():
+                    v['obj'].SetValue(True)
+
+    def onCheckCols2(self, event):
+        if event.GetEventObject().IsChecked():
+            for v in self.chb_dict.values():
+                if isinstance(v['obj'], wx._controls.CheckBox):
+                    if v['obj'].IsChecked():
+                        v['obj'].SetValue(False)
+                    else:
+                        v['obj'].SetValue(True)
+
+    def onChoosePth(self, event):
         self.datafilename = funutils.getFileToSave(self, ext=self.fmt)
+        self.data_pth_tc.SetValue(self.datafilename)
+
+    def onChooseFmt(self, event):
+        self.fmt = self.data_fmt_cb.GetValue()
+        newname = os.path.join(os.path.dirname(self.datafilename),
+                               os.path.basename(self.datafilename).split('.')[0] + '.' + self.fmt)
+        self.datafilename = newname
         self.data_pth_tc.SetValue(self.datafilename)
 
     def onExit(self, event):
@@ -1320,11 +1361,18 @@ class DataSaveFrame(wx.Frame):
             if isinstance(v['obj'], wx._controls.CheckBox) and v['obj'].IsChecked():
                 cols_selected_val.append(v['val'])
                 cols_selected_name.append(k)
-        np.savetxt(self.datafilename, np.vstack(cols_selected_val).T, header=' '.join(cols_selected_name), fmt='%.8e')
+        if self.fmt == 'txt':
+            np.savetxt(self.datafilename, np.vstack(cols_selected_val).T, header=' '.join(cols_selected_name), fmt='%.8e')
+        else:  # hdf5
+            f = h5py.File(self.datafilename, 'w')
+            for data, name in zip(cols_selected_val, cols_selected_name):
+                dset = f.create_dataset('data/' + name, shape=data.shape, dtype=data.dtype)
+                dset[...] = data
+            f.close()
+
         dial = wx.MessageDialog(self, message = 'Saved data to ' + self.datafilename, caption = "Data Saved Message", style = wx.OK)
         if dial.ShowModal() == wx.ID_YES:
             self.Destroy()
-        self.Close()
 
 def run():
     app = wx.App(redirect = True)
