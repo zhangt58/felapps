@@ -27,7 +27,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         self.SetTopWindow(myframe)
         return True
 
-def run(maximize = True, logon = False, debug=True):
+def run(maximize=True, logon=False, debug=False):
     """
     function to make imageviewer app run.
     """
@@ -35,7 +35,8 @@ def run(maximize = True, logon = False, debug=True):
         app = InspectApp()
         app.MainLoop()
     else:
-        app = wx.App(redirect = logon, filename = 'log')
+        app = wx.App(redirect=logon, filename = 'log')
+
         configFile = funutils.handleConfig(config_name = 'imageviewer.xml')
         if maximize == True:
             myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)

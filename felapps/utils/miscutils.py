@@ -5,7 +5,7 @@
 class AppVersions():
     def __init__(self):
         self.versions = {
-                         'imageviewer'  : '1.3',
+                         'imageviewer'  : '1.4',
                          'cornalyzer'   : '1.0',
                          'felformula'   : '1.4',
                          'dataworkshop' : '1.1',

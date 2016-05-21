@@ -6,11 +6,12 @@ def readme():
     with open('README.rst') as f:
         return f.read()
 
-from setuptools import find_packages, setup
+from setuptools import find_packages, setup 
 import os
+import glob
 
 appName             = "felapps"
-appVersion          = "1.5.4"
+appVersion          = "1.5.4.14"
 appDescription      = "High-level applications for FEL commissioning."
 #appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
@@ -20,9 +21,11 @@ appAuthor_email     = "zhangtong@sinap.ac.cn"
 appLicense          = "MIT"
 appUrl              = "https://github.com/Archman/felapps"
 appKeywords         = "FEL HLA high-level python wxpython"
-#requiredpackages = ['numpy','scipy','matplotlib','pyepics','h5py'] # install_requires
-requiredpackages = ['beamline']
-appScriptsName = ['imageviewer', 'felformula', 'cornalyzer', 'dataworkshop', 'matchwizard', 'appdrawer', 'runfelapps']
+requiredpackages = ['numpy','scipy','matplotlib','pyepics','h5py',
+                    'pyrpn','beamline'] # install_requires
+appScriptsName = ['imageviewer', 'felformula', 'cornalyzer', 
+                  'dataworkshop', 'matchwizard', 'appdrawer', 
+                  'runfelapps']
 ScriptsRoot = 'scripts'
 appScripts = [os.path.join(ScriptsRoot,scriptname) for scriptname in appScriptsName]
 
@@ -37,12 +40,24 @@ setup(name             = appName,
       url              = appUrl,
       keywords         = appKeywords,
       packages         = find_packages(exclude=['contrib','tests*']),
+      #packages         = ["felapps"],
       scripts          = appScripts,
-      install_requires = requiredpackages,
+      #install_requires = requiredpackages,
       classifiers = ['Programming Language :: Python', 
                      'Topic :: Software Development :: Libraries :: Python Modules', 
                      'Topic :: Scientific/Engineering :: Physics'],
       test_suite = 'nose.collector',
       tests_require = ['nose'],
-      include_package_data = True,
-      )
+      #include_package_data = True,
+      data_files = [
+          ('share/felapps', ['felapps/configs/imageviewer.xml']),
+          ('share/felapps', ['requirements.txt']),
+          ('share/icons/hicolor/16x16/apps',   glob.glob("launchers/icons/16/*.png")),
+          ('share/icons/hicolor/32x32/apps',   glob.glob("launchers/icons/32/*.png")),
+          ('share/icons/hicolor/48x48/apps',   glob.glob("launchers/icons/48/*.png")),
+          ('share/icons/hicolor/128x128/apps', glob.glob("launchers/icons/128/*.png")),
+          ('share/icons/hicolor/256x256/apps', glob.glob("launchers/icons/256/*.png")),
+          ('share/icons/hicolor/512x512/apps', glob.glob("launchers/icons/512/*.png")),
+          ('share/applications', glob.glob("launchers/*.desktop")),
+      ],
+)
