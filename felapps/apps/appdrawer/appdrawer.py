@@ -24,8 +24,8 @@ import wx.lib.mixins.inspection as wit
 
 
 class AppDrawerFrame(wx.Frame):
-    def __init__(self, parent, appversion = '1.0', **kwargs):
-        wx.Frame.__init__(self, parent, **kwargs) #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
+    def __init__(self, parent, appversion='1.0', **kwargs):
+        wx.Frame.__init__(self, parent, **kwargs)  # style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.appversion = appversion
 
         self.Bind(wx.EVT_CLOSE, self.onExit)
@@ -37,9 +37,9 @@ class AppDrawerFrame(wx.Frame):
         self.exitApp()
 
     def exitApp(self):
-        dial = wx.MessageDialog(self, message = "Are you sure to exit this application?",
-                                caption = 'Exit Warning',
-                                style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
+        dial = wx.MessageDialog(self, message="Are you sure to exit this application?",
+                                caption='Exit Warning',
+                                style=wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
         if dial.ShowModal() == wx.ID_YES:
             self.Destroy()
 
@@ -47,7 +47,7 @@ class AppDrawerFrame(wx.Frame):
         self.preInit()
         self.createMenubar()
         self.createPanel()
-        #self.createStatusbar()
+        # self.createStatusbar()
         self.createToolbar()
         self.postInit()
     
@@ -67,16 +67,16 @@ class AppDrawerFrame(wx.Frame):
         self.statusbar = funutils.ESB.EnhancedStatusBar(self)
         self.statusbar.SetFieldsCount(3)
         self.SetStatusBar(self.statusbar)
-        #self.statusbar.SetStatusWidths([-3,-1,-4,-1,-1])
-        self.statusbar.SetStatusWidths([-7,-2,-1])
+        # self.statusbar.SetStatusWidths([-3,-1,-4,-1,-1])
+        self.statusbar.SetStatusWidths([-7, -2, -1])
 
-        self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"AppDrawer powered by Python")
-        self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"2015-06-05 14:00:00 CST")
-        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u" (Version: " + self.appversion + ")")
+        self.statusbar.appinfo = wx.StaticText(self.statusbar, id=wx.ID_ANY, label=u"AppDrawer powered by Python")
+        self.timenow_st        = wx.StaticText(self.statusbar, id=wx.ID_ANY, label=u"2015-06-05 14:00:00 CST")
+        appversion             = wx.StaticText(self.statusbar, id=wx.ID_ANY, label=u" (Version: " + self.appversion + ")")
         #self.info_st = funutils.MyStaticText(self.statusbar, label = u'Status: ', fontcolor = 'red')
         #self.info    = funutils.MyStaticText(self.statusbar, label = u'',         fontcolor = 'red')
 
-        self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
+        self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT)
         #self.statusbar.AddWidget(self.info_st,           funutils.ESB.ESB_ALIGN_RIGHT)
         #self.statusbar.AddWidget(self.info,              funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
@@ -86,8 +86,9 @@ class AppDrawerFrame(wx.Frame):
         panel = AppDrawerPanel(self, self.appversion)
 
         osizer = wx.BoxSizer(wx.HORIZONTAL)
-        osizer.Add(panel, proportion = 1, flag = wx.EXPAND | wx.ALIGN_CENTER)
+        osizer.Add(panel, proportion=1, flag=wx.EXPAND | wx.ALIGN_CENTER)
         self.SetSizerAndFit(osizer)
+
 
 class AppDrawerPanel(wx.Panel):
     def __init__(self, parent, version, *args, **kwargs):
@@ -103,15 +104,15 @@ class AppDrawerPanel(wx.Panel):
         bkcolor = '#E1E1E1'
         self.SetBackgroundColour(funutils.hex2rgb(bkcolor))
 
-        apptitle_st = funutils.MyStaticText(self, label = u"felapps \u2014 High-level Applications for FEL",
-                                style = wx.ALIGN_CENTER, fontsize = 20, fontweight = wx.FONTWEIGHT_NORMAL,
-                                fontcolor = 'black')
-        appver_st = funutils.MyStaticText(self, label = self.version, 
-                                style = wx.ALIGN_CENTER, fontsize = 12, fontweight = wx.FONTWEIGHT_NORMAL,
-                                fontcolor = 'grey')
-        self.timenow_st = funutils.MyStaticText(self, label = time.strftime(self.timefmt, time.localtime()), 
-                                style = wx.ALIGN_CENTER, fontsize = 14, fontweight = wx.FONTWEIGHT_NORMAL,
-                                fontcolor = 'grey')
+        apptitle_st = funutils.MyStaticText(self, label=u"felapps \u2014 High-level Applications for FEL",
+                                style=wx.ALIGN_CENTER, fontsize=20, fontweight=wx.FONTWEIGHT_NORMAL,
+                                fontcolor='black')
+        appver_st = funutils.MyStaticText(self, label=self.version,
+                                style=wx.ALIGN_CENTER, fontsize=12, fontweight=wx.FONTWEIGHT_NORMAL,
+                                fontcolor='grey')
+        self.timenow_st = funutils.MyStaticText(self, label=time.strftime(self.timefmt, time.localtime()),
+                                style=wx.ALIGN_CENTER, fontsize=14, fontweight=wx.FONTWEIGHT_NORMAL,
+                                fontcolor='grey')
 
         applistname = ['C', 'D', 'F', 'I', 'M']
         applisticon = [resutils.cicon.GetBitmap(),
@@ -135,16 +136,16 @@ class AppDrawerPanel(wx.Panel):
         
         gsizer = wx.GridSizer(1, 5, 0, 0)
         for appname in sorted(self.nameicondict.keys()):
-            appobj = wx.BitmapButton(self, bitmap = self.nameicondict[appname], style = wx.BORDER_NONE)
+            appobj = wx.BitmapButton(self, bitmap=self.nameicondict[appname], style=wx.BORDER_NONE)
             appobj.SetToolTip(wx.ToolTip(self.namehintdict[appname]))
             self.Bind(wx.EVT_BUTTON, self.nameeventdict[appname], appobj)
-            gsizer.Add(appobj, flag = wx.LEFT | wx.RIGHT, border = 10)
+            gsizer.Add(appobj, flag=wx.LEFT | wx.RIGHT, border=10)
 
         mainsizer = wx.BoxSizer(wx.VERTICAL)
-        mainsizer.Add(apptitle_st,     flag = wx.ALIGN_CENTER | wx.TOP, border = 5)
-        mainsizer.Add(appver_st,       flag = wx.ALIGN_CENTER | wx.BOTTOM | wx.TOP, border = 1)
-        mainsizer.Add(self.timenow_st, flag = wx.ALIGN_CENTER | wx.BOTTOM, border = 5)
-        mainsizer.Add(gsizer, flag = wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 5)
+        mainsizer.Add(apptitle_st,     flag=wx.ALIGN_CENTER | wx.TOP,               border=5)
+        mainsizer.Add(appver_st,       flag=wx.ALIGN_CENTER | wx.BOTTOM | wx.TOP,   border=1)
+        mainsizer.Add(self.timenow_st, flag=wx.ALIGN_CENTER | wx.BOTTOM,            border=5)
+        mainsizer.Add(gsizer, flag = wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border=5)
         mainsizer.Add((-1, 10))
         self.SetSizer(mainsizer)
 
@@ -188,13 +189,13 @@ def run(maximize = True, logon = False, debug=True):
     """
     function to make appdrawer app run.
     """
-    if debug == True:
+    if debug:
         app = InspectApp()
         app.MainLoop()
     else:
         app = wx.App(redirect = logon, filename='log')
 
-        if maximize == True:
+        if maximize:
             myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
             myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
