@@ -44,7 +44,7 @@ class ImageConfigFile(parseutils.ConfigFile):
         namelist_style      = {}
         namelist_histplot   = {}
         namestring_image    = ['width', 'height', 'savePath', 'saveImgName', 'saveImgExt', 'saveImgDatName', 'saveImgDatExt', 'saveIntName', 'saveIntExt', 'cmFavor', 'imgIniFunc']
-        namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist']
+        namestring_control  = ['frequency', 'imgsrcPV', 'imgsrcPVlist', 'libcaPath', 'caAddrAuto', 'caAddrList', 'caArrayBytes']
         namestring_histplot = ['heightRatio']
         namestring_style    = ['backgroundColor', 'fontpointsize', 'fontfamily', 'fontstyle', 'fontweight', 'fontfacename']
         for group in root.iter('group'):
@@ -97,6 +97,9 @@ class ImageViewer(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.onExit)
         self.Bind(wx.EVT_MENU_HIGHLIGHT, self.onMenuHL)
         self.InitUI()
+        
+        # handle environment variables
+        self.setEnvars()
 
         # save data settings
         self.savedict = {}
@@ -104,6 +107,13 @@ class ImageViewer(wx.Frame):
         self.saveTimerCounter = 0
         self.savetimer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.onSaveTimer, self.savetimer)
+
+    def setEnvars(self):
+        boolDict = {True:'YES', False:'NO'}
+        envKeys = ['PYEPICS_LIBCA','EPICS_CA_ADDR_LIST','EPICS_CA_AUTO_ADDR_LIST','EPICS_CA_MAX_ARRAY_BYTES']
+        envVals = [self.libcaPath, self.caAddrList, boolDict[self.caAddrAuto], str(self.caArrayBytes)]
+        for k,v in zip(envKeys, envVals):
+            os.environ[k] = v
 
     def loadConfig(self, configfilename):
         self.xmlconfig = ImageConfigFile(configfilename)
@@ -131,6 +141,10 @@ class ImageViewer(wx.Frame):
         self.timer_msec = 1./self.timer_freq*1000 
         self.imgsrcPV     = namelist['imgsrcPV']
         self.imgsrcPVlist = namelist['imgsrcPVlist'].split()
+        self.libcaPath    = namelist['libcaPath']
+        self.caAddrAuto   = (namelist['caAddrAuto'] == 'True')
+        self.caAddrList   = namelist['caAddrList']
+        self.caArrayBytes = int(namelist['caArrayBytes'])
 
         # Style
         self.bkgdcolor    = funutils.hex2rgb(namelist['backgroundColor'])
@@ -198,7 +212,9 @@ class ImageViewer(wx.Frame):
         ## Help menu
         helpMenu = wx.Menu()
         aboutItem = helpMenu.Append(wx.ID_ABOUT, '&About\tF1', 'Show about information')
+        debugItem = helpMenu.Append(wx.ID_ANY,   '&Debug\tF2', 'Only for debug')
         self.Bind(wx.EVT_MENU, self.onAbout, id = wx.ID_ABOUT)
+        self.Bind(wx.EVT_MENU, self.onDebug, debugItem)
         
         ## make menu
         self.menubar.Append(fileMenu,   '&File')
@@ -300,7 +316,6 @@ class ImageViewer(wx.Frame):
             self.statusbar.appinfo.SetLabel(hintText)
             self.statusbar.appinfo.SetForegroundColour(self.statusbarcolor)
         
-
     def onConfigApps(self, event):
         self.menuAppConfig = AppConfigPanel(self)
         self.menuAppConfig.SetTitle('Application Preferences')
@@ -343,18 +358,23 @@ class ImageViewer(wx.Frame):
         info = wx.AboutDialogInfo()
         info.Name = "Image Viewer"
         info.Version = self.appversion
-        info.Copyright = "(C) 2014-2015 Tong Zhang, SINAP, CAS"
+        info.Copyright = "(C) 2014-2016 Tong Zhang, SINAP, CAS"
         info.Description = wordwrap(
-            "This application is created for being an profile/image monitor and image data processing.\n"
+            "This application is a general-purposed profile/image viewer and image data postprocessor.\n"
 
             "It is designed by Python language, using GUI module of wxPython.",
             350, wx.ClientDC(self))
-        info.WebSite = ("http://everyfame.me", "Image Viewer home page")
+        #info.WebSite = ("http://everyfame.me", "Image Viewer home page")
         info.Developers = [ "Tong Zhang <zhangtong@sinap.ac.cn>"]
         licenseText = "Image Viewer is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n" + "\nImage Viewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n" + "\nYou should have received a copy of the GNU General Public License along with Image Viewer; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"
         info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
         wx.AboutBox(info)
 
+    def onDebug(self, event):
+        self.menuDebug = DebugPanel(self)
+        self.menuDebug.SetTitle('Debug Information')
+        self.menuDebug.SetMinSize((500, 400))
+        self.menuDebug.Show()
 
     def onUpdateUIInit(self):
         self.imgpanel.func = self.imginifunc
@@ -781,7 +801,6 @@ class ImageViewer(wx.Frame):
         if pvstr in self.imgsrcPVlist:
             self.imgsrcPVlist.remove(pvstr)
 
-
     def onSetColormap(self, event):
         self.imgpanel.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
         self.imgcm.onSetcm(event.GetEventObject().GetValue() + self.rcmflag)
@@ -858,7 +877,7 @@ class AutoSavePanel(wx.Frame):
 
         ## saveto path
         saveto_st          = funutils.MyStaticText(self.panel, label = 'Save to', fontcolor = 'black', style = wx.ALIGN_LEFT)
-        self.savetopath_tc = funutils.MyTextCtrl(self.panel, value = os.getcwd(), style = wx.CB_READONLY)
+        self.savetopath_tc = funutils.MyTextCtrl(self.panel, value = os.getcwd(), style = wx.TE_READONLY)
         choosepath_btn     = funutils.MyButton(self.panel, label = 'Browse')
 
         ## save freq setting
@@ -1075,6 +1094,10 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.timer_freq = self.controlPage.freqtc.GetValue()
         self.thisapp.timer_msec = 1.0/self.thisapp.timer_freq * 1000
         self.thisapp.imgsrcPV   = self.controlPage.imgsrcPVcb.GetValue()
+        self.thisapp.libcaPath  = self.controlPage.libcaPathtc.GetValue()
+        self.thisapp.caAddrList = self.controlPage.caAddrListtc.GetValue()
+        self.thisapp.caAddrAuto = self.controlPage.caAddrAutochk.GetValue()
+        self.thisapp.caArrayBytes = int(self.controlPage.caArrayBytestc.GetValue())
 
         # histPlotPage
         self.thisapp.heightRatio = float(self.histPlotPage.heightratiotc.GetValue())
@@ -1101,8 +1124,13 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.configdict['fontstyle'      ] = str(self.thisapp.fontstyle)
         self.thisapp.configdict['fontweight'     ] = str(self.thisapp.fontweight)
         self.thisapp.configdict['fontfacename'   ] = self.thisapp.fontfacename
+        self.thisapp.configdict['libcaPath'      ] = self.thisapp.libcaPath
+        self.thisapp.configdict['caAddrAuto'     ] = str(self.thisapp.caAddrAuto)
+        self.thisapp.configdict['caAddrList'     ] = self.thisapp.caAddrList
+        self.thisapp.configdict['caArrayBytes'   ] = str(self.thisapp.caArrayBytes)
         self.thisapp.xmlconfig.updateConfigs(self.thisapp.configdict)
         self.thisapp.onUpdateUI()
+        self.thisapp.setEnvars()
         
         # for debug
         #self.thisapp.printConfig()
@@ -1157,7 +1185,7 @@ class ImageConfigPanel(wx.Panel):
 
         self.imgwpxtc        = wx.TextCtrl(self, value = str(self.thisapp.wpx),          style = wx.TE_PROCESS_ENTER)
         self.imghpxtc        = wx.TextCtrl(self, value = str(self.thisapp.hpx),          style = wx.TE_PROCESS_ENTER)
-        self.pathtc          = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.CB_READONLY     )
+        self.pathtc          = wx.TextCtrl(self, value = self.thisapp.save_path_str_head,style = wx.TE_READONLY     )
         self.pathtc.SetToolTip(wx.ToolTip('Fullpath (subdired by the date) the config file be saved.'))
         self.pathbtn         = wx.Button(self, label = 'Browse')
         self.imgnamepretc    = wx.TextCtrl(self, value = self.thisapp.save_img_name_str, style = wx.TE_PROCESS_ENTER)
@@ -1247,7 +1275,7 @@ class StyleConfigPanel(wx.Panel):
         vboxsizer = wx.BoxSizer(wx.VERTICAL)
         
         bkgdcolorst  = funutils.MyStaticText(self, label = u'Background Color',  style = wx.ALIGN_LEFT)
-        self.bkgdcolortc  = wx.TextCtrl(self, value = funutils.rgb2hex(self.thisapp.bkgdcolor).upper(), style = wx.CB_READONLY)
+        self.bkgdcolortc  = wx.TextCtrl(self, value = funutils.rgb2hex(self.thisapp.bkgdcolor).upper(), style = wx.TE_READONLY)
         self.bkgdcolorbtn = wx.Button(self, label = 'Choose Color', size = (130, -1))
 
         fontst  = funutils.MyStaticText(self, label = u'Font',  style = wx.ALIGN_LEFT)
@@ -1289,6 +1317,7 @@ class StyleConfigPanel(wx.Panel):
         dial = wx.FontDialog(self, fontdata)
         if dial.ShowModal() == wx.ID_OK:
             self.font = dial.GetFontData().GetChosenFont()
+            #print self.font.GetFaceName(), self.font.GetFamilyString()
             self.chosenfonttc.SetFont(self.font)
         else:
             dial.Destroy()
@@ -1323,19 +1352,98 @@ class ControlConfigPanel(wx.Panel):
         self.imgsrcPVcb = wx.ComboBox(self, value = self.thisapp.imgsrcPV,  style = wx.CB_READONLY,
                                             choices = sorted(self.thisapp.imgsrcPVlist))
 
-        gsctrl = wx.GridBagSizer(5, 5)
-        gsctrl.Add(freqst,          pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gsctrl.Add(self.freqtc,     pos = (0, 2), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gsctrl.Add(imgsrcPVst,      pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gsctrl.Add(self.imgsrcPVcb, pos = (1, 2), span = (1, 2), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        gsctrl.AddGrowableCol(2, 0)
+        # LIBCA PATH
+        libcaPathst  = wx.StaticText(self, label=u'CA Library Path', style=wx.ALIGN_RIGHT)
+        libcaPathtc  = wx.TextCtrl(self, value=self.thisapp.libcaPath, style=wx.TE_READONLY)
+        libcaPathbtn = wx.Button(self, label=u'Browse')
+        self.libcaPathtc = libcaPathtc
 
-        vboxsizer.Add(gsctrl, flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
+        # EPICS ENVS
+        caAddrAutochk = funutils.MyCheckBox(self, label=u'Auto CA Address')
+        caAddrListst  = wx.StaticText(self, label=u'CA Address List', style=wx.ALIGN_RIGHT)
+        caAddrListtc  = wx.TextCtrl(self, value=self.thisapp.caAddrList, style=wx.TE_PROCESS_ENTER)
+        caAddrListtc.SetToolTip(wx.ToolTip("Input IP addresses or hostnames seperated by ';'"))
+        caAddrAutochk.SetValue(self.thisapp.caAddrAuto)
+        self.caAddrAutochk = caAddrAutochk
+        self.caAddrListst  = caAddrListst
+        self.caAddrListtc  = caAddrListtc
+        if self.caAddrAutochk.IsChecked():
+            caAddrListst.Disable()
+            caAddrListtc.Disable()
+        else:
+            caAddrListst.Enable()
+            caAddrListtc.Enable()
+
+
+        caArrayBytesst = wx.StaticText(self, label=u'CA Max Array Bytes', style=wx.ALIGN_RIGHT)
+        caArrayBytestc = wx.TextCtrl(self, value=str(self.thisapp.caArrayBytes), style=wx.TE_PROCESS_ENTER)
+        self.caArrayBytestc = caArrayBytestc
+
+        gsctrl = wx.GridBagSizer(5, 5)
+        gsctrl.Add(freqst,          pos = (0, 0), span = (1, 1), flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(self.freqtc,     pos = (0, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.Add(imgsrcPVst,      pos = (1, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(self.imgsrcPVcb, pos = (1, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.Add(libcaPathst,     pos = (2, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(libcaPathtc,     pos = (2, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(libcaPathbtn,    pos = (2, 4), span = (1, 1), flag = wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.Add(caArrayBytesst,  pos = (3, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(caArrayBytestc,  pos = (3, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.Add(caAddrAutochk,   pos = (4, 0), span = (1, 4), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.Add(caAddrListst,    pos = (5, 0), span = (1, 1), flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+        gsctrl.Add(caAddrListtc,    pos = (5, 1), span = (1, 3), flag = wx.EXPAND | wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL, border = 10)
+
+        gsctrl.AddGrowableCol(1)
+        gsctrl.AddGrowableCol(2)
+        gsctrl.AddGrowableCol(3)
+
+        vboxsizer.Add(gsctrl, flag = wx.EXPAND | wx.ALIGN_CENTER | wx.LEFT | wx.RIGHT | wx.TOP, border = 15)
         
         vboxsizer.Add((-1, 10))
         
         ## set boxsizer
         self.SetSizer(vboxsizer)
+
+        ## bind events
+        self.Bind(wx.EVT_BUTTON,     self.onChooseLib,     libcaPathbtn)
+        self.Bind(wx.EVT_CHECKBOX,   self.onCheckAuto,     caAddrAutochk)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams1, caAddrListtc)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams2, caArrayBytestc)
+
+    def onChooseLib(self, event):
+        sofile = funutils.getFileToLoad(self, ext = 'so')
+        self.libcaPathtc.SetValue(sofile)
+
+    def onCheckAuto(self, event):
+        if event.GetEventObject().IsChecked():
+            self.caAddrListst.Disable()
+            self.caAddrListtc.Disable()
+        else:
+            self.caAddrListst.Enable()
+            self.caAddrListtc.Enable()
+
+    def onUpdateParams1(self, event):
+        val = event.GetEventObject().GetValue()
+        newval = val.replace(',',';').replace(';',' ').split()
+        event.GetEventObject().SetValue(';'.join(newval))
+
+    def onUpdateParams2(self, event):
+        obj = event.GetEventObject() 
+        try:
+            int(obj.GetValue())
+        except ValueError:
+            dial = wx.MessageDialog(self, message = u"Error, please input an integer number!",
+                    caption = u"Input Error", 
+                    style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                obj.SetValue('')
+                dial.Destroy()
+
 
 class HistPlotConfigPanel(wx.Panel):
     def __init__(self, parent, **kwargs):
@@ -1889,6 +1997,29 @@ class ImageColorMap(wx.Panel):
         self.figure.set_tight_layout(True)
         self.figure.subplots_adjust(top  = 0.9999, bottom = 0.0001, 
                                     left = 0.0001, right  = 0.9999)
+
+class DebugPanel(wx.Frame):
+    def __init__(self, parent, **kwargs):
+        super(self.__class__, self).__init__(parent = parent,
+                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE, **kwargs)
+                #style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
+        self.parent = parent
+        self.InitUI()
+
+    def InitUI(self):
+        self.createPanel()
+
+    def createPanel(self):
+        panel = wx.Panel(self)
+        envs = os.environ
+        tcfont = wx.Font(8, wx.FONTFAMILY_MODERN, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, faceName="Monospace")
+        tc = funutils.MyTextCtrl(panel, value=u'', style=wx.TE_READONLY | wx.TE_MULTILINE, font=tcfont)
+        tc.AppendText("DEBUG INFORMATION:")
+        for k,v in envs.items():
+            tc.AppendText("\n{k:>30s}: {v:<10s}".format(k=k,v=v))
+        vbox = wx.BoxSizer(wx.VERTICAL)
+        vbox.Add(tc, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
+        panel.SetSizer(vbox)
 
 def main():
     app = wx.App(redirect = False)
