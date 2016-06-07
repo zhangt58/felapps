@@ -262,6 +262,8 @@ class ImageViewer(wx.Frame):
         self.menuShowInt.Show()
 
     def onShowXhist(self, event):
+        x, y = self.imgpanel.linex.get_data()
+        np.savetxt('/tmp/test.dat', np.vstack(np.transpose([x,y])))
         flag = not self.imgpanel.linex.get_visible()
         self.imgpanel.linex.set_visible(flag)
 
@@ -351,7 +353,7 @@ class ImageViewer(wx.Frame):
             from wx.lib.wordwrap import wordwrap
         except:
             dial = wx.MessageDialog(self, message = u"Cannot show about information, sorry!",
-                    caption = u"Unknow Error", 
+                    caption = u"Unknown Error", 
                     style = wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
             if dial.ShowModal() == wx.ID_OK:
                 dial.Destroy()

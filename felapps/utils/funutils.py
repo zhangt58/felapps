@@ -415,9 +415,16 @@ def setPath(pathstr):
 
 #-------------------------------------------------------------------------#
 
-def getFileToLoad(parent, ext = '*', flag = 'single'):
-
-    wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
+def getFileToLoad(parent, ext='*', flag = 'single'):
+    if isinstance(ext, list):
+        if len(ext) > 1:
+            exts = [x.upper() + ' files (*.' + x + ')|*.' + x for x in ext]
+            wildcardpattern = '|'.join(exts)
+        else:
+            x = ext[0]
+            wildcardpattern = x.upper() + ' files ' + '(*.' + x + ')|*.' + x
+    else:
+        wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
 
     if flag == 'single':
         dial = wx.FileDialog(parent, message = "Please select file",
@@ -437,8 +444,16 @@ def getFileToLoad(parent, ext = '*', flag = 'single'):
 
 #-------------------------------------------------------------------------#
 
-def getFileToSave(parent, ext = '*'):
-    wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
+def getFileToSave(parent, ext='*'):
+    if isinstance(ext, list):
+        if len(ext) > 1:
+            exts = [x.upper() + ' files (*.' + x + ')|*.' + x for x in ext]
+            wildcardpattern = '|'.join(exts)
+        else:
+            x = ext[0]
+            wildcardpattern = x.upper() + ' files ' + '(*.' + x + ')|*.' + x
+    else:
+        wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
     dial = wx.FileDialog(parent, "Save it as", wildcard = wildcardpattern, style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
     if dial.ShowModal() != wx.ID_OK:
         dial.Destroy()
