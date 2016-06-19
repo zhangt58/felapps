@@ -21,7 +21,7 @@ import numpy as np
 import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_wxagg import FigureCanvasWxAgg as FigureCanvas
-from matplotlib.backends.backend_wx import NavigationToolbar2Wx
+from matplotlib.backends.backend_wxagg import NavigationToolbar2WxAgg as Toolbar
 import matplotlib.ticker as tick
 import wx.lib.dialogs
 
@@ -1154,7 +1154,8 @@ class PlotFrame(wx.Frame):
 #------------------------------------------------------------------------#
     
     def createToolbar(self):
-        self.toolbar = NavigationToolbar2Wx(self.canvas)
+        #self.toolbar = NavigationToolbar2Wx(self.canvas)
+        self.toolbar = Toolbar(self.canvas)
         self.toolbar.Realize()
         tw, th = self.toolbar.GetSizeTuple()
         fw, fh = self.canvas.GetSizeTuple()
