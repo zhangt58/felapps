@@ -1612,10 +1612,8 @@ class ImagePanel(wx.Panel):
         #print("%d,%d" % (event.xdata, event.ydata))
 
     def onMotion(self, event):
-        try:
+        if event.inaxes is not None:
             self.parent.GetParent().pos_val.SetLabel("(%.4f,%.4f)" % (event.xdata, event.ydata))
-        except TypeError:
-            pass
 
     def setHratio(self, hratio):
         self.hratio = hratio
@@ -1761,7 +1759,7 @@ class ChooseROIFrame(wx.Frame):
         self.axes   = self.roiPanel.axes
         self.canvas.mpl_connect('button_press_event',   self.onPress  )
         self.canvas.mpl_connect('button_release_event', self.onRelease)
-        #self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
+        self.canvas.mpl_connect('motion_notify_event',  self.onMotion )
 
     def onCancel(self, event):
         self.Close(True)
@@ -1779,40 +1777,28 @@ class ChooseROIFrame(wx.Frame):
         self.Close(True)
 
     def onPress(self, event):
-        #self.is_pressed = True
+        self.is_pressed = True
         self.x0 = event.xdata
         self.y0 = event.ydata
 
     def onRelease(self, event):
-        #self.is_pressed = False
-        self.x1 = event.xdata
-        self.y1 = event.ydata
-        self.rect = Rectangle((self.x0, self.y0), 
-                          self.x1 - self.x0, 
-                          self.y1 - self.y0,
-                          fill = False, color = 'w', linestyle = 'dashed',
-                          linewidth = 1)
-        self.patch.append(self.rect)
-        [self.axes.add_patch(inspatch) for inspatch in self.patch]
-        self.figure.canvas.draw()
-    """
+        self.is_pressed = False
+
     def onMotion(self, event):
-        if self.is_pressed == True:
-            try:
-                self.x1 = event.xdata
-                self.y1 = event.ydata
-                self.rect = Rectangle((self.x0, self.y0), 
-                                  self.x1 - self.x0, 
-                                  self.y1 - self.y0,
-                                  fill = False, color = 'w', linestyle = 'dashed',
-                                  linewidth = 1)
-                self.patch.pop()
-                self.patch.append(self.rect)
-                [self.axes.add_patch(inspatch) for inspatch in self.patch]
-                self.figure.canvas.draw_idle()
-            except:
-                pass
-    """
+        if self.is_pressed and event.inaxes:
+            self.x1 = event.xdata
+            self.y1 = event.ydata
+            if self.x1 == self.x0 or self.y1 == self.y0: return
+            self.rect = Rectangle((self.x0, self.y0), 
+                              self.x1 - self.x0, 
+                              self.y1 - self.y0,
+                              fill = False, color = 'b', linestyle = 'dashed',
+                              linewidth = 1)
+            self.patch.append(self.rect)
+            [self.axes.add_patch(inspatch) for inspatch in self.patch]
+            if len(self.patch) > 0:
+                [x.set_visible(False) for x in self.patch[:-1]]
+            self.figure.canvas.draw()
 
 class ChooseROIPanel(wx.Panel):
     def __init__(self, parent, figsize, dpi, **kwargs):
