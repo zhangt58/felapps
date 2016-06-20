@@ -375,7 +375,7 @@ class ImageViewer(wx.Frame):
     def onDebug(self, event):
         self.menuDebug = DebugPanel(self)
         self.menuDebug.SetTitle('Debug Information')
-        self.menuDebug.SetMinSize((500, 400))
+        self.menuDebug.SetMinSize((800, 600))
         self.menuDebug.Show()
 
     def onUpdateUIInit(self):
@@ -1741,11 +1741,11 @@ class ChooseROIFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.onGetROI, self.okbtn    )
 
         hboxbtn = wx.BoxSizer(wx.HORIZONTAL)
-        hboxbtn.Add(self.cancelbtn, proportion = 0, flag = wx.EXPAND |           wx.BOTTOM, border = 10)
-        hboxbtn.Add(self.okbtn,     proportion = 0, flag = wx.EXPAND | wx.LEFT | wx.BOTTOM, border = 10)
+        hboxbtn.Add(self.cancelbtn, proportion = 0, flag = wx.EXPAND)
+        hboxbtn.Add(self.okbtn,     proportion = 0, flag = wx.EXPAND | wx.LEFT, border = 20)
  
-        vbox.Add(self.roiPanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 15)
-        vbox.Add(hboxbtn, flag = wx.ALIGN_RIGHT | wx.RIGHT | wx.TOP, border = 15)
+        vbox.Add(self.roiPanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 5)
+        vbox.Add(hboxbtn, flag = wx.ALIGN_CENTER, border = 5)
         vbox.Add((-1,10))
         self.SetSizerAndFit(vbox)
 
@@ -1792,8 +1792,8 @@ class ChooseROIFrame(wx.Frame):
             self.rect = Rectangle((self.x0, self.y0), 
                               self.x1 - self.x0, 
                               self.y1 - self.y0,
-                              fill = False, color = 'b', linestyle = 'dashed',
-                              linewidth = 1)
+                              fill = False, color = 'w', linestyle = 'dashed',
+                              linewidth = 2)
             self.patch.append(self.rect)
             [self.axes.add_patch(inspatch) for inspatch in self.patch]
             if len(self.patch) > 0:

@@ -15,6 +15,7 @@ utilities/functions for convenience
 from __future__ import division
 
 import wx
+import wx.lib.mixins.listctrl as listmix
 import numpy as np
 import os
 import matplotlib.colors as colors
@@ -251,6 +252,14 @@ class MyComboBox(wx.ComboBox):
 
 #-------------------------------------------------------------------------#
 
+class MyListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
+    def __init__(self, parent, ID, pos=wx.DefaultPosition,
+            size=wx.DefaultSize, style=0):
+        wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
+        listmix.ListCtrlAutoWidthMixin.__init__(self)
+
+#-------------------------------------------------------------------------#
+
 def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LEFT, 
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=12,
@@ -432,6 +441,8 @@ def getFileToLoad(parent, ext='*', flag = 'single'):
         if dial.ShowModal() == wx.ID_OK:
             fullfilename = os.path.join(dial.GetDirectory(), dial.GetFilename())
             return fullfilename
+        else:
+            return None
 
     else: #flag = 'multi':
         dial = wx.FileDialog(parent, message = "Please select file",
@@ -439,6 +450,8 @@ def getFileToLoad(parent, ext='*', flag = 'single'):
         if dial.ShowModal() == wx.ID_OK:
             fullfilenames = [os.path.join(dial.GetDirectory(), filename) for filename in dial.GetFilenames()]
             return fullfilenames
+        else:
+            return None
     
     dial.Destroy()
 
@@ -455,10 +468,11 @@ def getFileToSave(parent, ext='*'):
     else:
         wildcardpattern = ext.upper() + ' files ' + '(*.' + ext + ')|*.' + ext
     dial = wx.FileDialog(parent, "Save it as", wildcard = wildcardpattern, style = wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT)
-    if dial.ShowModal() != wx.ID_OK:
-        dial.Destroy()
-    savetofilename = dial.GetPath()
-    return savetofilename
+    if dial.ShowModal() == wx.ID_OK:
+        savetofilename = dial.GetPath()
+        return savetofilename
+    else:
+        return None
     dial.Destroy()
     
 #-------------------------------------------------------------------------#
