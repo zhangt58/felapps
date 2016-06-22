@@ -405,6 +405,11 @@ def importCheck(moduleName):
 def hex2rgb(hex_string):
     """
     convert hexadecimal color into rgb form.
+    :param hex_string: hex color string, e.g. white color: '#FFFFFF'
+    
+    Example:
+    >>> hex2rgb('#FFAABB')
+    (255, 170, 187)
     """
     rgb = colors.hex2color(hex_string)
     return tuple([int(255*x) for x in rgb])
@@ -414,6 +419,11 @@ def hex2rgb(hex_string):
 def rgb2hex(rgb_tuple):
     """
     convert color rgb into hex form.
+    :param rgb_tuple: tuple of rgb color, e.g. white color: (255, 255, 255)
+    
+    Example:
+    >>> rgb2hex((255, 170, 187))
+    u'ffaabb'
     """
     return colors.rgb2hex([1.0*x/255 for x in rgb_tuple])
 
