@@ -11,22 +11,31 @@ import sys
 
 def testApp(appname = None):
     if appname == 'imageviewer':
-        felapps.imageviewer.run(maximize = True, logon = False, debug = True)
+        felapps.imageviewer.run(maximize=True, logon=False, debug=True)
     elif appname == 'felformula':
-        felapps.felformula.run(maximize = True, logon = True, debug = False)
+        felapps.felformula.run(maximize=True, logon=True, debug=False)
     elif appname == 'cornalyzer':
-        felapps.cornalyzer.run(maximize = True, logon = False, debug = True)
+        felapps.cornalyzer.run(maximize=True, logon=False, debug=True)
     elif appname == 'dataworkshop':
-        felapps.dataworkshop.run(maximize = True, logon = True, debug = True)
+        felapps.dataworkshop.run(maximize=True, logon=True, debug=True)
     elif appname == 'matchwizard':
-        felapps.matchwizard.run(maximize = True, logon = False, debug = True)
+        felapps.matchwizard.run(maximize=True, logon=False, debug=True)
     else: # if app name was not given, show the main launcher panel
-        felapps.appdrawer.run(maximize = True, logon = False, debug = True)
+        felapps.appdrawer.run(maximize=True, logon=False, debug=True)
 
-if __name__ == '__main__':
+def test_argv():
     appname = sys.argv[1:]
     if appname == []:
         testApp()
     else:
         for app in appname:
             testApp(app)
+
+def test(app):
+    testApp(app)
+
+if __name__ == '__main__':
+    #test_argv()
+    app = 'imageviewer'
+    test(app)
+
