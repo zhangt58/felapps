@@ -13,6 +13,7 @@ img2py -a -n matchlogoicon     matchlogo.png ${respyname}
 img2py -a -n radislogoicon     radislogo.png ${respyname}
 img2py -a -n addicon                 add.png ${respyname}
 img2py -a -n delicon              remove.png ${respyname}
+img2py -a -n popicon              popup.png  ${respyname}
 
 # make image resources for appdrawer app
 img2py -a -n iicon ../../launchers/icons/128/imageviewer.png  ${respyname}
