@@ -26,6 +26,7 @@ import shutil
 
 from . import EnhancedStatusBar as ESB
 
+import lmfit
 #-------------------------------------------------------------------------#
 
 def rescaleImage(image0, scaledFac):
@@ -705,3 +706,140 @@ def handleConfig(config_name='imageviewer.xml'):
 
     return retval
  
+
+class FitModels(object):
+    def __init__(self, model='gaussian', params=None, **kws):
+        """
+        fitting models: 'gaussuan'  : a * exp(-(x-x0)^2/2/xstd^2) + y0
+                        'linear'    : a + b*x 
+                        'quadratic' : a + b*x + c*x^2
+                        'polynomial': \Sigma_i=0^n x^i * a_i
+                        'power'     : a * x ^ b
+                        'sin'       : a * sin(b * x + c) + d
+        """
+        if params is None:
+            params = lmfit.Parameters()
+        self._model  = model
+        self._params = params
+        try:
+            self._x, self._y = kws['x'], kws['y']
+        except:
+            self._x, self._y = [], []
+        self._method = 'leastsq'
+
+        self._set_params_func = {
+                'gaussian': self._set_params_gaussian,
+                }
+        self._fitfunc = {
+                'gaussian': self._fit_gaussian,
+                }
+        self._gen_func_text = {
+                'gaussian': self._gen_func_text_gaussian,
+                }
+        
+        self._fit_result = None
+        
+    @property
+    def model(self):
+        return self._model
+
+    @model.setter
+    def mode(self, model):
+        self._model = model
+
+    @property
+    def method(self):
+        return self._method
+    
+    @method.setter
+    def method(self, method):
+        self._method = method
+
+    def _fit_gaussian(self, p, x):
+        a = p['a'].value
+        x0 = p['x0'].value
+        y0 = p['y0'].value
+        xstd = p['xstd'].value
+        return a * np.exp(-(x-x0)**2.0/2.0/xstd/xstd) + y0
+    
+    def _errfunc(self, p, f, x, y):
+        return f(p, x) - y
+
+    def set_data(self, data=None, x=None, y=None):
+        """ set raw data to fit
+        """
+        if data is not None:
+            self._x, self._y = data[:,0], data[:,1]
+        else:
+            if x is not None: self._x = x
+            if y is not None: self._y = y
+
+    def get_data(self):
+        """ return raw data
+        """
+        return self._x, self._y
+            
+    def _set_fitfunc(self, type=None):
+        """ type: gaussian, linear, quadratic, polynomial, power, sin
+        """
+        if type is not None:
+            self._model = type
+
+    def _gen_func_text_gaussian(self, p0):
+        a = p0['a'].value
+        x0 = p0['x0'].value
+        y0 = p0['y0'].value
+        xstd =p0['xstd'].value
+        return '$a e^{-\\frac{(x-x_0)^2}{2\sigma_x^2}}+y_0$' 
+
+    def set_params(self, **p0):
+        """p0: initial parameters dict"""
+        self._set_params_func[self._model](p0)
+
+    def _set_params_gaussian(self, p0):
+        self._params.add('a',    value=p0['a']   )
+        self._params.add('x0',   value=p0['x0']  )
+        self._params.add('y0',   value=p0['y0']  )
+        self._params.add('xstd', value=p0['xstd'])
+
+    def get_fitfunc(self, p0=None):
+        if p0 is None:
+            p0 = self._fit_result.params
+        f_func = self._fitfunc[self._model]
+        gen_func = self._gen_func_text[self._model]
+        f_text = gen_func(p0)
+        return f_func, f_text
+
+    def get_fit_result(self):
+        return self._fit_result
+
+    def fit(self):
+        p = self._params
+        f = self._fitfunc[self._model]
+        x, y = self._x, self._y
+        m = self._method
+        res = lmfit.minimize(self._errfunc, p, method=m, args=(f, x, y))
+        self._fit_result = res
+        return res
+    
+    def fit_report(self):
+        # gaussian model
+        if self._fit_result is not None:
+            p = self._fit_result.params
+            retstr1 = "Fitting Function:" + "\n"
+            retstr2 = "a*exp(-(x-x0)^2/2/sx^2)+y0" + "\n"
+            retstr3 = "Fitting Output:" + "\n"
+            retstr4 = "{a0_k:<3s}: {a0_v:>10.4f}\n".format(a0_k='a' , a0_v=p['a'].value)
+            retstr5 = "{x0_k:<3s}: {x0_v:>10.4f}\n".format(x0_k='x0', x0_v=p['x0'].value)
+            retstr6 = "{sx_k:<3s}: {sx_v:>10.4f}\n".format(sx_k='sx', sx_v=p['xstd'].value)
+            retstr7 = "{y0_k:<3s}: {y0_v:>10.4f}".format(y0_k='y0', y0_v=p['y0'].value)
+            return retstr1 + retstr2 + retstr3 + retstr4 + retstr5 + retstr6 + retstr7
+        else:
+            return "Nothing to report."
+        
+    
+    def fit_report1(self):
+        if self._fit_result is not None:
+            return lmfit.fit_report(self._fit_result.params)
+        else:
+            return "Nothing to report."
