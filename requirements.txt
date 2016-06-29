@@ -1,0 +1,8 @@
+numpy
+scipy
+matplotlib
+h5py
+wheel
+pyrpn
+pyepics
+lmfit
