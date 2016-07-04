@@ -51,7 +51,7 @@ class ImageConfigFile(parseutils.ConfigFile):
                             'imgIniFunc']
         namestring_control = ['frequency', 'imgsrcPV', 'imgsrcPVlist',
                               'libcaPath', 'caAddrAuto', 'caAddrList',
-                              'caArrayBytes']
+                              'caArrayBytes', 'pixelSize']
         namestring_histplot = ['heightRatio']
         namestring_style = ['backgroundColor', 'fontpointsize', 'fontfamily',
                             'fontstyle', 'fontweight', 'fontfacename']
@@ -175,6 +175,11 @@ class ImageViewer(wx.Frame):
         self.fit_report_tc.AppendText('[profile Y]\n')
         self.fit_report_tc.AppendText(self.fit_model_y.fit_report())
 
+        # update (x0,y0)
+        self.pos0_val.SetLabel('({x:.2f},{y:.2f})'.format(
+                            x=res_x.params['x0'].value,
+                            y=res_y.params['x0'].value))
+
     def setEnvars(self):
         boolDict = {True: 'YES', False: 'NO'}
         envKeys = ['PYEPICS_LIBCA', 'EPICS_CA_ADDR_LIST',
@@ -215,6 +220,7 @@ class ImageViewer(wx.Frame):
         self.caAddrAuto = (namelist['caAddrAuto'] == 'True')
         self.caAddrList = namelist['caAddrList']
         self.caArrayBytes = int(namelist['caArrayBytes'])
+        self.pixelSize = float(namelist['pixelSize'])
 
         # Style
         self.bkgdcolor = funutils.hex2rgb(namelist['backgroundColor'])
@@ -508,15 +514,16 @@ class ImageViewer(wx.Frame):
         objs_large = [self.title_st]
         objs_big = [self.timenow_st]
         objs_small = [self.min_st, self.max_st, self.min_value_st,
-                      self.max_value_st]
-        objs_normal = [self.imgsrc_st, self.cm_st, self.cr_st, self.inten_st,
-                       self.inten_val, self.imgcr_st, self.pos_st,
-                       self.pos_val, self.imgsrc_tc, self.imgcr_min_tc,
+                      self.max_value_st, self.inten_st, self.inten_val, 
+                      self.pos0_val, self.pos0_st, self.pos_val, self.pos_st]
+        objs_normal = [self.imgsrc_st, self.cm_st, self.cr_st, 
+                       self.imgcr_st, self.imgsrc_tc, self.imgcr_min_tc,
                        self.imgcr_max_tc, self.rcmchkbox, self.cmlist_cb,
                        self.cm_cb, self.daqtgl_btn, self.roi_btn,
-                       self.reset_roi_btn]
+                       self.reset_roi_btn, 
+                       self.fit_report_tc,]
         objs = objs_large + objs_big + objs_small + objs_normal
-        [iobj.setFont(self.font) for iobj in objs]
+        [iobj.setFont(self.font) for iobj in objs if iobj != self.fit_report_tc]
         [iobj.setFontSize(self.fontptsize_large) for iobj in objs_large]
         [iobj.setFontSize(self.fontptsize_big) for iobj in objs_big]
         [iobj.setFontSize(self.fontptsize_normal) for iobj in objs_normal]
@@ -802,17 +809,21 @@ class ImageViewer(wx.Frame):
 
         ## for debug: add a statictext and button to vboxright sizer 2015.Feb.11
         self.inten_st = funutils.MyStaticText(self.panel,
-                                              label='Intensity:',
+                                              label=u'Intensity:',
                                               font=self.font,
-                                              fontsize=self.fontptsize_normal)
+                                              fontsize=self.fontptsize_small)
         self.inten_val = funutils.MyStaticText(self.panel,
                                                label='0',
                                                font=self.font,
-                                               fontsize=self.fontptsize_normal)
-        self.daqtgl_btn = funutils.MyButton(self.panel,
-                                            label='DAQ START',
-                                            font=self.font,
-                                            fontsize=self.fontptsize_normal)
+                                               fontsize=self.fontptsize_small)
+        self.pos0_st = funutils.MyStaticText(self.panel, 
+                                             label=u'(x\N{SUBSCRIPT ZERO},y\N{SUBSCRIPT ZERO}):',
+                                             font=self.font,
+                                             fontsize=self.fontptsize_small)
+        self.pos0_val = funutils.MyStaticText(self.panel,
+                                              label='',
+                                              font=self.font,
+                                              fontsize=self.fontptsize_small)
         hbox_int = wx.BoxSizer(wx.HORIZONTAL)
         hbox_int.Add(self.inten_st,
                      proportion=0,
@@ -821,6 +832,8 @@ class ImageViewer(wx.Frame):
                      proportion=1,
                      flag=wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT,
                      border=10)
+        hbox_int.Add(self.pos0_st, 0, wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
+        hbox_int.Add(self.pos0_val,1, wx.EXPAND|wx.ALIGN_RIGHT | wx.LEFT, 10)
 
         ## add color range for imgsrc
         self.imgcr_st = funutils.MyStaticText(self.panel,
@@ -848,27 +861,22 @@ class ImageViewer(wx.Frame):
         hbox_imgcr.Add(self.imgcr_max_tc,
                        proportion=1,
                        flag=wx.EXPAND | wx.ALIGN_RIGHT)
-
+        # image color range
         vboxright.Add(hbox_imgcr,
                       proportion=0,
                       flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP,
-                      border=20)
-        vboxright.Add(hbox_int,
-                      proportion=0,
-                      flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP,
-                      border=20)
-        vboxright.Add(self.daqtgl_btn, flag=wx.ALIGN_RIGHT | wx.TOP, border=5)
+                      border=10)
 
         ### information display from image
         ## mouse position tracker
         self.pos_st = funutils.MyStaticText(self.panel,
-                                            label='Current pos (x,y):',
+                                            label='(x, y) pos:',
                                             font=self.font,
-                                            fontsize=self.fontptsize_normal)
+                                            fontsize=self.fontptsize_small)
         self.pos_val = funutils.MyStaticText(self.panel,
                                              label='',
                                              font=self.font,
-                                             fontsize=self.fontptsize_normal)
+                                             fontsize=self.fontptsize_small)
         hbox_pos = wx.BoxSizer(wx.HORIZONTAL)
         hbox_pos.Add(self.pos_st,
                      proportion=0,
@@ -879,26 +887,23 @@ class ImageViewer(wx.Frame):
                      border=10)
 
         self.roi_btn = funutils.MyButton(self.panel,
-                                         label='Choose ROI',
+                                         label='Set ROI',
                                          font=self.font,
                                          fontsize=self.fontptsize_normal)
         self.reset_roi_btn = funutils.MyButton(self.panel,
                                                label='Reset ROI',
                                                font=self.font,
                                                fontsize=self.fontptsize_normal)
-        hbox_roi = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_roi.Add(self.roi_btn,
-                     proportion=0,
-                     flag=wx.ALIGN_LEFT | wx.ALIGN_CENTER_VERTICAL)
-        hbox_roi.Add(self.reset_roi_btn,
-                     proportion=1,
-                     flag=wx.EXPAND | wx.ALIGN_RIGHT | wx.LEFT,
-                     border=10)
-
-        vboxright.Add(hbox_pos,
-                      flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP,
-                      border=20)
-        vboxright.Add(hbox_roi, flag=wx.ALIGN_RIGHT | wx.TOP, border=20)
+        self.daqtgl_btn = funutils.MyButton(self.panel,
+                                            label=u'START',
+                                            font=self.font,
+                                            fontsize=self.fontptsize_normal)
+        self.daqtgl_btn.SetForegroundColour('white')
+        self.daqtgl_btn.SetBackgroundColour('green')
+        hbox_ctrl = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_ctrl.Add(self.roi_btn,       0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
+        hbox_ctrl.Add(self.reset_roi_btn, 0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
+        hbox_ctrl.Add(self.daqtgl_btn,    0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
 
         # curve fitting output box reginon
         sbox_fit = funutils.createwxStaticBox(self.panel,
@@ -924,13 +929,17 @@ class ImageViewer(wx.Frame):
         fit_hbox_u = wx.BoxSizer(wx.HORIZONTAL)
         fit_vbox_d = wx.BoxSizer(wx.VERTICAL)
 
+        tcfont = wx.Font(self.fontptsize_normal,
+                         wx.FONTFAMILY_MODERN,
+                         wx.FONTSTYLE_NORMAL,
+                         wx.FONTWEIGHT_NORMAL,
+                         faceName="Monospace")
         fit_report_tc = funutils.MyTextCtrl(self.panel,
                                             value='',
                                             style=wx.TE_READONLY |
                                             wx.TE_MULTILINE | wx.HSCROLL,
-                                            font=self.font,
-                                            fontsize=self.fontptsize_normal)
-        fit_report_tc.setFontFaceName('monospace')
+                                            font=tcfont,
+                                            )
         self.fit_report_tc = fit_report_tc
 
         fit_hbox_u.Add(fit_model_st, 0, wx.ALIGN_LEFT)
@@ -947,10 +956,26 @@ class ImageViewer(wx.Frame):
 
         sbsizer_fit.Add(fit_vbox_m, 1, wx.EXPAND | wx.LEFT, 1)
 
+        ## layout boxes
+        # hline
+        vboxright.Add(wx.StaticLine(self.panel, wx.HORIZONTAL), 0, wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 5)
+        # image intensity
+        vboxright.Add(hbox_int,
+                      proportion=0,
+                      flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP,
+                      border=10)
+        # xypos
+        vboxright.Add(hbox_pos,
+                      flag=wx.EXPAND | wx.ALIGN_CENTER | wx.TOP,
+                      border=10)
+        # fitting info
         vboxright.Add(sbsizer_fit,
                       1,
                       flag=wx.ALIGN_CENTER | wx.EXPAND | wx.TOP | wx.BOTTOM,
                       border=1)
+        # control box, roi, DAQ start button
+        vboxright.Add(hbox_ctrl, flag=wx.ALIGN_RIGHT | wx.TOP | wx.BOTTOM, border=5)
+        #vboxright.Add(self.daqtgl_btn, flag=wx.ALIGN_RIGHT | wx.TOP | wx.BOTTOM, border=5)
 
         ##
         hbox.Add(vboxright,
@@ -1011,12 +1036,11 @@ class ImageViewer(wx.Frame):
         self.timernow.Start(1000)
 
     def onFitPopup(self, event):
-        if self.fit_model_x.get_fit_result(
-        ) is None or self.fit_model_y.get_fit_result() is None:
+        if self.fit_model_x.get_fit_result() is None or self.fit_model_y.get_fit_result() is None:
             return
         self.fit_popframe = FitPlotFrame(self, self.fit_model_x,
                                          self.fit_model_y)
-        self.fit_popframe.SetTitle('Fitting Curves')
+        self.fit_popframe.SetTitle('Curves Fitting')
         self.fit_popframe.SetMinSize((800, 600))
         self.fit_popframe.Show()
 
@@ -1025,7 +1049,7 @@ class ImageViewer(wx.Frame):
 
     def onChooseROI(self, event):
         self.roiFrame = ChooseROIFrame(self, self.imgpanel)
-        self.roiFrame.SetTitle('Choose ROI')
+        self.roiFrame.SetTitle('Select Region of Interest')
         self.roiFrame.Show()
 
     def onTickTime(self, event):
@@ -1043,16 +1067,18 @@ class ImageViewer(wx.Frame):
             self.timer.Stop()
             self.min_slider.Enable()
             self.max_slider.Enable()
-            self.daqtgl_btn.SetLabel('DAQ START')
+            self.daqtgl_btn.SetLabel('START')
+            self.daqtgl_btn.SetBackgroundColour('green')
         else:
             self.timer.Start(self.timer_msec)
             self.min_slider.Disable()
             self.max_slider.Disable()
-            self.daqtgl_btn.SetLabel('DAQ STOP')
+            self.daqtgl_btn.SetLabel('STOP')
+            self.daqtgl_btn.SetBackgroundColour('red')
 
     def onUpdate(self, event):
         if self.mypv.connected == True:
-            self.inten_val.SetLabel("%.5e" % (np.sum(self.mypv.get())))
+            self.inten_val.SetLabel("%.4e" % (np.sum(self.mypv.get())))
 
             self.imgpanel.z = self.mypv.get()[0:self.wpx * self.hpx].reshape((
                 self.wpx, self.hpx))[self.roixy[0]:self.roixy[1], self.roixy[
@@ -1083,7 +1109,7 @@ class ImageViewer(wx.Frame):
                 self.timer.Stop()
                 self.min_slider.Enable()
                 self.max_slider.Enable()
-                self.daqtgl_btn.SetLabel('DAQ START')
+                self.daqtgl_btn.SetLabel('START')
                 dial.Destroy()
 
     def onSetImgSrc(self, event):
@@ -1115,6 +1141,7 @@ class ImageViewer(wx.Frame):
         self.imgpanel.im.set_clim(vmin=cmin_now, vmax=cmax_now)
         self.imgpanel.im.set_array(self.imgpanel.z)
         self.imgpanel.repaint()
+        self.inten_val.SetLabel("%.4e" % (np.sum(self.mypv.get())))
         self._fit_update(self.imgpanel)
 
     def onCheckRCM(self, event):
@@ -1638,6 +1665,8 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.caAddrAuto = self.controlPage.caAddrAutochk.GetValue()
         self.thisapp.caArrayBytes = int(
             self.controlPage.caArrayBytestc.GetValue())
+        self.thisapp.pixelSize = float(
+            self.controlPage.pixelSizetc.GetValue())
 
         # histPlotPage
         self.thisapp.heightRatio = float(
@@ -1675,6 +1704,8 @@ class AppConfigPanel(wx.Frame):
         self.thisapp.configdict['caAddrList'] = self.thisapp.caAddrList
         self.thisapp.configdict['caArrayBytes'] = str(
             self.thisapp.caArrayBytes)
+        self.thisapp.configdict['pixelSize'] = str(
+            self.thisapp.pixelSize)
         self.thisapp.xmlconfig.updateConfigs(self.thisapp.configdict)
         self.thisapp.onUpdateUI()
         self.thisapp.setEnvars()
@@ -1972,7 +2003,7 @@ class StyleConfigPanel(wx.Panel):
             style=wx.TE_READONLY)
         self.bkgdcolorbtn = wx.Button(self,
                                       label='Choose Color',
-                                      size=(130, -1))
+                                      size=(140, -1))
 
         fontst = funutils.MyStaticText(
             self, label=u'Font', style=wx.ALIGN_LEFT)
@@ -1982,7 +2013,7 @@ class StyleConfigPanel(wx.Panel):
                                                 font=self.font)
         self.choosefontbtn = funutils.MyButton(self,
                                                label='Choose Font',
-                                               size=(130, -1))
+                                               size=(140, -1))
 
         gsstyle = wx.GridBagSizer(5, 5)
         gsstyle.Add(bkgdcolorst,
@@ -2134,6 +2165,15 @@ class ControlConfigPanel(wx.Panel):
                                      style=wx.TE_PROCESS_ENTER)
         self.caArrayBytestc = caArrayBytestc
 
+        # pixel unit
+        pixelSizest = wx.StaticText(self,
+                                    label=u'Pixel Size in \N{GREEK SMALL LETTER MU}m',
+                                    style=wx.ALIGN_RIGHT)
+        pixelSizetc = wx.TextCtrl(self,
+                                  value=str(self.thisapp.pixelSize),
+                                  style=wx.TE_PROCESS_ENTER)
+        self.pixelSizetc = pixelSizetc
+
         gsctrl = wx.GridBagSizer(5, 5)
         gsctrl.Add(freqst,
                    pos=(0, 0),
@@ -2206,6 +2246,18 @@ class ControlConfigPanel(wx.Panel):
                    wx.ALIGN_CENTER_VERTICAL,
                    border=10)
 
+        gsctrl.Add(pixelSizest,
+                   pos=(6, 0),
+                   span=(1, 1),
+                   flag=wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL,
+                   border=10)
+        gsctrl.Add(pixelSizetc,
+                   pos=(6, 1),
+                   span=(1, 3),
+                   flag=wx.EXPAND | wx.LEFT | wx.RIGHT |
+                   wx.ALIGN_CENTER_VERTICAL,
+                   border=10)
+
         gsctrl.AddGrowableCol(1)
         gsctrl.AddGrowableCol(2)
         gsctrl.AddGrowableCol(3)
@@ -2225,6 +2277,7 @@ class ControlConfigPanel(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.onCheckAuto, caAddrAutochk)
         self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams1, caAddrListtc)
         self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams2, caArrayBytestc)
+        self.Bind(wx.EVT_TEXT_ENTER, self.onUpdateParams2, pixelSizetc)
 
     def onChooseLib(self, event):
         sofile = funutils.getFileToLoad(self, ext='so')
@@ -2246,11 +2299,11 @@ class ControlConfigPanel(wx.Panel):
     def onUpdateParams2(self, event):
         obj = event.GetEventObject()
         try:
-            int(obj.GetValue())
+            float(obj.GetValue())
         except ValueError:
             dial = wx.MessageDialog(
                 self,
-                message=u"Error, please input an integer number!",
+                message=u"Error, please input a positive number!",
                 caption=u"Input Error",
                 style=wx.OK | wx.CANCEL | wx.ICON_ERROR | wx.CENTRE)
             if dial.ShowModal() == wx.ID_OK:
@@ -2864,7 +2917,7 @@ class ChooseROIFrame(wx.Frame):
         except TypeError:
             dial = wx.MessageDialog(
                 self,
-                message=u"Please simply draw box on image to get ROI, then click OK.",
+                message=u"Please simply drag a box on image to get ROI, then click OK.",
                 caption=u"Fetch ROI Warning",
                 style=wx.OK | wx.ICON_QUESTION | wx.CENTRE)
             if dial.ShowModal() == wx.ID_OK:
