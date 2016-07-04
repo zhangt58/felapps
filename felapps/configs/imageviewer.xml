@@ -4,7 +4,7 @@
     </group>
 
     <group name="Control">
-        <properties caAddrAuto="False" caAddrList="localhost" caArrayBytes="4000000" frequency="0.5" imgsrcPV="sxfel:prof1" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF25:ARR  UN-BI:PROF19:ARR  13SIM1:image1:ArrayData  test:prof  test:wfdataout  sxfel:prof1" libcaPath="/home/tong/APS/epics/base/lib/linux-x86_64/libca.so" />
+        <properties caAddrAuto="False" caAddrList="localhost" caArrayBytes="4000000" frequency="0.5" imgsrcPV="sxfel:prof1" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF25:ARR  UN-BI:PROF19:ARR  13SIM1:image1:ArrayData  test:prof  test:wfdataout  sxfel:prof1" libcaPath="/home/tong/APS/epics/base/lib/linux-x86_64/libca.so" pixelSize="10"/>
     </group>
 
     <group name="Style">
