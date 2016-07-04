@@ -26,7 +26,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         if not os.path.isfile(configFile):
             configFile = funutils.getFileToLoad(None, ext = 'xml')
 
-        myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         self.SetTopWindow(myframe)
         return True
@@ -46,9 +46,9 @@ def run(maximize = True, logon = False, debug=True):
             configFile = funutils.getFileToLoad(None, ext = 'xml')
 
         if maximize == True:
-            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         app.MainLoop()
 

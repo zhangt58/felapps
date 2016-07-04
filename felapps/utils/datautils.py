@@ -15,6 +15,8 @@ import threading
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
+import os
+import shutil
 
 from . import funutils
 from . import pltutils
@@ -54,13 +56,17 @@ class DataWorkshop(wx.Frame):
         
         ## File menu
         fileMenu = wx.Menu()
-        openItem = fileMenu.Append(wx.ID_OPEN, '&Open file\tCtrl+O', 'Open file to view')
+        openItem = fileMenu.Append(wx.ID_OPEN, '&Open files\tCtrl+O', 'Open file to view')
+        addItem  = fileMenu.Append(wx.ID_ADD,  '&Add files\tCtrl+A',  'Add file to view')
         saveItem = fileMenu.Append(wx.ID_SAVE, '&Save\tCtrl+S',      'Save')
         fileMenu.AppendSeparator()
+        self.addItem = addItem
+        addItem.Enable(False)
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit application')
-        self.Bind(wx.EVT_MENU, self.onOpen, id = openItem.GetId())
-        self.Bind(wx.EVT_MENU, self.onSave, id = saveItem.GetId())
-        self.Bind(wx.EVT_MENU, self.onExit, id = exitItem.GetId())
+        self.Bind(wx.EVT_MENU, self.onOpen, openItem)
+        self.Bind(wx.EVT_MENU, self.onAdd,  addItem )
+        self.Bind(wx.EVT_MENU, self.onSave, saveItem)
+        self.Bind(wx.EVT_MENU, self.onExit, exitItem)
         
         ## Configurations menu
         configMenu = wx.Menu()
@@ -125,9 +131,14 @@ class DataWorkshop(wx.Frame):
         self.backcolor_panel     = '#DDDDDD'
         self.fontcolor_staticbox = '#4B4B4B'
         self.bordersize          = 12
+        self._working_dir = os.path.join('/tmp', '_dw_' + funutils.get_randstr(6))
+        if not os.path.exists(self._working_dir):
+            os.mkdir(self._working_dir)
  
     def postInit(self):
-        pass
+        self.ws_panel.set_data(self.imggrid.get_workspace())
+        self.image_list = None
+        self.fdata_list = None 
 
     def onConfigLoad(self, event):
         pass
@@ -141,11 +152,29 @@ class DataWorkshop(wx.Frame):
     def onOpen(self, event):
         """
         select data files to be visulized in imagegrid panel
+        Tasks:
+            - clear two attributes: image_list and fdata_list
+            - clear image grid panel to be ready for new data and image files
+        
+        fdata_list: put loaded data files via open operation
+        image_list: put generated image files from fdata_list
         """
-        self.datafiles = funutils.getFileToLoad(self, ext = '*', flag = 'multi')
-        self.imggrid.onClear()
-        self.visData_thread(self.datafiles)
-        #self.visData(datafile)
+        datafiles = funutils.getFileToLoad(self, ext = ['hdf5','dat','asc'], flag = 'multi')
+        if datafiles is not None:
+            self.image_list = []  # initialize image_list
+            self.fdata_list = []  # initialize fdata_list
+            self.imggrid.onClear()
+            self.vizData(datafiles)
+            self.addItem.Enable(True)
+        else:
+            return
+
+    def onAdd(self, event):
+        """ Add datafiles
+        """
+        new_datafiles = funutils.getFileToLoad(self, ext = ['hdf5','dat','asc'], flag = 'multi')
+        if new_datafiles is not None:
+            self.vizData(new_datafiles)
 
     def onSave(self, event):
         pass
@@ -158,24 +187,29 @@ class DataWorkshop(wx.Frame):
                                 caption = 'Exit Warning',
                                 style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
         if dial.ShowModal() == wx.ID_YES:
+            self._clean_data()
             self.Destroy()
+
+    def _clean_data(self):
+        if os.path.exists(self._working_dir):
+            shutil.rmtree(self._working_dir)
 
     def createStatusbar(self):
         self.statusbar = funutils.ESB.EnhancedStatusBar(self)
         self.statusbar.SetFieldsCount(5)
         self.SetStatusBar(self.statusbar)
-        self.statusbar.SetStatusWidths([-3,-1,-4,-1,-1])
+        self.statusbar.SetStatusWidths([-3,-1,-3,-2,-1])
 
         self.statusbar.appinfo = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"DataWorkshop powered by Python")
         self.timenow_st        = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"2015-06-05 14:00:00 CST")
-        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u" (Version: " + self.appversion + ")")
-        self.info_st = funutils.MyStaticText(self.statusbar, label = u'Status: ', fontcolor = 'red')
-        self.info    = funutils.MyStaticText(self.statusbar, label = u'',         fontcolor = 'red')
+        appversion             = wx.StaticText(self.statusbar, id = wx.ID_ANY, label = u"(Version: " + self.appversion + ")")
+        self.info_st = funutils.MyStaticText(self.statusbar, label = u'Status: ', fontcolor = 'grey')
+        self.info    = funutils.MyStaticText(self.statusbar, label = u'',         )
 
         self.statusbar.AddWidget(self.statusbar.appinfo, funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(self.info_st,           funutils.ESB.ESB_ALIGN_RIGHT)
         self.statusbar.AddWidget(self.info,              funutils.ESB.ESB_ALIGN_LEFT )
-        self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_RIGHT)
+        self.statusbar.AddWidget(self.timenow_st,        funutils.ESB.ESB_ALIGN_LEFT )
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createToolbar(self):
@@ -219,37 +253,53 @@ class DataWorkshop(wx.Frame):
 
 
         # push button controls for image post-processing
-        animate_btn    = wx.Button(self.panel_l, label = 'Make Animation')
-        statistics_btn = wx.Button(self.panel_l, label = 'Statistics'    )
+        animate_btn    = wx.Button(self.panel_l, label='Make Animation')
+        statistics_btn = wx.Button(self.panel_l, label='Statistics'    )
+        analysis_btn   = wx.Button(self.panel_l, label='Analysis'      )
 
         hbox1 = wx.BoxSizer(wx.VERTICAL)
-        hbox1.Add(animate_btn,    proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
-        hbox1.Add(statistics_btn, proportion = 0, flag = wx.EXPAND | wx.ALL, border = 10)
+        hbox1.Add(animate_btn,    proportion=0, flag=wx.EXPAND | wx.ALL, border=2)
+        hbox1.Add(statistics_btn, proportion=0, flag=wx.EXPAND | wx.ALL, border=2)
+        hbox1.Add(analysis_btn,   proportion=0, flag=wx.EXPAND | wx.ALL, border=2)
 
         ## bindings
         self.Bind(wx.EVT_BUTTON, self.onAnimate,    animate_btn   )
         self.Bind(wx.EVT_BUTTON, self.onStatistics, statistics_btn)
+        self.Bind(wx.EVT_BUTTON, self.onAnalysis,   analysis_btn  )
 
         # image style controls
-        imgscale_st = funutils.MyStaticText(self.panel_l, label = 'Image Size (+/-)', fontcolor = 'blue')
-        scale_inc_btn = wx.BitmapButton(self.panel_l, bitmap = resutils.addicon.GetBitmap())
-        scale_dec_btn = wx.BitmapButton(self.panel_l, bitmap = resutils.delicon.GetBitmap())
-
-        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
-        hbox2.Add(imgscale_st,   proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border = 10)
-        hbox2.Add(scale_inc_btn, proportion = 0, flag = wx.LEFT | wx.ALIGN_CENTER_VERTICAL,             border = 10)
-        hbox2.Add(scale_dec_btn, proportion = 0, flag = wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL,  border = 10)
+        imgscale_st = funutils.MyStaticText(self.panel_l, label=u'Image Size (+/-)', fontcolor='blue')
+        scale_inc_btn = wx.BitmapButton(self.panel_l, bitmap=resutils.addicon.GetBitmap())
+        scale_dec_btn = wx.BitmapButton(self.panel_l, bitmap=resutils.delicon.GetBitmap())
         
+        hbox2 = wx.BoxSizer(wx.HORIZONTAL)
+        hbox2.Add(imgscale_st,   proportion=0, flag=wx.LEFT | wx.ALIGN_CENTER_VERTICAL, border=2)
+        hbox2.Add(scale_inc_btn, proportion=0, flag=wx.LEFT | wx.ALIGN_CENTER_VERTICAL,             border=2)
+        hbox2.Add(scale_dec_btn, proportion=0, flag=wx.LEFT | wx.RIGHT | wx.ALIGN_CENTER_VERTICAL,  border=2)
+
         ## bindings
         self.Bind(wx.EVT_BUTTON, self.onScaleInc, scale_inc_btn)
         self.Bind(wx.EVT_BUTTON, self.onScaleDec, scale_dec_btn)
 
+        # workspace
+        ws_panel = imageutils.WorkspacePanel(self.panel_l)
+        self.ws_panel = ws_panel
+        #ws_sum_st = funutils.MyStaticText(self.panel_l, label=u'Selected:')
+        #self.ws_sum_st = ws_sum_st
+        ws_st = funutils.MyStaticText(self.panel_l, label=u'Data Workspace')
+
+        vbox_ws = wx.BoxSizer(wx.VERTICAL)
+        vbox_ws.Add(ws_st, 0, wx.ALIGN_LEFT | wx.LEFT, 2)
+        vbox_ws.Add(ws_panel, 1, wx.EXPAND | wx.ALL, 2)
+        #vbox_ws.Add(ws_sum_st, 0, wx.ALIGN_LEFT | wx.LEFT, 2)
+
         # left panel sizer
-        controlpanel_sbsizer.Add(hbox1, flag = wx.ALIGN_CENTER | wx.ALL, proportion = 0, border = 10)
-        controlpanel_sbsizer.Add(wx.StaticLine(self.panel_l, style = wx.LI_HORIZONTAL), flag = wx.EXPAND | wx.ALL, border = 10)
-        controlpanel_sbsizer.Add(hbox2, flag = wx.ALIGN_LEFT | wx.ALL, proportion = 0, border = 10)
+        controlpanel_sbsizer.Add(hbox1, flag=wx.ALIGN_CENTER | wx.ALL, proportion=0, border=10)
+        controlpanel_sbsizer.Add(wx.StaticLine(self.panel_l, style=wx.LI_HORIZONTAL), flag=wx.EXPAND | wx.ALL, border=10)
+        controlpanel_sbsizer.Add(hbox2, flag=wx.ALIGN_LEFT | wx.ALL, proportion=0, border=10)
+        controlpanel_sbsizer.Add(vbox_ws, flag=wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, proportion=1, border=10)
         
-        
+
         # vright box
         ## image grid panel
         imagegridpanel_sb = funutils.createwxStaticBox(self.panel_r, label = 'Image Grid', fontcolor=funutils.hex2rgb(self.fontcolor_staticbox), fontsize = self.fontsize_staticbox)
@@ -283,17 +333,56 @@ class DataWorkshop(wx.Frame):
         hbox.Add(vright, proportion = 3, flag = wx.EXPAND)
         self.panel.SetSizer(hbox)
         osizer = wx.BoxSizer(wx.HORIZONTAL)
-        osizer.SetMinSize((1000, 750))
+        osizer.SetMinSize((1280, 1024))
         osizer.Add(self.panel, proportion = 1, flag = wx.EXPAND)
         self.SetSizerAndFit(osizer)
 
+    def onAnalysis(self, event):
+        if self.fdata_list is None:
+            return
+        print self.fdata_list, len(self.fdata_list)
+        print self.image_list, len(self.image_list)
+        #i = 0
+        #input_datafile = self.fdata_list[i]
+        #self._data_analysis(input_datafile)
+
+    def _gaussian_fit(self, x, xdata):
+        """ return x0 and std_x
+        """
+        fm = funutils.FitModels()
+        x0 = np.sum(x*xdata)/np.sum(xdata)
+        p0 = {'a'   : xdata.max(),
+              'x0'  : x0,
+              'xstd': (np.sum((x-x0)**2*xdata)/np.sum(xdata))**0.5,
+              'y0'  : 0
+             }
+        fm.set_data(x=x,y=xdata)
+        fm.set_params(**p0)
+        res = fm.fit()
+        return [res.params[k].value for k in ('x0', 'xstd')]
+        
+    def _data_analysis(self, input_datafile):
+        f = h5py.File(input_datafile, 'r')
+        data = f['image']['data'][...]
+        hx, hy = np.sum(data, 0), np.sum(data, 1)
+        x, y = np.arange(hx.size), np.arange(hy.size)
+        x0, sx = self._gaussian_fit(x, hx)
+        y0, sy = self._gaussian_fit(y, hy)
+        print x0, sx
+        print y0, sy
+        
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        ax.imshow(data[...])
+        plt.show()
+
     def onAnimate(self, event):
-        import shutil, glob, os, subprocess
+        import glob, os, subprocess
         newpathdir = './imagetemp/'
         if not os.path.exists(newpathdir):
             os.mkdir(newpathdir)
         cnt = 0
-        for imagefile in sorted(self.jpglist):
+        for imagefile in sorted(self.image_list):
             cnt += 1
             shutil.copyfile(imagefile, os.path.join(newpathdir, ('image%03d.jpg' % cnt)))
 
@@ -323,78 +412,52 @@ class DataWorkshop(wx.Frame):
                 dial.Destroy()
 
     def onStatistics(self, event):
-        self.statFrame = StatPanel(self, self.datafiles)
+        if self.fdata_list is None:
+            return
+        # !!!HDF5 data file only
+        self.statFrame = StatPanel(self, self.fdata_list)
         self.statFrame.SetTitle('Statistical Analysis')
         #self.statFrame.SetMinSize((800, 600))
         self.statFrame.Show()
 
     def onScaleInc(self, event):
-        self.imggrid.onScaleInc(0.1)
+        self.imggrid.onScaleInc(0.1, self.fdata_list, self.image_list)
 
     def onScaleDec(self, event):
-        self.imggrid.onScaleDec(0.1)
+        self.imggrid.onScaleDec(0.1, self.fdata_list, self.image_list)
 
-    def visData(self, datafilename):
+    def updateImageGrid(self, image_file_list, fdir, ftype):
+        self.imggrid.onUpdate(image_file_list, fdir, ftype)
+
+    def vizData(self, datafiles):
         """
         read data file and show images on right panel
+        :param datafiles: list of data filenames, ext: hdf5 | dat | asc
         """
-        filenum = datafilename.__len__()
-        self.jpglist = []
-
-        """
-        # threading approach, fancy
-        self.progressbar = imageutils.ProgressBarFrame(self, 'Loading Data...', filenum)
+        self.progressbar = imageutils.ProgressBarFrame(self, 'Loading Data...', len(datafiles))
         self.progressbar.MakeModal(True)
-        dataProcessWorker = WorkerThread(self, self.progressbar, filenum, datafilename)
-        dataProcessWorker.start()
-        """
-        
-        # normal approach, not user-friendly, especially loading bunch of data files
-        filecnt = 0
-        for file in datafilename:
-            filecnt += 1
-            ftype = file.split('.')[-1]
-            if ftype == 'hdf5': # hdf5 data file
-                self.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
-            elif ftype == 'dat' or ftype == 'asc':
-                self.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
-
-            print "Loading: %d/%d" %(filecnt, filenum) # need to be realized in threading approach
-                
-        # show images on right panel
-        self.updateImageGrid()
-
-    def updateImageGrid(self):
-        self.imggrid.onUpdate(self.jpglist)
-
-    def visData_thread(self, datafilename):
-        """
-        read data file and show images on right panel
-        """
-        filenum = datafilename.__len__()
-        self.jpglist = []
-
-        self.progressbar = imageutils.ProgressBarFrame(self, 'Loading Data...', filenum)
-        self.progressbar.MakeModal(True)
-        self.dataProcessWorker = WorkerThread(self, self.progressbar, filenum, datafilename)
+        self.dataProcessWorker = DataImportThread(self, self.progressbar, datafiles)
         self.dataProcessWorker.start()
         
         # show images on right panel
         #self.updateImageGrid()
-    def onStopWorker(self):
+    def onStopWorker(self, file_num):
         self.dataProcessWorker.stop()
-        self.info.SetLabel('Complete loading data')
+        self.info.SetLabel('Successfully loading {} data files.'.format(file_num))
 
-class WorkerThread(threading.Thread):
-    def __init__(self, parent, target, countNum, datafilename):
-        threading.Thread.__init__(self, target = target)
+class DataImportThread(threading.Thread):
+    def __init__(self, parent, target, datafiles):
+        threading.Thread.__init__(self, target=target)
         #self.setDaemon(True)
-        self.parent = parent # point to the parent, here is DataWorkshop
-        self.cnt = countNum
-        self.target = target # point to progressbarframe
-        self.pb = self.target.pb # point to progressbarframe.gauge
-        self.datafilename = datafilename
-        self.filecnt = 0
+        self._parent = parent      # point to the parent, here is DataWorkshop
+        self.cnt = len(datafiles)  # total number of data files
+        self.target = target       # point to progressbarframe
+        self.pb = self.target.pb   # point to progressbarframe.gauge
+        self.datafiles = datafiles
+        self.filecnt = 1           # loading file counter, start from 1
+        self._wdir = self._parent._working_dir  # temp working dirs for image files
+        self._fdata_list = self._parent.fdata_list
+        self._image_list = self._parent.image_list
 
         self.quitflag = threading.Event()
         self.quitflag.clear()
@@ -403,23 +466,34 @@ class WorkerThread(threading.Thread):
         self.quitflag.set()
 
     def run(self):
-        for file in self.datafilename:
+        new_image_file_list = []
+        for file in self.datafiles:
+            ftype = file.split('.')[-1]
             if self.quitflag.isSet():
                 break
-            self.filecnt += 1
-            ftype = file.split('.')[-1]
+
+            if file in self._fdata_list:
+                continue
+            
+            # add new data file to fdata_list, when open action, cleara into []
+            self._fdata_list.append(file)  
+            # add new image file to image_list, when open action, clear into []
             if ftype == 'hdf5': # hdf5 data file
                 #time.sleep(0.2)
-                self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'hdf5'))
+                new_image_file = imageutils.data2Image(file, datatype='hdf5', wdir=self._wdir)
             elif ftype == 'dat' or ftype == 'asc':
-                self.parent.jpglist.append(imageutils.data2Image(file, datatype = 'asc'))
-            wx.CallAfter(self.pb.SetValue, self.filecnt)
+                new_image_file = imageutils.data2Image(file, datatype='asc', wdir=self._wdir)
+            self._image_list.append(new_image_file)
+            new_image_file_list.append(new_image_file)
 
-        #wx.CallAfter(self.target.info.SetLabel, ("%d of %d loaded." % (self.filecnt, self.cnt)))
+            wx.CallAfter(self.pb.SetValue, self.filecnt)
+            #wx.CallAfter(self._parent.info.SetLabel, ("%d of %d loaded." % (self.filecnt, self.cnt)))
+            self.filecnt += 1
+        fdir = os.path.dirname(file)
         wx.CallAfter(self.target.MakeModal, False)
         wx.CallAfter(self.target.Close)
-        wx.CallAfter(self.parent.updateImageGrid)
-        wx.CallAfter(self.parent.onStopWorker)
+        wx.CallAfter(self._parent.updateImageGrid, new_image_file_list, fdir, ftype)
+        wx.CallAfter(self._parent.onStopWorker, self.cnt)
 
 class StatPanel(wx.Frame):
     def __init__(self, parent, datafiles, **kwargs):
@@ -427,7 +501,7 @@ class StatPanel(wx.Frame):
                 id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
         self.parent = parent
         self.datafiles = datafiles
-        self.shotIDArray = np.arange(1, self.datafiles.__len__()+1)
+        self.shotIDArray = np.arange(1, len(self.datafiles)+1)
         self.InitUI()
 
     def InitUI(self):
@@ -481,10 +555,8 @@ class StatPanel(wx.Frame):
 
         # cmd hbox sizer
         cmdhbox    = wx.BoxSizer(wx.HORIZONTAL)
-        ok_btn     = funutils.MyButton(self.panel, label = 'OK')
-        cancel_btn = funutils.MyButton(self.panel, label = 'Cancel')
-        cmdhbox.Add(cancel_btn, proportion = 0, flag = wx.RIGHT, border = 10)
-        cmdhbox.Add(ok_btn,     proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.RIGHT, border = 0)
+        exit_btn = funutils.MyButton(self.panel, label = 'E&xit')
+        cmdhbox.Add(exit_btn,     proportion = 0, flag = wx.TOP | wx.BOTTOM | wx.RIGHT, border = 0)
         
         # main sizer
         mainsizer = wx.BoxSizer(wx.VERTICAL)
@@ -503,13 +575,9 @@ class StatPanel(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.onIntensityStatHist, showinthist_btn)
         self.Bind(wx.EVT_BUTTON, self.onCentralPosStat,    showxypos_btn  )
         self.Bind(wx.EVT_BUTTON, self.onRadiusStat,        showradius_btn )
-        self.Bind(wx.EVT_BUTTON, self.onOK,                ok_btn         )
-        self.Bind(wx.EVT_BUTTON, self.onCancel,            cancel_btn     )
+        self.Bind(wx.EVT_BUTTON, self.onExit,              exit_btn       )
     
-    def onOK(self, event):
-        self.Close(True)
-
-    def onCancel(self, event):
+    def onExit(self, event):
         self.Close(True)
 
     def postInit(self):
@@ -636,4 +704,3 @@ class ImageGrid(pltutils.ImagePanel):
             self.GetParent().img_pos.SetLabel("(%.4f, %.4f)" % (event.xdata, event.ydata))
         except TypeError:
             pass
-
