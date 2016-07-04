@@ -23,11 +23,13 @@ import time
 import sys
 import h5py
 import shutil
+import random
 
 from . import EnhancedStatusBar as ESB
+from . import uiutils
 
 import lmfit
-#-------------------------------------------------------------------------#
+
 
 def rescaleImage(image0, scaledFac):
     """
@@ -42,7 +44,6 @@ def rescaleImage(image0, scaledFac):
 
     return scaledImage
 
-#-------------------------------------------------------------------------#
 
 def findObj(objroot, objclass):
     """
@@ -56,7 +57,6 @@ def findObj(objroot, objclass):
             objfound.append(obji)
     return objfound
 
-#-------------------------------------------------------------------------#
 
 class MySpinCtrl(wx.SpinCtrl):
     """
@@ -91,7 +91,6 @@ class MySpinCtrl(wx.SpinCtrl):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyStaticText(wx.StaticText):
     def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
@@ -123,7 +122,6 @@ class MyStaticText(wx.StaticText):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyTextCtrl(wx.TextCtrl):
     def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
@@ -155,7 +153,6 @@ class MyTextCtrl(wx.TextCtrl):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyCheckBox(wx.CheckBox):
     def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
@@ -187,7 +184,6 @@ class MyCheckBox(wx.CheckBox):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyButton(wx.Button):
     def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
@@ -219,7 +215,6 @@ class MyButton(wx.Button):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyComboBox(wx.ComboBox):
     def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
@@ -251,7 +246,6 @@ class MyComboBox(wx.ComboBox):
         self.font = font
         self.SetFont(font)
 
-#-------------------------------------------------------------------------#
 
 class MyListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
     def __init__(self, parent, ID, pos=wx.DefaultPosition,
@@ -259,7 +253,6 @@ class MyListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
         wx.ListCtrl.__init__(self, parent, ID, pos, size, style)
         listmix.ListCtrlAutoWidthMixin.__init__(self)
 
-#-------------------------------------------------------------------------#
 
 def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LEFT, 
         fontname=wx.SYS_SYSTEM_FONT, 
@@ -275,7 +268,6 @@ def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LE
     st.SetForegroundColour(fontcolor)
     return st
 
-#-------------------------------------------------------------------------#
 
 def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
         fontname=wx.SYS_SYSTEM_FONT,
@@ -291,7 +283,7 @@ def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
     textctrl.SetDefaultStyle(wx.TextAttr(font = font, colText = fontcolor))
     return textctrl
 
-#-------------------------------------------------------------------------#
+
 def createwxButton(parent, label,
         fontname=wx.SYS_SYSTEM_FONT, 
         fontsize=10,
@@ -307,7 +299,6 @@ def createwxButton(parent, label,
     btn.SetForegroundColour(fontcolor)
     return btn
 
-#-------------------------------------------------------------------------#
 
 def createwxPanel(parent, backgroundcolor = None, id = wx.ID_ANY):
     if backgroundcolor == None:
@@ -316,7 +307,6 @@ def createwxPanel(parent, backgroundcolor = None, id = wx.ID_ANY):
     panel.SetBackgroundColour(backgroundcolor)
     return panel
 
-#-------------------------------------------------------------------------#
 
 def createwxStaticBox(parent, label = '', style = wx.ALIGN_LEFT,
                       fontname=wx.SYS_SYSTEM_FONT, 
@@ -331,7 +321,6 @@ def createwxStaticBox(parent, label = '', style = wx.ALIGN_LEFT,
     sbox.SetForegroundColour(fontcolor)
     return sbox
 
-#-------------------------------------------------------------------------#
 
 def aupmu(gap, xlamd, a = 3.44, b = -5.00, c = 1.54):
     """
@@ -342,7 +331,6 @@ def aupmu(gap, xlamd, a = 3.44, b = -5.00, c = 1.54):
 
     return au
 
-#-------------------------------------------------------------------------#
 
 def r56chi(gam0, ibfield, imagl = 0.150, idril = 0.285,):
     """
@@ -355,7 +343,6 @@ def r56chi(gam0, ibfield, imagl = 0.150, idril = 0.285,):
 
     return r56
 
-#-------------------------------------------------------------------------#
 
 def readfld(filename, ncar = 121):
     fid = open(filename, 'rb')
@@ -369,7 +356,6 @@ def readfld(filename, ncar = 121):
 
     return intp, farfield
 
-#-------------------------------------------------------------------------#
 
 def getResPath(filename, cwd = '.', resdir = '../resources'):
     """
@@ -383,7 +369,6 @@ def getResPath(filename, cwd = '.', resdir = '../resources'):
 
     return resPath
     
-#-------------------------------------------------------------------------#
 
 def importCheck(moduleName):
     """
@@ -401,7 +386,6 @@ def importCheck(moduleName):
         if dial.ShowModal() == wx.ID_OK:
             dial.Destroy()
 
-#-------------------------------------------------------------------------#
 
 def hex2rgb(hex_string):
     """
@@ -415,7 +399,6 @@ def hex2rgb(hex_string):
     rgb = colors.hex2color(hex_string)
     return tuple([int(255*x) for x in rgb])
 
-#-------------------------------------------------------------------------#
 
 def rgb2hex(rgb_tuple):
     """
@@ -428,12 +411,10 @@ def rgb2hex(rgb_tuple):
     """
     return colors.rgb2hex([1.0*x/255 for x in rgb_tuple])
 
-#-------------------------------------------------------------------------#
 
 def setPath(pathstr):
     return os.path.expanduser(os.path.sep.join(pathstr.replace('\\',' ').replace('/',' ').split(' ')))
 
-#-------------------------------------------------------------------------#
 
 def getFileToLoad(parent, ext='*', flag = 'single'):
     if isinstance(ext, list):
@@ -466,7 +447,6 @@ def getFileToLoad(parent, ext='*', flag = 'single'):
     
     dial.Destroy()
 
-#-------------------------------------------------------------------------#
 
 def getFileToSave(parent, ext='*'):
     if isinstance(ext, list):
@@ -486,7 +466,6 @@ def getFileToSave(parent, ext='*'):
         return None
     dial.Destroy()
     
-#-------------------------------------------------------------------------#
 
 class SaveData(object):
     def __init__(self, data, fname, type):
@@ -527,7 +506,6 @@ class SaveData(object):
     def onSaveSDDS(self):
         print 'save sdds format to be implemented.'
         
-#-------------------------------------------------------------------------#
 
 class FloatSlider(wx.Slider):
 
@@ -591,18 +569,15 @@ class FloatSlider(wx.Slider):
         self._min = minval
         self._max = maxval
 
-#-------------------------------------------------------------------------#
 
 def func_sinc(x, y):
     r = np.sqrt(x**2 + y**2)
     return np.sin(r)/r
 
-#-------------------------------------------------------------------------#
 
 def func_peaks(x, y):
     return 3*(1-x)**2*np.exp(-(x**2) - (y+1)**2) - 10*(x/5 - x**3 - y**5)*np.exp(-x**2-y**2) - 1/3*np.exp(-(x+1)**2 - y**2)
 
-#-------------------------------------------------------------------------#
 
 class ImageDataFactor(object): # will write into C module, 2015-06-16
     def __init__(self, z):
@@ -617,7 +592,6 @@ class ImageDataFactor(object): # will write into C module, 2015-06-16
     def getInt(self):
         return np.sum(self.imgdata)
 
-#-------------------------------------------------------------------------#
 
 class ScanDataFactor(object): # will write into C module, 2015-06-17
     def __init__(self, z, scannum, shotnum, ndim = 2):
@@ -645,7 +619,6 @@ class ScanDataFactor(object): # will write into C module, 2015-06-17
     def getYavg(self):
         return self.scanmean[:,1]
 
-#-------------------------------------------------------------------------#
 
 class ProgressBarFrame(wx.Frame):
     def __init__(self, parent, title, range = 100, *args, **kws) :
@@ -681,7 +654,6 @@ class ProgressBarFrame(wx.Frame):
         fmt='%H:%M:%S'
         self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
 
-#-------------------------------------------------------------------------#
 
 def handleConfig(config_name='imageviewer.xml'):
     """
@@ -843,3 +815,232 @@ class FitModels(object):
             return lmfit.fit_report(self._fit_result.params)
         else:
             return "Nothing to report."
+
+
+def get_randstr(length=1):
+    """ return string of random picked up chars
+    :param length: string length to return
+    """
+    chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
+    retval = ''.join([random.choice(chars) for _ in range(length)])
+    return retval
+
+
+def get_file_info(filepath):
+    """ return file information
+    :param filepath: file full path name
+    """
+    f_info = os.stat(filepath)
+    f_ctime = time.strftime("%Y-%m-%d %H:%M:%S",
+                            time.localtime(f_info.st_ctime))
+    f_size_bytes = f_info.st_size
+    f_name = os.path.basename(filepath)
+
+    return {'name'  : f_name,
+            'ctime' : f_ctime,
+            'bytes' : f_size_bytes}
+
+
+def gaussian_fit(x, xdata):
+    """ return x0 and std_x
+    """
+    fm = FitModels()
+    x0 = np.sum(x*xdata)/np.sum(xdata)
+    p0 = {'a'   : xdata.max(),
+          'x0'  : x0,
+          'xstd': (np.sum((x-x0)**2*xdata)/np.sum(xdata))**0.5,
+          'y0'  : 0
+         }
+    fm.set_data(x=x,y=xdata)
+    fm.set_params(**p0)
+    res = fm.fit()
+    return [res.params[k].value for k in ('x0', 'xstd')]
+
+
+class AnalysisPlotPanel(uiutils.MyPlotPanel):
+    def __init__(self, parent, data=None, **kwargs):
+        """ data: m x n image array
+        """
+        if data is None:
+            x = y = np.linspace(-np.pi, np.pi, 100)
+            xx, yy = np.meshgrid(x, y)
+            data = func_sinc(xx, yy)
+            #data = np.zeros([50, 50])
+        self.data = data
+        self.cmap = 'jet'
+
+        # axis directions
+        self.xaxis_direction = True # left->right: small->big
+        self.yaxis_direction = True # bottom->up : small->big
+
+        #self.line_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.line_color = wx.Colour(255, 165, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.mec = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.mfc = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+
+        uiutils.MyPlotPanel.__init__(self, parent, **kwargs)
+    
+    def set_color(self, rgb_tuple):
+        """ set figure and canvas with the same color.
+        :param rgb_tuple: rgb color tuple, 
+                          e.g. (255, 255, 255) for white color
+        """
+        if rgb_tuple is None:
+            rgb_tuple = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME).Get()
+        clr = [c/255.0 for c in rgb_tuple]
+        self.figure.set_facecolor(clr)
+        self.figure.set_edgecolor(clr)
+
+    def _init_plot(self):
+        pass
+
+    def set_colormap(self, cmap):
+        self.cmap = cmap
+        self.image.set_cmap(cmap)
+        self.refresh()
+
+    def set_linecolor(self, color):
+        self.line_color = color
+        self.linex.set_color(color)
+        self.liney.set_color(color)
+        self.refresh()
+
+    def set_fontsize(self, fontsize):
+        x_lbl = self.axes.get_xlabel()
+        y_lbl = self.axes.get_ylabel()
+        self.axes.set_xlabel(x_lbl, fontsize=fontsize+4)
+        self.axes.set_ylabel(y_lbl, fontsize=fontsize+4)
+        self.axes.tick_params(labelsize=fontsize)
+        self.refresh()
+
+    def set_figure_data(self, data):
+        self.data = data
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111, aspect=1.0)
+        self.z = data
+        self.image = self.axes.imshow(self.z, cmap=self.cmap)
+
+        hx, hy = np.sum(data, 0), np.sum(data, 1)
+        x, y = np.arange(hx.size), np.arange(hy.size)
+        x0, sx = gaussian_fit(x, hx)
+        y0, sy = gaussian_fit(y, hy)
+        self.linex, = self.axes.plot(x, hx/hx.max()*y0)
+        self.liney, = self.axes.plot(hy/hy.max()*x0, y)
+        self.linex.set_color(self.line_color)
+        self.liney.set_color(self.line_color)
+
+        self.linex.set_marker('')
+        self.linex.set_markersize(5)
+        self.linex.set_mec(self.mec)
+        self.linex.set_mfc(self.mfc)
+
+        self.liney.set_marker('')
+        self.liney.set_markersize(5)
+        self.liney.set_mec(self.mec)
+        self.liney.set_mfc(self.mfc)
+
+        self.axes.set_xlim([x.min(), x.max()])
+        self.axes.set_ylim([y.min(), y.max()])
+
+    def set_linestyle(self, ls):
+        self.linex.set_linestyle(ls)
+        self.liney.set_linestyle(ls)
+        self.refresh()
+
+    def set_marker(self, mk):
+        self.linex.set_marker(mk)
+        self.liney.set_marker(mk)
+        self.refresh()
+
+    def set_markersize(self, ms):
+        self.linex.set_markersize(ms)
+        self.liney.set_markersize(ms)
+        self.refresh()
+
+    def set_mec(self, c):
+        self.mec = c
+        self.linex.set_mec(c)
+        self.liney.set_mec(c)
+        self.refresh()
+
+    def set_mfc(self, c):
+        self.mfc = c
+        self.linex.set_mfc(c)
+        self.liney.set_mfc(c)
+        self.refresh()
+
+    def set_linewidth(self, lw):
+        self.linex.set_linewidth(lw)
+        self.liney.set_linewidth(lw)
+        self.refresh()
+
+    def set_ticks(self, flag='half'):
+        if flag == 'half':
+            s = ['on','on','off','off']
+            self.axes.tick_params(labelbottom=s[0]) 
+            self.axes.tick_params(labelleft=s[1]) 
+            self.axes.tick_params(labeltop=s[2]) 
+            self.axes.tick_params(labelright=s[3]) 
+        elif flag == 'all':
+            s = ['on','on','on','on']
+            self.axes.tick_params(labelbottom=s[0]) 
+            self.axes.tick_params(labelleft=s[1]) 
+            self.axes.tick_params(labeltop=s[2]) 
+            self.axes.tick_params(labelright=s[3]) 
+        self.refresh()
+
+    def set_grids(self, color, b=None):
+        if b is None:
+            self.axes.grid(color=color, linestyle='--')
+        else:
+            self.axes.grid(b=False)
+        self.refresh()
+
+    def set_origin(self, ll=False, ul=False, ur=False, lr=False):
+        if ll:
+            self.direct_xyaxis(True, True)
+            self.axes.xaxis.set_ticks_position('bottom')
+            self.axes.yaxis.set_ticks_position('left')
+            self.axes.xaxis.set_label_position('bottom')
+            self.axes.yaxis.set_label_position('left')
+        if ul:
+            self.direct_xyaxis(True, False)
+            self.axes.xaxis.set_ticks_position('top')
+            self.axes.yaxis.set_ticks_position('left')
+            self.axes.xaxis.set_label_position('top')
+            self.axes.yaxis.set_label_position('left')
+        if ur:
+            self.direct_xyaxis(False, False)
+            self.axes.xaxis.set_ticks_position('top')
+            self.axes.yaxis.set_ticks_position('right')
+            self.axes.xaxis.set_label_position('top')
+            self.axes.yaxis.set_label_position('right')
+        if lr:
+            self.direct_xyaxis(False, True)
+            self.axes.xaxis.set_ticks_position('bottom')
+            self.axes.yaxis.set_ticks_position('right')
+            self.axes.xaxis.set_label_position('bottom')
+            self.axes.yaxis.set_label_position('right')
+        self.refresh()
+
+    def get_clim(self):
+        clim = self.image.get_clim()
+        return "{cmin:.1f} : {cmax:.1f}".format(cmin=clim[0], cmax=clim[1])
+
+    def set_clim(self, cr):
+        clim = sorted(float(i) for i in cr.split(':'))
+        self.image.set_clim(clim)
+        self.refresh()
+
+    def direct_xyaxis(self, x_direction, y_direction):
+        if self.xaxis_direction != x_direction:
+            self.axes.invert_xaxis()
+            self.xaxis_direction = x_direction
+        if self.yaxis_direction != y_direction:
+            self.axes.invert_yaxis()
+            self.yaxis_direction = y_direction
+
+    def hide_image(self, hide_flag):
+        self.image.set_visible(not hide_flag)
+        self.refresh()
+
