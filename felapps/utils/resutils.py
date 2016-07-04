@@ -5300,6 +5300,30 @@ popicon = PyEmbeddedImage(
     "YII=")
 
 #----------------------------------------------------------------------
+incrfsicon = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAYagMeiWXwAAAAJi"
+    "S0dEAP+Hj8y/AAAACXBIWXMAAABIAAAASABGyWs+AAABBUlEQVQoz6XRvSvEAQDG8c/97lc3"
+    "GBRXzkveUm5A6eT1ROpIusWm2AxWZhPZ/AkmC4PFZJEMlhtuOi+lKIMYrpCXUpefAQOrZ32e"
+    "vs9TD/9VjAyBWT0+HChQ/BUIQb11aaTNq/wmBCCjTYRBLX8rwgxMSCip0WzIVebLGZe26zFA"
+    "rVHsKYiZFP8mL9nU8bWhW6dXR17MGtLkxoQ5/RJWXYYYV+XctYRXrQbcGLEoEpP3Fqg2hpRt"
+    "a0KhHLZMOfFuWS7UrQtxvahIyGp0G7uPZqQcOg/kJJUtyBq2IdKujyiybtoloTwuHHvGgRVJ"
+    "k/YplpUh3lCnYMcpePLgTEnJx92/X/zRJyh6QZu2oIGrAAAAJXRFWHRkYXRlOmNyZWF0ZQAy"
+    "MDE2LTA3LTAyVDIzOjE0OjMyKzA4OjAwjXNCmwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAxNi0w"
+    "Ny0wMlQyMzoxMzo0OSswODowMBYwvL0AAAAASUVORK5CYII=")
+
+#----------------------------------------------------------------------
+decrfsicon = PyEmbeddedImage(
+    "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAYagMeiWXwAAAAJi"
+    "S0dEAP+Hj8y/AAAACXBIWXMAAABIAAAASABGyWs+AAAA40lEQVQoz63PPUtCAQCF4Ue9dImG"
+    "hoI+6WvJIYO4QVlGIejW4tRQY78k+hdNLUG0u0VbODhpSUvgIC5FBdlk2iKUOdaZD+e8L39N"
+    "jIi4glUdRSXKfYUATDmRRNKhdv9CHEQWdbFp/vdFPIKsUFXDnDTRwMKYHVwpiclLGGBIWdZy"
+    "7V1B2qx6lHXQU3gNsGfEvUehlgUb6rYd+0TMR2DULiadGxYI5Fw6c9vDbwVSVpCwhrZQxoxG"
+    "ufkNmTPuyZGMLae6lqz3W+yj5kbNg6JnQ/I/VRPTE0ouVMGbF3cqKjpN/5Uvryk1JwYb74AA"
+    "AAAldEVYdGRhdGU6Y3JlYXRlADIwMTYtMDctMDJUMjM6MTQ6MjYrMDg6MDC1lmYWAAAAJXRF"
+    "WHRkYXRlOm1vZGlmeQAyMDE2LTA3LTAyVDIzOjEzOjM1KzA4OjAw21Xf0AAAAABJRU5ErkJg"
+    "gg==")
+
+#----------------------------------------------------------------------
 iicon = PyEmbeddedImage(
     "iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABGdBTUEAALGPC/xhBQAAAAFz"
     "UkdCAK7OHOkAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAA"
