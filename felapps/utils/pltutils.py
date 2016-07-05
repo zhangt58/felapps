@@ -569,7 +569,7 @@ class ImageViewer(wx.Frame):
                                               fontcolor='blue')
         vbox.Add(self.title_st,
                  flag=wx.LEFT | wx.RIGHT | wx.TOP | wx.ALIGN_CENTER,
-                 border=10)
+                 border=2)
         hline = wx.StaticLine(self.panel, style=wx.LI_HORIZONTAL)
         vbox.Add((-1, 10))
         vbox.Add(hline,
@@ -889,23 +889,127 @@ class ImageViewer(wx.Frame):
         self.roi_btn = funutils.MyButton(self.panel,
                                          label='Set ROI',
                                          font=self.font,
-                                         fontsize=self.fontptsize_normal)
+                                         fontsize=self.fontptsize_normal,
+                                         size=(110, -1))
         self.reset_roi_btn = funutils.MyButton(self.panel,
                                                label='Reset ROI',
                                                font=self.font,
-                                               fontsize=self.fontptsize_normal)
+                                               fontsize=self.fontptsize_normal,
+                                               size=(110,-1))
         self.daqtgl_btn = funutils.MyButton(self.panel,
                                             label=u'START',
                                             font=self.font,
-                                            fontsize=self.fontptsize_normal)
+                                            fontsize=self.fontptsize_normal,
+                                            size=(110, -1))
         self.daqtgl_btn.SetForegroundColour('white')
         self.daqtgl_btn.SetBackgroundColour('green')
-        hbox_ctrl = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_ctrl.Add(self.roi_btn,       0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
-        hbox_ctrl.Add(self.reset_roi_btn, 0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
-        hbox_ctrl.Add(self.daqtgl_btn,    0, wx.LEFT | wx.ALIGN_CENTER_VERTICAL, 5)
 
-        # curve fitting output box reginon
+        # pos marker hbox
+
+        hbox_ctrl_b = wx.BoxSizer( wx.HORIZONTAL )
+                        
+        self.mark_st = wx.StaticText( self.panel, wx.ID_ANY, u"Pick M", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.mark_st1 = wx.StaticText( self.panel, wx.ID_ANY, u"#1:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.mark_st2 = wx.StaticText( self.panel, wx.ID_ANY, u"#2:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.mark_st.Wrap( -1 )
+
+        self.mkc1_btn = wx.BitmapButton(self.panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW)
+        w, h = 16, 16
+        k_bmp = wx.EmptyBitmap(w, h)
+        k_img = wx.ImageFromBitmap(k_bmp)
+        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 255, 0, 0)
+        self.mkc1_btn.SetBitmap(wx.BitmapFromImage(k_img))
+
+        self.mkc2_btn = wx.BitmapButton(self.panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW)
+        w, h = 16, 16
+        k_bmp = wx.EmptyBitmap(w, h)
+        k_img = wx.ImageFromBitmap(k_bmp)
+        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 240, 230, 140)
+        self.mkc2_btn.SetBitmap(wx.BitmapFromImage(k_img))
+
+        self.pcc_st = wx.StaticText( self.panel, wx.ID_ANY, u"MColor", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.pcc_btn = wx.BitmapButton(self.panel, wx.ID_ANY, wx.NullBitmap, wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW)
+        w, h = 16, 16
+        k_bmp = wx.EmptyBitmap(w, h)
+        k_img = wx.ImageFromBitmap(k_bmp)
+        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 0, 0, 0)
+        self.pcc_btn.SetBitmap(wx.BitmapFromImage(k_img))
+
+        # markers info box
+        fgSizer_info = wx.FlexGridSizer( 0, 4, 0, 0 )
+        fgSizer_info.AddGrowableCol( 1 )
+        fgSizer_info.AddGrowableCol( 3 )
+        fgSizer_info.SetFlexibleDirection( wx.BOTH )
+        fgSizer_info.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
+        
+        self.m1_st = wx.StaticText( self.panel, wx.ID_ANY, u"M1:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m1_st.Wrap( -1 )
+        self.m1_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.m1_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+        
+        self.m1_pos_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m1_pos_st.Wrap( -1 )
+        self.m1_pos_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        
+        self.delx_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}x:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.delx_st.Wrap( -1 )
+        self.delx_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.delx_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+        
+        self.delx_val_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.delx_val_st.Wrap( -1 )
+        self.delx_val_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.delx_val_st, 2, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        
+        self.m2_st = wx.StaticText( self.panel, wx.ID_ANY, u"M2:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m2_st.Wrap( -1 )
+        self.m2_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.m2_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+        
+        self.m2_pos_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m2_pos_st.Wrap( -1 )
+        self.m2_pos_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        
+        self.dely_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}y:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.dely_st.Wrap( -1 )
+        self.dely_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.dely_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+        
+        self.dely_val_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.dely_val_st.Wrap( -1 )
+        self.dely_val_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        
+        fgSizer_info.Add( self.dely_val_st, 2, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+
+        #
+        hbox_ctrl_b.Add( self.mark_st,  0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+        hbox_ctrl_b.Add( self.mark_st1, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 2 )
+        hbox_ctrl_b.Add( self.mkc1_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5 )
+        hbox_ctrl_b.Add( self.mark_st2, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 2 )
+        hbox_ctrl_b.Add( self.mkc2_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5 )
+        hbox_ctrl_b.Add( self.pcc_st,   0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 2 )
+        hbox_ctrl_b.Add( self.pcc_btn,  0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 5 )
+
+        hbox_ctrl = wx.BoxSizer(wx.HORIZONTAL)
+        hbox_ctrl.Add(self.roi_btn,       0, wx.ALIGN_CENTER_VERTICAL | wx.RIGHT, 10)
+        hbox_ctrl.Add(self.reset_roi_btn, 0, wx.ALIGN_CENTER_VERTICAL)
+        hbox_ctrl.Add(self.daqtgl_btn,    0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT, 10)
+
+        vbox_ctrl = wx.BoxSizer(wx.VERTICAL)
+        vbox_ctrl.Add(fgSizer_info, 1, wx.EXPAND)
+        vbox_ctrl.Add(hbox_ctrl_b, 0)#, wx.EXPAND | wx.ALIGN_LEFT)
+        vbox_ctrl.Add(hbox_ctrl,   0)#, wx.ALIGN_RIGHT)
+
+        # curve fitting output box region
         sbox_fit = funutils.createwxStaticBox(self.panel,
                                               label="Curve Fitting",
                                               fontcolor='grey',
@@ -973,9 +1077,8 @@ class ImageViewer(wx.Frame):
                       1,
                       flag=wx.ALIGN_CENTER | wx.EXPAND | wx.TOP | wx.BOTTOM,
                       border=1)
-        # control box, roi, DAQ start button
-        vboxright.Add(hbox_ctrl, flag=wx.ALIGN_RIGHT | wx.TOP | wx.BOTTOM, border=5)
-        #vboxright.Add(self.daqtgl_btn, flag=wx.ALIGN_RIGHT | wx.TOP | wx.BOTTOM, border=5)
+        # control box, roi, DAQ start button, pos marker picker
+        vboxright.Add(vbox_ctrl, flag=wx.EXPAND | wx.TOP | wx.BOTTOM, border=5)
 
         ##
         hbox.Add(vboxright,
@@ -991,6 +1094,11 @@ class ImageViewer(wx.Frame):
         self.SetSizerAndFit(osizer)
 
         ### event bindings
+
+        ## pos markers
+        self.Bind(wx.EVT_BUTTON, self.onPickMK1c, self.mkc1_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickMK2c, self.mkc2_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickPcc,  self.pcc_btn)
 
         ## fit model detail popup
         self.Bind(wx.EVT_BUTTON, self.onFitPopup, self.fit_model_popup_btn)
@@ -1034,6 +1142,31 @@ class ImageViewer(wx.Frame):
 
         ## start timernow (clock)
         self.timernow.Start(1000)
+
+    def onPickMK1c(self, event):
+        color = funutils.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.imgpanel.set_mkc1(c)
+            funutils.set_staticbmp_color(self.mkc1_btn, color)
+        self.marker_pos1, self.marker_pos2 = True, False
+        self.imgpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+
+    def onPickMK2c(self, event):
+        color = funutils.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.imgpanel.set_mkc2(c)
+            funutils.set_staticbmp_color(self.mkc2_btn, color)
+        self.marker_pos1, self.marker_pos2 = False, True
+        self.imgpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+
+    def onPickPcc(self, event):
+        color = funutils.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.imgpanel.set_pcc(c)
+            funutils.set_staticbmp_color(self.pcc_btn, color)
 
     def onFitPopup(self, event):
         if self.fit_model_x.get_fit_result() is None or self.fit_model_y.get_fit_result() is None:
@@ -2508,12 +2641,15 @@ class ImagePanel(wx.Panel):
         self.canvas.mpl_connect('button_release_event', self.onRelease)
         self.canvas.mpl_connect('motion_notify_event', self.onMotion)
 
+        self.mkc1 = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.mkc2 = wx.Colour(240, 230, 140).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.pcc = wx.Colour(0, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+
+        self.mk1 = False
+        self.mk2 = False
+
     def onConfigPlot(self):
         pass
-
-    def onPress(self, event):
-        pass
-        #print("%d,%d" % (event.xdata, event.ydata))
 
     def onRelease(self, event):
         pass
@@ -2536,6 +2672,9 @@ class ImagePanel(wx.Panel):
         self.figure.set_facecolor(clr)
         self.figure.set_edgecolor(clr)
         self.canvas.SetBackgroundColour(wx.Colour(*rgbtuple))
+
+    def refresh(self):
+        self.canvas.draw_idle()
 
     def repaint(self):
         self.onSetHist()
@@ -2564,6 +2703,8 @@ class ImagePanel(wx.Panel):
         self.xyscalar = [self.xx.min(), self.xx.max(), self.yy.min(),
                          self.yy.max()]
         self.im.set_extent(self.xyscalar)
+        self.axes.set_xlim(self.xyscalar[0:2])
+        self.axes.set_ylim(self.xyscalar[2:4])
 
     def onSetCr(self, crange):
         self.im.set_clim(crange)
@@ -2587,6 +2728,8 @@ class ImagePanel(wx.Panel):
         self.im.set_extent(self.xyscalar)
         self.linex.set_visible(False)
         self.liney.set_visible(False)
+        self.axes.set_xlim(self.xyscalar[0:2])
+        self.axes.set_ylim(self.xyscalar[2:4])
         self.figure.canvas.draw()
 
     def onGetData(self):
@@ -2628,10 +2771,123 @@ class ImagePanel(wx.Panel):
         self.figure.subplots_adjust(
             top=0.9999, bottom=0.0001,
             left=0.0001, right=0.9999)
-        #heresize = self.GetSize()
-        #self.figure.set_size_inches(float(heresize[0])/self.figure.get_dpi(),
-        #                            float(heresize[1])/self.figure.get_dpi())
 
+    def onPress(self, event):
+        if event.inaxes:
+            x0, y0 = event.xdata, event.ydata
+            self.draw_hvlines(x0, y0)
+
+    def set_markflags(self, mk1=False, mk2=False):
+        self.mk1, self.mk2 = mk1, mk2
+        try:
+            if self.mk1 == True:
+                self._draw_hvlines1(self.x_pos1, self.y_pos1)
+            elif self.mk2 == True:
+                self._draw_hvlines2(self.x_pos2, self.y_pos2)
+        except:
+            return
+
+    def set_mkc1(self, color):
+        self.mkc1 = color
+
+    def set_mkc2(self, color):
+        self.mkc2 = color
+
+    def set_pcc(self, color):
+        self.pcc = color
+        if hasattr(self, 'pc1'):
+            self.pc1.set_mec(color)
+            self.pc1.set_mfc(color)
+        if hasattr(self, 'pc2'):
+            self.pc2.set_mec(color)
+            self.pc2.set_mfc(color)
+        if hasattr(self, 'plbl1'):
+            self.plbl1.set_color(color)
+        if hasattr(self, 'plbl2'):
+            self.plbl2.set_color(color)
+        self.refresh()
+
+    def draw_hvlines(self, x0, y0):
+        if self.mk1 == True:
+            self._draw_hvlines1(x0, y0)
+        elif self.mk2 == True:
+            self._draw_hvlines2(x0, y0)
+        self.update_deltxy()
+
+    def _draw_hvlines1(self, x0, y0):
+        if hasattr(self, 'plbl1'):
+            self.plbl1.set_position((x0, y0))
+        else:
+            self.plbl1 = self.axes.text(x0, y0, r'$\mathsf{M1}$', fontsize=16, alpha=0.5)
+        self.plbl1.set_color(self.pcc)
+
+        if hasattr(self, 'hl1'):
+            self.hl1.set_ydata([y0, y0])
+        else:
+            self.hl1 = self.axes.axhline(y0, ls='--')
+        self.hl1.set_color(self.mkc1)
+
+        if hasattr(self, 'vl1'):
+            self.vl1.set_xdata([x0, x0])
+        else:
+            self.vl1 = self.axes.axvline(x0, ls='--')
+        self.vl1.set_color(self.mkc1)
+
+        if hasattr(self, 'pc1'):
+            self.pc1.set_data(x0, y0)
+        else:
+            self.pc1, = self.axes.plot(x0, y0, 'ko', ms=6, mfc='k', mec='k')
+        self.pc1.set_mec(self.pcc)
+        self.pc1.set_mfc(self.pcc)
+
+        self.x_pos1, self.y_pos1 = x0, y0
+
+        self.parent.GetParent().m1_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+
+        self.refresh()
+
+    def _draw_hvlines2(self, x0, y0):
+        if hasattr(self, 'plbl2'):
+            self.plbl2.set_position((x0, y0))
+        else:
+            self.plbl2 = self.axes.text(x0, y0, r'$\mathsf{M2}$', fontsize=16, alpha=0.5)
+        self.plbl2.set_color(self.pcc)
+
+        if hasattr(self, 'hl2'):
+            self.hl2.set_ydata([y0, y0])
+        else:
+            self.hl2 = self.axes.axhline(y0, color='r', ls='--')
+        self.hl2.set_color(self.mkc2)
+
+        if hasattr(self, 'vl2'):
+            self.vl2.set_xdata([x0, x0])
+        else:
+            self.vl2 = self.axes.axvline(x0, color='r', ls='--')
+        self.vl2.set_color(self.mkc2)
+
+        if hasattr(self, 'pc2'):
+            self.pc2.set_data(x0, y0)
+        else:
+            self.pc2, = self.axes.plot(x0, y0, 'ko', ms=6, mfc='k', mec='k')
+        self.pc2.set_mec(self.pcc)
+        self.pc2.set_mfc(self.pcc)
+
+        self.x_pos2, self.y_pos2 = x0, y0
+
+        self.parent.GetParent().m2_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+        self.refresh()
+
+    def update_deltxy(self):
+        ps = self.parent.GetParent().pixelSize
+        m1_pos_val = self.parent.GetParent().m1_pos_st.GetLabel()
+        m2_pos_val = self.parent.GetParent().m2_pos_st.GetLabel()
+        if m1_pos_val != '' and m2_pos_val != '':
+            x1, y1 = [float(i) for i in m1_pos_val.split(',')]
+            x2, y2 = [float(i) for i in m2_pos_val.split(',')]
+            dx = abs(x1 - x2)
+            dy = abs(y1 - y2)
+            self.parent.GetParent().delx_val_st.SetLabel("{0:.1f}|{1:.1f}".format(dx,dx*ps) + u'\N{GREEK SMALL LETTER MU}m')
+            self.parent.GetParent().dely_val_st.SetLabel("{0:.1f}|{1:.1f}".format(dy,dx*ps) + u'\N{GREEK SMALL LETTER MU}m')
 
 class FitPlotFrame(wx.Frame):
     def __init__(self, parent, model_x, model_y, **kwargs):
