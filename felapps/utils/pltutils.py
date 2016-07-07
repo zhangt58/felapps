@@ -890,17 +890,17 @@ class ImageViewer(wx.Frame):
                                          label='Set ROI',
                                          font=self.font,
                                          fontsize=self.fontptsize_normal,
-                                         size=(110, -1))
+                                         size=(105, -1))
         self.reset_roi_btn = funutils.MyButton(self.panel,
                                                label='Reset ROI',
                                                font=self.font,
                                                fontsize=self.fontptsize_normal,
-                                               size=(110,-1))
+                                               size=(105,-1))
         self.daqtgl_btn = funutils.MyButton(self.panel,
                                             label=u'START',
                                             font=self.font,
                                             fontsize=self.fontptsize_normal,
-                                            size=(110, -1))
+                                            size=(105, -1))
         self.daqtgl_btn.SetForegroundColour('white')
         self.daqtgl_btn.SetBackgroundColour('green')
 
@@ -950,9 +950,9 @@ class ImageViewer(wx.Frame):
         
         self.m1_pos_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.m1_pos_st.Wrap( -1 )
-        self.m1_pos_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        self.m1_pos_st.SetFont( wx.Font( wx.SMALL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
-        fgSizer_info.Add( self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        fgSizer_info.Add( self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
         
         self.delx_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}x:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.delx_st.Wrap( -1 )
@@ -962,9 +962,9 @@ class ImageViewer(wx.Frame):
         
         self.delx_val_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.delx_val_st.Wrap( -1 )
-        self.delx_val_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        self.delx_val_st.SetFont( wx.Font( wx.SMALL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
-        fgSizer_info.Add( self.delx_val_st, 2, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        fgSizer_info.Add( self.delx_val_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
         
         self.m2_st = wx.StaticText( self.panel, wx.ID_ANY, u"M2:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.m2_st.Wrap( -1 )
@@ -974,9 +974,9 @@ class ImageViewer(wx.Frame):
         
         self.m2_pos_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.m2_pos_st.Wrap( -1 )
-        self.m2_pos_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        self.m2_pos_st.SetFont( wx.Font( wx.SMALL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
-        fgSizer_info.Add( self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        fgSizer_info.Add( self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
         
         self.dely_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}y:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.dely_st.Wrap( -1 )
@@ -986,9 +986,9 @@ class ImageViewer(wx.Frame):
         
         self.dely_val_st = wx.StaticText( self.panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.dely_val_st.Wrap( -1 )
-        self.dely_val_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
+        self.dely_val_st.SetFont( wx.Font( wx.SMALL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
-        fgSizer_info.Add( self.dely_val_st, 2, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 5 )
+        fgSizer_info.Add( self.dely_val_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 
         #
         hbox_ctrl_b.Add( self.mark_st,  0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
@@ -2887,7 +2887,7 @@ class ImagePanel(wx.Panel):
             dx = abs(x1 - x2)
             dy = abs(y1 - y2)
             self.parent.GetParent().delx_val_st.SetLabel("{0:.1f}|{1:.1f}".format(dx,dx*ps) + u'\N{GREEK SMALL LETTER MU}m')
-            self.parent.GetParent().dely_val_st.SetLabel("{0:.1f}|{1:.1f}".format(dy,dx*ps) + u'\N{GREEK SMALL LETTER MU}m')
+            self.parent.GetParent().dely_val_st.SetLabel("{0:.1f}|{1:.1f}".format(dy,dy*ps) + u'\N{GREEK SMALL LETTER MU}m')
 
 class FitPlotFrame(wx.Frame):
     def __init__(self, parent, model_x, model_y, **kwargs):
@@ -3064,8 +3064,28 @@ class FitPlotFrame(wx.Frame):
         self.Close(True)
 
     def onExport(self, event):
-        pass
-
+        data_raw = self.plotpanel.data_raw
+        data_fit = self.plotpanel.data_fit
+        if not os.path.exists(self._parent.save_path_str):
+            os.system('mkdir -p' + ' ' + self._parent.save_path_str)
+        filelabel = time.strftime('%H%M%S', time.localtime())
+        savetofilename = self._parent.save_path_str + '/' + 'fitdata' + filelabel + '.hdf5'
+        try:
+            funutils.ExportData(data_raw, data_fit, self._model_x, self._model_y, savetofilename)
+            dial = wx.MessageDialog(self,
+                                    message=u"Data saved into " + savetofilename + ".",
+                                    caption=u"Successfully Saved Data",
+                                    style=wx.OK | wx.ICON_WARNING | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+        except:
+            dial = wx.MessageDialog(self,
+                                    message=u"Data cannot saved into " + savetofilename + ".",
+                                    caption=u"Saved Data Failure",
+                                    style=wx.OK | wx.ICON_WARNING | wx.CENTRE)
+            if dial.ShowModal() == wx.ID_OK:
+                dial.Destroy()
+    
     def onSetRange(self, event):
         obj = event.GetEventObject()
         nid = obj.GetName()
