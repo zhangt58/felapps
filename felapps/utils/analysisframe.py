@@ -2,6 +2,7 @@
 
 import wx
 import h5py
+import numpy as np
 
 import myui
 
@@ -30,7 +31,7 @@ class AnalysisFrame(myui.PlotFrame):
         self.cmap_cb.SetValue('jet')
 
         # line style
-        lslist = ['solid', 'dashed', 'dashdot', 'dotted']
+        lslist = ['solid', 'dashed', 'dashdot', 'dotted', 'none']
         self.ls_cb.Clear()
         self.ls_cb.AppendItems(lslist)
         self.ls_cb.SetValue('solid')
@@ -81,13 +82,22 @@ class AnalysisFrame(myui.PlotFrame):
         clim = self.plotpanel.get_clim()
         self.crange_tc.SetValue(clim)
 
+        # pos marker flag
+        self.marker_pos1, self.marker_pos2 = False, False
+        self.plotpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+
         # events:
         self.Bind(wx.EVT_BUTTON, self.onIncFontSize, self.inc_font_btn)
         self.Bind(wx.EVT_BUTTON, self.onDecFontSize, self.dec_font_btn)
         self.Bind(wx.EVT_BUTTON, self.onPickGridc,   self.gridc_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickMK1c,    self.mkc1_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickMK2c,    self.mkc2_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickPcc,     self.pcc_btn)
         self.Bind(wx.EVT_CLOSE, self.onExit)
 
-    def get_data(self, datasrc):
+    def get_data(self, datasrc=None):
+        if datasrc is None:
+            return np.zeros([50, 50])
         f = h5py.File(datasrc, 'r')
         data = f['image']['data'][...]
         return data
@@ -214,6 +224,37 @@ class AnalysisFrame(myui.PlotFrame):
                 self.plotpanel.set_grids(color=c)
             self.set_staticbmp_color(self.gridc_btn, color)
 
+    def onPickMK1c(self, event):
+        color = self.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.plotpanel.set_mkc1(c)
+            self.set_staticbmp_color(self.mkc1_btn, color)
+        self.marker_pos1, self.marker_pos2 = True, False
+        self.plotpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+
+    def onPickMK2c(self, event):
+        color = self.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.plotpanel.set_mkc2(c)
+            self.set_staticbmp_color(self.mkc2_btn, color)
+        self.marker_pos1, self.marker_pos2 = False, True
+        self.plotpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+
+    def onPickPcc(self, event):
+        color = self.pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.plotpanel.set_pcc(c)
+            self.set_staticbmp_color(self.pcc_btn, color)
+
+    def mticks_ckbOnCheckBox(self, event):
+        if event.GetEventObject().IsChecked():
+            self.plotpanel.set_mticks('on')
+        else:
+            self.plotpanel.set_mticks('off')
+
     def pick_color(self):
         dlg = wx.ColourDialog(self)
         dlg.GetColourData().SetChooseFull(True)  # only windows
@@ -245,5 +286,3 @@ class AnalysisFrame(myui.PlotFrame):
         img = wx.ImageFromBitmap(bmp)
         img.SetRGBRect(wx.Rect(0, 0, w, h), r, g, b)
         obj.SetBitmap(img.ConvertToBitmap())
- 
-
