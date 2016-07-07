@@ -496,6 +496,10 @@ class SaveData(object):
 
     def onSaveHDF5(self):
         f = h5py.File(self.fname,'w')
+
+        rg = f.create_group('image')
+        rg.attrs['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+
         dset = f.create_dataset('image/data', shape=self.data.shape, dtype=self.data.dtype)
         dset[...] = self.data
         dset.attrs['xypos']  = (self.xpos, self.ypos)
@@ -506,6 +510,48 @@ class SaveData(object):
     def onSaveSDDS(self):
         print 'save sdds format to be implemented.'
         
+
+class ExportData(object):
+    def __init__(self, data_raw, data_fit, model_x, model_y, fname):
+
+        self.data_raw = data_raw
+        self.data_fit = data_fit
+        self.model_x = model_x
+        self.model_y = model_y
+        self.fname = fname
+        self.onProcess()
+        self.onSave()
+
+    def onProcess(self):
+        # fit:
+        res_x = self.model_x.get_fit_result()
+        res_y = self.model_x.get_fit_result()
+        self.x0 = res_x.params['x0'].value
+        self.y0 = res_y.params['x0'].value
+        self.sx = res_x.params['xstd'].value
+        self.sy = res_y.params['xstd'].value
+
+    def onSave(self):
+        f = h5py.File(self.fname, 'w')
+
+        rg = f.create_group('data')
+        rg.attrs['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+
+        for k, v in self.data_raw.items():
+            dset = f.create_dataset('data/raw/' + k, shape=v.shape, dtype=v.dtype, compression=None)
+            dset[...] = v
+
+
+        dg = f.create_group('data/fit')
+        dg.attrs['x0'] = self.x0
+        dg.attrs['y0'] = self.y0
+        dg.attrs['xstd'] = self.sx
+        dg.attrs['ystd'] = self.sy
+        for k, v in self.data_fit.items():
+            dset = f.create_dataset('data/fit/' + k, shape=v.shape, dtype=v.dtype, compression=None)
+            dset[...] = v
+        
+        f.close()
 
 class FloatSlider(wx.Slider):
 
@@ -878,8 +924,17 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.mec = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
         self.mfc = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
 
+        self.mkc1 = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.mkc2 = wx.Colour(240, 230, 140).GetAsString(wx.C2S_HTML_SYNTAX)
+        self.pcc = wx.Colour(0, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
+
+        self.mk1, self.mk2 = False, False
+
         uiutils.MyPlotPanel.__init__(self, parent, **kwargs)
     
+        # specific relationship between self and the parent? frame
+        self.mframe_point = self.parent.GetParent().GetParent()
+        
     def set_color(self, rgb_tuple):
         """ set figure and canvas with the same color.
         :param rgb_tuple: rgb color tuple, 
@@ -893,6 +948,126 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
 
     def _init_plot(self):
         pass
+
+    def on_press(self, event):
+        if event.inaxes:
+            x0, y0 = event.xdata, event.ydata
+            self.draw_hvlines(x0, y0)
+
+    def on_release(self, event):
+        pass
+        #x0, y0 = event.xdata, event.ydata
+        #self.x0, self.y0 = x0, y0
+
+    def set_markflags(self, mk1=False, mk2=False):
+        self.mk1, self.mk2 = mk1, mk2
+        try:
+            if self.mk1 == True:
+                self._draw_hvlines1(self.x_pos1, self.y_pos1)
+            elif self.mk2 == True:
+                self._draw_hvlines2(self.x_pos2, self.y_pos2)
+        except:
+            return
+
+    def set_mkc1(self, color):
+        self.mkc1 = color
+
+    def set_mkc2(self, color):
+        self.mkc2 = color
+
+    def set_pcc(self, color):
+        self.pcc = color
+        if hasattr(self, 'pc1'):
+            self.pc1.set_mec(color)
+            self.pc1.set_mfc(color)
+        if hasattr(self, 'pc2'):
+            self.pc2.set_mec(color)
+            self.pc2.set_mfc(color)
+        if hasattr(self, 'plbl1'):
+            self.plbl1.set_color(color)
+        if hasattr(self, 'plbl2'):
+            self.plbl2.set_color(color)
+        self.refresh()
+
+    def draw_hvlines(self, x0, y0):
+        if self.mk1 == True:
+            self._draw_hvlines1(x0, y0)
+        elif self.mk2 == True:
+            self._draw_hvlines2(x0, y0)
+        self.update_deltxy()
+
+    def _draw_hvlines1(self, x0, y0):
+        if hasattr(self, 'hl1'):
+            self.hl1.set_ydata([y0, y0])
+        else:
+            self.hl1 = self.axes.axhline(y0, ls='--')
+        self.hl1.set_color(self.mkc1)
+
+        if hasattr(self, 'vl1'):
+            self.vl1.set_xdata([x0, x0])
+        else:
+            self.vl1 = self.axes.axvline(x0, ls='--')
+        self.vl1.set_color(self.mkc1)
+
+        if hasattr(self, 'pc1'):
+            self.pc1.set_data(x0, y0)
+        else:
+            self.pc1, = self.axes.plot(x0, y0, 'ko', ms=6, mfc='k', mec='k')
+        self.pc1.set_mec(self.pcc)
+        self.pc1.set_mfc(self.pcc)
+
+        if hasattr(self, 'plbl1'):
+            self.plbl1.set_position((x0, y0))
+        else:
+            self.plbl1 = self.axes.text(x0, y0, r'$\mathsf{M1}$', fontsize=16)
+        self.plbl1.set_color(self.pcc)
+
+        self.x_pos1, self.y_pos1 = x0, y0
+        self.mframe_point.m1_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+
+        self.refresh()
+
+    def _draw_hvlines2(self, x0, y0):
+        if hasattr(self, 'hl2'):
+            self.hl2.set_ydata([y0, y0])
+        else:
+            self.hl2 = self.axes.axhline(y0, color='r', ls='--')
+        self.hl2.set_color(self.mkc2)
+
+        if hasattr(self, 'vl2'):
+            self.vl2.set_xdata([x0, x0])
+        else:
+            self.vl2 = self.axes.axvline(x0, color='r', ls='--')
+        self.vl2.set_color(self.mkc2)
+
+        if hasattr(self, 'pc2'):
+            self.pc2.set_data(x0, y0)
+        else:
+            self.pc2, = self.axes.plot(x0, y0, 'ko', ms=6, mfc='k', mec='k')
+        self.pc2.set_mec(self.pcc)
+        self.pc2.set_mfc(self.pcc)
+
+        if hasattr(self, 'plbl2'):
+            self.plbl2.set_position((x0, y0))
+        else:
+            self.plbl2 = self.axes.text(x0, y0, r'$\mathsf{M2}$', fontsize=16)
+        self.plbl2.set_color(self.pcc)
+
+        self.x_pos2, self.y_pos2 = x0, y0
+        self.mframe_point.m2_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+
+        self.refresh()
+
+    def update_deltxy(self):
+        m1_pos_val = self.mframe_point.m1_pos_st.GetLabel()
+        m2_pos_val = self.mframe_point.m2_pos_st.GetLabel()
+        if m1_pos_val != '' and m2_pos_val != '':
+            x1, y1 = [float(i) for i in m1_pos_val.split(',')]
+            x2, y2 = [float(i) for i in m2_pos_val.split(',')]
+            dx = abs(x1 - x2)
+            dy = abs(y1 - y2)
+            self.mframe_point.delx_val_st.SetLabel("{0:.1f}".format(dx))
+            self.mframe_point.dely_val_st.SetLabel("{0:.1f}".format(dy))
 
     def set_colormap(self, cmap):
         self.cmap = cmap
@@ -975,6 +1150,7 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.refresh()
 
     def set_ticks(self, flag='half'):
+        # ticks position
         if flag == 'half':
             s = ['on','on','off','off']
             self.axes.tick_params(labelbottom=s[0]) 
@@ -989,9 +1165,17 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
             self.axes.tick_params(labelright=s[3]) 
         self.refresh()
 
-    def set_grids(self, color, b=None):
+    def set_mticks(self, flag='off'):
+        if flag == 'on':
+            self.axes.minorticks_on()
+            self.refresh()
+        elif flag == 'off':
+            self.axes.minorticks_off()
+            self.refresh()
+
+    def set_grids(self, color, b=None, which='major'):
         if b is None:
-            self.axes.grid(color=color, linestyle='--')
+            self.axes.grid(which=which, color=color, linestyle='--')
         else:
             self.axes.grid(b=False)
         self.refresh()
@@ -1044,3 +1228,23 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.image.set_visible(not hide_flag)
         self.refresh()
 
+
+def pick_color():
+    dlg = wx.ColourDialog(None)
+    dlg.GetColourData().SetChooseFull(True)  # only windows
+    if dlg.ShowModal() == wx.ID_OK:
+        color = dlg.GetColourData().GetColour()
+        dlg.Destroy()
+        return color
+
+def set_staticbmp_color(obj, color):
+    """
+    obj: staticbitmap, bitmapbutton
+    color: could be returned by pick_color()
+    """
+    r, g, b = color.Red(), color.Green(), color.Blue()
+    w, h = 16, 16
+    bmp = wx.EmptyBitmap(w, h)
+    img = wx.ImageFromBitmap(bmp)
+    img.SetRGBRect(wx.Rect(0, 0, w, h), r, g, b)
+    obj.SetBitmap(img.ConvertToBitmap())
