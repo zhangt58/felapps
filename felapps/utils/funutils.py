@@ -1088,34 +1088,41 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.axes.tick_params(labelsize=fontsize)
         self.refresh()
 
-    def set_figure_data(self, data):
+    def set_figure_data(self, data, fit=True):
         self.data = data
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111, aspect=1.0)
         self.z = data
         self.image = self.axes.imshow(self.z, cmap=self.cmap)
+        
+        if fit:
+            hx, hy = np.sum(data, 0), np.sum(data, 1)
+            x, y = np.arange(hx.size), np.arange(hy.size)
+            x0, sx = gaussian_fit(x, hx)
+            y0, sy = gaussian_fit(y, hy)
+            self.linex, = self.axes.plot(x, hx/hx.max()*y0)
+            self.liney, = self.axes.plot(hy/hy.max()*x0, y)
+            self.linex.set_color(self.line_color)
+            self.liney.set_color(self.line_color)
 
-        hx, hy = np.sum(data, 0), np.sum(data, 1)
-        x, y = np.arange(hx.size), np.arange(hy.size)
-        x0, sx = gaussian_fit(x, hx)
-        y0, sy = gaussian_fit(y, hy)
-        self.linex, = self.axes.plot(x, hx/hx.max()*y0)
-        self.liney, = self.axes.plot(hy/hy.max()*x0, y)
-        self.linex.set_color(self.line_color)
-        self.liney.set_color(self.line_color)
+            self.linex.set_marker('')
+            self.linex.set_markersize(5)
+            self.linex.set_mec(self.mec)
+            self.linex.set_mfc(self.mfc)
 
-        self.linex.set_marker('')
-        self.linex.set_markersize(5)
-        self.linex.set_mec(self.mec)
-        self.linex.set_mfc(self.mfc)
+            self.liney.set_marker('')
+            self.liney.set_markersize(5)
+            self.liney.set_mec(self.mec)
+            self.liney.set_mfc(self.mfc)
 
-        self.liney.set_marker('')
-        self.liney.set_markersize(5)
-        self.liney.set_mec(self.mec)
-        self.liney.set_mfc(self.mfc)
+            self.axes.set_xlim([x.min(), x.max()])
+            self.axes.set_ylim([y.min(), y.max()])
+        else:
+            dimx, dimy = self.z.shape
+            x, y = np.arange(dimy), np.arange(dimx)
+            self.image.set_extent([x.min(), x.max(), y.min(), y.max()])
 
-        self.axes.set_xlim([x.min(), x.max()])
-        self.axes.set_ylim([y.min(), y.max()])
+        self.refresh()
 
     def set_linestyle(self, ls):
         self.linex.set_linestyle(ls)
@@ -1228,6 +1235,9 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.image.set_visible(not hide_flag)
         self.refresh()
 
+    def clear(self):
+        if hasattr(self, 'axes'):
+            self.axes.cla()
 
 def pick_color():
     dlg = wx.ColourDialog(None)
