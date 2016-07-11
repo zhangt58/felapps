@@ -515,13 +515,19 @@ class ImageViewer(wx.Frame):
         objs_big = [self.timenow_st]
         objs_small = [self.min_st, self.max_st, self.min_value_st,
                       self.max_value_st, self.inten_st, self.inten_val, 
-                      self.pos0_val, self.pos0_st, self.pos_val, self.pos_st]
+                      self.pos0_val, self.pos0_st, self.pos_val, self.pos_st,
+                      ]
         objs_normal = [self.imgsrc_st, self.cm_st, self.cr_st, 
                        self.imgcr_st, self.imgsrc_tc, self.imgcr_min_tc,
                        self.imgcr_max_tc, self.rcmchkbox, self.cmlist_cb,
                        self.cm_cb, self.daqtgl_btn, self.roi_btn,
-                       self.reset_roi_btn, 
-                       self.fit_report_tc,]
+                       self.reset_roi_btn, self.fit_model_st, self.fit_model_val,
+                       self.fit_report_tc,
+                       #self.m1_st, self.m2_st, self.m1_pos_st, self.m2_pos_st,
+                       #self.delx_st, self.delx_val_st,
+                       #self.dely_st, self.dely_val_st,
+                       #self.mark_st, self.mark_st1, self.mark_st2, self.pcc_st
+                       ]
         objs = objs_large + objs_big + objs_small + objs_normal
         [iobj.setFont(self.font) for iobj in objs if iobj != self.fit_report_tc]
         [iobj.setFontSize(self.fontptsize_large) for iobj in objs_large]
@@ -887,12 +893,12 @@ class ImageViewer(wx.Frame):
                      border=10)
 
         self.roi_btn = funutils.MyButton(self.panel,
-                                         label='Set ROI',
+                                         label='SetROI',
                                          font=self.font,
                                          fontsize=self.fontptsize_normal,
                                          size=(105, -1))
         self.reset_roi_btn = funutils.MyButton(self.panel,
-                                               label='Reset ROI',
+                                               label='ResetROI',
                                                font=self.font,
                                                fontsize=self.fontptsize_normal,
                                                size=(105,-1))
@@ -1013,20 +1019,27 @@ class ImageViewer(wx.Frame):
         sbox_fit = funutils.createwxStaticBox(self.panel,
                                               label="Curve Fitting",
                                               fontcolor='grey',
+                                              fontsize=8,
                                               style=wx.ALIGN_CENTER)
+        self.sbox_fit = sbox_fit
         sbsizer_fit = wx.StaticBoxSizer(sbox_fit, orient=wx.VERTICAL)
 
         fit_model_st = funutils.MyStaticText(self.panel,
                                              label='Fitting Model:',
+                                             font=self.font,
+                                             fontsize=self.fontptsize_normal,
                                              style=wx.ALIGN_LEFT)
         fit_model_val = funutils.MyStaticText(self.panel,
                                               label="Gaussian",
+                                              font=self.font,
+                                              fontsize=self.fontptsize_normal,
                                               style=wx.ALIGN_CENTER)
         fit_model_popup_btn = wx.BitmapButton(
             self.panel, bitmap=resutils.popicon.GetBitmap())
         #bitmap=wx.ArtProvider.GetBitmap(wx.ART_COPY, wx.ART_OTHER))
 
         self.fit_model_popup_btn = fit_model_popup_btn
+        self.fit_model_st = fit_model_st
         self.fit_model_val = fit_model_val
         # add fit config page to configurations panel
         fit_vbox_m = wx.BoxSizer(wx.VERTICAL)
@@ -1372,23 +1385,27 @@ class AutoSavePanel(wx.Frame):
         self.panel = wx.Panel(self)
 
         # format choosing
-        sbox1 = funutils.createwxStaticBox(self.panel,
-                                           label='Choose Saving Format',
-                                           fontcolor='grey')
+        sbox1 = funutils.createwxStaticBox(self.panel, label='Choose Saving Format', 
+                                           fontcolor='grey', fontsize=8)
+        #sbox1 = wx.StaticBox(self.panel, label='Choose Saving Format')
+        #sfont = sbox1.GetFont()
+        #sfont.SetPointSize(8)
+        #sbox1.SetFont(sfont)
+        #sbox1.SetForegroundColour('grey')
         sbsizer1 = wx.StaticBoxSizer(sbox1, orient=wx.HORIZONTAL)
 
         # data format: hdf5, asc, sdds, etc.
         datahbox = wx.BoxSizer(wx.VERTICAL)
         data_st = funutils.MyStaticText(self.panel,
                                         label='Data Format',
-                                        fontsize=12,
+                                        fontsize=10,
                                         fontcolor='blue')
         self.hdf5_chbox = funutils.MyCheckBox(
-            self.panel, label='hdf5', fontsize=12)
+            self.panel, label='hdf5', fontsize=10)
         self.asc_chbox = funutils.MyCheckBox(
-            self.panel, label='asc', fontsize=12)
+            self.panel, label='asc', fontsize=10)
         self.sdds_chbox = funutils.MyCheckBox(
-            self.panel, label='sdds', fontsize=12)
+            self.panel, label='sdds', fontsize=10)
         datahbox.Add(data_st,
                      proportion=0,
                      flag=wx.ALL | wx.ALIGN_LEFT,
@@ -1410,14 +1427,14 @@ class AutoSavePanel(wx.Frame):
         imagehbox = wx.BoxSizer(wx.VERTICAL)
         image_st = funutils.MyStaticText(self.panel,
                                          label='Image Format',
-                                         fontsize=12,
+                                         fontsize=10,
                                          fontcolor='blue')
         self.jpg_chbox = funutils.MyCheckBox(
-            self.panel, label='jpg', fontsize=12)
+            self.panel, label='jpg', fontsize=10)
         self.eps_chbox = funutils.MyCheckBox(
-            self.panel, label='eps', fontsize=12)
+            self.panel, label='eps', fontsize=10)
         self.png_chbox = funutils.MyCheckBox(
-            self.panel, label='png', fontsize=12)
+            self.panel, label='png', fontsize=10)
         imagehbox.Add(image_st,
                       proportion=0,
                       flag=wx.ALL | wx.ALIGN_LEFT,
@@ -1448,7 +1465,8 @@ class AutoSavePanel(wx.Frame):
         # save timer/io setup
         sbox2 = funutils.createwxStaticBox(self.panel,
                                            label='Options',
-                                           fontcolor='grey')
+                                           fontcolor='grey',
+                                           fontsize=8)
         sbsizer2 = wx.StaticBoxSizer(sbox2, orient=wx.VERTICAL)
 
         ## saveto path
@@ -2127,9 +2145,9 @@ class StyleConfigPanel(wx.Panel):
     def createPanel(self):
         vboxsizer = wx.BoxSizer(wx.VERTICAL)
 
-        bkgdcolorst = funutils.MyStaticText(self,
-                                            label=u'Background Color',
-                                            style=wx.ALIGN_LEFT)
+        bkgdcolorst = wx.StaticText(self,
+                                    label=u'Background Color',
+                                    style=wx.ALIGN_LEFT)
         self.bkgdcolortc = wx.TextCtrl(
             self,
             value=funutils.rgb2hex(self.thisapp.bkgdcolor).upper(),
@@ -2138,15 +2156,14 @@ class StyleConfigPanel(wx.Panel):
                                       label='Choose Color',
                                       size=(140, -1))
 
-        fontst = funutils.MyStaticText(
-            self, label=u'Font', style=wx.ALIGN_LEFT)
+        fontst = wx.StaticText(self, label=u'Font', style=wx.ALIGN_LEFT)
         self.chosenfonttc = funutils.MyTextCtrl(self,
                                                 value=u'Do it Pythonicly.',
                                                 style=wx.TE_READONLY,
                                                 font=self.font)
-        self.choosefontbtn = funutils.MyButton(self,
-                                               label='Choose Font',
-                                               size=(140, -1))
+        self.choosefontbtn = wx.Button(self,
+                                       label='Choose Font',
+                                       size=(140, -1))
 
         gsstyle = wx.GridBagSizer(5, 5)
         gsstyle.Add(bkgdcolorst,
@@ -2270,7 +2287,7 @@ class ControlConfigPanel(wx.Panel):
         self.libcaPathtc = libcaPathtc
 
         # EPICS ENVS
-        caAddrAutochk = funutils.MyCheckBox(self, label=u'Auto CA Address')
+        caAddrAutochk = wx.CheckBox(self, label=u'Auto CA Address')
         caAddrListst = wx.StaticText(self,
                                      label=u'CA Address List',
                                      style=wx.ALIGN_RIGHT)
