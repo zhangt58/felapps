@@ -9,7 +9,7 @@
 import felapps
 import sys
 
-def testApp(appname = None):
+def testApp(appname=None):
     if appname == 'imageviewer':
         felapps.imageviewer.run(maximize=True, logon=False, debug=True)
     elif appname == 'felformula':
@@ -20,6 +20,8 @@ def testApp(appname = None):
         felapps.dataworkshop.run(maximize=True, logon=True, debug=True)
     elif appname == 'matchwizard':
         felapps.matchwizard.run(maximize=True, logon=False, debug=True)
+    elif appname == 'wxmpv':
+        felapps.wxmpv.run(debug=True)
     else: # if app name was not given, show the main launcher panel
         felapps.appdrawer.run(maximize=True, logon=False, debug=True)
 
@@ -35,7 +37,7 @@ def test(app):
     testApp(app)
 
 if __name__ == '__main__':
-    #test_argv()
-    app = 'imageviewer'
-    test(app)
+    test_argv()
+    #app = 'imageviewer'
+    #test(app)
 

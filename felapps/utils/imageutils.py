@@ -188,11 +188,16 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         self.analysis_frame.SetTitle(datasrc)
         self.analysis_frame.Show()
 
-    def get_workspace(self):
+    def get_workspace(self, fmt='dvc'):
         """ _workspace_list element format: "image_file_full_path;;;data_file_fullpath"
         """
-        return [[str(idx+1)] + [os.path.basename(n) for n in e.split(';;;')] 
-                    for idx, e in enumerate(self._workspace_list)]
+        if fmt == 'dvc':
+            return [[str(idx+1)] + [os.path.basename(n) for n in e.split(';;;')] 
+                        for idx, e in enumerate(self._workspace_list)]
+        elif fmt == 'sta': # return data file list
+            return [e.split(';;;')[-1] for e in self._workspace_list]
+        else:
+            return None
         
         #return self._workspace_list
 

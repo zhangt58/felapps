@@ -30,6 +30,12 @@ class AnalysisFrame(myui.PlotFrame):
         self.cmap_cb.AppendItems(cmaplist)
         self.cmap_cb.SetValue('jet')
 
+        # line choice
+        self.lineid_choice.Clear()
+        self.lineid_choice.AppendItems(['raw', 'fit','none','show'])
+        self.lineid_choice.SetString(2, 'none')
+        self.lineid_choice.SetSelection(2)
+
         # line style
         lslist = ['solid', 'dashed', 'dashdot', 'dotted', 'none']
         self.ls_cb.Clear()
@@ -69,6 +75,11 @@ class AnalysisFrame(myui.PlotFrame):
         self.plotpanel.axes.set_ylabel('$y$', fontsize=self.fontsize+4)
         self.plotpanel.refresh()
 
+        # lines
+        self.plotpanel.set_lines()
+
+        # set output
+        self.set_fit_output()
         # grid color
         self.grid_color = '#000000'
 
@@ -110,6 +121,11 @@ class AnalysisFrame(myui.PlotFrame):
     def onDecFontSize(self, event):
         self.fontsize -= 1
         self.plotpanel.set_fontsize(self.fontsize)
+
+    def lineid_choiceOnChoice(self, event):
+        idx = self.lineid_choice.GetSelection()
+        str_sel = self.lineid_choice.GetString(idx)
+        self.plotpanel.set_line_id(str_sel)
 
     def cmap_cbOnCombobox(self, event):
         new_cmap = event.GetEventObject().GetValue()
@@ -286,3 +302,10 @@ class AnalysisFrame(myui.PlotFrame):
         img = wx.ImageFromBitmap(bmp)
         img.SetRGBRect(wx.Rect(0, 0, w, h), r, g, b)
         obj.SetBitmap(img.ConvertToBitmap())
+
+    def set_fit_output(self):
+        out_x = self.plotpanel.get_fit_report('x')
+        out_y = self.plotpanel.get_fit_report('y')
+        self.output_tc.SetValue(out_x)
+        self.output_tc.AppendText('\n' + '-'*20 + '\n')
+        self.output_tc.AppendText(out_y)

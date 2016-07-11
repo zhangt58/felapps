@@ -62,8 +62,8 @@ class MySpinCtrl(wx.SpinCtrl):
     """
     font: wx.Font()
     """
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
-        wx.SpinCtrl.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=10, fontcolor='black', fontweight=wx.FONTWEIGHT_NORMAL, *args, **kws):
+        wx.SpinCtrl.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -93,8 +93,8 @@ class MySpinCtrl(wx.SpinCtrl):
 
 
 class MyStaticText(wx.StaticText):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
-        wx.StaticText.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=10, fontcolor='black', fontweight=wx.FONTWEIGHT_NORMAL, *args, **kws):
+        wx.StaticText.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -124,8 +124,8 @@ class MyStaticText(wx.StaticText):
 
 
 class MyTextCtrl(wx.TextCtrl):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
-        wx.TextCtrl.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=10, fontcolor='black', *args, **kws):
+        wx.TextCtrl.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -155,8 +155,8 @@ class MyTextCtrl(wx.TextCtrl):
 
 
 class MyCheckBox(wx.CheckBox):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
-        wx.CheckBox.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=10, fontcolor='black', *args, **kws):
+        wx.CheckBox.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -186,8 +186,8 @@ class MyCheckBox(wx.CheckBox):
 
 
 class MyButton(wx.Button):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', *args, **kws):
-        wx.Button.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=10, fontcolor='black', *args, **kws):
+        wx.Button.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -217,8 +217,8 @@ class MyButton(wx.Button):
 
 
 class MyComboBox(wx.ComboBox):
-    def __init__(self, parent, font = None, fontsize = 12, fontcolor = 'black', fontweight = wx.FONTWEIGHT_NORMAL, *args, **kws):
-        wx.ComboBox.__init__(self, parent = parent, *args, **kws)
+    def __init__(self, parent, font=None, fontsize=12, fontcolor='black', fontweight=wx.FONTWEIGHT_NORMAL, *args, **kws):
+        wx.ComboBox.__init__(self, parent=parent, *args, **kws)
         if font == None:
             font = wx.SystemSettings.GetFont(wx.SYS_DEFAULT_GUI_FONT)
         self.font = font
@@ -254,23 +254,23 @@ class MyListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin):
         listmix.ListCtrlAutoWidthMixin.__init__(self)
 
 
-def createwxStaticText(parent, label, size = wx.DefaultSize, style = wx.ALIGN_LEFT, 
-        fontname=wx.SYS_SYSTEM_FONT, 
-        fontsize=12,
+def createwxStaticText(parent, label, size=wx.DefaultSize, style=wx.ALIGN_LEFT, 
+        fontname=wx.SYS_DEFAULT_GUI_FONT, 
+        fontsize=10,
         fontweight=wx.FONTWEIGHT_NORMAL,
         fontcolor='black'):
     font = wx.SystemSettings_GetFont(fontname)
     font.SetPointSize(fontsize)
     font.SetWeight(fontweight)
-    st = wx.StaticText(parent = parent, 
-            label = label, style = style)
+    st = wx.StaticText(parent=parent, 
+            label=label, style=style)
     st.SetFont(font)
     st.SetForegroundColour(fontcolor)
     return st
 
 
 def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
-        fontname=wx.SYS_SYSTEM_FONT,
+        fontname=wx.SYS_DEFAULT_GUI_FONT,
         fontsize=10,
         fontweight=wx.FONTWEIGHT_NORMAL,
         fontcolor='black'):
@@ -285,7 +285,7 @@ def createwxTextCtrl(parent, value='', style = wx.TE_LEFT,
 
 
 def createwxButton(parent, label,
-        fontname=wx.SYS_SYSTEM_FONT, 
+        fontname=wx.SYS_DEFAULT_GUI_FONT, 
         fontsize=10,
         fontweight=wx.FONTWEIGHT_NORMAL,
         fontcolor='black',
@@ -308,15 +308,15 @@ def createwxPanel(parent, backgroundcolor = None, id = wx.ID_ANY):
     return panel
 
 
-def createwxStaticBox(parent, label = '', style = wx.ALIGN_LEFT,
-                      fontname=wx.SYS_SYSTEM_FONT, 
+def createwxStaticBox(parent, label='', style=wx.ALIGN_LEFT,
+                      fontname=wx.SYS_DEFAULT_GUI_FONT, 
                       fontsize=10,
                       fontweight=wx.FONTWEIGHT_NORMAL,
                       fontcolor='black'):
     font = wx.SystemSettings_GetFont(fontname)
     font.SetPointSize(fontsize)
     font.SetWeight(fontweight)
-    sbox = wx.StaticBox(parent, id = wx.ID_ANY, label = label, style = style)
+    sbox = wx.StaticBox(parent, id=wx.ID_ANY, label=label, style=style)
     sbox.SetFont(font)
     sbox.SetForegroundColour(fontcolor)
     return sbox
@@ -416,7 +416,7 @@ def setPath(pathstr):
     return os.path.expanduser(os.path.sep.join(pathstr.replace('\\',' ').replace('/',' ').split(' ')))
 
 
-def getFileToLoad(parent, ext='*', flag = 'single'):
+def getFileToLoad(parent, ext='*', flag='single'):
     if isinstance(ext, list):
         if len(ext) > 1:
             exts = [x.upper() + ' files (*.' + x + ')|*.' + x for x in ext]
@@ -710,6 +710,8 @@ def handleConfig(config_name='imageviewer.xml'):
     reutrn valid configuration file at default user location
     """
     default_location    = os.path.expanduser("~/.felapps/config/")
+    if not os.path.exists(default_location):
+        os.system('mkdir -p ' + default_location)
     default_configfile  = os.path.join(default_location, config_name)
     optional_configfile = os.path.join(sys.prefix, 'local/share/felapps/', config_name)
     if os.path.isfile(default_configfile):  # configuration file is found at default location
@@ -718,7 +720,7 @@ def handleConfig(config_name='imageviewer.xml'):
         shutil.copy2(optional_configfile, default_configfile)
         retval = default_configfile
     else:  # pop window to let user select config file and copy to default user location
-        config_selected = funutils.getFileToLoad(None, ext = 'xml')
+        config_selected = getFileToLoad(None, ext = 'xml')
         shutil.copy2(config_selected, default_configfile)
         retval = default_configfile
 
@@ -887,8 +889,8 @@ def get_file_info(filepath):
             'bytes' : f_size_bytes}
 
 
-def gaussian_fit(x, xdata):
-    """ return x0 and std_x
+def gaussian_fit(x, xdata, mode='full'):
+    """ return fit result and fitmodels
     """
     fm = FitModels()
     x0 = np.sum(x*xdata)/np.sum(xdata)
@@ -900,7 +902,10 @@ def gaussian_fit(x, xdata):
     fm.set_data(x=x,y=xdata)
     fm.set_params(**p0)
     res = fm.fit()
-    return [res.params[k].value for k in ('x0', 'xstd')]
+    if mode == 'full':
+        return res, fm
+    elif mode == 'simple':
+        return [res.params[k].value for k in ('x0', 'xstd')]
 
 
 class AnalysisPlotPanel(uiutils.MyPlotPanel):
@@ -919,15 +924,14 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.xaxis_direction = True # left->right: small->big
         self.yaxis_direction = True # bottom->up : small->big
 
-        #self.line_color = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).GetAsString(wx.C2S_HTML_SYNTAX)
         self.line_color = wx.Colour(255, 165, 0).GetAsString(wx.C2S_HTML_SYNTAX)
         self.mec = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
         self.mfc = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
 
+        # pos markers M1 and M2
         self.mkc1 = wx.Colour(255, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
         self.mkc2 = wx.Colour(240, 230, 140).GetAsString(wx.C2S_HTML_SYNTAX)
         self.pcc = wx.Colour(0, 0, 0).GetAsString(wx.C2S_HTML_SYNTAX)
-
         self.mk1, self.mk2 = False, False
 
         uiutils.MyPlotPanel.__init__(self, parent, **kwargs)
@@ -994,7 +998,10 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
             self._draw_hvlines1(x0, y0)
         elif self.mk2 == True:
             self._draw_hvlines2(x0, y0)
-        self.update_deltxy()
+        try:
+            self.update_deltxy()
+        except:
+            pass
 
     def _draw_hvlines1(self, x0, y0):
         if hasattr(self, 'hl1'):
@@ -1023,7 +1030,10 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.plbl1.set_color(self.pcc)
 
         self.x_pos1, self.y_pos1 = x0, y0
-        self.mframe_point.m1_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+        try:
+            self.mframe_point.m1_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+        except:
+            pass
 
         self.refresh()
 
@@ -1054,7 +1064,10 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.plbl2.set_color(self.pcc)
 
         self.x_pos2, self.y_pos2 = x0, y0
-        self.mframe_point.m2_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+        try:
+            self.mframe_point.m2_pos_st.SetLabel('{0:.1f},{1:.1f}'.format(x0, y0))
+        except:
+            pass
 
         self.refresh()
 
@@ -1076,8 +1089,7 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
 
     def set_linecolor(self, color):
         self.line_color = color
-        self.linex.set_color(color)
-        self.liney.set_color(color)
+        [line.set_color(color) for line in self.line_list]
         self.refresh()
 
     def set_fontsize(self, fontsize):
@@ -1088,6 +1100,118 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.axes.tick_params(labelsize=fontsize)
         self.refresh()
 
+    
+    def set_line_id(self, line='raw'):
+        """ selected current editable line,
+            'raw': raw data
+            'fitted': fitted lines
+            'none': hide all lines
+            'show': show all lines
+        """
+        if line == 'none':
+            self.linex.set_visible(False)
+            self.liney.set_visible(False)
+            self.linex_fit.set_visible(False)
+            self.liney_fit.set_visible(False)
+            self.line_list = []
+        elif line == 'show':
+            self.linex.set_visible(True)
+            self.liney.set_visible(True)
+            self.linex_fit.set_visible(True)
+            self.liney_fit.set_visible(True)
+            self.line_list = [self.linex, self.liney, self.linex_fit, self.liney_fit]
+        elif line == 'raw':
+            self.linex.set_visible(True)
+            self.liney.set_visible(True)
+            self.linex_fit.set_visible(False)
+            self.liney_fit.set_visible(False)
+            self.line_list = [self.linex, self.liney]
+        elif line == 'fit':
+            self.linex.set_visible(False)
+            self.liney.set_visible(False)
+            self.linex_fit.set_visible(True)
+            self.liney_fit.set_visible(True)
+            self.line_list = [self.linex_fit, self.liney_fit]
+        self.refresh()
+
+    def set_lines(self):
+        if self.data is None:
+            return
+        data = self.data
+        hx, hy = np.sum(data, 0), np.sum(data, 1)
+        idxmaxx, idxmaxy = np.where(hx == hx.max()), np.where(hy == hy.max())
+        maxidx, maxidy = idxmaxx[0][0], idxmaxy[0][0]
+        x, y = np.arange(hx.size), np.arange(hy.size)
+        hx = hx/hx.max()*maxidy
+        hy = hy/hy.max()*maxidx
+
+        res_x, fm_x = gaussian_fit(x, hx)
+        res_y, fm_y = gaussian_fit(y, hy)
+
+        self.linex, = self.axes.plot(x, hx)
+        self.liney, = self.axes.plot(hy, y)
+
+        self.linex.set_color(self.line_color)
+        self.liney.set_color(self.line_color)
+
+        self.linex.set_marker('')
+        self.linex.set_markersize(5)
+        self.linex.set_mec(self.mec)
+        self.linex.set_mfc(self.mfc)
+
+        self.liney.set_marker('')
+        self.liney.set_markersize(5)
+        self.liney.set_mec(self.mec)
+        self.liney.set_mfc(self.mfc)
+
+        # fitted lines
+        x_fit = np.linspace(x.min(), x.max(), 200)
+        y_fit = np.linspace(y.min(), y.max(), 200)
+        fx, tx = fm_x.get_fitfunc(res_x.params)
+        fy, ty = fm_y.get_fitfunc(res_y.params)
+        
+        self.linex_fit, = self.axes.plot(x_fit, fx(res_x.params, x_fit))
+        self.liney_fit, = self.axes.plot(fy(res_y.params, y_fit), y_fit)
+
+        self.linex_fit.set_color(self.line_color)
+        self.liney_fit.set_color(self.line_color)
+
+        self.linex_fit.set_marker('')
+        self.linex_fit.set_markersize(5)
+        self.linex_fit.set_mec(self.mec)
+        self.linex_fit.set_mfc(self.mfc)
+
+        self.liney_fit.set_marker('')
+        self.liney_fit.set_markersize(5)
+        self.liney_fit.set_mec(self.mec)
+        self.liney_fit.set_mfc(self.mfc)
+
+        self.axes.set_xlim([x.min(), x.max()])
+        self.axes.set_ylim([y.min(), y.max()])
+
+        # hide all lines
+        self.linex.set_visible(False)
+        self.liney.set_visible(False)
+        self.linex_fit.set_visible(False)
+        self.liney_fit.set_visible(False)
+
+        self.refresh()
+        self.res_x, self.res_y = res_x, res_y
+        self.line_list = []
+
+    def get_fit_report(self, xoy='x'):
+        if xoy == 'x':
+            p = self.res_x.params
+        else:
+            p = self.res_y.params
+        retstr2 = "f(x) = a*exp(-(x-x0)^2/2/sx^2)+y0" + "\n"
+        retstr4 = " {a0_k:<3s}: {a0_v:>10.4f}\n".format(a0_k='a' , a0_v=p['a'].value)
+        retstr5 = " {x0_k:<3s}: {x0_v:>10.4f}\n".format(x0_k='x0', x0_v=p['x0'].value)
+        retstr6 = " {sx_k:<3s}: {sx_v:>10.4f}\n".format(sx_k='sx', sx_v=p['xstd'].value)
+        retstr7 = " {y0_k:<3s}: {y0_v:>10.4f}".format(y0_k='y0', y0_v=p['y0'].value)
+        retval = retstr2 + retstr4 + retstr5 + retstr6 + retstr7
+        return retval
+
     def set_figure_data(self, data, fit=True):
         self.data = data
         if not hasattr(self, 'axes'):
@@ -1096,27 +1220,7 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.image = self.axes.imshow(self.z, cmap=self.cmap)
         
         if fit:
-            hx, hy = np.sum(data, 0), np.sum(data, 1)
-            x, y = np.arange(hx.size), np.arange(hy.size)
-            x0, sx = gaussian_fit(x, hx)
-            y0, sy = gaussian_fit(y, hy)
-            self.linex, = self.axes.plot(x, hx/hx.max()*y0)
-            self.liney, = self.axes.plot(hy/hy.max()*x0, y)
-            self.linex.set_color(self.line_color)
-            self.liney.set_color(self.line_color)
-
-            self.linex.set_marker('')
-            self.linex.set_markersize(5)
-            self.linex.set_mec(self.mec)
-            self.linex.set_mfc(self.mfc)
-
-            self.liney.set_marker('')
-            self.liney.set_markersize(5)
-            self.liney.set_mec(self.mec)
-            self.liney.set_mfc(self.mfc)
-
-            self.axes.set_xlim([x.min(), x.max()])
-            self.axes.set_ylim([y.min(), y.max()])
+            self.set_lines()
         else:
             dimx, dimy = self.z.shape
             x, y = np.arange(dimy), np.arange(dimx)
@@ -1125,35 +1229,29 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.refresh()
 
     def set_linestyle(self, ls):
-        self.linex.set_linestyle(ls)
-        self.liney.set_linestyle(ls)
+        [line.set_linestyle(ls) for line in self.line_list]
         self.refresh()
 
     def set_marker(self, mk):
-        self.linex.set_marker(mk)
-        self.liney.set_marker(mk)
+        [line.set_marker(mk) for line in self.line_list]
         self.refresh()
 
     def set_markersize(self, ms):
-        self.linex.set_markersize(ms)
-        self.liney.set_markersize(ms)
+        [line.set_markersize(ms) for line in self.line_list]
         self.refresh()
 
     def set_mec(self, c):
         self.mec = c
-        self.linex.set_mec(c)
-        self.liney.set_mec(c)
+        [line.set_mec(c) for line in self.line_list]
         self.refresh()
 
     def set_mfc(self, c):
         self.mfc = c
-        self.linex.set_mfc(c)
-        self.liney.set_mfc(c)
+        [line.set_mfc(c) for line in self.line_list]
         self.refresh()
 
     def set_linewidth(self, lw):
-        self.linex.set_linewidth(lw)
-        self.liney.set_linewidth(lw)
+        [line.set_linewidth(lw) for line in self.line_list]
         self.refresh()
 
     def set_ticks(self, flag='half'):
@@ -1238,6 +1336,24 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
     def clear(self):
         if hasattr(self, 'axes'):
             self.axes.cla()
+
+    def get_data(self):
+        """ return data: image, raw data, fit data
+        """
+        data = {}
+        data['raw'] = {}
+        data['fit'] = {}
+        data['attr'] = {}
+        data['image'] = self.image.get_array()
+        data['raw']['prof_x'] = self.linex.get_data()
+        data['raw']['prof_y'] = self.liney.get_data()
+        data['fit']['prof_x'] = self.linex_fit.get_data()
+        data['fit']['prof_y'] = self.liney_fit.get_data()
+        data['attr']['x0'] = self.res_x.params['x0'].value
+        data['attr']['sx'] = self.res_x.params['xstd'].value
+        data['attr']['y0'] = self.res_y.params['x0'].value
+        data['attr']['sy'] = self.res_y.params['xstd'].value
+        return data
 
 def pick_color():
     dlg = wx.ColourDialog(None)

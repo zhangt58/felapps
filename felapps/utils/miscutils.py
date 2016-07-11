@@ -10,6 +10,7 @@ class AppVersions():
                          'felformula'   : '1.4',
                          'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
+                         'wxmpv'        : '0.1',
                          'appdrawer'    : '1.5.4',
                          }
 

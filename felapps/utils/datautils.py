@@ -69,13 +69,13 @@ class DataWorkshop(wx.Frame):
         self.Bind(wx.EVT_MENU, self.onExit, exitItem)
         
         ## Configurations menu
-        configMenu = wx.Menu()
-        loadConfigItem = configMenu.Append(wx.ID_ANY, 'Load from file\tCtrl+Shift+L', 'Loading configurations from file')
-        saveConfigItem = configMenu.Append(wx.ID_ANY, 'Save to file\tCtrl+Shift+S',   'Saving configurations to file')
-        appsConfigItem = configMenu.Append(wx.ID_ANY, 'Preferences\tCtrl+Shift+I',    'Preferences for application')
-        self.Bind(wx.EVT_MENU, self.onConfigLoad, id = loadConfigItem.GetId())
-        self.Bind(wx.EVT_MENU, self.onConfigSave, id = saveConfigItem.GetId())
-        self.Bind(wx.EVT_MENU, self.onConfigApps, id = appsConfigItem.GetId())
+        #configMenu = wx.Menu()
+        #loadConfigItem = configMenu.Append(wx.ID_ANY, 'Load from file\tCtrl+Shift+L', 'Loading configurations from file')
+        #saveConfigItem = configMenu.Append(wx.ID_ANY, 'Save to file\tCtrl+Shift+S',   'Saving configurations to file')
+        #appsConfigItem = configMenu.Append(wx.ID_ANY, 'Preferences\tCtrl+Shift+I',    'Preferences for application')
+        #self.Bind(wx.EVT_MENU, self.onConfigLoad, id = loadConfigItem.GetId())
+        #self.Bind(wx.EVT_MENU, self.onConfigSave, id = saveConfigItem.GetId())
+        #self.Bind(wx.EVT_MENU, self.onConfigApps, id = appsConfigItem.GetId())
         
         ## Help menu
         helpMenu = wx.Menu()
@@ -84,7 +84,7 @@ class DataWorkshop(wx.Frame):
         
         ## make menu
         self.menubar.Append(fileMenu,   '&File')
-        self.menubar.Append(configMenu, '&Configurations')
+        #self.menubar.Append(configMenu, '&Configurations')
         self.menubar.Append(helpMenu,   '&Help')
         
         ## set menu
@@ -345,22 +345,7 @@ class DataWorkshop(wx.Frame):
         #i = 0
         #input_datafile = self.fdata_list[i]
         #self._data_analysis(input_datafile)
-
-    def _gaussian_fit(self, x, xdata):
-        """ return x0 and std_x
-        """
-        fm = funutils.FitModels()
-        x0 = np.sum(x*xdata)/np.sum(xdata)
-        p0 = {'a'   : xdata.max(),
-              'x0'  : x0,
-              'xstd': (np.sum((x-x0)**2*xdata)/np.sum(xdata))**0.5,
-              'y0'  : 0
-             }
-        fm.set_data(x=x,y=xdata)
-        fm.set_params(**p0)
-        res = fm.fit()
-        return [res.params[k].value for k in ('x0', 'xstd')]
-        
+       
     def _data_analysis(self, input_datafile):
         f = h5py.File(input_datafile, 'r')
         data = f['image']['data'][...]
@@ -412,10 +397,11 @@ class DataWorkshop(wx.Frame):
                 dial.Destroy()
 
     def onStatistics(self, event):
-        if self.fdata_list is None:
+        fdata_list_workspace = self.imggrid.get_workspace('sta')
+        if fdata_list_workspace == []:
             return
         # !!!HDF5 data file only
-        self.statFrame = StatPanel(self, self.fdata_list)
+        self.statFrame = StatPanel(self, fdata_list_workspace)
         self.statFrame.SetTitle('Statistical Analysis')
         #self.statFrame.SetMinSize((800, 600))
         self.statFrame.Show()
@@ -498,7 +484,8 @@ class DataImportThread(threading.Thread):
 class StatPanel(wx.Frame):
     def __init__(self, parent, datafiles, **kwargs):
         super(self.__class__, self).__init__(parent = parent,
-                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), **kwargs)
+                id = wx.ID_ANY, style = wx.DEFAULT_FRAME_STYLE, **kwargs)
+#                & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX), )
         self.parent = parent
         self.datafiles = datafiles
         self.shotIDArray = np.arange(1, len(self.datafiles)+1)
@@ -517,10 +504,10 @@ class StatPanel(wx.Frame):
         #
 
         # left hbox
-        showint_btn     = wx.Button(self.panel, label = 'Intensity Plot', size = (120, -1), style = wx.BU_LEFT)
-        showinthist_btn = wx.Button(self.panel, label = 'Intensity Hist', size = (120, -1), style = wx.BU_LEFT)
-        showxypos_btn   = wx.Button(self.panel, label = 'Central Pos',    size = (120, -1), style = wx.BU_LEFT)
-        showradius_btn  = wx.Button(self.panel, label = 'Radius',         size = (120, -1), style = wx.BU_LEFT)
+        showint_btn     = wx.Button(self.panel, label = 'Inten Plot',  size = (130, -1), style = wx.BU_LEFT)
+        showinthist_btn = wx.Button(self.panel, label = 'Inten Hist',  size = (130, -1), style = wx.BU_LEFT)
+        showxypos_btn   = wx.Button(self.panel, label = 'Central Pos', size = (130, -1), style = wx.BU_LEFT)
+        showradius_btn  = wx.Button(self.panel, label = 'Radius',      size = (130, -1), style = wx.BU_LEFT)
 
         showint_st     = funutils.MyStaticText(self.panel, label = 'Intensity',        size = (160, -1))
         showinthist_st = funutils.MyStaticText(self.panel, label = 'Intensity hist',   size = (160, -1))
@@ -543,10 +530,10 @@ class StatPanel(wx.Frame):
         lvbox.Add(gbs, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
         
         # right vbox
-        self.plotpanel = PlotPanel(self.panel, figsize=(5,5), dpi = 80, bgcolor = None)
+        self.plotpanel = PlotPanel(self.panel, toolbar=True)
 
         rvbox = wx.BoxSizer(wx.VERTICAL)
-        rvbox.Add(self.plotpanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 4)
+        rvbox.Add(self.plotpanel, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 1)
         
         # left and right hbox
         lr_hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -560,10 +547,10 @@ class StatPanel(wx.Frame):
         
         # main sizer
         mainsizer = wx.BoxSizer(wx.VERTICAL)
-        mainsizer.Add(lr_hbox, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 10)
-        mainsizer.Add(wx.StaticLine(self.panel, wx.LI_HORIZONTAL), 0, wx.EXPAND | wx.ALL, 10)
+        mainsizer.Add(lr_hbox, proportion = 1, flag = wx.EXPAND | wx.ALL, border = 5)
+        mainsizer.Add(wx.StaticLine(self.panel, wx.LI_HORIZONTAL), 0, wx.EXPAND | wx.ALL, 5)
         mainsizer.Add((-1, 10))
-        mainsizer.Add(cmdhbox,  proportion = 0, flag = wx.ALIGN_RIGHT | wx.BOTTOM | wx.RIGHT, border = 10)
+        mainsizer.Add(cmdhbox,  proportion = 0, flag = wx.ALIGN_RIGHT | wx.BOTTOM | wx.RIGHT, border = 5)
 
         self.panel.SetSizer(mainsizer)
         osizer = wx.BoxSizer(wx.VERTICAL)
@@ -581,7 +568,7 @@ class StatPanel(wx.Frame):
         self.Close(True)
 
     def postInit(self):
-        pass
+        self.data_fit = self.gaussian_fit_all()
 
     def onIntensityStatHist(self, event):
         self.statIntArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['sumint'] for file in self.datafiles])
@@ -609,35 +596,72 @@ class StatPanel(wx.Frame):
         """
         self.plotpanel.clear()
         self.plotpanel.doXYplot()
-        self.plotpanel.axes.set_title('Intensity')
-        self.plotpanel.axes.set_xlabel('shot ID')
-        self.plotpanel.axes.set_ylabel('[a.u.]')
+        self.plotpanel.axes.set_title('Intensity', fontsize=18)
+        self.plotpanel.axes.set_xlabel('shot ID',  fontsize=16)
+        self.plotpanel.axes.set_ylabel('[a.u.]', fontsize=16)
         self.plotpanel.refresh()
 
     def onCentralPosStat(self, event):
-        self.statXYPosArray = np.array([h5py.File(file, 'r')['image']['data'].attrs['xypos'] for file in self.datafiles])
-
-        self.plotpanel.x = self.statXYPosArray[:,0]
-        self.plotpanel.y = self.statXYPosArray[:,1]
+        self.plotpanel.x = self.data_fit['x0']
+        self.plotpanel.y = self.data_fit['y0']
 
         self.plotpanel.clear()
         self.plotpanel.doScatter()
-        self.plotpanel.axes.set_title('XY pos')
-        self.plotpanel.axes.set_xlabel('X')
-        self.plotpanel.axes.set_ylabel('Y')
+        self.plotpanel.axes.set_title('XY pos', fontsize=18)
+        self.plotpanel.axes.set_xlabel('X', fontsize=16)
+        self.plotpanel.axes.set_ylabel('Y', fontsize=16)
         self.plotpanel.refresh()
 
     def onRadiusStat(self, event):
-        pass
+        self.plotpanel.x = self.shotIDArray
+        self.plotpanel.y = self.data_fit['sx']
+        self.plotpanel.y2 = self.data_fit['sy']
 
-class PlotPanel(pltutils.ImagePanelxy):
-    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
-        pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
-#        self.axes.set_aspect('equal')
+        self.plotpanel.clear()
+        self.plotpanel.doXY2plot()
+        self.plotpanel.axes.set_title('XY Radius', fontsize=18)
+        self.plotpanel.axes.set_xlabel('shot ID',  fontsize=16)
+        self.plotpanel.axes.set_ylabel('Radius',   fontsize=16)
+        self.plotpanel.axes.legend([r'$\sigma_x$',r'$\sigma_y$'],  fontsize=16)
+        self.plotpanel.refresh()
+
+
+    def gaussian_fit_all(self):
+        x0_list = []
+        y0_list = []
+        sx_list = []
+        sy_list = []
+        for f in self.datafiles:
+            data = h5py.File(f, 'r')['image']['data'][...]
+            hx, hy = data.sum(0), data.sum(1)
+            x, y = np.arange(hx.size), np.arange(hy.size)
+            x0, sx = funutils.gaussian_fit(x, hx, mode='simple')
+            y0, sy = funutils.gaussian_fit(y, hy, mode='simple')
+            x0_list.append(x0)
+            y0_list.append(y0)
+            sx_list.append(sx)
+            sy_list.append(sy)
+        return {'x0': x0_list, 'y0': y0_list, 'sx': sx_list, 'sy': sy_list}
+
+
+#class PlotPanel(pltutils.ImagePanelxy):
+#    def __init__(self, parent, figsize, dpi, bgcolor, **kwargs):
+#        pltutils.ImagePanelxy.__init__(self, parent, figsize, dpi, bgcolor, **kwargs)
+##        self.axes.set_aspect('equal')
+
+class PlotPanel(funutils.AnalysisPlotPanel):
+    def __init__(self, parent, **kwargs):
+        funutils.AnalysisPlotPanel.__init__(self, parent, **kwargs)
 
     def doXYplot(self):
         self.axes = self.figure.add_subplot(111)
-        self.axes.plot(self.x, self.y)
+        self.axes.plot(self.x, self.y, 'o--')
+        self.figure.canvas.draw()
+
+    def doXY2plot(self):
+        self.axes = self.figure.add_subplot(111)
+        self.axes.plot(self.x, self.y,  'o-', mfc='w')
+        self.axes.plot(self.x, self.y2, 's-', mfc='w')
         self.figure.canvas.draw()
 
     def doHist(self):
@@ -647,7 +671,7 @@ class PlotPanel(pltutils.ImagePanelxy):
 
     def doScatter(self):
         self.axes = self.figure.add_subplot(111)
-        self.axes.scatter(self.x, self.y)
+        self.axes.scatter(self.x, self.y, marker='o', s=40, c='r', edgecolor='r', alpha=0.6)
         self.figure.canvas.draw()
     
     def clear(self):
@@ -655,6 +679,13 @@ class PlotPanel(pltutils.ImagePanelxy):
 
     def refresh(self):
         self.figure.canvas.draw_idle()
+
+    def on_motion(self, event):
+        if event.inaxes:
+            x0, y0 = event.xdata, event.ydata
+            self.pos_st.SetLabel("({x:<.4f}, {y:<.4f})".format(x=x0,y=y0))
+            self._draw_hvlines1(x0, y0)
+
 
 # ImageGrid: do not use this now
 class ImageGrid(pltutils.ImagePanel):
