@@ -468,12 +468,13 @@ def getFileToSave(parent, ext='*'):
     
 
 class SaveData(object):
-    def __init__(self, data, fname, type):
+    def __init__(self, data, fname, type, app='imageviewer'):
         """
         type: asc, hdf5, sdds
         """
         self.data  = data
         self.fname = fname
+        self.app = app
 
         self.onDataProcess()
 
@@ -499,6 +500,7 @@ class SaveData(object):
 
         rg = f.create_group('image')
         rg.attrs['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+        rg.attrs['app'] = self.app
 
         dset = f.create_dataset('image/data', shape=self.data.shape, dtype=self.data.dtype)
         dset[...] = self.data
@@ -731,8 +733,6 @@ class FitModels(object):
     def __init__(self, model='gaussian', params=None, **kws):
         """
         fitting models: 'gaussuan'  : a * exp(-(x-x0)^2/2/xstd^2) + y0
-                        'linear'    : a + b*x 
-                        'quadratic' : a + b*x + c*x^2
                         'polynomial': \Sigma_i=0^n x^i * a_i
                         'power'     : a * x ^ b
                         'sin'       : a * sin(b * x + c) + d
@@ -745,16 +745,25 @@ class FitModels(object):
             self._x, self._y = kws['x'], kws['y']
         except:
             self._x, self._y = [], []
+        try:
+            self.n = kws['n']
+        except:
+            self.n = 1 # when model is polynomial, highest order
+        self.n += 1 # range(n + 1): [0, n]
+
         self._method = 'leastsq'
 
         self._set_params_func = {
-                'gaussian': self._set_params_gaussian,
+                'gaussian'  : self._set_params_gaussian,
+                'polynomial': self._set_params_polynomial,
                 }
         self._fitfunc = {
-                'gaussian': self._fit_gaussian,
+                'gaussian'  : self._fit_gaussian,
+                'polynomial': self._fit_polynomial,
                 }
         self._gen_func_text = {
-                'gaussian': self._gen_func_text_gaussian,
+                'gaussian'  : self._gen_func_text_gaussian,
+                'polynomial': self._gen_func_text_polynomial,
                 }
         
         self._fit_result = None
@@ -782,6 +791,12 @@ class FitModels(object):
         xstd = p['xstd'].value
         return a * np.exp(-(x-x0)**2.0/2.0/xstd/xstd) + y0
     
+    def _fit_polynomial(self, p, x):
+        f = 0
+        for i in range(self.n):
+            f += p['a'+str(i)].value * x**i
+        return f
+
     def _errfunc(self, p, f, x, y):
         return f(p, x) - y
 
@@ -811,6 +826,9 @@ class FitModels(object):
         y0 = p0['y0'].value
         xstd =p0['xstd'].value
         return '$a e^{-\\frac{(x-x_0)^2}{2\sigma_x^2}}+y_0$' 
+    
+    def _gen_func_text_polynomial(self, p0):
+        return '$\Sigma_i=0^{n} x^i * a_i$'.format(n=self.n)
 
     def set_params(self, **p0):
         """p0: initial parameters dict"""
@@ -821,6 +839,11 @@ class FitModels(object):
         self._params.add('x0',   value=p0['x0']  )
         self._params.add('y0',   value=p0['y0']  )
         self._params.add('xstd', value=p0['xstd'])
+
+    def _set_params_polynomial(self, p0):
+        for i in range(self.n):
+            pi_name = 'a'+str(i)
+            self._params.add(pi_name, value=p0[pi_name])
 
     def get_fitfunc(self, p0=None):
         if p0 is None:
@@ -844,25 +867,49 @@ class FitModels(object):
     
     def fit_report(self):
         # gaussian model
-        if self._fit_result is not None:
-            p = self._fit_result.params
-            retstr1 = "Fitting Function:" + "\n"
-            retstr2 = "a*exp(-(x-x0)^2/2/sx^2)+y0" + "\n"
-            retstr3 = "Fitting Output:" + "\n"
-            retstr4 = "{a0_k:<3s}: {a0_v:>10.4f}\n".format(a0_k='a' , a0_v=p['a'].value)
-            retstr5 = "{x0_k:<3s}: {x0_v:>10.4f}\n".format(x0_k='x0', x0_v=p['x0'].value)
-            retstr6 = "{sx_k:<3s}: {sx_v:>10.4f}\n".format(sx_k='sx', sx_v=p['xstd'].value)
-            retstr7 = "{y0_k:<3s}: {y0_v:>10.4f}".format(y0_k='y0', y0_v=p['y0'].value)
-            return retstr1 + retstr2 + retstr3 + retstr4 + retstr5 + retstr6 + retstr7
-        else:
-            return "Nothing to report."
-        
-    
-    def fit_report1(self):
-        if self._fit_result is not None:
-            return lmfit.fit_report(self._fit_result.params)
-        else:
-            return "Nothing to report."
+        if self._model == 'gaussian':
+            if self._fit_result is not None:
+                p = self._fit_result.params
+                retstr1 = "Fitting Function:" + "\n"
+                retstr2 = "a*exp(-(x-x0)^2/2/sx^2)+y0" + "\n"
+                retstr3 = "Fitting Output:" + "\n"
+                retstr4 = "{a0_k:<3s}: {a0_v:>10.4f}\n".format(a0_k='a' , a0_v=p['a'].value)
+                retstr5 = "{x0_k:<3s}: {x0_v:>10.4f}\n".format(x0_k='x0', x0_v=p['x0'].value)
+                retstr6 = "{sx_k:<3s}: {sx_v:>10.4f}\n".format(sx_k='sx', sx_v=p['xstd'].value)
+                retstr7 = "{y0_k:<3s}: {y0_v:>10.4f}".format(y0_k='y0', y0_v=p['y0'].value)
+                return retstr1 + retstr2 + retstr3 + retstr4 + retstr5 + retstr6 + retstr7
+            else:
+                return "Nothing to report."
+        elif self._model == 'polynomial':
+            if self._fit_result is not None:
+                p = self._fit_result.params
+                retstr  = "Fitting Function:" + "\n"
+                fstr = '+'.join(['a' + str(i) + '*x^' + str(i) for i in range(self.n)])
+                fstr = fstr.replace('*x^0', '')
+                fstr = fstr.replace('x^1', 'x')
+                retstr += fstr + '\n'
+                retstr += "Fitting Output:" + "\n"
+                for i in range(self.n):
+                    ki = 'a' + str(i)
+                    retstr += "{k:<3s}: {v:>10.4f}\n".format(k=ki, v=p[ki].value)
+                return retstr
+            else:
+                return "Nothing to report."
+
+    def calc_p0(self):
+        """ return p0 from input x, y
+        """
+        if self._model == 'gaussian':
+            x, xdata = self._x, self._y
+            x0 = np.sum(x * xdata) / np.sum(xdata)
+            p0 = {'a'   : xdata.max(),
+                  'x0'  : x0,
+                  'xstd': (np.sum((x - x0)**2 * xdata) / np.sum(xdata))**0.5,
+                  'y0'  : 0,
+                  }
+        elif self._model == 'polynomial':
+            p0 = {'a'+str(i) : 1 for i in range(self.n)}
+        return p0
 
 
 def get_randstr(length=1):
@@ -1100,7 +1147,6 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.axes.tick_params(labelsize=fontsize)
         self.refresh()
 
-    
     def set_line_id(self, line='raw'):
         """ selected current editable line,
             'raw': raw data
@@ -1200,6 +1246,9 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         self.line_list = []
 
     def get_fit_report(self, xoy='x'):
+        """ return fitting report if success,
+            else return None
+        """
         if xoy == 'x':
             p = self.res_x.params
         else:
@@ -1210,7 +1259,10 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         retstr6 = " {sx_k:<3s}: {sx_v:>10.4f}\n".format(sx_k='sx', sx_v=p['xstd'].value)
         retstr7 = " {y0_k:<3s}: {y0_v:>10.4f}".format(y0_k='y0', y0_v=p['y0'].value)
         retval = retstr2 + retstr4 + retstr5 + retstr6 + retstr7
-        return retval
+        if 'nan' in retval:
+            return None
+        else:
+            return retval
 
     def set_figure_data(self, data, fit=True):
         self.data = data
@@ -1355,6 +1407,159 @@ class AnalysisPlotPanel(uiutils.MyPlotPanel):
         data['attr']['sy'] = self.res_y.params['xstd'].value
         return data
 
+
+class ScanPlotPanel(AnalysisPlotPanel):
+    def __init__(self, parent, data=None, **kws):
+        AnalysisPlotPanel.__init__(self, parent, data, **kws)
+
+        self.line_mean = None
+        self.eb_mks = None
+        self.eb_lines = None
+        self.line_fit = None
+
+        self._init_config()
+        self._init_plot_new()
+
+    def _init_plot(self):
+        pass
+
+    def _init_plot_new(self):
+        #self.x, self.y, self.xerrarr, self.yerrarr = 1, 1, 0.1, 0.1
+        self.x, self.y, self.xerrarr, self.yerrarr = np.nan, np.nan, np.nan, np.nan
+        if not hasattr(self, 'axes'):
+            self.axes = self.figure.add_subplot(111)
+        self.ebplot = self.axes.errorbar(self.x, self.y,
+                                         xerr = self.xerrarr, yerr = self.yerrarr,
+                                         fmt = self.eb_fmt, 
+
+                                         color = 'g',
+                                         linewidth = 1,
+                                         linestyle = '--',
+                                         marker = 'H',
+                                         markersize = 10,
+                                         markerfacecolor = 'b',
+                                         markeredgecolor = 'b',
+
+                                         elinewidth = 1,
+                                         ecolor = self.eb_markercolor, 
+                                         capthick = self.eb_markersize)
+        self.line_mean, eb_mks, eb_lines = self.ebplot
+        self.canvas.draw()
+
+    def _init_config(self):
+        self.eb_fmt         = ''
+        self.eb_markercolor = 'r'
+        self.eb_markersize  = 10
+        """
+        self.avg_linestyle  = '--'
+        self.avg_linewidth  = 5
+        self.avg_linecolor  = 'b'
+        self.avg_markerfacecolor = 'b'
+        self.avg_markeredgecolor = 'b'
+        self.avg_markersize      = 8
+        """
+    
+    def get_mean_line(self):
+        return self.line_mean
+    
+    def get_errorbar_mks(self):
+        return self.eb_mks
+
+    def get_errorbar_line(self):
+        return self.eb_lines
+
+    def get_fit_line(self):
+        return self.line_fit
+
+    def set_fit_model(self, model='gaussian', **kws):
+        x, y = self.x, self.y
+        fit_model = FitModels(model=model, **kws)
+        fit_model.method = 'leastsq'
+        fit_model.set_data(x=x, y=y)
+        p0 = fit_model.calc_p0()
+        fit_model.set_params(**p0)
+        fit_res = fit_model.fit()
+        fx, tx = fit_model.get_fitfunc(fit_res.params)
+
+        self.fx = fx
+        self.fit_res = fit_res
+        self.fit_model = fit_model
+
+    def set_fit_line(self, point_num=200, **kws):
+        """ apply fitting model to average curve
+        """
+        try:
+            self.line_fit.remove()
+        except:
+            pass
+        x = self.x
+        x_fit_min, x_fit_max = kws.get('xmin'), kws.get('xmax')
+        xmin = x_fit_min if x_fit_min is not None else x.min()
+        xmax = x_fit_max if x_fit_max is not None else x.max()
+        x_fit = np.linspace(xmin, xmax, point_num)
+        y_fit = self.fx(self.fit_res.params, x_fit)
+
+        self.line_fit, = self.axes.plot(x_fit, y_fit, 'r-') 
+        self.refresh()
+    
+    def get_fit_result(self):
+        return self.fit_res
+
+    def get_fit_model(self):
+        return self.fit_model
+    
+    def hide_fit_line(self):
+        self.line_fit.set_visible(False)
+        self.refresh()
+    
+    def set_line_id(self, line='Average Curve'):
+        """ selected current editable line,
+            'Average Curve': curve of mean value of every iteration
+            'Errorbars'    : errorbars, x and y
+            'Fitting Curve': fitting curve of average curve
+        """
+        if line == 'Average Curve':
+            self._edit_obj = {'marker': self.line_mean, 'line': self.line_mean}
+        elif line == 'Errorbars':
+            self._edit_obj = {'marker': self.eb_mks, 'line': self.eb_lines}
+        elif line == 'Fitting Curve':
+            self._edit_obj = {'marker': self.line_fit, 'line': self.line_fit}
+
+    def repaint(self):
+        self.adjustErrbar(self.ebplot, self.x, self.y, self.xerrarr, self.yerrarr)
+        self.axes.relim()
+        self.axes.autoscale_view(False, True, True)
+        self.refresh()
+
+    def adjustErrbar(self, err, x, y, x_error, y_error):
+        ln, (errx_top, errx_bot, erry_top, erry_bot), (barsx, barsy) = err
+
+        ln.set_data(x, y)
+
+        x_base = x
+        y_base = y
+
+        xerr_top = x_base + x_error
+        xerr_bot = x_base - x_error
+        yerr_top = y_base + y_error
+        yerr_bot = y_base - y_error
+
+        errx_top.set_xdata(xerr_top)
+        errx_bot.set_xdata(xerr_bot)
+        errx_top.set_ydata(y_base)
+        errx_bot.set_ydata(y_base)
+
+        erry_top.set_xdata(x_base)
+        erry_bot.set_xdata(x_base)
+        erry_top.set_ydata(yerr_top)
+        erry_bot.set_ydata(yerr_bot)
+
+        new_segments_x = [np.array([[xt, y], [xb,y]]) for xt, xb, y in zip(xerr_top, xerr_bot, y_base)]
+        new_segments_y = [np.array([[x, yt], [x,yb]]) for x, yt, yb in zip(x_base, yerr_top, yerr_bot)]
+        barsx.set_segments(new_segments_x)
+        barsy.set_segments(new_segments_y)
+
+
 def pick_color():
     dlg = wx.ColourDialog(None)
     dlg.GetColourData().SetChooseFull(True)  # only windows
@@ -1362,6 +1567,7 @@ def pick_color():
         color = dlg.GetColourData().GetColour()
         dlg.Destroy()
         return color
+
 
 def set_staticbmp_color(obj, color):
     """
