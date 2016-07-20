@@ -15,6 +15,7 @@ from matplotlib.figure import Figure
 import numpy as np
 from bisect import bisect
 
+import wx.gizmos as gizmos
 
 class MyPlotPanel(wx.Panel):
     def __init__(self, parent, figsize=None, dpi=None, 
@@ -164,6 +165,92 @@ class LatticePlotPanel(MyPlotPanel):
                 name, type = None, None
             return name, type
 
+class EditListFrame(wx.Frame):
+    def __init__(self, parent, string_list=None, label=None):
+        wx.Frame.__init__(self, parent)
+        
+        self.parent = parent
+        self.string_list = string_list
+        self.label = label if label is not None else ''
+        self._init_ui()
+
+    def _init_ui(self):
+        self.panel = wx.Panel(self) 
+        msizer = wx.BoxSizer(wx.VERTICAL)
+        self.elb = gizmos.EditableListBox(self.panel, -1, label=self.label, size=(250, 250))
+        if self.string_list is None:
+            self.string_list = []
+        self.elb.SetStrings(self.string_list)
+                      
+        msizer.Add(self.elb, 1, wx.EXPAND | wx.ALL, 5)
+        
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        cancel_btn = wx.Button(self.panel, label='Cancel')
+        ok_btn     = wx.Button(self.panel, label='OK')
+        hbox.Add(cancel_btn, 0)
+        hbox.Add(ok_btn, 0, wx.LEFT, 10)
+        
+        msizer.Add(hbox, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.panel.SetSizer(msizer)
+
+        self.Bind(wx.EVT_BUTTON, self.on_cancel, cancel_btn)
+        self.Bind(wx.EVT_BUTTON, self.on_ok,     ok_btn)
+
+    def on_cancel(self, event):
+        self.Close()
+
+    def on_ok(self, event):
+        self.Close()
+
+class EditFrame(wx.Frame):
+    def __init__(self, parent, init_string=None):
+        wx.Frame.__init__(self, parent)
+        
+        self.parent = parent
+        self.init_string = init_string
+        
+        self._init_ui()
+
+    def _init_ui(self):
+        self.panel = wx.Panel(self) 
+        msizer = wx.BoxSizer(wx.VERTICAL)
+        self.tc = wx.TextCtrl(self.panel, -1, value='', size=(250, 250), style=wx.TE_MULTILINE)
+        if self.init_string is None:
+            self.init_string = ''
+        self.tc.SetValue(self.init_string)
+                      
+        msizer.Add(self.tc, 1, wx.EXPAND | wx.ALL, 5)
+        
+        hbox = wx.BoxSizer(wx.HORIZONTAL)
+        cancel_btn = wx.Button(self.panel, label='Cancel')
+        ok_btn     = wx.Button(self.panel, label='OK')
+        hbox.Add(cancel_btn, 0)
+        hbox.Add(ok_btn, 0, wx.LEFT, 10)
+        
+        msizer.Add(hbox, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.panel.SetSizer(msizer)
+
+        self.Bind(wx.EVT_BUTTON, self.on_cancel, cancel_btn)
+        self.Bind(wx.EVT_BUTTON, self.on_ok,     ok_btn)
+
+    def on_cancel(self, event):
+        self.Close()
+
+    def on_ok(self, event):
+        self.Close()
+
+from wx.lib.mixins.listctrl import CheckListCtrlMixin
+class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
+    def __init__(self, parent, log):
+        wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT)
+        CheckListCtrlMixin.__init__(self)
+        self.log = log
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
+
+    def OnItemActivated(self, event):
+        pass
 
 class TestFrame(wx.Frame):
     def __init__(self, parent, **kwargs):
