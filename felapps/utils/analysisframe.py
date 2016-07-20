@@ -306,6 +306,7 @@ class AnalysisFrame(myui.PlotFrame):
     def set_fit_output(self):
         out_x = self.plotpanel.get_fit_report('x')
         out_y = self.plotpanel.get_fit_report('y')
-        self.output_tc.SetValue(out_x)
-        self.output_tc.AppendText('\n' + '-'*20 + '\n')
-        self.output_tc.AppendText(out_y)
+        if out_x is not None and out_y is not None:
+            self.output_tc.SetValue(out_x)
+            self.output_tc.AppendText('\n' + '-'*20 + '\n')
+            self.output_tc.AppendText(out_y)
