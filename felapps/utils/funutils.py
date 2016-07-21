@@ -751,6 +751,10 @@ class FitModels(object):
             self.n = 1 # when model is polynomial, highest order
         self.n += 1 # range(n + 1): [0, n]
 
+        # data fitting window
+        self.x_fit_min, self.x_fit_max = kws.get('xmin'), kws.get('xmax')
+
+        # fitting method
         self._method = 'leastsq'
 
         self._set_params_func = {
@@ -860,8 +864,15 @@ class FitModels(object):
         p = self._params
         f = self._fitfunc[self._model]
         x, y = self._x, self._y
+
+        xmin = self.x_fit_min if self.x_fit_min is not None else x.min()
+        xmax = self.x_fit_max if self.x_fit_max is not None else x.max()
+        
+        x_fit, idx = get_range(x, xmin, xmax)
+        y_fit = y[idx]
+
         m = self._method
-        res = lmfit.minimize(self._errfunc, p, method=m, args=(f, x, y))
+        res = lmfit.minimize(self._errfunc, p, method=m, args=(f, x_fit, y_fit))
         self._fit_result = res
         return res
     
@@ -1580,3 +1591,17 @@ def set_staticbmp_color(obj, color):
     img = wx.ImageFromBitmap(bmp)
     img.SetRGBRect(wx.Rect(0, 0, w, h), r, g, b)
     obj.SetBitmap(img.ConvertToBitmap())
+
+
+def get_range(x, xmin, xmax):
+    """ find array range,
+        :param x: orignal numpy array, 1d
+        :param xmin: x min of range
+        :param xmax: x max of range
+        return range_index and array
+    """
+    if xmin >= xmax:
+        return x, np.arange(x.size)
+    idx1, idx2 = np.where(x > xmin), np.where(x < xmax)
+    idx = np.intersect1d(idx1, idx2)
+    return x[idx], idx

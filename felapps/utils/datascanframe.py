@@ -241,26 +241,31 @@ class DataScanFrame(dsfui.DataScanFrame):
     def fit_model_cbOnCombobox(self, event):
         obj = event.GetEventObject()
         val = obj.GetStringSelection()
-        try:
-            x_fit_min = self.add_param_dict.get('xmin')
-            x_fit_max = self.add_param_dict.get('xmax')
-            xmin = float(x_fit_min) if x_fit_min is not None else None
-            xmax = float(x_fit_max) if x_fit_max is not None else None
+        self.fit_curve(val)
 
-            if val == 'none':
-                self.scanfig_panel.hide_fit_line()
-                return
-            elif val == 'gaussian':
-                self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
-            elif val == 'polynomial':
-                n_order = self.add_param_dict.get('n')
-                n = n_order if n_order is not None else 1
-                self.scanfig_panel.set_fit_model(model='polynomial', n=int(n))
-            
-            self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
-            self.fit_report(self.scanfig_panel.get_fit_model())
-        except:
-            pass
+    def fit_curve(self, model='gaussian'):
+        val = model
+#        try:
+        x_fit_min = self.add_param_dict.get('xmin')
+        x_fit_max = self.add_param_dict.get('xmax')
+        xmin = float(x_fit_min) if x_fit_min is not None else None
+        xmax = float(x_fit_max) if x_fit_max is not None else None
+
+        if val == 'none':
+            self.scanfig_panel.hide_fit_line()
+            return
+        elif val == 'gaussian':
+            self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
+        elif val == 'polynomial':
+            n_order = self.add_param_dict.get('n')
+            n = n_order if n_order is not None else 1
+            self.scanfig_panel.set_fit_model(model='polynomial', n=int(n),
+                                             xmin=xmin, xmax=xmax)
+        
+        self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
+        self.fit_report(self.scanfig_panel.get_fit_model())
+#        except:
+#            pass
         
     def fit_config_ckbOnCheckBox(self, event):
         if self.fit_config_ckb.IsChecked():
@@ -279,6 +284,12 @@ class DataScanFrame(dsfui.DataScanFrame):
         y += obj.GetSize()[1]
         frame.Show()
         frame.SetPosition((x,y))
+
+    def fit_refresh_btnOnButtonClick(self, event):
+        """ refresh fit
+        """
+        val = self.fit_model_cb.GetValue()
+        self.fit_curve(val)
 
     def fit_report(self, fm):
         """ 
