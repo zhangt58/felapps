@@ -11,6 +11,7 @@ Tong Zhang
 import wx
 import h5py
 import time
+import numpy as np
 
 from .datascanframe import DataScanFrame
 from .funutils import ScanDataFactor, getFileToSave
@@ -66,7 +67,7 @@ class MainFrame(DataScanFrame):
         self.exit_app()
 
     def save_mitemOnMenuSelection(self, event):
-        """ to test
+        """ 
         """
         save_full_path = getFileToSave(self, ext='hdf5')
         if save_full_path is not None:
@@ -81,11 +82,19 @@ class MainFrame(DataScanFrame):
             data_var1_name = self.var1_get_PV.pvname
             data_var2_name = self.var2_get_PV.pvname
             data_var2_method = self.var2_op_combox.GetStringSelection()
+
+            fl = self.scanfig_panel.get_fit_line()
+            data_fit = None
+            if fl is not None:
+                x, y = fl.get_data()
+                x = x.reshape((x.size, 1))
+                y = y.reshape((y.size, 1))
+                data_fit = np.hstack((x,y))
             
             # save
             f = h5py.File(save_full_path, 'w')
             rg = f.create_group('data')
-            rg.attrs['timestamp'] = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+            rg.attrs['timestamp'] = self.stop_timestamp #time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
             rg.attrs['file info'] = 'scan data output'
             rg.attrs['app'] = 'cornalyzer'
             rg.attrs['scan variable'] = data_var1_name
@@ -93,9 +102,15 @@ class MainFrame(DataScanFrame):
             rg.attrs['operation on dependent variable'] = data_var2_method
             rg.attrs['raw data shape'] = data_shape
 
-            dset_list = [data_avgx, data_avgy, data_xerr, data_yerr, data_raw]
-            dset_name = ['x_avg', 'y_avg', 'x_errb', 'y_errb', 'raw']
+            # fitting data
+            if data_fit is not None:
+                rg.attrs['fit info'] = self.scanfig_panel.get_fit_model().fit_report() 
+                rg.attrs['fit data shape'] = data_fit.shape
+
+            dset_list = [data_avgx, data_avgy, data_xerr, data_yerr, data_raw, data_fit]
+            dset_name = ['x_avg', 'y_avg', 'x_errb', 'y_errb', 'raw', 'fit']
             for (data, dsetname) in zip(dset_list, dset_name):
+                if data is None: continue
                 dset = f.create_dataset('data/' + dsetname, 
                         shape=data.shape, dtype=data.dtype)
                 dset[...] = data
