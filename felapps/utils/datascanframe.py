@@ -5,10 +5,11 @@ import datascanframe_ui as dsfui
 
 import epics
 import time
+from datetime import datetime
 import numpy as np
 
 from .uiutils import EditListFrame, EditFrame
-from .funutils import ScanDataFactor, set_staticbmp_color
+from .funutils import ScanDataFactor, set_staticbmp_color, pick_color
 from .funclistframe import FuncListFrame
 
 
@@ -154,13 +155,11 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.scandaqfreq_val  = int(self.daqrate_sc.GetValue())      # scan rep-rate [Hz]
         self.scandaqdelt_msec = 1000.0/float(self.scandaqfreq_val)   # scan daq timer interval [ms]
         self.scandelt_msec = self.waitmsec_val + (self.shotnum_val + 1) * self.scandaqdelt_msec
-        print self.scandelt_msec
-        print self.scandaqdelt_msec
 
         # debug only
-        print("iter:{iter}, shot#:{shot}, wait_t:{wt}, daq:{daq}".format(
-            iter=self.scaniternum_val, shot=self.shotnum_val,
-            wt=self.waitmsec_val, daq=self.scandaqfreq_val))
+        #print("iter:{iter}, shot#:{shot}, wait_t:{wt}, daq:{daq}".format(
+        #    iter=self.scaniternum_val, shot=self.shotnum_val,
+        #    wt=self.waitmsec_val, daq=self.scandaqfreq_val))
     
     def _init_timers(self):
         # tick timer
@@ -243,30 +242,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         val = obj.GetStringSelection()
         self.fit_curve(val)
 
-    def fit_curve(self, model='gaussian'):
-        val = model
-#        try:
-        x_fit_min = self.add_param_dict.get('xmin')
-        x_fit_max = self.add_param_dict.get('xmax')
-        xmin = float(x_fit_min) if x_fit_min is not None else None
-        xmax = float(x_fit_max) if x_fit_max is not None else None
-
-        if val == 'none':
-            self.scanfig_panel.hide_fit_line()
-            return
-        elif val == 'gaussian':
-            self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
-        elif val == 'polynomial':
-            n_order = self.add_param_dict.get('n')
-            n = n_order if n_order is not None else 1
-            self.scanfig_panel.set_fit_model(model='polynomial', n=int(n),
-                                             xmin=xmin, xmax=xmax)
-        
-        self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
-        self.fit_report(self.scanfig_panel.get_fit_model())
-#        except:
-#            pass
-        
     def fit_config_ckbOnCheckBox(self, event):
         if self.fit_config_ckb.IsChecked():
             self.fit_config_btn.Enable()
@@ -289,14 +264,15 @@ class DataScanFrame(dsfui.DataScanFrame):
         """ refresh fit
         """
         val = self.fit_model_cb.GetValue()
-        self.fit_curve(val)
+        if val != 'none':
+            self.fit_curve(val)
 
-    def fit_report(self, fm):
-        """ 
-        fill fit_report_tc with curve fitting report
+    def fit_to_fig_btnOnButtonClick(self, event):
+        """ stick fit result onto scan figure
         """
-        self.fit_report_tc.SetValue("-"*30 + '\n')
-        self.fit_report_tc.AppendText(fm.fit_report())
+        fm = self.scanfig_panel.get_fit_model()
+        text = fm.fit_report()
+        self.scanfig_panel.set_text(text) 
 
     def adv_mode_ckbOnCheckBox(self, event):
         if self.adv_mode_ckb.IsChecked():
@@ -361,6 +337,9 @@ class DataScanFrame(dsfui.DataScanFrame):
 
         # set scan params
         self.set_scan_params()
+        
+        # start timestamp
+        self.start_timestamp = datetime.now()
 
         # start scan
         self.accum_scan_num = 0
@@ -385,6 +364,167 @@ class DataScanFrame(dsfui.DataScanFrame):
         y += obj.GetSize()[1]
         frame.Show()
         frame.SetPosition((x,y))
+
+    def scan_ctrl_timerOnTimer(self, event):
+        """ scan procedure control timer
+        """
+        try:
+            assert self.var1_idx < self.var1_range_num
+            self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
+            wx.MilliSleep(self.waitmsec_val)
+            self.start_scan_daq_timer(self.scandaqdelt_msec, self.var1_idx)
+            self.var1_idx += 1
+        except AssertionError:
+            self.scan_ctrl_timer.Stop()
+            self.scan_daq_timer.Stop()
+            self.daq_cnt = 0
+            # set log
+            self.mode_tc.SetDefaultStyle(wx.TextAttr(wx.BLUE))
+            self.mode_tc.AppendText("Stop scan routine...\n")
+            fmt='%Y-%m-%d %H:%M:%S %Z'
+            self.stop_timestamp = time.strftime(fmt, time.localtime())
+            self.scan_time = str(datetime.now() - self.start_timestamp)
+            self.show_scandiag()
+
+    def scan_daq_timerOnTimer(self, event):
+        """ timer to control every scan iteration
+        """
+        self.scan_output_iter[self.daq_cnt, :] = self.var1_get_PV.get(), self.var2_op_func(self.var2_get_PV.get())
+        if self.daq_cnt == self.shotnum_val - 1:
+            self.scan_daq_timer.Stop()
+            # write scan log to mode_tc
+            logmsg = 'Iter#: {0:>3d} is DONE, scan value: {1:<.3f}\n'.format(
+                                                   self.scan_idx_now + 1, 
+                                                   self.var1_range_array[self.scan_idx_now])
+            self.mode_tc.SetDefaultStyle(wx.TextAttr(wx.RED))
+            self.mode_tc.AppendText(logmsg)
+            self.scan_output_all[self.scan_idx_now*self.shotnum_val:(self.scan_idx_now+1)*self.shotnum_val, :] = self.scan_output_iter
+            self.update_scanfigure()
+        self.daq_cnt += 1
+        self.accum_scan_num += 1
+
+    # plot style configurations
+    def lineid_cbOnCombobox(self, event):
+        val = self.lineid_cb.GetValue()
+        self.scanfig_panel.set_line_id(val)
+
+    def mks_scOnSpinCtrl(self, event):
+        obj = event.GetEventObject()
+        val = obj.GetValue()
+        self.scanfig_panel.set_mks(val)
+
+    def mew_scOnSpinCtrl(self, event):
+        obj = event.GetEventObject()
+        val = obj.GetValue()
+        self.scanfig_panel.set_mew(val)
+
+    def lw_scOnSpinCtrl(self, event):
+        obj = event.GetEventObject()
+        val = obj.GetValue()
+        self.scanfig_panel.set_linewidth(val)
+        
+    def lc_btnOnButtonClick(self, event):
+        obj = event.GetEventObject()
+        color = pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.scanfig_panel.set_linecolor(c)
+            set_staticbmp_color(obj, color)
+
+    def mec_btnOnButtonClick(self, event):
+        obj = event.GetEventObject()
+        color = pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.scanfig_panel.set_mec(c)
+            set_staticbmp_color(obj, color)
+
+    def mfc_btnOnButtonClick(self, event):
+        obj = event.GetEventObject()
+        color = pick_color()
+        if color is not None:
+            c = color.GetAsString(wx.C2S_HTML_SYNTAX)
+            self.scanfig_panel.set_mfc(c)
+            set_staticbmp_color(obj, color)
+
+    def mkstyle_cbOnCombobox(self, event):
+        obj = event.GetEventObject()
+        idx = obj.GetSelection()
+        new_mk = self.mk_symbol[idx]
+        self.scanfig_panel.set_marker(new_mk)
+
+    def ls_cbOnCombobox(self, event):
+        obj = event.GetEventObject()
+        new_ls = obj.GetStringSelection()
+        self.scanfig_panel.set_linestyle(new_ls)
+
+    def grid_ckbOnCheckBox(self, event):
+        self.scanfig_panel.set_grid()
+
+    def legend_ckbOnCheckBox(self, event):
+        obj = event.GetEventObject()
+        show_val = obj.GetValue()
+        self.scanfig_panel.set_legend(avg=None, fit=None, show=show_val)
+    
+    def auto_xlabel_ckbOnCheckBox(self, event):
+        obj = event.GetEventObject()
+        user_xlabel = self.var1_get_PV.pvname + '\n' \
+                    + '(scan dependent:' + self.var2_get_PV.pvname + ')'
+        if self.user_xlabel_ckb.IsChecked():
+            user_xlabel = self.user_xlabel_tc.GetValue()
+        self.scanfig_panel.set_xlabel(show=obj.GetValue(), xlabel=user_xlabel)
+
+    def user_xlabel_ckbOnCheckBox(self, event):
+        if event.GetEventObject().IsChecked():
+            self.user_xlabel_tc.Enable()
+        else:
+            self.user_xlabel_tc.Disable()
+    
+    def auto_title_ckbOnCheckBox(self, event):
+        obj = event.GetEventObject()
+        user_title = 'Completed at:' + self.stop_timestamp + '\n' \
+                     + 'SCAN TIME: ' + self.scan_time + ' s.'
+        if self.user_title_ckb.IsChecked():
+            user_title = self.user_title_tc.GetValue()
+        self.scanfig_panel.set_title(show=obj.GetValue(), title=user_title)
+
+    def user_title_ckbOnCheckBox(self, event):
+        if event.GetEventObject().IsChecked():
+            self.user_title_tc.Enable()
+        else:
+            self.user_title_tc.Disable()
+
+    # user-defined methods
+    def fit_curve(self, model='gaussian'):
+        val = model
+        try:
+            x_fit_min = self.add_param_dict.get('xmin')
+            x_fit_max = self.add_param_dict.get('xmax')
+            xmin = float(x_fit_min) if x_fit_min is not None else None
+            xmax = float(x_fit_max) if x_fit_max is not None else None
+
+            if val == 'none':
+                self.scanfig_panel.hide_fit_line()
+                return
+            elif val == 'gaussian':
+                self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
+            elif val == 'polynomial':
+                n_order = self.add_param_dict.get('n')
+                n = n_order if n_order is not None else 1
+                self.scanfig_panel.set_fit_model(model='polynomial', n=int(n),
+                                                 xmin=xmin, xmax=xmax)
+            
+            self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
+            self.fit_report(self.scanfig_panel.get_fit_model())
+        except:
+            pass
+        
+    def fit_report(self, fm):
+        """ 
+        fill fit_report_tc with curve fitting report
+        """
+        self.fit_report_tc.SetValue("-"*30 + '\n')
+        self.fit_report_tc.AppendText(fm.fit_report())
 
     def _pv_check(self, val):
         """ check if pv string of val is alive
@@ -429,7 +569,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         frame.SetPosition((x,y))
         return op_func, hint_text 
 
-
     def set_scan_params(self):
         """set up scan parameters, var1(x) and var2(y)
         """
@@ -465,41 +604,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.scan_output_all = np.array([[np.nan, np.nan]]*total_num)
         self.scan_output_iter = np.zeros((self.shotnum_val, 2))
 
-    def scan_ctrl_timerOnTimer(self, event):
-        """ scan procedure control timer
-        """
-        try:
-            assert self.var1_idx < self.var1_range_num
-            self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
-            wx.MilliSleep(self.waitmsec_val)
-            self.start_scan_daq_timer(self.scandaqdelt_msec, self.var1_idx)
-            self.var1_idx += 1
-        except AssertionError:
-            self.scan_ctrl_timer.Stop()
-            self.scan_daq_timer.Stop()
-            self.daq_cnt = 0
-            # set log
-            self.mode_tc.SetDefaultStyle(wx.TextAttr(wx.BLUE))
-            self.mode_tc.AppendText("Stop scan routine...\n")
-            self.show_scandiag()
-
-    def scan_daq_timerOnTimer(self, event):
-        """ timer to control every scan iteration
-        """
-        self.scan_output_iter[self.daq_cnt, :] = self.var1_get_PV.get(), self.var2_op_func(self.var2_get_PV.get())
-        if self.daq_cnt == self.shotnum_val - 1:
-            self.scan_daq_timer.Stop()
-            # write scan log to mode_tc
-            logmsg = 'Iter#: {0:>3d} is DONE, scan value: {1:<.3f}\n'.format(
-                                                   self.scan_idx_now + 1, 
-                                                   self.var1_range_array[self.scan_idx_now])
-            self.mode_tc.SetDefaultStyle(wx.TextAttr(wx.RED))
-            self.mode_tc.AppendText(logmsg)
-            self.scan_output_all[self.scan_idx_now*self.shotnum_val:(self.scan_idx_now+1)*self.shotnum_val, :] = self.scan_output_iter
-            self.update_scanfigure()
-        self.daq_cnt += 1
-        self.accum_scan_num += 1
-
     def start_scan_daq_timer(self, ms, scanidx):
         self.scan_idx_now = scanidx
         self.daq_cnt = 0
@@ -521,7 +625,7 @@ class DataScanFrame(dsfui.DataScanFrame):
     def show_scandiag(self):
         """ show dialog when scan is done
         """
-        dial = wx.MessageDialog(self, message="Finish data scan analysis.\nSave data by CTRL+S.",
+        dial = wx.MessageDialog(self, message="Finish data scan analysis.\nApply proper curve fitting and Save data by CTRL+S.",
                                 caption = 'Scan Done',
                                 style=wx.OK | wx.CENTRE | wx.ICON_QUESTION)
         if dial.ShowModal() == wx.ID_OK:

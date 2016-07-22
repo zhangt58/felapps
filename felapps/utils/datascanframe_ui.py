@@ -434,23 +434,43 @@ class DataScanFrame ( wx.Frame ):
 		
 		bSizer17.Add( self.fit_config_ckb, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
-		self.fit_config_btn = wx.Button( sbSizer13.GetStaticBox(), wx.ID_ANY, u"𝌀", wx.DefaultPosition, wx.Size( 40,-1 ), 0 )
+		self.fit_config_btn = wx.BitmapButton( sbSizer13.GetStaticBox(), wx.ID_ANY, wx.ArtProvider.GetBitmap( wx.ART_ADD_BOOKMARK,  ), wx.DefaultPosition, wx.DefaultSize, wx.BU_AUTODRAW )
 		self.fit_config_btn.Enable( False )
-		self.fit_config_btn.SetToolTipString( u"Input parameter config with 'k=v' format,\navailable 'k': \n'n': highest order for polynomial,\n'xmin': fitted line xmin,\n'xma': fitted line xmax," )
+		self.fit_config_btn.SetToolTipString( u"Additional parameters for curve fitting, input format: k=v.\nAvailable 'k':\n    'n': highest order for polynomial fit;\n    'xmin': fitting window, min of x;\n    'xmax': fitting window, max of x;" )
 		
 		bSizer17.Add( self.fit_config_btn, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.fit_refresh_btn = wx.BitmapButton( sbSizer13.GetStaticBox(), wx.ID_ANY, wx.ArtProvider.GetBitmap( u"gtk-refresh",  ), wx.DefaultPosition, wx.Size( -1,-1 ), wx.BU_AUTODRAW )
+		self.fit_refresh_btn.SetToolTipString( u"Refresh fitting curve." )
+		
+		bSizer17.Add( self.fit_refresh_btn, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
 		
 		
 		sbSizer13.Add( bSizer17, 0, wx.EXPAND, 5 )
 		
 		bSizer18 = wx.BoxSizer( wx.VERTICAL )
 		
+		bSizer22 = wx.BoxSizer( wx.HORIZONTAL )
+		
 		self.m_staticText23 = wx.StaticText( sbSizer13.GetStaticBox(), wx.ID_ANY, u"Fitting report:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.m_staticText23.Wrap( -1 )
 		self.m_staticText23.SetFont( wx.Font( 10, 70, 90, 90, False, wx.EmptyString ) )
 		self.m_staticText23.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_WINDOWTEXT ) )
 		
-		bSizer18.Add( self.m_staticText23, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		bSizer22.Add( self.m_staticText23, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.fit_to_fig_btn = wx.Button( sbSizer13.GetStaticBox(), wx.ID_ANY, u"Stick To Figure", wx.DefaultPosition, wx.DefaultSize, 0 )
+		self.fit_to_fig_btn.SetToolTipString( u"Put fitting result to scan figure." )
+		
+		bSizer22.Add( self.fit_to_fig_btn, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		self.stick_pos_tc = wx.TextCtrl( sbSizer13.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
+		self.stick_pos_tc.SetToolTipString( u"Custom position with format like 'x,y'." )
+		
+		bSizer22.Add( self.stick_pos_tc, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
+		
+		
+		bSizer18.Add( bSizer22, 0, wx.EXPAND, 5 )
 		
 		self.fit_report_tc = wx.TextCtrl( sbSizer13.GetStaticBox(), wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_MULTILINE )
 		self.fit_report_tc.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString ) )
@@ -712,6 +732,9 @@ class DataScanFrame ( wx.Frame ):
 		self.fit_model_cb.Bind( wx.EVT_COMBOBOX, self.fit_model_cbOnCombobox )
 		self.fit_config_ckb.Bind( wx.EVT_CHECKBOX, self.fit_config_ckbOnCheckBox )
 		self.fit_config_btn.Bind( wx.EVT_BUTTON, self.fit_config_btnOnButtonClick )
+		self.fit_refresh_btn.Bind( wx.EVT_BUTTON, self.fit_refresh_btnOnButtonClick )
+		self.fit_to_fig_btn.Bind( wx.EVT_BUTTON, self.fit_to_fig_btnOnButtonClick )
+		self.stick_pos_tc.Bind( wx.EVT_TEXT, self.stick_pos_tcOnText )
 		self.lineid_cb.Bind( wx.EVT_COMBOBOX, self.lineid_cbOnCombobox )
 		self.mkstyle_cb.Bind( wx.EVT_COMBOBOX, self.mkstyle_cbOnCombobox )
 		self.ls_cb.Bind( wx.EVT_COMBOBOX, self.ls_cbOnCombobox )
@@ -791,6 +814,15 @@ class DataScanFrame ( wx.Frame ):
 		event.Skip()
 	
 	def fit_config_btnOnButtonClick( self, event ):
+		event.Skip()
+	
+	def fit_refresh_btnOnButtonClick( self, event ):
+		event.Skip()
+	
+	def fit_to_fig_btnOnButtonClick( self, event ):
+		event.Skip()
+	
+	def stick_pos_tcOnText( self, event ):
 		event.Skip()
 	
 	def lineid_cbOnCombobox( self, event ):
