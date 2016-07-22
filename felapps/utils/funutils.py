@@ -1435,7 +1435,6 @@ class ScanPlotPanel(AnalysisPlotPanel):
         pass
 
     def _init_plot_new(self):
-        #self.x, self.y, self.xerrarr, self.yerrarr = 1, 1, 0.1, 0.1
         self.x, self.y, self.xerrarr, self.yerrarr = np.nan, np.nan, np.nan, np.nan
         if not hasattr(self, 'axes'):
             self.axes = self.figure.add_subplot(111)
@@ -1443,18 +1442,16 @@ class ScanPlotPanel(AnalysisPlotPanel):
                                          xerr = self.xerrarr, yerr = self.yerrarr,
                                          fmt = self.eb_fmt, 
 
-                                         color = 'g',
-                                         linewidth = 1,
-                                         linestyle = '--',
-                                         marker = 'H',
-                                         markersize = 10,
+                                         color = 'g', linewidth = 1, linestyle = '--',
+                                         marker = 'H', markersize = 10, 
                                          markerfacecolor = 'b',
                                          markeredgecolor = 'b',
 
                                          elinewidth = 1,
                                          ecolor = self.eb_markercolor, 
                                          capthick = self.eb_markersize)
-        self.line_mean, eb_mks, eb_lines = self.ebplot
+        self.line_mean, self.eb_mks, self.eb_lines = self.ebplot
+        self._edit_obj = {'marker': [self.line_mean,], 'line': [self.line_mean,]}
         self.canvas.draw()
 
     def _init_config(self):
@@ -1470,6 +1467,9 @@ class ScanPlotPanel(AnalysisPlotPanel):
         self.avg_markersize      = 8
         """
     
+    def get_edit_obj(self):
+        return self._edit_obj
+
     def get_mean_line(self):
         return self.line_mean
     
@@ -1530,11 +1530,11 @@ class ScanPlotPanel(AnalysisPlotPanel):
             'Fitting Curve': fitting curve of average curve
         """
         if line == 'Average Curve':
-            self._edit_obj = {'marker': self.line_mean, 'line': self.line_mean}
+            self._edit_obj = {'marker': [self.line_mean], 'line': [self.line_mean,]}
         elif line == 'Errorbars':
-            self._edit_obj = {'marker': self.eb_mks, 'line': self.eb_lines}
+            self._edit_obj = {'marker': self.eb_mks,       'line': self.eb_lines}
         elif line == 'Fitting Curve':
-            self._edit_obj = {'marker': self.line_fit, 'line': self.line_fit}
+            self._edit_obj = {'marker': [self.line_fit,],  'line': [self.line_fit,]}
 
     def repaint(self):
         self.adjustErrbar(self.ebplot, self.x, self.y, self.xerrarr, self.yerrarr)
@@ -1569,6 +1569,90 @@ class ScanPlotPanel(AnalysisPlotPanel):
         new_segments_y = [np.array([[x, yt], [x,yb]]) for x, yt, yb in zip(x_base, yerr_top, yerr_bot)]
         barsx.set_segments(new_segments_x)
         barsy.set_segments(new_segments_y)
+
+    def on_motion(self, event):
+        if event.inaxes:
+            x0, y0 = event.xdata, event.ydata
+            self.pos_st.SetLabel('({x:<.4f}, {y:<.4f})'.format(x=x0, y=y0))
+            #self._draw_hvlines1(x0, y0)
+
+    def set_linecolor(self, color):
+        [line.set_color(color) for line in self._edit_obj['line']]
+        self.refresh()
+
+    def set_linestyle(self, ls):
+        [line.set_linestyle(ls) for line in self._edit_obj['line']]
+        self.refresh()
+
+    def set_linewidth(self, lw):
+        [line.set_linewidth(lw) for line in self._edit_obj['line']]
+        self.refresh()
+
+    def set_marker(self, mk):
+        [line.set_marker(mk) for line in self._edit_obj['marker']]
+        self.refresh()
+
+    def set_mks(self, mks):
+        [line.set_markersize(mks) for line in self._edit_obj['marker']]
+        self.refresh()
+
+    def set_mew(self, mew):
+        [line.set_mew(mew) for line in self._edit_obj['marker']]
+        self.refresh()
+
+    def set_mfc(self, color):
+        [line.set_mfc(color) for line in self._edit_obj['marker']]
+        self.refresh()
+
+    def set_mec(self, color):
+        l = self._edit_obj['marker']
+        [line.set_mec(color) for line in self._edit_obj['marker']]
+        self.refresh()
+
+    def set_grid(self):
+        self.axes.grid()
+        self.refresh()
+
+    def set_legend(self, **kws):
+        show_val = kws.get('show')
+        if not show_val:
+            self.legend_box.set_visible(False)
+        else:
+            try:
+                l_avg = kws.get('avg') if kws.get('avg') is not None else 'Average'
+                l_fit = kws.get('fit') if kws.get('fit') is not None else 'Fitting'
+                self.line_mean.set_label(l_avg)
+                self.line_fit.set_label(l_fit)
+                self.legend_box = self.axes.legend()
+                self.legend_box.set_visible(True)
+            except:
+                pass
+        self.refresh()
+
+    def set_title(self, **kws):
+        show_val = kws.get('show')
+        if not show_val:
+            self.title_box.set_visible(False)
+        else:
+            time_now = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
+            title_str = kws.get('title') if kws.get('title') is not None else time_now
+            self.title_box = self.axes.set_title(title_str)
+            self.title_box.set_visible(True)
+        self.refresh()
+
+    def set_xlabel(self, **kws):
+        show_val = kws.get('show')
+        if not show_val:
+            self.xlabel_box.set_visible(False)
+        else:
+            xlabel_str = kws.get('xlabel') if kws.get('xlabel') is not None else u'$x$'
+            self.xlabel_box = self.axes.set_xlabel(xlabel_str)
+            self.xlabel_box.set_visible(True)
+        self.refresh()
+
+    def set_text(self, text):
+        self.axes.text(0.6,0.6,text,transform=self.axes.transAxes)
+        self.refresh()
 
 
 def pick_color():
