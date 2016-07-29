@@ -530,7 +530,7 @@ class DataScanFrame(dsfui.DataScanFrame):
     
     def auto_title_ckbOnCheckBox(self, event):
         obj = event.GetEventObject()
-        user_title = 'Completed at:' + self.stop_timestamp + '\n' \
+        user_title = 'Completed at: ' + self.stop_timestamp + '\n' \
                      + 'SCAN TIME: ' + self.scan_time + ' sec'
         if self.user_title_ckb.IsChecked():
             user_title = self.user_title_tc.GetValue()
