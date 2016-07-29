@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="2048"
+   width="4096"
    height="2048"
    id="svg2"
    version="1.1"
-   inkscape:version="0.91 r"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="icons.svg">
   <defs
      id="defs4" />
@@ -24,17 +24,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.56835938"
-     inkscape:cx="1024"
-     inkscape:cy="1024"
+     inkscape:zoom="0.47949219"
+     inkscape:cx="2494.1261"
+     inkscape:cy="956.06303"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g3458"
      showgrid="false"
      inkscape:window-width="2560"
-     inkscape:window-height="1361"
+     inkscape:window-height="1364"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="1">
+     inkscape:window-maximized="1"
+     showborder="true"
+     borderlayer="false"
+     inkscape:showpageshadow="true"
+     showguides="true">
     <inkscape:grid
        type="xygrid"
        id="grid3334" />
@@ -47,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -57,16 +61,15 @@
      id="layer1"
      transform="translate(0,995.63782)">
     <g
-       id="g4169"
-       transform="translate(765.78865,-831.24398)"
+       id="g3416"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/imageviewer.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <rect
-         rx="50"
-         ry="50"
-         y="540.36218"
-         x="0"
+         rx="20"
+         ry="20"
+         y="-290.88181"
+         x="765.78864"
          height="512"
          width="512"
          id="rect3340"
@@ -75,56 +78,54 @@
          transform="scale(0.99768478,1.0023206)"
          sodipodi:linespacing="125%"
          id="text3336"
-         y="1001.0334"
-         x="147.24471"
+         y="171.71391"
+         x="920.29315"
          style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:623.8092041px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000"
-           y="1001.0334"
-           x="147.24471"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+           y="171.71391"
+           x="920.29315"
            id="tspan3338"
            sodipodi:role="line">I</tspan></text>
     </g>
     <g
-       id="g4185"
+       id="g3392"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/cornalyzer.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="translate(64.426409,-1406.8316)">
+       inkscape:export-ydpi="90">
       <rect
          style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect4176"
          width="512"
          height="512"
-         x="701.36224"
-         y="484.05978"
-         ry="50"
-         rx="50" />
+         x="765.78864"
+         y="-922.77179"
+         ry="20"
+         rx="20" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="750.172"
-         y="945.16595"
+         x="818.10175"
+         y="-458.86539"
          id="text4178"
          sodipodi:linespacing="125%"
          transform="scale(0.99768478,1.0023206)"><tspan
            sodipodi:role="line"
            id="tspan4180"
-           x="750.172"
-           y="945.16595"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:623.8092041px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000">C</tspan></text>
+           x="818.10175"
+           y="-458.86539"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">C</tspan></text>
     </g>
     <g
-       id="g4233"
+       id="g3408"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/felformula.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="translate(-1199.4808,-774.94158)">
+       inkscape:export-ydpi="90">
       <rect
-         rx="50"
-         ry="50"
-         y="484.05978"
-         x="1321.3623"
+         rx="20"
+         ry="20"
+         y="-290.88181"
+         x="121.88151"
          height="512"
          width="512"
          id="rect4192"
@@ -133,56 +134,54 @@
          transform="scale(0.99768478,1.0023206)"
          sodipodi:linespacing="125%"
          id="text4194"
-         y="944.09985"
-         x="1401.312"
+         y="171.71391"
+         x="204.68275"
          style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:623.8092041px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000"
-           y="944.09985"
-           x="1401.312"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+           y="171.71391"
+           x="204.68275"
            id="tspan4196"
            sodipodi:role="line">F</tspan></text>
     </g>
     <g
-       id="g4228"
+       id="g3424"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/matchwizard.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="translate(32.757223,-214.94158)">
+       inkscape:export-ydpi="90">
       <rect
          style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect4200"
          width="512"
          height="512"
-         x="1360.1198"
-         y="-75.940216"
-         ry="50"
-         rx="50" />
+         x="1411.3878"
+         y="-290.88181"
+         ry="20"
+         rx="20" />
       <text
          xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:122.87021637px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="1375.4047"
-         y="361.06842"
+         style="font-style:normal;font-weight:normal;font-size:110.89037323px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="1424.9734"
+         y="151.56102"
          id="text4202"
          sodipodi:linespacing="125%"
          transform="scale(0.99768478,1.0023206)"><tspan
            sodipodi:role="line"
            id="tspan4204"
-           x="1375.4047"
-           y="361.06842"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:552.91589355px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000">M</tspan></text>
+           x="1424.9734"
+           y="151.56102"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:562.93438721px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">M</tspan></text>
     </g>
     <g
-       id="g4223"
+       id="g3400"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/dataworkshop.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="translate(651.51473,-846.83161)">
+       inkscape:export-ydpi="90">
       <rect
-         rx="50"
-         ry="50"
-         y="-75.940216"
-         x="741.36224"
+         rx="20"
+         ry="20"
+         y="-922.77185"
+         x="1392.877"
          height="512"
          width="512"
          id="rect4208"
@@ -191,44 +190,323 @@
          transform="scale(0.99768478,1.0023206)"
          sodipodi:linespacing="125%"
          id="text4210"
-         y="385.39639"
-         x="765.44366"
+         y="-458.71317"
+         x="1434.0046"
          style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
          xml:space="preserve"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:623.8092041px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000"
-           y="385.39639"
-           x="765.44366"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+           y="-458.71317"
+           x="1434.0046"
            id="tspan4212"
            sodipodi:role="line">D</tspan></text>
     </g>
     <g
-       id="g4165"
+       id="g3453"
        inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/appdrawer.png"
        inkscape:export-xdpi="90"
-       inkscape:export-ydpi="90"
-       transform="translate(26.391753,-846.83161)">
+       inkscape:export-ydpi="90">
       <rect
          style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect4156"
          width="512"
          height="512"
-         x="95.489784"
-         y="-75.940216"
-         ry="50"
-         rx="50" />
+         x="121.88154"
+         y="-922.77185"
+         ry="20"
+         rx="20" />
       <text
          xml:space="preserve"
          style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-         x="143.35373"
-         y="390.11758"
+         x="153.81554"
+         y="-455.05804"
          id="text4158"
          sodipodi:linespacing="125%"
          transform="scale(0.99768478,1.0023206)"><tspan
            sodipodi:role="line"
            id="tspan4160"
-           x="143.35373"
-           y="390.11758"
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:623.8092041px;font-family:Junicode;-inkscape-font-specification:'Junicode Bold';fill:#d40000">A</tspan></text>
+           x="153.81554"
+           y="-455.05804"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">A</tspan></text>
+    </g>
+    <g
+       id="g3429"
+       inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/wxmpv.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         rx="20"
+         ry="20"
+         y="329.11819"
+         x="1418.8969"
+         height="512"
+         width="512"
+         id="rect3372"
+         style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <text
+         transform="scale(0.99768478,1.0023206)"
+         sodipodi:linespacing="125%"
+         id="text3374"
+         y="757.8045"
+         x="1428.2324"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:105.34585571px;line-height:125%;font-family:Nakula;-inkscape-font-specification:Nakula;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:534.78765869px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+           y="757.8045"
+           x="1428.2324"
+           id="tspan3376"
+           sodipodi:role="line">W</tspan></text>
+    </g>
+    <g
+       id="g3445"
+       inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/latticeviewer.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <rect
+         style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3436"
+         width="512"
+         height="512"
+         x="772.10767"
+         y="329.11819"
+         ry="20"
+         rx="20" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="840.12201"
+         y="790.2785"
+         id="text3438"
+         sodipodi:linespacing="125%"
+         transform="scale(0.99768478,1.0023206)"><tspan
+           sodipodi:role="line"
+           id="tspan3440"
+           x="840.12201"
+           y="790.2785"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:623.8092041px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">L</tspan></text>
+    </g>
+    <g
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/appdrawer.png"
+       id="g3458"
+       transform="translate(1880,0)">
+      <g
+         id="g3516"
+         transform="translate(0,-86.000125)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/appdrawer.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3460"
+           width="1600"
+           height="256"
+           x="116.46558"
+           y="-898.26672"
+           ry="20"
+           rx="15.888779" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="194.81149"
+           y="-710.19482"
+           id="text3462"
+           sodipodi:linespacing="125%"
+           transform="scale(0.99768478,1.0023206)"><tspan
+             sodipodi:role="line"
+             id="tspan3464"
+             x="194.81149"
+             y="-710.19482"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">A<tspan
+   id="tspan3488"
+   style="fill:#008000">ppdrawer</tspan></tspan></text>
+      </g>
+      <g
+         id="g3522"
+         transform="translate(0,-101.18647)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/imageviewer.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           rx="15.88878"
+           ry="20"
+           y="-589.935"
+           x="116.46558"
+           height="256"
+           width="1600"
+           id="rect3466"
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           transform="scale(0.99768478,1.0023206)"
+           sodipodi:linespacing="125%"
+           id="text3468"
+           y="-402.69901"
+           x="194.07907"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+             y="-402.69901"
+             x="194.07907"
+             id="tspan3470"
+             sodipodi:role="line">I<tspan
+   id="tspan3484"
+   style="fill:#008000">mageviewer</tspan></tspan></text>
+      </g>
+      <g
+         id="g3528"
+         transform="translate(0,-103.55994)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/latticeviewer.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3472"
+           width="1600"
+           height="256"
+           x="116.46558"
+           y="-294.41614"
+           ry="20"
+           rx="15.888779" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="195.54391"
+           y="-82.412682"
+           id="text3480"
+           sodipodi:linespacing="125%"
+           transform="scale(0.99768478,1.0023206)"><tspan
+             sodipodi:role="line"
+             id="tspan3482"
+             x="195.54391"
+             y="-82.412682"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">L<tspan
+   id="tspan3486"
+   style="fill:#008000">atticeviewer</tspan></tspan></text>
+      </g>
+      <g
+         id="g3534"
+         transform="translate(0,-112.97995)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/cornalyzer.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           rx="15.888779"
+           ry="20"
+           y="8.1492577"
+           x="116.46558"
+           height="256"
+           width="1600"
+           id="rect3474"
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           transform="scale(0.99768478,1.0023206)"
+           sodipodi:linespacing="125%"
+           id="text3490"
+           y="194.00055"
+           x="191.63766"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+             y="194.00055"
+             x="191.63766"
+             id="tspan3492"
+             sodipodi:role="line">C<tspan
+   style="fill:#008000"
+   id="tspan3494">ornalyzer</tspan></tspan></text>
+      </g>
+      <g
+         id="g3540"
+         transform="translate(0,-128.87924)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/wxmpv.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3476"
+           width="1600"
+           height="256"
+           x="116.46558"
+           y="317.19388"
+           ry="20"
+           rx="15.888779" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="197.37497"
+           y="499.82721"
+           id="text3496"
+           sodipodi:linespacing="125%"
+           transform="scale(0.99768478,1.0023206)"><tspan
+             sodipodi:role="line"
+             id="tspan3498"
+             x="197.37497"
+             y="499.82721"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">W<tspan
+   id="tspan3500"
+   style="fill:#008000">xmpv</tspan></tspan></text>
+      </g>
+      <g
+         id="g3546"
+         transform="translate(0,-129.89987)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/felformula.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           rx="15.888779"
+           ry="20"
+           y="611.3598"
+           x="116.46558"
+           height="256"
+           width="1600"
+           id="rect3478"
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+        <text
+           transform="scale(0.99768478,1.0023206)"
+           sodipodi:linespacing="125%"
+           id="text3502"
+           y="821.81549"
+           x="195.54391"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           xml:space="preserve"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000"
+             y="821.81549"
+             x="195.54391"
+             id="tspan3504"
+             sodipodi:role="line">F<tspan
+   style="fill:#008000"
+   id="tspan3506">elformula</tspan></tspan></text>
+      </g>
+      <g
+         id="g3552"
+         transform="translate(0,-140)"
+         inkscape:export-filename="/home/tong/Programming/projects/felapps/launchers/icons/original/long/dataworkshop.png"
+         inkscape:export-xdpi="90"
+         inkscape:export-ydpi="90">
+        <rect
+           style="opacity:1;fill:#ff913d;fill-opacity:0.42105264;stroke:none;stroke-width:0.91799998;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           id="rect3508"
+           width="1600"
+           height="256"
+           x="116.46558"
+           y="914.60529"
+           ry="20"
+           rx="15.888779" />
+        <text
+           xml:space="preserve"
+           style="font-style:normal;font-weight:normal;font-size:138.62428284px;line-height:125%;font-family:Sans;letter-spacing:0px;word-spacing:0px;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+           x="194.56735"
+           y="1098.48"
+           id="text3510"
+           sodipodi:linespacing="125%"
+           transform="scale(0.99768478,1.0023206)"><tspan
+             sodipodi:role="line"
+             id="tspan3512"
+             x="194.56735"
+             y="1098.48"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:250px;font-family:Nakula;-inkscape-font-specification:Nakula;fill:#d40000">D<tspan
+   id="tspan3514"
+   style="fill:#008000">ataworkshop</tspan></tspan></text>
+      </g>
     </g>
   </g>
 </svg>
