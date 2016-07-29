@@ -7,4 +7,4 @@
 #
 
 import felapps
-felapps.matchwizard.run(maximize = True,logon = False, debug = False)
+felapps.matchwizard.run(maximize=True, logon=False, debug=False)

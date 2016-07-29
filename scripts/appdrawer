@@ -7,4 +7,4 @@
 #
 
 import felapps
-felapps.appdrawer.run(maximize = False,logon = False, debug = False)
+felapps.appdrawer.run(maximize=False, logon=False, debug=False, icon_set='short')

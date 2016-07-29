@@ -7,4 +7,4 @@
 #
 
 import felapps
-felapps.dataworkshop.run(maximize = True,logon = False, debug = False)
+felapps.dataworkshop.run(maximize=True, logon=False, debug=False)

@@ -7,4 +7,4 @@
 #
 
 import felapps
-felapps.felformula.run(maximize = True,logon = False)
+felapps.felformula.run(maximize=True, logon=False)
