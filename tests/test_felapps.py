@@ -23,7 +23,8 @@ def testApp(appname=None):
     elif appname == 'wxmpv':
         felapps.wxmpv.run(debug=True)
     else: # if app name was not given, show the main launcher panel
-        felapps.appdrawer.run(maximize=True, logon=False, debug=True)
+        felapps.appdrawer.run(maximize=True, logon=False, 
+                debug=False, icon_set='short')
 
 def test_argv():
     appname = sys.argv[1:]
