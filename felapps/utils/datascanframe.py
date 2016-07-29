@@ -270,9 +270,19 @@ class DataScanFrame(dsfui.DataScanFrame):
     def fit_to_fig_btnOnButtonClick(self, event):
         """ stick fit result onto scan figure
         """
-        fm = self.scanfig_panel.get_fit_model()
-        text = fm.fit_report()
-        self.scanfig_panel.set_text(text) 
+        self._stick_text()
+    
+
+    def stick_pos_tcOnTextEnter(self, event):
+        if not hasattr(self.scanfig_panel, 'func_text'):
+            self._stick_text()
+        else:
+            try:
+                val = self.stick_pos_tc.GetValue()
+                kws = {k.strip():float(v.strip()) for k,v in [i.split('=') for i in val.split(';')]}
+            except:
+                kws = {}
+            self.scanfig_panel.update_text(**kws) 
 
     def adv_mode_ckbOnCheckBox(self, event):
         if self.adv_mode_ckb.IsChecked():
@@ -353,7 +363,34 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.mode_tc.AppendText("Stop scan routine...\n")
 
     def retake_btnOnButtonClick(self, event):
-        print self.add_param_dict
+        #print self.add_param_dict
+        pick_pt = self.scanfig_panel.get_pick_pt()
+        #a = self.scan_output_all
+        #b = self.var1_range_array
+        #for k,v in pick_pt.iteritems():
+        #    print(k)
+        #    print(b[k])
+        #    print(a[self.shotnum_val*k:self.shotnum_val*(k+1)])
+        #    print(a[self.shotnum_val*k:self.shotnum_val*(k+1)][:,0].mean())
+        #    print(a[self.shotnum_val*k:self.shotnum_val*(k+1)][:,1].mean())
+
+        retake_delt_msec = self.scandelt_msec
+        self.retake_indice = pick_pt.keys()
+        self.var1_idx_retake = 0
+        self.var1_idx_retake_length = len(self.retake_indice)
+
+        self.set_retake_flag()
+        self.scan_ctrl_timer.Start(self.scandelt_msec)
+        
+
+    def set_retake_flag(self):
+        """ set retake process flag
+        """
+        self.retake_flag = True
+            
+    def unset_retake_flag(self):
+        self.retake_flag = False
+        
 
     def daq_pv_list_btnOnButtonClick(self, event):
         obj = event.GetEventObject()
@@ -369,21 +406,32 @@ class DataScanFrame(dsfui.DataScanFrame):
         """ scan procedure control timer
         """
         try:
-            assert self.var1_idx < self.var1_range_num
-            self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
-            wx.MilliSleep(self.waitmsec_val)
-            self.start_scan_daq_timer(self.scandaqdelt_msec, self.var1_idx)
-            self.var1_idx += 1
+            if not self.retake_flag:  # retake is not enabled
+                #print "active normal process", self.var1_idx, self.var1_range_num
+                assert self.var1_idx < self.var1_range_num
+                self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
+                wx.MilliSleep(self.waitmsec_val)
+                self.start_scan_daq_timer(self.scandaqdelt_msec, self.var1_idx)
+                self.var1_idx += 1
+            elif self.retake_flag:  # retake is enabled
+                #print "active retake process", self.var1_idx_retake, self.var1_idx_retake_length
+                assert self.var1_idx_retake < self.var1_idx_retake_length
+                retake_idx = self.retake_indice[self.var1_idx_retake]
+                self.var1_set_PV.put(self.var1_range_array[retake_idx])
+                wx.MilliSleep(self.waitmsec_val)
+                self.start_scan_daq_timer(self.scandaqdelt_msec, retake_idx)
+                self.var1_idx_retake += 1
         except AssertionError:
             self.scan_ctrl_timer.Stop()
             self.scan_daq_timer.Stop()
             self.daq_cnt = 0
+            self.unset_retake_flag()
             # set log
             self.mode_tc.SetDefaultStyle(wx.TextAttr(wx.BLUE))
             self.mode_tc.AppendText("Stop scan routine...\n")
             fmt='%Y-%m-%d %H:%M:%S %Z'
             self.stop_timestamp = time.strftime(fmt, time.localtime())
-            self.scan_time = str(datetime.now() - self.start_timestamp)
+            self.scan_time = '{dt:.1f}'.format(dt=(datetime.now() - self.start_timestamp).seconds)
             self.show_scandiag()
 
     def scan_daq_timerOnTimer(self, event):
@@ -483,7 +531,7 @@ class DataScanFrame(dsfui.DataScanFrame):
     def auto_title_ckbOnCheckBox(self, event):
         obj = event.GetEventObject()
         user_title = 'Completed at:' + self.stop_timestamp + '\n' \
-                     + 'SCAN TIME: ' + self.scan_time + ' s.'
+                     + 'SCAN TIME: ' + self.scan_time + ' sec'
         if self.user_title_ckb.IsChecked():
             user_title = self.user_title_tc.GetValue()
         self.scanfig_panel.set_title(show=obj.GetValue(), title=user_title)
@@ -497,27 +545,27 @@ class DataScanFrame(dsfui.DataScanFrame):
     # user-defined methods
     def fit_curve(self, model='gaussian'):
         val = model
-        try:
-            x_fit_min = self.add_param_dict.get('xmin')
-            x_fit_max = self.add_param_dict.get('xmax')
-            xmin = float(x_fit_min) if x_fit_min is not None else None
-            xmax = float(x_fit_max) if x_fit_max is not None else None
+        #try:
+        x_fit_min = self.add_param_dict.get('xmin')
+        x_fit_max = self.add_param_dict.get('xmax')
+        xmin = float(x_fit_min) if x_fit_min is not None else None
+        xmax = float(x_fit_max) if x_fit_max is not None else None
 
-            if val == 'none':
-                self.scanfig_panel.hide_fit_line()
-                return
-            elif val == 'gaussian':
-                self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
-            elif val == 'polynomial':
-                n_order = self.add_param_dict.get('n')
-                n = n_order if n_order is not None else 1
-                self.scanfig_panel.set_fit_model(model='polynomial', n=int(n),
-                                                 xmin=xmin, xmax=xmax)
-            
-            self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
-            self.fit_report(self.scanfig_panel.get_fit_model())
-        except:
-            pass
+        if val == 'none':
+            self.scanfig_panel.hide_fit_line()
+            return
+        elif val == 'gaussian':
+            self.scanfig_panel.set_fit_model(xmin=xmin, xmax=xmax)
+        elif val == 'polynomial':
+            n_order = self.add_param_dict.get('n')
+            n = n_order if n_order is not None else 1
+            self.scanfig_panel.set_fit_model(model='polynomial', n=int(n),
+                                             xmin=xmin, xmax=xmax)
+        
+        self.scanfig_panel.set_fit_line(xmin=xmin, xmax=xmax)
+        self.fit_report(self.scanfig_panel.get_fit_model())
+        #except:
+        #    pass
         
     def fit_report(self, fm):
         """ 
@@ -572,6 +620,8 @@ class DataScanFrame(dsfui.DataScanFrame):
     def set_scan_params(self):
         """set up scan parameters, var1(x) and var2(y)
         """
+        self.unset_retake_flag()
+
         if self.scan_flag == 'xyscan':
             self._set_xyvars()
 
@@ -587,8 +637,9 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.var1_range_max = float(self.var1_to_tc.GetValue())
         self.var1_range_num = self.scaniternum_val
 
-        self.var1_range_array = np.linspace(self.var1_range_min, self.var1_range_max, 
-                                      self.var1_range_num)
+        self.var1_range_array = np.linspace(self.var1_range_min, 
+                                            self.var1_range_max, 
+                                            self.var1_range_num)
         self.var1_idx = 0  # initial index of var1_range_array
 
         # scan dependent variable, var2
@@ -630,6 +681,21 @@ class DataScanFrame(dsfui.DataScanFrame):
                                 style=wx.OK | wx.CENTRE | wx.ICON_QUESTION)
         if dial.ShowModal() == wx.ID_OK:
             dial.Destroy()
+
+    def _stick_text(self):
+        """ write fitting text information onto figure
+        """
+        fm = self.scanfig_panel.get_fit_model()
+        text = fm.fit_report()
+        fx, ft = fm.get_fitfunc()
+        text = '\n'.join([ft['func'], ft['fcoef']])
+        val = self.stick_pos_tc.GetValue()
+        try:
+            kws = {k.strip():float(v.strip()) for k,v in [i.split('=') for i in val.split(';')]}
+        except:
+            kws = {}
+        self.scanfig_panel.set_text(text, **kws) 
+
 
 class MyEditListFrame(EditListFrame):
     def __init__(self, parent, string_list=None, label=None):
