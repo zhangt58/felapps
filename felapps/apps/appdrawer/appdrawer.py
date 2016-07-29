@@ -19,14 +19,20 @@ from .. import dataworkshop
 from .. import felformula
 from .. import imageviewer
 from .. import matchwizard
+from .. import wxmpv
+from beamline import ui_main as latticeviewer
 
 import wx.lib.mixins.inspection as wit
 
+DEBUG_FLAG = False
 
 class AppDrawerFrame(wx.Frame):
-    def __init__(self, parent, appversion='1.0', **kwargs):
+    def __init__(self, parent, appversion='1.0', icon_set=None, **kwargs):
         wx.Frame.__init__(self, parent, **kwargs)  # style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)
         self.appversion = appversion
+        if icon_set is None:
+            icon_set = 'short'  # or 'long'
+        self.icon_set = icon_set
 
         self.Bind(wx.EVT_CLOSE, self.onExit)
 
@@ -83,7 +89,7 @@ class AppDrawerFrame(wx.Frame):
         self.statusbar.AddWidget(appversion,             funutils.ESB.ESB_ALIGN_RIGHT)
 
     def createPanel(self):
-        panel = AppDrawerPanel(self, self.appversion)
+        panel = AppDrawerPanel(self, self.appversion, self.icon_set)
 
         osizer = wx.BoxSizer(wx.HORIZONTAL)
         osizer.Add(panel, proportion=1, flag=wx.EXPAND | wx.ALIGN_CENTER)
@@ -91,10 +97,11 @@ class AppDrawerFrame(wx.Frame):
 
 
 class AppDrawerPanel(wx.Panel):
-    def __init__(self, parent, version, *args, **kwargs):
+    def __init__(self, parent, version, icon_set, *args, **kwargs):
         wx.Panel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.version = version
+        self.icon_set = icon_set
 
         self.timefmt='%Y-%m-%d %H:%M:%S %Z'
 
@@ -114,27 +121,49 @@ class AppDrawerPanel(wx.Panel):
                                 style=wx.ALIGN_CENTER, fontsize=14, fontweight=wx.FONTWEIGHT_NORMAL,
                                 fontcolor='grey')
 
-        applistname = ['C', 'D', 'F', 'I', 'M']
-        applisticon = [resutils.cicon.GetBitmap(),
-                       resutils.dicon.GetBitmap(),
-                       resutils.ficon.GetBitmap(),
-                       resutils.iicon.GetBitmap(),
-                       resutils.micon.GetBitmap()]
+        applistname = ['C', 'D', 'F', 'I', 'L', 'W']
+        
+        if self.icon_set == 'short':
+            applisticon = [resutils.cicon_s.GetBitmap(),
+                           resutils.dicon_s.GetBitmap(),
+                           resutils.ficon_s.GetBitmap(),
+                           resutils.iicon_s.GetBitmap(),
+                           resutils.licon_s.GetBitmap(),
+                           resutils.wicon_s.GetBitmap(),
+                           ]
+        else:  # icon_set long
+            applisticon = [resutils.cicon_l.GetBitmap(),
+                           resutils.dicon_l.GetBitmap(),
+                           resutils.ficon_l.GetBitmap(),
+                           resutils.iicon_l.GetBitmap(),
+                           resutils.licon_l.GetBitmap(),
+                           resutils.wicon_l.GetBitmap(),
+                           ]
+
         applistevent = [self.onClickAppC,
                         self.onClickAppD,
                         self.onClickAppF,
                         self.onClickAppI,
-                        self.onClickAppM]
-        applisthint = ['run Correlation Analyzer',
-                       'run Data Workshop',
-                       'run FEL Formula',
-                       'run Image Viewer',
-                       'run Match Wizard']
+                        self.onClickAppL,
+                        self.onClickAppW,
+                        ]
+        applisthint = ['run Correlation Analyzer' + '\n  Parameters Analysis Tool, e.g. SCAN',
+                       'run Data Workshop' + '\n  Processing data generated from Imageviewer, e.g. AutoSaved HDF5 files',
+                       'run FEL Formula' + '\n  Simple FEL physics calculations to grab the machine ideal performance',
+                       'run Image Viewer' + '\n  Just feed with the waveform record PV string name',
+                       'run Lattice Viewer' + '\n  Accelerator Online Modeling Tool',
+                       'run Wx MatPlot Viewer' + '\n  Offline plot analysis tool for exported fitting data from Imageviewer',
+                       ]
         self.nameicondict  = dict(zip(applistname, applisticon))
         self.nameeventdict = dict(zip(applistname, applistevent)) 
         self.namehintdict  = dict(zip(applistname, applisthint))
         
-        gsizer = wx.GridSizer(1, 5, 0, 0)
+        apps_cnt = len(applistname)
+        if self.icon_set == 'short':
+            gsizer = wx.GridSizer(1, apps_cnt, 0, 0)
+        else:
+            gsizer = wx.GridSizer(3, apps_cnt/3, 0, 0)
+            
         for appname in sorted(self.nameicondict.keys()):
             appobj = wx.BitmapButton(self, bitmap=self.nameicondict[appname], style=wx.BORDER_NONE)
             appobj.SetToolTip(wx.ToolTip(self.namehintdict[appname]))
@@ -155,19 +184,25 @@ class AppDrawerPanel(wx.Panel):
         self.timernow.Start(1000)
 
     def onClickAppC(self, event):
-        cornalyzer.cornalyzer.run()
+        cornalyzer.cornalyzer.run(debug=DEBUG_FLAG)
 
     def onClickAppD(self, event):
-        dataworkshop.dataworkshop.run()
+        dataworkshop.dataworkshop.run(debug=DEBUG_FLAG)
 
     def onClickAppF(self, event):
-        felformula.felformula.run()
+        felformula.felformula.run(debug=DEBUG_FLAG)
 
     def onClickAppI(self, event):
-        imageviewer.imageviewer.run()
+        imageviewer.imageviewer.run(debug=DEBUG_FLAG)
 
     def onClickAppM(self, event):
-        matchwizard.matchwizard.run()
+        matchwizard.matchwizard.run(debug=DEBUG_FLAG)
+
+    def onClickAppL(self, event):
+        latticeviewer.run(debug=DEBUG_FLAG)
+
+    def onClickAppW(self, event):
+        wxmpv.wxmpv.run(debug=DEBUG_FLAG)
 
     def onTickTime(self, event):
         self.timenow_st.SetLabel(time.strftime(self.timefmt, time.localtime()))
@@ -180,15 +215,17 @@ class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
 
-        myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = AppDrawerFrame(None, title=u'App Drawer \u2014 Apps collection of felapps (debug mode, CTRL+ALT+I)', 
+                appversion=__version__, style=wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         self.SetTopWindow(myframe)
         return True
 
-def run(maximize = True, logon = False, debug=True):
+def run(maximize=True, logon=False, debug=True, **kws):
     """
     function to make appdrawer app run.
     """
+    icon_set=kws.get('icon_set')
     if debug:
         app = InspectApp()
         app.MainLoop()
@@ -196,11 +233,14 @@ def run(maximize = True, logon = False, debug=True):
         app = wx.App(redirect = logon, filename='log')
 
         if maximize:
-            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = AppDrawerFrame(None, title=u'App Drawer \u2014 Apps collection of felapps', 
+                    appversion=__version__, icon_set=icon_set, style=wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = AppDrawerFrame(None, title = u'App Drawer \u2014 App collection of felapps', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = AppDrawerFrame(None, title=u'App Drawer \u2014 Apps collection of felapps', 
+                    appversion=__version__, icon_set=icon_set, style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         app.MainLoop()
 
 if __name__ == '__main__':
-    run()
+    #run(icon_set='short')
+    run(icon_set='long', debug=False)
