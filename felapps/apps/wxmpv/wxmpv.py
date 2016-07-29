@@ -44,7 +44,8 @@ class MainFrame(analysisframe.AnalysisFrame):
 
         ## 
         help_menu = wx.Menu()
-        about_item = help_menu.Append(wx.ID_ABOUT, '&About\tF1', 'Show about information')
+        info_mitem = help_menu.Append(wx.ID_HELP, '&Contents\tF1', 'Show help contents')
+        about_mitem = help_menu.Append(wx.ID_ABOUT, '&About', 'Show about information')
 
         ##
         menu_bar = wx.MenuBar()
@@ -54,10 +55,14 @@ class MainFrame(analysisframe.AnalysisFrame):
         
         # 
         self.Bind(wx.EVT_CLOSE, self.on_exit)
-        self.Bind(wx.EVT_MENU, self.onExit, exit_mitem)
-        self.Bind(wx.EVT_MENU, self.on_open, open_mitem)
-        self.Bind(wx.EVT_MENU, self.on_save, save_mitem)
-        self.Bind(wx.EVT_MENU, self.on_about, about_item)
+        self.Bind(wx.EVT_MENU, self.onExit,   exit_mitem)
+        self.Bind(wx.EVT_MENU, self.on_open,  open_mitem)
+        self.Bind(wx.EVT_MENU, self.on_save,  save_mitem)
+        self.Bind(wx.EVT_MENU, self.on_about, about_mitem)
+        self.Bind(wx.EVT_MENU, self.on_info,  info_mitem)
+
+    def on_info(self, event):
+        pass
 
     def on_exit(self, event):
         dial = wx.MessageDialog(
