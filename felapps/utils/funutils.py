@@ -19,11 +19,14 @@ import wx.lib.mixins.listctrl as listmix
 import numpy as np
 import os
 import matplotlib.colors as colors
+from matplotlib.text import Text as mText
+from matplotlib.lines import Line2D as mLine
 import time
 import sys
 import h5py
 import shutil
 import random
+import string
 
 from . import EnhancedStatusBar as ESB
 from . import uiutils
@@ -829,10 +832,14 @@ class FitModels(object):
         x0 = p0['x0'].value
         y0 = p0['y0'].value
         xstd =p0['xstd'].value
-        return '$a e^{-\\frac{(x-x_0)^2}{2\sigma_x^2}}+y_0$' 
+        retfun = '$f(x) = a e^{-\\frac{(x-x_0)^2}{2\sigma_x^2}}+y_0$'
+        retcoe = '$a = %.3f, x_0 = %.3f, \sigma_x = %.3f, y_0 = %.3f$' % (a, x0, xstd, y0)
+        return {'func': retfun, 'fcoef': retcoe}
     
     def _gen_func_text_polynomial(self, p0):
-        return '$\Sigma_i=0^{n} x^i * a_i$'.format(n=self.n)
+        retfun = '$f(x) = \sum_{i=0}^{%s}\,a_i x^i$' % (self.n)
+        retcoe = ','.join(['$a_{%d} = %.3f$' % (i, p0['a'+str(i)].value) for i in range(self.n)])
+        return {'func': retfun, 'fcoef': retcoe}
 
     def set_params(self, **p0):
         """p0: initial parameters dict"""
@@ -949,6 +956,8 @@ def get_file_info(filepath):
 
 def gaussian_fit(x, xdata, mode='full'):
     """ return fit result and fitmodels
+        :param x: data to fit, x col, numpy array
+        :param xdata: data to fit, y col, numpy array
     """
     fm = FitModels()
     x0 = np.sum(x*xdata)/np.sum(xdata)
@@ -1428,6 +1437,8 @@ class ScanPlotPanel(AnalysisPlotPanel):
         self.eb_lines = None
         self.line_fit = None
 
+        self.pick_obj_text = None
+
         self._init_config()
         self._init_plot_new()
 
@@ -1442,30 +1453,39 @@ class ScanPlotPanel(AnalysisPlotPanel):
                                          xerr = self.xerrarr, yerr = self.yerrarr,
                                          fmt = self.eb_fmt, 
 
-                                         color = 'g', linewidth = 1, linestyle = '--',
-                                         marker = 'H', markersize = 10, 
-                                         markerfacecolor = 'b',
-                                         markeredgecolor = 'b',
+                                         color = self.avg_linecolor, 
+                                         linewidth = self.avg_lw,
+                                         ls = self.avg_ls,
+                                         marker = self.avg_marker, 
+                                         ms = self.avg_ms,
+                                         mfc = self.avg_mfc,
+                                         mec = self.avg_mec,
 
-                                         elinewidth = 1,
+                                         elinewidth = self.eb_lw,
                                          ecolor = self.eb_markercolor, 
-                                         capthick = self.eb_markersize)
+                                         capsize = self.eb_markersize,
+                                         capthick = self.eb_mew,
+                                         )
         self.line_mean, self.eb_mks, self.eb_lines = self.ebplot
         self._edit_obj = {'marker': [self.line_mean,], 'line': [self.line_mean,]}
+        self.pick_pt = {}
+        self.line_mean.set_picker(5)
         self.canvas.draw()
 
     def _init_config(self):
         self.eb_fmt         = ''
-        self.eb_markercolor = 'r'
+        self.eb_markercolor = '#1E90FF'
         self.eb_markersize  = 10
-        """
-        self.avg_linestyle  = '--'
-        self.avg_linewidth  = 5
-        self.avg_linecolor  = 'b'
-        self.avg_markerfacecolor = 'b'
-        self.avg_markeredgecolor = 'b'
-        self.avg_markersize      = 8
-        """
+        self.eb_mew = 2
+        self.eb_lw = 1
+
+        self.avg_ls  = '--'
+        self.avg_lw  = 1
+        self.avg_linecolor  = 'g'
+        self.avg_mfc = 'r'
+        self.avg_mec = 'r'
+        self.avg_ms  = 10
+        self.avg_marker = 'H'
     
     def get_edit_obj(self):
         return self._edit_obj
@@ -1510,7 +1530,7 @@ class ScanPlotPanel(AnalysisPlotPanel):
         x_fit = np.linspace(xmin, xmax, point_num)
         y_fit = self.fx(self.fit_res.params, x_fit)
 
-        self.line_fit, = self.axes.plot(x_fit, y_fit, 'r-') 
+        self.line_fit, = self.axes.plot(x_fit, y_fit, 'b', ls='solid', lw=2) 
         self.refresh()
     
     def get_fit_result(self):
@@ -1650,10 +1670,79 @@ class ScanPlotPanel(AnalysisPlotPanel):
             self.xlabel_box.set_visible(True)
         self.refresh()
 
-    def set_text(self, text):
-        self.axes.text(0.6,0.6,text,transform=self.axes.transAxes)
+    def set_text(self, text, **kws):
+        """ set fitting result output as a Text object
+            :param text: fitting result text from FitModels class
+            available keys of kws:, x, y, fontsize
+        """
+        if hasattr(self, 'func_text'):
+            self.func_text.remove()
+        if kws.get('x') is None or kws.get('y') is None:
+            self.func_text = self.axes.text(0., 0., text, bbox=dict(facecolor='#E6E5E4', alpha=0.5), transform=self.axes.transData, fontsize=kws.get('fontsize'))
+        else:
+            self.func_text = self.axes.text(kws['x'], kws['y'], text, bbox=dict(facecolor='#E6E5E4', alpha=0.5), fontsize=kws.get('fontsize'))
+        self.func_text.set_picker(True)
         self.refresh()
 
+    def update_text(self, **kws):
+        """ available keys of kws:, x, y, fontsize
+        """
+        fs = kws.get('fontsize')
+        if fs is None:
+            fs = self.func_text.get_fontsize()
+        self.func_text.set_fontsize(fs)
+        x, y = kws.get('x'), kws.get('y')
+        o_x, o_y = self.func_text.get_position()
+        if x is not None:
+            o_x = x
+        if y is not None:
+            o_y = y
+        self.func_text.set_position((o_x, o_y))
+        self.refresh()
+    
+    def on_pick(self, event):
+        if isinstance(event.artist, mText):
+            self.pick_obj_text = event.artist
+            self.pick_pos = event.mouseevent.xdata, event.mouseevent.ydata
+        if isinstance(event.artist, mLine):
+            self.pick_obj_p0 = event.artist
+            idx = event.ind
+            x, y = self.pick_obj_p0.get_data()
+            x0, y0 = np.take(x, idx), np.take(y, idx)
+            if self.pick_pt.get(idx[0]) is None:
+                pt0, = self.axes.plot(x0, y0)
+                pt0.set_marker(self.pick_obj_p0.get_marker())
+                pt0.set_ms(self.pick_obj_p0.get_ms())
+                pt0.set_mew(2.0)
+                ic = invert_color_hex(color_to_hex(self.pick_obj_p0.get_mfc()))
+                pt0.set_mec(ic)
+                pt0.set_mfc(ic)
+                self.pick_pt[idx[0]] = pt0
+            else:
+                self.pick_pt[idx[0]].remove()
+                self.pick_pt.pop(idx[0])
+            self.refresh()
+
+    def get_pick_pt(self):
+        """ return picked points dict
+        {k:v}, k: index, v: drawing artist
+        """
+        return self.pick_pt
+
+    def on_press(self, event):
+        pass
+        #print event.xdata, event.ydata
+
+    def on_release(self, event):
+        if event.inaxes:
+            n_x, n_y = event.xdata, event.ydata
+            if self.pick_obj_text is not None:
+                o_x, o_y = self.pick_obj_text.get_position()
+                x = o_x + n_x - self.pick_pos[0]
+                y = o_y + n_y - self.pick_pos[1]
+                self.pick_obj_text.set_position((x, y))
+                self.pick_obj_text = None
+                self.refresh()
 
 def pick_color():
     dlg = wx.ColourDialog(None)
@@ -1689,3 +1778,29 @@ def get_range(x, xmin, xmax):
     idx1, idx2 = np.where(x > xmin), np.where(x < xmax)
     idx = np.intersect1d(idx1, idx2)
     return x[idx], idx
+
+
+def color_to_hex(c):
+    """ convert matplotlib colors into hex string format,
+    e.g.
+    1 color_to_hex('r') = '#FF0000'
+    2 color_to_hex('red') = '#FF0000'
+    3 color_to_hex('#FF0000') = '#FF0000'
+    """
+    if c.startswith('#'):
+        clr = c
+    else:
+        try:
+            clr = colors.rgb2hex(colors.colorConverter.colors[c])
+        except:
+            clr = colors.cnames[c]
+    return clr
+
+
+def invert_color_hex(hex_color_str):
+    """ invert hex colors,
+    e.g. invert_color_hex('#FFFFFF') = '#000000'
+    """
+    table = string.maketrans('0123456789abcdef', 'fedcba9876543210')
+    hex_str = str(hex_color_str[1:].lower())
+    return '#' + hex_str.translate(table).upper()
