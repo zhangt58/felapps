@@ -8,7 +8,7 @@ Author: Tong Zhang
 Created: May. 27, 2015
 """
 
-from ...utils import scanutils
+from ...utils import datascanapp
 from ...utils import miscutils
 import wx
 import wx.lib.mixins.inspection as wit
@@ -19,12 +19,15 @@ __author__  = "Tong Zhang"
 class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
-        myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = datascanapp.MainFrame(None, __version__)
+        myframe.SetTitle(u'Cornalyzer \u2014 Data Correlation Analyzer (debug mode, CTRL+ALT+I)')
+        #appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
+        myframe.SetMinSize((1024, 768))
         self.SetTopWindow(myframe)
         return True
 
-def run(maximize = True, logon = False, debug = True):
+def run(maximize=True, logon=False, debug=True):
     """
     function to call cornalyzer
     """
@@ -32,12 +35,17 @@ def run(maximize = True, logon = False, debug = True):
         app = InspectApp()
         app.MainLoop()
     else:
-        app = wx.App(redirect = logon, filename = 'log')
+        app = wx.App(redirect=logon, filename='log')
         if maximize == True:
-            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = datascanapp.MainFrame(None, __version__)
+            myframe.SetTitle(u'Cornalyzer \u2014 Data Correlation Analyzer')
+            #, appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = scanutils.ScanAnalyzer(None, title = u'Cornalyzer \u2014 Another Correlation Analyzer', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = datascanapp.MainFrame(None, __version__)
+            myframe.SetTitle(u'Cornalyzer \u2014 Data Correlation Analyzer')
+            #, appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
+        myframe.SetMinSize((1024, 768))
         app.MainLoop()
 
 if __name__ == '__main__':
