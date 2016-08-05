@@ -1651,7 +1651,7 @@ class ScanPlotPanel(AnalysisPlotPanel):
 
     def set_title(self, **kws):
         show_val = kws.get('show')
-        if not show_val:
+        if not show_val:  # if auto_title is ticked, show title, else not
             self.title_box.set_visible(False)
         else:
             time_now = time.strftime('%Y-%m-%d %H:%M:%S %Z', time.localtime())
@@ -1728,6 +1728,14 @@ class ScanPlotPanel(AnalysisPlotPanel):
         {k:v}, k: index, v: drawing artist
         """
         return self.pick_pt
+
+    def clear_pick_pt(self):
+        """ clear picked points (which are picked for retaking)
+        """
+        for k,v in self.pick_pt.iteritems():
+            v.remove()
+        self.pick_pt.clear()
+        self.refresh()
 
     def on_press(self, event):
         pass
