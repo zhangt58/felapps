@@ -23,24 +23,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         self._init_timers()
 
     # user-defined event:
-    def mks_scOnSpinCtrl(self, event):
-        pass
-
-    def mew_scOnSpinCtrl(self, event):
-        pass
-
-    def mec_btnOnButtonClick(self, event):
-        pass
-
-    def mfc_btnOnButtonClick(self, event):
-        pass
-    
-    def lw_scOnSpinCtrl(self, event):
-        pass
-
-    def lc_btnOnButtonClick(self, event):
-        pass
-
     def _post_init(self):
         # scan range objs
         self.scan_range_objs = [self.var1_from_st, self.var1_from_tc,
@@ -272,7 +254,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         """
         self._stick_text()
     
-
     def stick_pos_tcOnTextEnter(self, event):
         if not hasattr(self.scanfig_panel, 'func_text'):
             self._stick_text()
@@ -382,7 +363,6 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.set_retake_flag()
         self.scan_ctrl_timer.Start(self.scandelt_msec)
         
-
     def set_retake_flag(self):
         """ set retake process flag
         """
@@ -390,7 +370,6 @@ class DataScanFrame(dsfui.DataScanFrame):
             
     def unset_retake_flag(self):
         self.retake_flag = False
-        
 
     def daq_pv_list_btnOnButtonClick(self, event):
         obj = event.GetEventObject()
@@ -510,17 +489,23 @@ class DataScanFrame(dsfui.DataScanFrame):
         self.scanfig_panel.set_grid()
 
     def legend_ckbOnCheckBox(self, event):
-        obj = event.GetEventObject()
-        show_val = obj.GetValue()
-        self.scanfig_panel.set_legend(avg=None, fit=None, show=show_val)
+        try:
+            obj = event.GetEventObject()
+            show_val = obj.GetValue()
+            self.scanfig_panel.set_legend(avg=None, fit=None, show=show_val)
+        except:
+            pass
     
     def auto_xlabel_ckbOnCheckBox(self, event):
-        obj = event.GetEventObject()
-        user_xlabel = self.var1_get_PV.pvname + '\n' \
-                    + '(scan dependent:' + self.var2_get_PV.pvname + ')'
-        if self.user_xlabel_ckb.IsChecked():
-            user_xlabel = self.user_xlabel_tc.GetValue()
-        self.scanfig_panel.set_xlabel(show=obj.GetValue(), xlabel=user_xlabel)
+        try:
+            obj = event.GetEventObject()
+            user_xlabel = self.var1_get_PV.pvname + '\n' \
+                        + '(scan dependent:' + self.var2_get_PV.pvname + ')'
+            if self.user_xlabel_ckb.IsChecked():
+                user_xlabel = self.user_xlabel_tc.GetValue()
+            self.scanfig_panel.set_xlabel(show=obj.GetValue(), xlabel=user_xlabel)
+        except:
+            pass
 
     def user_xlabel_ckbOnCheckBox(self, event):
         if event.GetEventObject().IsChecked():
@@ -529,18 +514,25 @@ class DataScanFrame(dsfui.DataScanFrame):
             self.user_xlabel_tc.Disable()
     
     def auto_title_ckbOnCheckBox(self, event):
-        obj = event.GetEventObject()
-        user_title = 'Completed at: ' + self.stop_timestamp + '\n' \
-                     + 'SCAN TIME: ' + self.scan_time + ' sec'
-        if self.user_title_ckb.IsChecked():
-            user_title = self.user_title_tc.GetValue()
-        self.scanfig_panel.set_title(show=obj.GetValue(), title=user_title)
+        try:
+            obj = event.GetEventObject()
+            user_title = 'Completed at: ' + self.stop_timestamp + '\n' \
+                         + 'SCAN TIME: ' + self.scan_time + ' sec'
+            self._USER_TITLE = user_title
+            if self.user_title_ckb.IsChecked():
+                user_title = self.user_title_tc.GetValue().replace('$TITLE', self._USER_TITLE)
+            self.scanfig_panel.set_title(show=obj.GetValue(), title=user_title)
+        except:
+            pass
 
     def user_title_ckbOnCheckBox(self, event):
         if event.GetEventObject().IsChecked():
             self.user_title_tc.Enable()
         else:
             self.user_title_tc.Disable()
+
+    def clr_retake_btnOnButtonClick(self, event):
+        self.scanfig_panel.clear_pick_pt()
 
     # user-defined methods
     def fit_curve(self, model='gaussian'):
