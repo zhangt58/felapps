@@ -11,9 +11,8 @@ import os
 import glob
 
 appName             = "felapps"
-appVersion          = "1.5.7"
+appVersion          = "1.5.10"
 appDescription      = "High-level applications for FEL commissioning."
-#appLong_description = "High-level applications created for the tunning/commissioning of the free-electron laser facilities."
 appLong_description = readme() + '\n\n'
 appPlatform         = ["Linux"]
 appAuthor           = "Tong Zhang"
@@ -30,6 +29,7 @@ appScriptsName = ['imageviewer',
                   'appdrawer', 
                   'wxmpv',
                   'runfelapps',
+                  'update-felapps-menu',
                   ]
 #'matchwizard', 
 ScriptsRoot = 'scripts'
@@ -45,8 +45,6 @@ setup(name             = appName,
       license          = appLicense,
       url              = appUrl,
       keywords         = appKeywords,
-      packages         = find_packages(exclude=['contrib','tests*']),
-      #packages         = ["felapps"],
       scripts          = appScripts,
       #install_requires = requiredpackages,
       classifiers = ['Programming Language :: Python', 
@@ -54,7 +52,14 @@ setup(name             = appName,
                      'Topic :: Scientific/Engineering :: Physics'],
       test_suite = 'nose.collector',
       tests_require = ['nose'],
-      #include_package_data = True,
+      
+      packages = find_packages(exclude=['contrib','tests*']),
+      #packages = ['felapps'],
+      #package_dir = {'felapps': 'felapps'},
+      #package_data = {'felapps': ['configs/imageviewer.xml', 
+      #                            'configs/udefs.py'],
+      #                '': ['requirements.txt'],
+      #    }
       data_files = [
           ('share/felapps', ['felapps/configs/imageviewer.xml']),
           ('share/felapps', ['felapps/configs/udefs.py']),
@@ -66,5 +71,6 @@ setup(name             = appName,
           ('share/icons/hicolor/256x256/apps', glob.glob("launchers/icons/short/256/*.png")),
           ('share/icons/hicolor/512x512/apps', glob.glob("launchers/icons/short/512/*.png")),
           ('share/applications', glob.glob("launchers/*.desktop")),
+          ('share/applications', glob.glob("launchers/*.directory")),
       ],
 )
