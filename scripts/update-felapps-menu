@@ -1,0 +1,62 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+""" create/update system menu items for felapps apps
+
+Tong Zhang
+2016-08-11 15:59:42 PM CST
+"""
+
+import argparse
+import sys
+import os
+
+parser = argparse.ArgumentParser(
+            description="Integrate application-shortcuts " +
+                        "of felapps package into system menu."
+            )
+
+parser.add_argument("--appdir", 
+            dest="appdir", 
+            help="root directory where felapps is installed, " +
+                 "usually the value of --prefix when " + 
+                 "pip install was issued, typical value: /usr/local."
+            )
+
+parser.add_argument('--operation',
+            dest='op',
+            help="'install' or 'uninstall': install/uninstall felapps to/from system menu."
+            )
+
+args = parser.parse_args()
+
+appdir = args.appdir
+opstring = args.op
+
+if appdir is None or not os.path.exists(appdir):
+    parser.print_help()
+    sys.exit(1)
+
+if opstring is None:
+    opstring = 'install'
+
+import glob
+import subprocess
+
+icons_path = os.path.join(appdir, 'share/icons/hicolor')
+for icon_size_dir in glob.glob(os.path.join(icons_path, '*')):
+    icon_size_name = os.path.basename(icon_size_dir)
+    icon_size = icon_size_name.split('x')[0]
+    for icon_png in glob.glob(os.path.join(icons_path, icon_size_name, 'apps/*.png')):
+        app_name = os.path.basename(icon_png).split('.')[0]
+        cmdlist = ['xdg-icon-resource', opstring, '--size', icon_size, icon_png]
+        subprocess.call(cmdlist)
+        print("{op} icon for {app}.".format(op=opstring, app=app_name))
+
+launchers_path = os.path.join(appdir, 'share/applications')
+fel_dir = glob.glob(os.path.join(launchers_path, '*.directory'))[0]
+for app_launcher in glob.glob(os.path.join(launchers_path, '*.desktop')):
+    app_name = os.path.basename(app_launcher).split('.')[0]
+    cmdlist = ['xdg-desktop-menu', opstring, fel_dir, app_launcher]
+    subprocess.call(cmdlist)
+    print("{op} launcher for {app}.".format(op=opstring, app=app_name))
