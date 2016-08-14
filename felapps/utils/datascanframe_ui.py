@@ -325,6 +325,7 @@ class DataScanFrame(wx.Frame):
                                           wx.EmptyString))
         self.adv_mode_ckb.SetForegroundColour(wx.SystemSettings.GetColour(
             wx.SYS_COLOUR_WINDOWTEXT))
+        self.adv_mode_ckb.Enable(False)
         self.adv_mode_ckb.SetToolTipString(
             u"Check to active advanced mode, click 'Configure' button for details.")
 
@@ -336,6 +337,7 @@ class DataScanFrame(wx.Frame):
                                       wx.DefaultSize, 0)
         self.adv_mode_btn.SetFont(wx.Font(10, 70, 90, 90, False,
                                           wx.EmptyString))
+        self.adv_mode_btn.Enable(False)
 
         bSizer25.Add(self.adv_mode_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL,
                      5)
@@ -915,6 +917,15 @@ class DataScanFrame(wx.Frame):
         gbSizer2.Add(self.legend_ckb, wx.GBPosition(3, 1), wx.GBSpan(1, 1),
                      wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
+        self.clr_retake_btn = wx.Button(sbSizer14.GetStaticBox(), wx.ID_ANY,
+                                        u"Clear RETAKE", wx.DefaultPosition,
+                                        wx.DefaultSize, 0)
+        self.clr_retake_btn.SetToolTipString(
+            u"Clear all picked points for re-scan operation.")
+
+        gbSizer2.Add(self.clr_retake_btn, wx.GBPosition(3, 2), wx.GBSpan(1, 2),
+                     wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
+
         self.auto_xlabel_ckb = wx.CheckBox(sbSizer14.GetStaticBox(), wx.ID_ANY,
                                            u"Auto xlabel", wx.DefaultPosition,
                                            wx.DefaultSize, 0)
@@ -979,6 +990,8 @@ class DataScanFrame(wx.Frame):
         self.user_title_tc.SetForegroundColour(wx.SystemSettings.GetColour(
             wx.SYS_COLOUR_WINDOWTEXT))
         self.user_title_tc.Enable(False)
+        self.user_title_tc.SetToolTipString(
+            u"Macro: $TITLE could be used to represent the default title string.")
 
         gbSizer2.Add(self.user_title_tc, wx.GBPosition(5, 2), wx.GBSpan(1, 2),
                      wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 5)
@@ -1074,6 +1087,8 @@ class DataScanFrame(wx.Frame):
         self.ls_cb.Bind(wx.EVT_COMBOBOX, self.ls_cbOnCombobox)
         self.grid_ckb.Bind(wx.EVT_CHECKBOX, self.grid_ckbOnCheckBox)
         self.legend_ckb.Bind(wx.EVT_CHECKBOX, self.legend_ckbOnCheckBox)
+        self.clr_retake_btn.Bind(wx.EVT_BUTTON,
+                                 self.clr_retake_btnOnButtonClick)
         self.auto_xlabel_ckb.Bind(wx.EVT_CHECKBOX,
                                   self.auto_xlabel_ckbOnCheckBox)
         self.user_xlabel_ckb.Bind(wx.EVT_CHECKBOX,
@@ -1181,6 +1196,9 @@ class DataScanFrame(wx.Frame):
         event.Skip()
 
     def legend_ckbOnCheckBox(self, event):
+        event.Skip()
+
+    def clr_retake_btnOnButtonClick(self, event):
         event.Skip()
 
     def auto_xlabel_ckbOnCheckBox(self, event):
