@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=wx MatPlot Viewer
+GenericName=wx MatPlot Viewer
+X-GNOME-FULLNAME=wxmpv
+Comment=Generic matplot viewer
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=wxmpv
+Terminal=false
+Icon=felapps-wxmpv

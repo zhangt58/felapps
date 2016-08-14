@@ -10,6 +10,7 @@ Created: May. 27, 2015
 
 from ...utils import datascanapp
 from ...utils import miscutils
+from ...utils import resutils
 import wx
 import wx.lib.mixins.inspection as wit
 
@@ -24,6 +25,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         #appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
         myframe.SetMinSize((1024, 768))
+        myframe.SetIcon(resutils.cicon_s.GetIcon())
         self.SetTopWindow(myframe)
         return True
 
@@ -46,6 +48,7 @@ def run(maximize=True, logon=False, debug=True):
             #, appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
         myframe.SetMinSize((1024, 768))
+        myframe.SetIcon(resutils.cicon_s.GetIcon())
         app.MainLoop()
 
 if __name__ == '__main__':

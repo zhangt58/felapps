@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=Lattice Viewer
+GenericName=Lattice Viewer
+X-GNOME-FULLNAME=LatticeViewer
+Comment=Accelerator online modeling tool, lattice visualization
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=latticeviewer
+Terminal=false
+Icon=felapps-latticeviewer

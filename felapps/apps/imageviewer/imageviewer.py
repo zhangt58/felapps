@@ -11,6 +11,7 @@ Created: Feb. 3rd, 2015
 from ...utils import pltutils
 from ...utils import miscutils
 from ...utils import funutils
+from ...utils import resutils
 import wx
 import wx.lib.mixins.inspection as wit
 import os
@@ -24,6 +25,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         configFile = funutils.handleConfig(config_name = 'imageviewer.xml')
         myframe = pltutils.ImageViewer(None, config = configFile, title = u"ImageViewer" + ' ' + "Another Profile Monitor (debug mode, CTRL+ALT+I)", appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
+        myframe.SetIcon(resutils.iicon_s.GetIcon())
         self.SetTopWindow(myframe)
         return True
 
@@ -43,6 +45,7 @@ def run(maximize=True, logon=False, debug=False):
         else:
             myframe = pltutils.ImageViewer(None, config = configFile, title = u'ImageViewer \u2014 Another Profile Monitor', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
+        myframe.SetIcon(resutils.iicon_s.GetIcon())
         app.MainLoop()
 
 if __name__ == '__main__':

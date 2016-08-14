@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=Data Workshop
+GenericName=Data Workshop
+X-GNOME-FULLNAME=DataWorkshop
+Comment=App for data post-processing with Imageviewer
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=dataworkshop
+Terminal=false
+Icon=felapps-dataworkshop

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=Image Viewer
+GenericName=Image Viewer
+X-GNOME-FULLNAME=ImageViewer
+Comment=Generic image viewer and profile monitor
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=imageviewer
+Terminal=false
+Icon=felapps-imageviewer

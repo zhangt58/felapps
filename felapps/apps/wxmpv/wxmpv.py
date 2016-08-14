@@ -20,6 +20,7 @@ from wx.lib.wordwrap import wordwrap
 from ...utils import analysisframe
 from ...utils import miscutils
 from ...utils import funutils
+from ...utils import resutils
 
 
 __version__ =  miscutils.AppVersions().getVersion('wxmpv')
@@ -189,6 +190,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         frame = MainFrame(None)
         frame.SetTitle(u"wxmpv \u2014 wxMatPlotViewer (debug mode, CTRL+ALT+I)")
         frame.Show()
+        frame.SetIcon(resutils.wicon_s.GetIcon())
         self.SetTopWindow(frame)
         return True
 
@@ -203,6 +205,7 @@ def run(logon=False, debug=False):
         frame = MainFrame(None)
         frame.SetTitle(u"wxmpv \u2014 wxMatPlotViewer")
         frame.Show()
+        frame.SetIcon(resutils.wicon_s.GetIcon())
     app.MainLoop()
 
 if __name__ == '__main__':

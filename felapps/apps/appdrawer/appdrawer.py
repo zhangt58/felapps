@@ -39,6 +39,8 @@ class AppDrawerFrame(wx.Frame):
         # initialize UI
         self.initUI()
 
+        self.SetIcon(resutils.aicon_s.GetIcon())
+
     def onExit(self, event):
         self.exitApp()
 
@@ -199,7 +201,8 @@ class AppDrawerPanel(wx.Panel):
         matchwizard.matchwizard.run(debug=DEBUG_FLAG)
 
     def onClickAppL(self, event):
-        latticeviewer.run(debug=DEBUG_FLAG)
+        icon = resutils.licon_s.GetIcon()
+        latticeviewer.run(debug=DEBUG_FLAG, icon=icon)
 
     def onClickAppW(self, event):
         wxmpv.wxmpv.run(debug=DEBUG_FLAG)

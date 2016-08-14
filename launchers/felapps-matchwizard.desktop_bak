@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=Match Wizard
+GenericName=Match Wizard
+X-GNOME-FULLNAME=MatchWizard
+Comment=App for beamline matching operation
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=matchwizard
+Terminal=false
+Icon=felapps-matchwizard

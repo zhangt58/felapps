@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=FEL Formula
+GenericName=FEL Formula
+X-GNOME-FULLNAME=FELFormula
+Comment=Calculator for FEL physics
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=felformula
+Terminal=false
+Icon=felapps-felformula

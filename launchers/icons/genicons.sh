@@ -12,11 +12,11 @@ for ipx in ${px}
 do
     [ -e ${category}/${ipx} ] || mkdir ${category}/${ipx}
     #for appname in {"imageviewer","cornalyzer","felformula","dataworkshop","matchwizard","appdrawer","latticeviewer","wxmpv"}
-    for appname in {"imageviewer","cornalyzer","felformula","dataworkshop","appdrawer","latticeviewer","wxmpv"}
+    for appname in {"apps","imageviewer","cornalyzer","felformula","dataworkshop","appdrawer","latticeviewer","wxmpv"}
     do
         convert -resize ${ipx}x${ipx} ./original/${category}/${appname}.png .tmp.png
-        mv .tmp.png ${category}/${ipx}/${appname}.png
-        echo "Generate icon with ${ipx}x${ipx} for ${appname}"
+        mv .tmp.png ${category}/${ipx}/felapps-${appname}.png
+        echo "Generate icon with ${ipx}x${ipx} for felapps-${appname}"
     done
 done
     

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=App Drawer
+GenericName=App Drawer
+X-GNOME-FULLNAME=AppDrawer
+Comment=Main launch panel for felapps
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=appdrawer
+Terminal=false
+Icon=felapps-appdrawer

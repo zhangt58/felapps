@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=2.0
+Name=Correlation Analyzer
+GenericName=Correlation Analyzer
+X-GNOME-FULLNAME=Cornalyzer
+Comment=Generic data correlation analysis application
+Type=Application
+Categories=FEL;Science;Physics;Education;
+Exec=cornalyzer
+Terminal=false
+Icon=felapps-cornalyzer

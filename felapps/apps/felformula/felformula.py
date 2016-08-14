@@ -10,6 +10,7 @@ Created: May. 28, 2015 (re-organized)
 
 from ...physics import felcalc
 from ...utils   import miscutils
+from ...utils   import resutils
 import wx
 import wx.lib.mixins.inspection as wit
 
@@ -21,6 +22,7 @@ class InspectApp(wx.App, wit.InspectionMixin):
         self.Init()
         myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 Calculator for FEL physics (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
+        myframe.SetIcon(resutils.ficon_s.GetIcon())
         self.SetTopWindow(myframe)
         return True
 
@@ -38,6 +40,7 @@ def run(maximize = True, logon = False, debug = False):
         else:
             myframe = felcalc.MainFrame(None, title = u'FEL Formula \u2014 FEL Calculation App', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
+        myframe.SetIcon(resutils.ficon_s.GetIcon())
         app.MainLoop()
 
 if __name__ == '__main__':

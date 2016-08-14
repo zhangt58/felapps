@@ -11,6 +11,7 @@ Created: Sep. 23rd, 2015
 from ...utils import datautils
 from ...utils import miscutils
 from ...utils import funutils
+from ...utils import resutils
 import wx
 import wx.lib.mixins.inspection as wit
 import os
@@ -22,12 +23,13 @@ class InspectApp(wx.App, wit.InspectionMixin):
     def OnInit(self):
         self.Init()
 
-        configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
-        if not os.path.isfile(configFile):
-            configFile = funutils.getFileToLoad(None, ext = 'xml')
+        #configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
+        #if not os.path.isfile(configFile):
+        #    configFile = funutils.getFileToLoad(None, ext = 'xml')
 
-        myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+        myframe = datautils.DataWorkshop(None, config=None, title=u'DataWorkshop \u2014 Data Analysis Framwork (debug mode, CTRL+ALT+I)', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
         myframe.Show()
+        myframe.SetIcon(resutils.dicon_s.GetIcon())
         self.SetTopWindow(myframe)
         return True
 
@@ -39,17 +41,18 @@ def run(maximize = True, logon = False, debug=True):
         app = InspectApp()
         app.MainLoop()
     else:
-        app = wx.App(redirect = logon, filename='log')
+        app = wx.App(redirect=logon, filename='log')
 
-        configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
-        if not os.path.isfile(configFile):
-            configFile = funutils.getFileToLoad(None, ext = 'xml')
+        #configFile = os.path.expanduser("~/.felapps/config/imageviewer.xml")
+        #if not os.path.isfile(configFile):
+        #    configFile = funutils.getFileToLoad(None, ext = 'xml')
 
         if maximize == True:
-            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE)
+            myframe = datautils.DataWorkshop(None, config=None, title=u'DataWorkshop \u2014 Data Analysis Framwork', appversion=__version__, style=wx.DEFAULT_FRAME_STYLE)
         else:
-            myframe = datautils.DataWorkshop(None, config = configFile, title = u'DataWorkshop \u2014 Data Analysis Framwork', appversion = __version__, style = wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
+            myframe = datautils.DataWorkshop(None, config=None, title = u'DataWorkshop \u2014 Data Analysis Framwork', appversion=__version__, style=wx.DEFAULT_FRAME_STYLE & ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX))
         myframe.Show()
+        myframe.SetIcon(resutils.dicon_s.GetIcon())
         app.MainLoop()
 
 if __name__ == '__main__':
