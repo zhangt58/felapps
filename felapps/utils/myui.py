@@ -186,7 +186,7 @@ class PlotFrame(wx.Frame):
         fgSizer_info.Add(self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL |
                          wx.EXPAND, 0)
 
-        self.delx_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}x:",
+        self.delx_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}x:",
                                      wx.DefaultPosition, wx.DefaultSize, 0)
         self.delx_st.Wrap(-1)
         self.delx_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
@@ -218,7 +218,7 @@ class PlotFrame(wx.Frame):
         fgSizer_info.Add(self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL |
                          wx.EXPAND, 0)
 
-        self.dely_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}y:",
+        self.dely_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}y:",
                                      wx.DefaultPosition, wx.DefaultSize, 0)
         self.dely_st.Wrap(-1)
         self.dely_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))

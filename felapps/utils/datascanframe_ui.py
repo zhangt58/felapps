@@ -294,7 +294,7 @@ class DataScanFrame(wx.Frame):
                      wx.LEFT, 5)
 
         self.daq_pv_list_btn = wx.Button(sbsizer_l.GetStaticBox(), wx.ID_ANY,
-                                         u"𝌀", wx.DefaultPosition, wx.Size(
+                                         u"...", wx.DefaultPosition, wx.Size(
                                              40, -1), 0)
         self.daq_pv_list_btn.SetFont(wx.Font(10, 70, 90, 90, False,
                                              wx.EmptyString))

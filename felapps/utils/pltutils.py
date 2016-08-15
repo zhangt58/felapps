@@ -960,7 +960,7 @@ class ImageViewer(wx.Frame):
         
         fgSizer_info.Add( self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
         
-        self.delx_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}x:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.delx_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}x:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.delx_st.Wrap( -1 )
         self.delx_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
@@ -984,7 +984,7 @@ class ImageViewer(wx.Frame):
         
         fgSizer_info.Add( self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 5 )
         
-        self.dely_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{MATHEMATICAL ITALIC CAPITAL DELTA}y:", wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.dely_st = wx.StaticText( self.panel, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}y:", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.dely_st.Wrap( -1 )
         self.dely_st.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, "Monospace" ) )
         
