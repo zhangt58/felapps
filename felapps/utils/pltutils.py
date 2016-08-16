@@ -182,11 +182,16 @@ class ImageViewer(wx.Frame):
 
     def setEnvars(self):
         boolDict = {True: 'YES', False: 'NO'}
-        envKeys = ['PYEPICS_LIBCA', 'EPICS_CA_ADDR_LIST',
-                   'EPICS_CA_AUTO_ADDR_LIST', 'EPICS_CA_MAX_ARRAY_BYTES']
-        envVals = [self.libcaPath, self.caAddrList, boolDict[self.caAddrAuto],
+        envKeys = ['PYEPICS_LIBCA', 
+                   'EPICS_CA_ADDR_LIST',
+                   'EPICS_CA_AUTO_ADDR_LIST', 
+                   'EPICS_CA_MAX_ARRAY_BYTES']
+        envVals = [self.libcaPath,
+                   self.caAddrList, 
+                   boolDict[self.caAddrAuto],
                    str(self.caArrayBytes)]
         for k, v in zip(envKeys, envVals):
+            # debug only
             os.environ[k] = v
 
     def loadConfig(self, configfilename):
@@ -2295,7 +2300,7 @@ class ControlConfigPanel(wx.Panel):
                                    value=self.thisapp.caAddrList,
                                    style=wx.TE_PROCESS_ENTER)
         caAddrListtc.SetToolTip(wx.ToolTip(
-            "Input IP addresses or hostnames seperated by ';'"))
+            "Input IP addresses or hostnames seperated by ';' or ',' or SPACE."))
         caAddrAutochk.SetValue(self.thisapp.caAddrAuto)
         self.caAddrAutochk = caAddrAutochk
         self.caAddrListst = caAddrListst
@@ -2444,7 +2449,7 @@ class ControlConfigPanel(wx.Panel):
     def onUpdateParams1(self, event):
         val = event.GetEventObject().GetValue()
         newval = val.replace(',', ';').replace(';', ' ').split()
-        event.GetEventObject().SetValue(';'.join(newval))
+        event.GetEventObject().SetValue(' '.join(newval))
 
     def onUpdateParams2(self, event):
         obj = event.GetEventObject()
