@@ -68,34 +68,38 @@ class AnalysisFrame(myui.PlotFrame):
         self.mk_cb.AppendItems(mk_code)
         self.mk_cb.SetValue('none')
 
-        # image
-        self.plotpanel.set_figure_data(self.image_data)
+        try:
+            # image
+            self.plotpanel.set_figure_data(self.image_data)
 
-        self.plotpanel.axes.set_xlabel('$x$', fontsize=self.fontsize+4)
-        self.plotpanel.axes.set_ylabel('$y$', fontsize=self.fontsize+4)
-        self.plotpanel.refresh()
+            self.plotpanel.axes.set_xlabel('$x$', fontsize=self.fontsize+4)
+            self.plotpanel.axes.set_ylabel('$y$', fontsize=self.fontsize+4)
+            self.plotpanel.refresh()
 
-        # lines
-        self.plotpanel.set_lines()
+            # lines
+            self.plotpanel.set_lines()
 
-        # set output
-        self.set_fit_output()
-        # grid color
-        self.grid_color = '#000000'
+            # set output
+            self.set_fit_output()
 
-        # [mfc, mec, lc]_bmp color
+            # grid color
+            self.grid_color = '#000000'
 
-        self.set_staticbmp_color(self.lc_bmp, wx.Colour(255, 165, 0))
-        self.set_staticbmp_color(self.mec_bmp, wx.RED)
-        self.set_staticbmp_color(self.mfc_bmp, wx.RED)
+            # [mfc, mec, lc]_bmp color
 
-        # color range
-        clim = self.plotpanel.get_clim()
-        self.crange_tc.SetValue(clim)
+            self.set_staticbmp_color(self.lc_bmp, wx.Colour(255, 165, 0))
+            self.set_staticbmp_color(self.mec_bmp, wx.RED)
+            self.set_staticbmp_color(self.mfc_bmp, wx.RED)
 
-        # pos marker flag
-        self.marker_pos1, self.marker_pos2 = False, False
-        self.plotpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+            # color range
+            clim = self.plotpanel.get_clim()
+            self.crange_tc.SetValue(clim)
+
+            # pos marker flag
+            self.marker_pos1, self.marker_pos2 = False, False
+            self.plotpanel.set_markflags(self.marker_pos1, self.marker_pos2)
+        except:
+            pass
 
         # events:
         self.Bind(wx.EVT_BUTTON, self.onIncFontSize, self.inc_font_btn)
