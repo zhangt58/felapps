@@ -58,14 +58,14 @@ class DataWorkshop(wx.Frame):
         fileMenu = wx.Menu()
         openItem = fileMenu.Append(wx.ID_OPEN, '&Open files\tCtrl+O', 'Open file to view')
         addItem  = fileMenu.Append(wx.ID_ADD,  '&Add files\tCtrl+A',  'Add file to view')
-        saveItem = fileMenu.Append(wx.ID_SAVE, '&Save\tCtrl+S',      'Save')
+        #saveItem = fileMenu.Append(wx.ID_SAVE, '&Save\tCtrl+S',      'Save')
         fileMenu.AppendSeparator()
         self.addItem = addItem
         addItem.Enable(False)
         exitItem = fileMenu.Append(wx.ID_EXIT, 'E&xit\tCtrl+W', 'Exit application')
         self.Bind(wx.EVT_MENU, self.onOpen, openItem)
         self.Bind(wx.EVT_MENU, self.onAdd,  addItem )
-        self.Bind(wx.EVT_MENU, self.onSave, saveItem)
+        #self.Bind(wx.EVT_MENU, self.onSave, saveItem)
         self.Bind(wx.EVT_MENU, self.onExit, exitItem)
         
         ## Configurations menu
@@ -256,6 +256,8 @@ class DataWorkshop(wx.Frame):
         animate_btn    = wx.Button(self.panel_l, label='Make Animation')
         statistics_btn = wx.Button(self.panel_l, label='Statistics'    )
         analysis_btn   = wx.Button(self.panel_l, label='Analysis'      )
+        analysis_btn.Hide()
+        animate_btn.Disable()
 
         hbox1 = wx.BoxSizer(wx.VERTICAL)
         hbox1.Add(animate_btn,    proportion=0, flag=wx.EXPAND | wx.ALL, border=2)
@@ -338,10 +340,11 @@ class DataWorkshop(wx.Frame):
         self.SetSizerAndFit(osizer)
 
     def onAnalysis(self, event):
-        if self.fdata_list is None:
-            return
-        print self.fdata_list, len(self.fdata_list)
-        print self.image_list, len(self.image_list)
+        pass
+        #if self.fdata_list is None:
+        #    return
+        #print self.fdata_list, len(self.fdata_list)
+        #print self.image_list, len(self.image_list)
         #i = 0
         #input_datafile = self.fdata_list[i]
         #self._data_analysis(input_datafile)

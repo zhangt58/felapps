@@ -328,6 +328,12 @@ class DataScanFrame(dsfui.DataScanFrame):
 
         # set scan params
         self.set_scan_params()
+
+        # debug only
+        try:
+            self.scanfig_panel.cla()
+        except:
+            pass
         
         # start timestamp
         self.start_timestamp = datetime.now()

@@ -12,6 +12,13 @@ Created: 2016-07-14 14:59:11 PM CST
 
 import numpy as np
 
+def f_fft(x):
+    """ return frequency
+    """
+    f = abs(np.fft.fft(x))
+    idx = np.where(f==f.max())[0][0]
+    return idx
+
 def f_magnify(x):
     """ multipy by 10 folds
     """
