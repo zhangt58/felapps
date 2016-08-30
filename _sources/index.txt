@@ -1,0 +1,33 @@
+.. felapps documentation master file, created by
+   sphinx-quickstart on Wed Aug 24 19:48:59 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to felapps's documentation!
+===================================
+
+.. sidebar:: felapps Python package
+    
+    ``felapps``: FEL High-level Applications.
+
+    :Author: Tong Zhang 
+    :E-mail: zhangtong@sinap.ac.cn
+    :Date: 2015-2016
+
+
+.. toctree::
+    :maxdepth: 2
+    
+    src/intro
+    src/deploy
+    src/demo
+    src/apidoc
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

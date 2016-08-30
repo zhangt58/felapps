@@ -1,0 +1,22 @@
+felapps.apps.felformula package
+===============================
+
+Submodules
+----------
+
+felapps.apps.felformula.felformula module
+-----------------------------------------
+
+.. automodule:: felapps.apps.felformula.felformula
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.felformula
+    :members:
+    :undoc-members:
+    :show-inheritance:

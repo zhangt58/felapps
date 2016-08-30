@@ -1,0 +1,22 @@
+felapps.apps.wxmpv package
+==========================
+
+Submodules
+----------
+
+felapps.apps.wxmpv.wxmpv module
+-------------------------------
+
+.. automodule:: felapps.apps.wxmpv.wxmpv
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.wxmpv
+    :members:
+    :undoc-members:
+    :show-inheritance:

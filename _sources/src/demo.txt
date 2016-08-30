@@ -1,0 +1,32 @@
+Examples and Demonstrations
+===========================
+
+Here goes through the main features that ``felapps`` provides, 
+among which ``latticeviewer`` is an app based on ``beamline`` package.
+
+.. warning::
+    The operating system is Linux (64 bit), distributions that has been 
+    tested: *Scientifig Linux 6.4*, *CentOS 6.4*, *Linux Mint 17.x, 18*
+    (*Ubuntu 15.x, 16.x*), 
+    other distros should work provided proper configurations. 
+    Part of features should work in Windows OS, but not be fully tested.
+
+
+In the following examples, the invocation of the apps should be one of these
+approaches:
+
+    1. Type <app name> in the terminal;
+    2. Browse <app name> from ``FELApps`` system menu;
+    3. Invoke ``runfelapps`` or ``appdrawer``, click <app name> from the 
+       app's panel.
+
+
+.. toctree::
+    :maxdepth: 2
+    
+    Example 1: 'imageviewer' -- Fetch image figure and data <demos/demo1>
+    Example 2: 'dataworkshop' -- Post-processing about the figure data <demos/demo2>
+    Example 3: 'cornalyzer' -- Parameters correlation analysis <demos/demo3>
+    Example 4: 'felformula' -- FEL physics calculator <demos/demo4>
+    Example 5: 'latticeviewer' -- Online-model GUI app <demos/demo5>
+    Example 6: 'wxmpv' -- General matplot viewer <demos/demo6>

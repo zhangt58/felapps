@@ -1,0 +1,9 @@
+Example 4
+=========
+
+``felformula`` -- Basic FEL physics calculator app.
+
+.. Introduction
+.. ------------
+
+.. Help the non-FEL-physics specialists, e.g. users/operator

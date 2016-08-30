@@ -1,0 +1,22 @@
+felapps.apps.cornalyzer_old package
+===================================
+
+Submodules
+----------
+
+felapps.apps.cornalyzer_old.cornalyzer module
+---------------------------------------------
+
+.. automodule:: felapps.apps.cornalyzer_old.cornalyzer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.cornalyzer_old
+    :members:
+    :undoc-members:
+    :show-inheritance:

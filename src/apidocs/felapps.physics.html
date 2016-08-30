@@ -1,0 +1,531 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.physics package &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html" />
+    <link rel="up" title="felapps package" href="felapps.html" />
+    <link rel="next" title="felapps.utils package" href="felapps.utils.html" />
+    <link rel="prev" title="felapps.facilities package" href="felapps.facilities.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="felapps.utils.html" title="felapps.utils package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="felapps.facilities.html" title="felapps.facilities package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="felapps.html" accesskey="U">felapps package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">felapps.physics package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-felapps.physics.felbase">felapps.physics.felbase module</a></li>
+<li><a class="reference internal" href="#module-felapps.physics.felcalc">felapps.physics.felcalc module</a></li>
+<li><a class="reference internal" href="#module-felapps.physics">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="felapps.facilities.html"
+                        title="previous chapter">felapps.facilities package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="felapps.utils.html"
+                        title="next chapter">felapps.utils package</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="felapps-physics-package">
+<h1>felapps.physics package<a class="headerlink" href="#felapps-physics-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-felapps.physics.felbase">
+<span id="felapps-physics-felbase-module"></span><h2>felapps.physics.felbase module<a class="headerlink" href="#module-felapps.physics.felbase" title="Permalink to this headline">¶</a></h2>
+<p>Python module for the basis of free-electron laser calculation.</p>
+<dl class="class">
+<dt id="felapps.physics.felbase.FELcalc">
+<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">FELcalc</code><span class="sig-paren">(</span><em>_beamEnergy=6000.0</em>, <em>_relativeEnergySpread=0.0001</em>, <em>_unduPeriodLength=0.015</em>, <em>_avgBetaFunc=20.0</em>, <em>_radWavelength=1e-10</em>, <em>_normEmittance=4e-07</em>, <em>_peakCurrent=3500.0</em>, <em>_bunchCharge=5e-10</em>, <em>_undulatorLength=10.0</em>, <em>_bunchShape='gaussian'</em>, <em>_undulatorType='planar'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#FELcalc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.FELcalc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#felapps.physics.felbase.PhysicalConstants" title="felapps.physics.felbase.PhysicalConstants"><code class="xref py py-class docutils literal"><span class="pre">felapps.physics.felbase.PhysicalConstants</span></code></a></p>
+<p>Analytical calculation for Free-electron Laser physics</p>
+<p>Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7)
+:param p1: beamEnergy, [MeV]
+:param p2: relative energy spread
+:param p3: undulator period length, [m]
+:param p4: avgerage beta function, [m]
+:param p5: radiation wavelength, [m]
+:param p6: normalized transverse emittance, [m]
+:param p7: peak current, [A]
+:return res: dict, keys: &#8220;au&#8221;, &#8220;bu&#8221;, &#8220;gap&#8221;, &#8220;sigmar&#8221;, &#8220;rho1D&#8221;, &#8220;rho3D&#8221;, &#8220;Lg1D&#8221;, &#8220;Lg3D&#8221;, &#8220;Psat&#8221;, &#8220;Pshot&#8221;, &#8220;Pss&#8221;</p>
+<dl class="method">
+<dt id="felapps.physics.felbase.FELcalc.findSatFactor">
+<code class="descname">findSatFactor</code><span class="sig-paren">(</span><em>nl</em>, <em>l3</em>, <em>xlamd</em>, <em>factor0=20</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#FELcalc.findSatFactor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.FELcalc.findSatFactor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculator saturation length in the unit of 3D power gainlength
+:param factor0: initial saturation factor, saturation length over power gain length
+:param nl: electron count within one unit of FEL wavelength
+:param l3: power gain length (3D)
+:param xlamd: undulator period</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felbase.FELcalc.onFELAnalyse">
+<code class="descname">onFELAnalyse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#FELcalc.onFELAnalyse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.FELcalc.onFELAnalyse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply M. Xie formulae for FEL analytical estimation</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felbase.HalbachPerm">
+<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">HalbachPerm</code><span class="sig-paren">(</span><em>_a=3.33</em>, <em>_b=-5.47</em>, <em>_c=1.8</em>, <em>_lambdau=20</em>, <em>_Bu=1.0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#HalbachPerm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.HalbachPerm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="felapps.physics.felbase.HalbachPerm.findGap">
+<code class="descname">findGap</code><span class="sig-paren">(</span><em>gap0=10</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#HalbachPerm.findGap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.HalbachPerm.findGap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve undulator gap value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gap0</strong> &#8211; initial gap value vector, [mm]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felbase.PhysicalConstants">
+<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">PhysicalConstants</code><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#PhysicalConstants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Physical constants
+:param c0: <img class="math" src="../../_images/math/871e0834b8b6f132c00a57acee8b4c8fb2eb2c77.png" alt="c_0"/>, velocity of light in vacuum
+:param epsilon0: <img class="math" src="../../_images/math/f6da37ff3a3873900e235d0837af9e1d2a30c2ab.png" alt="\epsilon_0"/>, permittivity in vacuum
+:param mu0: <img class="math" src="../../_images/math/ba1d824b5472f0f2c69b48e08792e778866b4d52.png" alt="\mu_0"/>, permeability in vacuum
+:param e0: <img class="math" src="../../_images/math/78a06cf7a34f39fde71fbba0d5539baae7c72d4e.png" alt="e"/>, electron charge, [C]
+:param m0: <img class="math" src="../../_images/math/2ba5781b7f01aa385426a30b01d8a60d805c1b12.png" alt="m_e"/>, electron mass, [kg]
+:param h0: <img class="math" src="../../_images/math/293fb39e1b93282c804a86186e721b32f829f1b2.png" alt="h"/>, Plank constant
+:param currentA: <img class="math" src="../../_images/math/cf94ffd2d5925f7ed4e97d50fdae65ac9db126cc.png" alt="I_A"/>, Alven current, [A]</p>
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.c0">
+<code class="descname">c0</code><em class="property"> = 299792458.0</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.c0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.currentA">
+<code class="descname">currentA</code><em class="property"> = 17045</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.currentA" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.e0">
+<code class="descname">e0</code><em class="property"> = 1.60218e-19</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.e0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.epsilon0">
+<code class="descname">epsilon0</code><em class="property"> = 8.85418781762039e-12</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.epsilon0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.h0">
+<code class="descname">h0</code><em class="property"> = 6.62607e-34</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.h0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.m0">
+<code class="descname">m0</code><em class="property"> = 9.10938e-31</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.m0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="felapps.physics.felbase.PhysicalConstants.mu0">
+<code class="descname">mu0</code><em class="property"> = 1.2566370614359173e-06</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.mu0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="felapps.physics.felbase.test1">
+<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#test1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.test1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="felapps.physics.felbase.test2">
+<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#test2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.test2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="felapps.physics.felbase.test3">
+<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felbase.html#test3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felbase.test3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-felapps.physics.felcalc">
+<span id="felapps-physics-felcalc-module"></span><h2>felapps.physics.felcalc module<a class="headerlink" href="#module-felapps.physics.felcalc" title="Permalink to this headline">¶</a></h2>
+<p>Author: Tong Zhang
+Create Time: 15:22, Jan. 15, 2015
+first version is written in MATLAB on Dec. 25th, 2014.</p>
+<dl class="class">
+<dt id="felapps.physics.felcalc.DataSaveFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">DataSaveFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>dataparent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.InitUI">
+<code class="descname">InitUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.InitUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onCheckCols1">
+<code class="descname">onCheckCols1</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onCheckCols1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onCheckCols1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onCheckCols2">
+<code class="descname">onCheckCols2</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onCheckCols2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onCheckCols2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onChooseFmt">
+<code class="descname">onChooseFmt</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onChooseFmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onChooseFmt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onChoosePth">
+<code class="descname">onChoosePth</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onChoosePth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onChoosePth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onExit">
+<code class="descname">onExit</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onExit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onExit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.DataSaveFrame.onSave">
+<code class="descname">onSave</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#DataSaveFrame.onSave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame.onSave" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felcalc.ExportFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">ExportFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#ExportFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.ExportFrame.InitUI">
+<code class="descname">InitUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#ExportFrame.InitUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.ExportFrame.onCancel">
+<code class="descname">onCancel</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#ExportFrame.onCancel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame.onCancel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.ExportFrame.onChoose">
+<code class="descname">onChoose</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#ExportFrame.onChoose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame.onChoose" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.ExportFrame.onExport">
+<code class="descname">onExport</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#ExportFrame.onExport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame.onExport" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felcalc.InfoFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">InfoFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#InfoFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.InfoFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.InfoFrame.InitUI">
+<code class="descname">InitUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#InfoFrame.InitUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.InfoFrame.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felcalc.LogFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">LogFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#LogFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.LogFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.LogFrame.InitUI">
+<code class="descname">InitUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#LogFrame.InitUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.LogFrame.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.LogFrame.onShowCLog">
+<code class="descname">onShowCLog</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#LogFrame.onShowCLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.LogFrame.onShowCLog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felcalc.MainFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">MainFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.collectAllParams">
+<code class="descname">collectAllParams</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.collectAllParams"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.collectAllParams" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.createMenu">
+<code class="descname">createMenu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.createMenu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.createMenu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.createPanel">
+<code class="descname">createPanel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.createPanel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.createPanel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.createStatusbar">
+<code class="descname">createStatusbar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.createStatusbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.createStatusbar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.initUI">
+<code class="descname">initUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.initUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.initUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onAbout">
+<code class="descname">onAbout</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onAbout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onAbout" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onCalc">
+<code class="descname">onCalc</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onCalc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onCalc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onChangelog">
+<code class="descname">onChangelog</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onChangelog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onChangelog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onEnableScan">
+<code class="descname">onEnableScan</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onEnableScan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onEnableScan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onExit">
+<code class="descname">onExit</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onExit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onExit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onExport">
+<code class="descname">onExport</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onExport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onExport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export input parameters and output results into file (for next import or archive)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onExportJ">
+<code class="descname">onExportJ</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onExportJ"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onExportJ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export input parameters and output results as a json string to file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onImport">
+<code class="descname">onImport</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onImport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onImport" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import parameters from external configuration file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onInfo">
+<code class="descname">onInfo</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onInfo" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onMenuHL">
+<code class="descname">onMenuHL</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onMenuHL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onMenuHL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onPlot">
+<code class="descname">onPlot</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onPlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onSetInitalScanRange">
+<code class="descname">onSetInitalScanRange</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onSetInitalScanRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onSetInitalScanRange" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.onTextEnter">
+<code class="descname">onTextEnter</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.onTextEnter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.onTextEnter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.MainFrame.updateUI">
+<code class="descname">updateUI</code><span class="sig-paren">(</span><em>paramsdict</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#MainFrame.updateUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.MainFrame.updateUI" title="Permalink to this definition">¶</a></dt>
+<dd><p>update UI with import parameters from .conf file</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="felapps.physics.felcalc.PlotFrame">
+<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">PlotFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.InitUI">
+<code class="descname">InitUI</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.InitUI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.InitUI" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.createMenu">
+<code class="descname">createMenu</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.createMenu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.createMenu" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.createPanel">
+<code class="descname">createPanel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.createPanel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.createPanel" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.createToolbar">
+<code class="descname">createToolbar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.createToolbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.createToolbar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onAboutPlot">
+<code class="descname">onAboutPlot</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onAboutPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onAboutPlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onExitPlot">
+<code class="descname">onExitPlot</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onExitPlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onExitPlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onGridCheck">
+<code class="descname">onGridCheck</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onGridCheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onGridCheck" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onMotion">
+<code class="descname">onMotion</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onMotion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onMotion" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onPlotChoice">
+<code class="descname">onPlotChoice</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onPlotChoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onPlotChoice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onSaveData">
+<code class="descname">onSaveData</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onSaveData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onSaveData" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.onSavePlot">
+<code class="descname">onSavePlot</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.onSavePlot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.onSavePlot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.repaint">
+<code class="descname">repaint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.repaint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.repaint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="felapps.physics.felcalc.PlotFrame.setColor">
+<code class="descname">setColor</code><span class="sig-paren">(</span><em>rgbtuple=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#PlotFrame.setColor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame.setColor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="felapps.physics.felcalc.run">
+<code class="descclassname">felapps.physics.felcalc.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/felapps/physics/felcalc.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#felapps.physics.felcalc.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-felapps.physics">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-felapps.physics" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="felapps.utils.html" title="felapps.utils package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="felapps.facilities.html" title="felapps.facilities package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="felapps.html" >felapps package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

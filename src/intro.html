@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../index.html" />
+    <link rel="next" title="Deployment" href="deploy.html" />
+    <link rel="prev" title="Welcome to felapps’s documentation!" href="../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="deploy.html" title="Deployment"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to felapps’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">felapps 1.5.13 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#picture-of-felapps">Picture of felapps</a></li>
+<li><a class="reference internal" href="#progress-of-felapps">Progress of felapps</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">Welcome to felapps&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="deploy.html"
+                        title="next chapter">Deployment</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">felapps</span></code> is a Python package developed for the commissioning of
+free-electron laser facility, with the intention of providing useful
+tools for the high-level applications, both command line interface (CLI)
+and graphical user interface (GUI) are developed/under development.</p>
+<p>The package name stands for &#8220;FEL High-level Applications&#8221;, the core
+building language is <code class="docutils literal"><span class="pre">Python</span></code>, of the version of <code class="docutils literal"><span class="pre">2.7.x</span></code>. Since
+<code class="docutils literal"><span class="pre">Python</span></code> is a dynamic interpreted high-level language, pure
+object-oriented, various powerful third-party packages support, all
+of these great features make it possible to build software system
+in a real efficient way.</p>
+<p>Below is the basic framework of <code class="docutils literal"><span class="pre">felapps</span></code>, general-purpose applications
+and specific-purpose applications are both included, specific-purpose
+applications mean physics-related, both LINAC and FEL physics.</p>
+<a class="reference internal image-reference" href="../_images/hla_framework.png"><img alt="../_images/hla_framework.png" class="align-center" src="../_images/hla_framework.png" style="width: 400px;" /></a>
+<p>To make the package be well-organized, the source code is structured
+by the following style:</p>
+<a class="reference internal image-reference" href="../_images/felapps_framework_0.png"><img alt="../_images/felapps_framework_0.png" class="align-center" src="../_images/felapps_framework_0.png" style="width: 600px;" /></a>
+<p>Building such <code class="docutils literal"><span class="pre">Python</span></code>-based software system requires much more effort
+to understanding the following key points, but not limited:</p>
+<blockquote>
+<div><ul class="simple">
+<li>potentially demandings of the FEL facility commissioning;</li>
+<li>software architecture of the system to be like;</li>
+<li>comprehesive relationship between the lower-level control
+system and the high-level applications system;</li>
+<li>interfaces between various different layers;</li>
+<li>deployment of the entire software system;</li>
+<li>documentations;</li>
+<li>etc.</li>
+</ul>
+</div></blockquote>
+<div class="section" id="picture-of-felapps">
+<h2>Picture of felapps<a class="headerlink" href="#picture-of-felapps" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="../_images/fc_18.png"><img alt="../_images/fc_18.png" class="align-center" src="../_images/fc_18.png" style="width: 700px;" /></a>
+<p>This the incubated picture of <code class="docutils literal"><span class="pre">felapps</span></code> package, which including
+<em>Desktop Apps</em> and &#8220;Web Apps&#8221; categories, also indicating the
+developing orientation, i.e. to take the advantages of <code class="docutils literal"><span class="pre">Python</span></code>,
+to build desktop apps to be a eco-system with bundle of well-defined APIs
+, to serve the web apps as service infrastructures, the ultimate goal
+should be a facility cloud with plenty of services that could be utilized
+by the facility, e.g. free-electron laser facility.</p>
+<p>Specifically, in the beginning of such vision, <em>Desktop Apps</em> should be
+built, into which general-purposed and physics-related
+apps/classes/functions/methods should be integrated, just as the picture
+illustrates. As for the user, the deployment of <code class="docutils literal"><span class="pre">felapps</span></code> should be
+easy and robust. The future developing phase should be web-based apps,
+to achieve such goal, the suggested beginning point should be the web-based
+log book, i.e. to develop an e-log web system by <code class="docutils literal"><span class="pre">Python</span></code>, incorporating
+the power from Python web-development community.</p>
+</div>
+<div class="section" id="progress-of-felapps">
+<h2>Progress of felapps<a class="headerlink" href="#progress-of-felapps" title="Permalink to this headline">¶</a></h2>
+<p>Up to now (2016.8), the ready-to-deploy/use apps from <code class="docutils literal"><span class="pre">felapps</span></code> are:</p>
+<p><strong>Graphical User Interface Apps</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">appdrawer</span></code> <a class="footnote-reference" href="#f1" id="id1">[1]</a>: alias: <code class="docutils literal"><span class="pre">runfelapps</span></code>, portal to reach other
+GUI apps;</li>
+<li><code class="docutils literal"><span class="pre">cornalyzer</span></code>: parameters correlation analysis app;</li>
+<li><code class="docutils literal"><span class="pre">dataworkshop</span></code>: data post-processing app, feeding the data</li>
+<li><code class="docutils literal"><span class="pre">felformula</span></code>: efficient calculator for FEL physics;</li>
+<li><code class="docutils literal"><span class="pre">imageviewer</span></code>: general-purposed profile/CCD monitor/DAQ app;
+generated by <code class="docutils literal"><span class="pre">imageviewer</span></code>&#8216;s <code class="docutils literal"><span class="pre">Auto-Save</span></code> operation module;</li>
+<li><code class="docutils literal"><span class="pre">latticeviewer</span></code> <a class="footnote-reference" href="#f2" id="id2">[2]</a>: latice online modeling framework;</li>
+<li><code class="docutils literal"><span class="pre">wxmpv</span></code>: (to be) general data ploting &amp; processing app.</li>
+</ul>
+</div></blockquote>
+<p><strong>Command Line Interface Apps</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">lte2json</span></code> <a class="footnote-reference" href="#f2" id="id3">[2]</a>: standardize the <code class="docutils literal"><span class="pre">.lte</span></code> file for <code class="docutils literal"><span class="pre">Elegant</span></code>
+simulation, i.e. convert <code class="docutils literal"><span class="pre">.lte</span></code> file to JSON string file;</li>
+<li><code class="docutils literal"><span class="pre">json2lte</span></code> <a class="footnote-reference" href="#f2" id="id4">[2]</a>: convert (valid) JSON string file to
+<code class="docutils literal"><span class="pre">.lte</span></code> file;</li>
+<li><code class="docutils literal"><span class="pre">update-felapps-menu</span></code>: script of integrating <code class="docutils literal"><span class="pre">felapps</span></code> into
+system menu, as well as the reversed operation, i.e. uninstalling.</li>
+</ul>
+</div></blockquote>
+<p class="rubric">Footnotes:</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>App name that could be treated as the command name in the
+command line interface, to get the app running, the same rule
+applies to other apps.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id3">2</a>, <a class="fn-backref" href="#id4">3</a>)</em> Python package <code class="docutils literal"><span class="pre">beamline</span></code> is required.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="deploy.html" title="Deployment"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Welcome to felapps’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">felapps 1.5.13 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

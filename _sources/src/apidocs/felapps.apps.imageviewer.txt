@@ -1,0 +1,22 @@
+felapps.apps.imageviewer package
+================================
+
+Submodules
+----------
+
+felapps.apps.imageviewer.imageviewer module
+-------------------------------------------
+
+.. automodule:: felapps.apps.imageviewer.imageviewer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.imageviewer
+    :members:
+    :undoc-members:
+    :show-inheritance:

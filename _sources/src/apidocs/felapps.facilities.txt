@@ -1,0 +1,22 @@
+felapps.facilities package
+==========================
+
+Submodules
+----------
+
+felapps.facilities.dcls module
+------------------------------
+
+.. automodule:: felapps.facilities.dcls
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.facilities
+    :members:
+    :undoc-members:
+    :show-inheritance:

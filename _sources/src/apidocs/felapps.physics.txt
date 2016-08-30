@@ -1,0 +1,30 @@
+felapps.physics package
+=======================
+
+Submodules
+----------
+
+felapps.physics.felbase module
+------------------------------
+
+.. automodule:: felapps.physics.felbase
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.physics.felcalc module
+------------------------------
+
+.. automodule:: felapps.physics.felcalc
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.physics
+    :members:
+    :undoc-members:
+    :show-inheritance:

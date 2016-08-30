@@ -1,0 +1,6 @@
+.. _wxmpv_ex:
+
+Example 6
+=========
+
+``wxmpv`` -- General matplot viewer app.

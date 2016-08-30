@@ -1,0 +1,158 @@
+felapps.utils package
+=====================
+
+Submodules
+----------
+
+felapps.utils.EnhancedStatusBar module
+--------------------------------------
+
+.. automodule:: felapps.utils.EnhancedStatusBar
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.analysisframe module
+----------------------------------
+
+.. automodule:: felapps.utils.analysisframe
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.datascanapp module
+--------------------------------
+
+.. automodule:: felapps.utils.datascanapp
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.datascanframe module
+----------------------------------
+
+.. automodule:: felapps.utils.datascanframe
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.datascanframe_ui module
+-------------------------------------
+
+.. automodule:: felapps.utils.datascanframe_ui
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.datautils module
+------------------------------
+
+.. automodule:: felapps.utils.datautils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.felutils module
+-----------------------------
+
+.. automodule:: felapps.utils.felutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.funclistframe module
+----------------------------------
+
+.. automodule:: felapps.utils.funclistframe
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.funutils module
+-----------------------------
+
+.. automodule:: felapps.utils.funutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.imageutils module
+-------------------------------
+
+.. automodule:: felapps.utils.imageutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.matchutils module
+-------------------------------
+
+.. automodule:: felapps.utils.matchutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.miscutils module
+------------------------------
+
+.. automodule:: felapps.utils.miscutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.myui module
+-------------------------
+
+.. automodule:: felapps.utils.myui
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.parseutils module
+-------------------------------
+
+.. automodule:: felapps.utils.parseutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.pltutils module
+-----------------------------
+
+.. automodule:: felapps.utils.pltutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.resutils module
+-----------------------------
+
+.. automodule:: felapps.utils.resutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.scanutils module
+------------------------------
+
+.. automodule:: felapps.utils.scanutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+felapps.utils.uiutils module
+----------------------------
+
+.. automodule:: felapps.utils.uiutils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:

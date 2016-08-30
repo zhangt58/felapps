@@ -1,0 +1,22 @@
+felapps.apps.matchwizard package
+================================
+
+Submodules
+----------
+
+felapps.apps.matchwizard.matchwizard module
+-------------------------------------------
+
+.. automodule:: felapps.apps.matchwizard.matchwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.matchwizard
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example 1 &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html" />
+    <link rel="up" title="Examples and Demonstrations" href="../demo.html" />
+    <link rel="next" title="API" href="../apidoc.html" />
+    <link rel="prev" title="Examples and Demonstrations" href="../demo.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../apidoc.html" title="API"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../demo.html" title="Examples and Demonstrations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../demo.html" accesskey="U">Examples and Demonstrations</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example 1</a><ul>
+<li><a class="reference internal" href="#start-daq">Start DAQ</a></li>
+<li><a class="reference internal" href="#auto-save">Auto Save</a></li>
+<li><a class="reference internal" href="#data-example">Data Example</a><ul>
+<li><a class="reference internal" href="#image-data">1. Image Data</a></li>
+<li><a class="reference internal" href="#curve-fitting-data">2. Curve Fitting Data</a></li>
+<li><a class="reference internal" href="#auto-saved-data">3. Auto Saved Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../demo.html"
+                        title="previous chapter">Examples and Demonstrations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../apidoc.html"
+                        title="next chapter">API</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-1">
+<h1>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">imageviewer</span></code> &#8211; Image figure DAQ app.</p>
+<div class="section" id="start-daq">
+<h2>Start DAQ<a class="headerlink" href="#start-daq" title="Permalink to this headline">¶</a></h2>
+<p>If it is the first time to start <code class="docutils literal"><span class="pre">imageviewer</span></code>, windows may be poped up to ask for the
+configuration file <a class="footnote-reference" href="#f1" id="id1">[1]</a>. After loading the configuration file, the GUI style, e.g.
+background colour, font could be tunned, as well as other options, e.g. the data/image
+format that to be saved, the DAQ rate, image data source, EPICS control configurations, etc.</p>
+<a class="reference internal image-reference" href="../../_images/imageviewer_01.png"><img alt="../../_images/imageviewer_01.png" src="../../_images/imageviewer_01.png" style="width: 500px;" /></a>
+<p>Some basic operations:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">Put the EPICS PV string name in the <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Source:</span></code> box, press ENTER to retrieve
+the data (1D array), the <code class="docutils literal"><span class="pre">+</span></code>/<code class="docutils literal"><span class="pre">-</span></code> button is used to add/remove input PV string
+name to/from the internal favorite PV name array;</p>
+</li>
+<li><p class="first">Change the color map style of the obtained image, from <code class="docutils literal"><span class="pre">Color</span> <span class="pre">Map:</span></code> control field,
+select the grouped style from the combo list, add/remove current style to <code class="docutils literal"><span class="pre">Favorites</span></code>
+group;</p>
+</li>
+<li><p class="first">Reverse the color map, and change the color range, all these color options are of the
+goal to discriminate the interested signal from the big picture, i.e. to increase
+visibility;</p>
+</li>
+<li><dl class="first docutils">
+<dt>To the figure plot region, there are operations:</dt>
+<dd><ul class="first last simple">
+<li>Place up to two (2) markers with selected color;</li>
+<li>Track the <code class="docutils literal"><span class="pre">(x,</span> <span class="pre">y)</span></code> coordinate when mouse is moving;</li>
+<li>Show the figure intensity and Gaussian fit indicated radius sizes in x and y;</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Choose and reset Region-of-Interest, i.e. ROI.</p>
+</li>
+</ul>
+</div></blockquote>
+<dl class="docutils">
+<dt>Other operations that could be reached through menu:</dt>
+<dd><ul class="first last simple">
+<li>Save figure as some formated image <a class="footnote-reference" href="#f2" id="id2">[2]</a>, shortcut: <code class="docutils literal"><span class="pre">CTRL+S</span></code>;</li>
+<li>Save figure as some formated data, shortcut: <code class="docutils literal"><span class="pre">CTRL+D</span></code>;</li>
+<li>Quit app: shortcut: <code class="docutils literal"><span class="pre">CTRL+W</span></code> <a class="footnote-reference" href="#f3" id="id3">[3]</a>;</li>
+<li>Save configurations: <code class="docutils literal"><span class="pre">SHIFT+CTRL+S</span></code>, load configurations: <code class="docutils literal"><span class="pre">SHIFT+CTRL+L</span></code>;</li>
+<li>Show profile along x-axis: <code class="docutils literal"><span class="pre">ALT+X</span></code>;</li>
+<li>Show profile along y-axis: <code class="docutils literal"><span class="pre">ALT+Y</span></code>;</li>
+<li>Show intensity monitor window: <code class="docutils literal"><span class="pre">SHIFT+CTRL+V</span></code>, the figure could also be saved;</li>
+<li>Save fetched image data automatically: <code class="docutils literal"><span class="pre">ALT+S</span></code> <a class="footnote-reference" href="#f4" id="id4">[4]</a>;</li>
+</ul>
+</dd>
+</dl>
+<p>The following image is captured when <code class="docutils literal"><span class="pre">imageviewer</span></code> successfully fetch image data from
+PV named <code class="docutils literal"><span class="pre">sxfel:prof1</span></code>, which is a <code class="docutils literal"><span class="pre">50</span> <span class="pre">x</span> <span class="pre">50</span></code> array after reshaping operation, push
+<code class="docutils literal"><span class="pre">START</span></code> will trig the DAQ procedure with the configured rate <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Control</span> <span class="pre">&gt;</span>
+<span class="pre">Monitor</span> <span class="pre">Frequency</span></code> <a class="footnote-reference" href="#f5" id="id5">[5]</a>.</p>
+<a class="reference internal image-reference" href="../../_images/imageviewer_02.png"><img alt="../../_images/imageviewer_02.png" src="../../_images/imageviewer_02.png" style="width: 500px;" /></a>
+<p>Presently, <code class="docutils literal"><span class="pre">imageviewer</span></code> has been integrated Gaussian fitting model to show the x/y
+profiles of the image, click the pop up button right aside of <code class="docutils literal"><span class="pre">...</span> <span class="pre">Gaussian</span> <span class="pre">...</span></code> in the
+<code class="docutils literal"><span class="pre">Curve</span> <span class="pre">Fitting</span></code> panel of the main window, e.g. the following image shows the profiles.</p>
+<a class="reference internal image-reference" href="../../_images/imageviewer_04.png"><img alt="../../_images/imageviewer_04.png" src="../../_images/imageviewer_04.png" style="width: 500px;" /></a>
+<p>The raw data and fitting data could be saved by <code class="docutils literal"><span class="pre">Export</span></code> button.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Gaussian fitting model should be frequently used in the searching for
+radius size, central position of the light/beam spot, if other models should
+be applied, the <code class="docutils literal"><span class="pre">imageviewer</span></code> app needs to be extended.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p>Attention should be paid to the following configuration items:</p>
+<ol class="last arabic simple">
+<li><code class="docutils literal"><span class="pre">Image</span> <span class="pre">Width</span></code> and <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Height</span></code>, which is the dimension (2D array) to reshape;</li>
+<li><code class="docutils literal"><span class="pre">CA</span> <span class="pre">Library</span> <span class="pre">Path</span></code>, <code class="docutils literal"><span class="pre">CA</span> <span class="pre">Max</span> <span class="pre">Array</span> <span class="pre">Bytes</span></code> and <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">CA</span> <span class="pre">Address</span></code>, which is the
+control specific parameters, proper tunning is required so as to fetch the image data.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="auto-save">
+<h2>Auto Save<a class="headerlink" href="#auto-save" title="Permalink to this headline">¶</a></h2>
+<p>Here take the <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operation as example. <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> is designed for the following
+scenario:</p>
+<blockquote>
+<div><ul class="simple">
+<li>The facility (e.g. FEL) finally has been properly configured;</li>
+<li>DAQ procedure should be activated to get bundle of data, e.g. for some kind of analysis.</li>
+</ul>
+</div></blockquote>
+<p>Pop up <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> window, in which, tick the interested data and image format to be saved <a class="footnote-reference" href="#f6" id="id6">[6]</a>,
+as well as the full path to save files and the save frequency and save counter, etc. Push
+<code class="docutils literal"><span class="pre">Start</span> <span class="pre">SAVE</span></code> to trig the auto save procedure, the saving status could be found in the highlighted
+status bar in <code class="docutils literal"><span class="pre">imageviewer</span></code> app.</p>
+<a class="reference internal image-reference" href="../../_images/imageviewer_03.png"><img alt="../../_images/imageviewer_03.png" src="../../_images/imageviewer_03.png" style="width: 500px;" /></a>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">When utilizing <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operation, remember <code class="docutils literal"><span class="pre">imageviewer</span></code> should be in
+the DAQ mode, i.e. <code class="docutils literal"><span class="pre">START</span></code> button should be pushed.</p>
+</div>
+</div>
+<div class="section" id="data-example">
+<h2>Data Example<a class="headerlink" href="#data-example" title="Permalink to this headline">¶</a></h2>
+<p>The data files generated by <code class="docutils literal"><span class="pre">imageviewer</span></code> can be classified into two categories, i.e.
+<em>figure</em> and <em>data</em>, while <em>figure</em> could be saved as <code class="docutils literal"><span class="pre">png</span></code>, <code class="docutils literal"><span class="pre">jpeg</span></code>, <code class="docutils literal"><span class="pre">svg</span></code>, <code class="docutils literal"><span class="pre">tiff</span></code>,
+<code class="docutils literal"><span class="pre">ps</span></code>, <code class="docutils literal"><span class="pre">eps</span></code>, <code class="docutils literal"><span class="pre">pdf</span></code>, etc., <em>data</em> could be saved as <code class="docutils literal"><span class="pre">txt</span></code> and <code class="docutils literal"><span class="pre">hdf5</span></code>, of which
+only <code class="docutils literal"><span class="pre">hdf5</span></code> could be self-explained, it is recommanded to use <code class="docutils literal"><span class="pre">hdf5</span></code>.</p>
+<p><code class="docutils literal"><span class="pre">hdf5</span></code> files could be generated in the following scenarios:</p>
+<div class="section" id="image-data">
+<h3>1. Image Data<a class="headerlink" href="#image-data" title="Permalink to this headline">¶</a></h3>
+<p>Click <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">``Save</span> <span class="pre">Image</span> <span class="pre">Data</span></code>, or by shortcut <code class="docutils literal"><span class="pre">CTRL+D</span></code>, figura raw data with trivial
+properties will be saved in to a <code class="docutils literal"><span class="pre">hdf5</span></code> file, by default, the full path filename will be
+<code class="docutils literal"><span class="pre">save</span> <span class="pre">root</span> <span class="pre">directory</span></code> + <code class="docutils literal"><span class="pre">&lt;folder</span> <span class="pre">name</span> <span class="pre">like</span> <span class="pre">'20160830'&gt;</span></code> + <code class="docutils literal"><span class="pre">save</span> <span class="pre">filename</span> <span class="pre">head</span></code> +
+<code class="docutils literal"><span class="pre">&lt;time</span> <span class="pre">stamp</span> <span class="pre">(hour,min,sec)</span> <span class="pre">like</span> <span class="pre">'100607'&gt;</span></code> <a class="footnote-reference" href="#f7" id="id7">[7]</a>.</p>
+<p>Any <code class="docutils literal"><span class="pre">hdf5</span></code> file could be opened by a program that distributed by HDF5 official group, named
+<code class="docutils literal"><span class="pre">hdfview</span></code> <a class="footnote-reference" href="#f8" id="id8">[8]</a>. Also, in the CLI, command <code class="docutils literal"><span class="pre">h5ls</span></code> could be used for inspection, below are
+the illustrations for the two approaches:</p>
+<a class="reference internal image-reference" href="../../_images/imageviewer_05.png"><img alt="../../_images/imageviewer_05.png" src="../../_images/imageviewer_05.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../../_images/imageviewer_06.png"><img alt="../../_images/imageviewer_06.png" src="../../_images/imageviewer_06.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="curve-fitting-data">
+<h3>2. Curve Fitting Data<a class="headerlink" href="#curve-fitting-data" title="Permalink to this headline">¶</a></h3>
+<p>When curve fitting is enabled, in the pop up fitting panel, <code class="docutils literal"><span class="pre">Export</span></code> button will generate
+the <code class="docutils literal"><span class="pre">hdf5</span></code> data, saving path should be informed through the pop up dialog. Use <code class="docutils literal"><span class="pre">h5ls</span></code> to
+inspect the exported file:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ h5ls -lvr fitdata104332.hdf5
+Opened <span class="s2">&quot;fitdata104332.hdf5&quot;</span> with sec2 driver.
+/                        Group
+    Location:  1:96
+    Links:     1
+/data                    Group
+    Attribute: timestamp scalar
+        Type:      variable-length null-terminated ASCII string
+        Data:  <span class="s2">&quot;2016-08-30 10:43:32 CST&quot;</span>
+    Location:  1:800
+    Links:     1
+/data/fit                Group
+    Attribute: x0 scalar
+        Type:      native double
+        Data:  26.041
+    Attribute: xstd scalar
+        Type:      native double
+        Data:  6.99682
+    Attribute: y0 scalar
+        Type:      native double
+        Data:  26.041
+    Attribute: ystd scalar
+        Type:      native double
+        Data:  6.99682
+    Location:  1:10608
+    Links:     1
+/data/fit/x              Dataset <span class="o">{</span>200/200<span class="o">}</span>
+    Location:  1:14432
+    Links:     1
+    Storage:   <span class="m">1600</span> logical bytes, <span class="m">1600</span> allocated bytes, 100.00% utilization
+    Type:      native double
+/data/fit/xdata          Dataset <span class="o">{</span>200/200<span class="o">}</span>
+    Location:  1:14976
+    Links:     1
+    Storage:   <span class="m">1600</span> logical bytes, <span class="m">1600</span> allocated bytes, 100.00% utilization
+    Type:      native double
+/data/fit/y              Dataset <span class="o">{</span>200/200<span class="o">}</span>
+    Location:  1:11624
+    Links:     1
+    Storage:   <span class="m">1600</span> logical bytes, <span class="m">1600</span> allocated bytes, 100.00% utilization
+    Type:      native double
+/data/fit/ydata          Dataset <span class="o">{</span>200/200<span class="o">}</span>
+    Location:  1:14704
+    Links:     1
+    Storage:   <span class="m">1600</span> logical bytes, <span class="m">1600</span> allocated bytes, 100.00% utilization
+    Type:      native double
+/data/raw                Group
+    Location:  1:1960
+    Links:     1
+/data/raw/x              Dataset <span class="o">{</span>50/50<span class="o">}</span>
+    Location:  1:7712
+    Links:     1
+    Storage:   <span class="m">400</span> logical bytes, <span class="m">400</span> allocated bytes, 100.00% utilization
+    Type:      native long
+/data/raw/xdata          Dataset <span class="o">{</span>50/50<span class="o">}</span>
+    Location:  1:10336
+    Links:     1
+    Storage:   <span class="m">400</span> logical bytes, <span class="m">400</span> allocated bytes, 100.00% utilization
+    Type:      native double
+/data/raw/y              Dataset <span class="o">{</span>50/50<span class="o">}</span>
+    Location:  1:6240
+    Links:     1
+    Storage:   <span class="m">400</span> logical bytes, <span class="m">400</span> allocated bytes, 100.00% utilization
+    Type:      native long
+/data/raw/ydata          Dataset <span class="o">{</span>50/50<span class="o">}</span>
+    Location:  1:7984
+    Links:     1
+    Storage:   <span class="m">400</span> logical bytes, <span class="m">400</span> allocated bytes, 100.00% utilization
+    Type:      native double
+</pre></div>
+</div>
+<p>The grouped data set: <code class="docutils literal"><span class="pre">raw</span></code> and <code class="docutils literal"><span class="pre">fit</span></code>, other metadata like <code class="docutils literal"><span class="pre">timestamp</span></code>,
+central point coordinate (<code class="docutils literal"><span class="pre">x0</span></code>, <code class="docutils literal"><span class="pre">y0</span></code>), radius size (<code class="docutils literal"><span class="pre">xstd</span></code>, <code class="docutils literal"><span class="pre">ystd</span></code>) could
+be retrieved according to the string names.</p>
+</div>
+<div class="section" id="auto-saved-data">
+<h3>3. Auto Saved Data<a class="headerlink" href="#auto-saved-data" title="Permalink to this headline">¶</a></h3>
+<p>Data generated by <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operations could be <code class="docutils literal"><span class="pre">hdf5</span></code> (recommand exclusive choice),
+is similar as <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Data</span></code>, besides <code class="docutils literal"><span class="pre">timestamp</span></code> property,
+but with only one property: <code class="docutils literal"><span class="pre">app</span></code>, which value is <code class="docutils literal"><span class="pre">imageviewer</span></code>,
+indicating that the file is generated by app named <code class="docutils literal"><span class="pre">imageviewer</span></code>.
+These <code class="docutils literal"><span class="pre">hdf5</span></code> data files could be imported into <code class="docutils literal"><span class="pre">dataworkshop</span></code> for post-processing.</p>
+<p class="rubric">Footnotes:</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Configuration file that <code class="docutils literal"><span class="pre">imageviewer</span></code> requires is a <code class="docutils literal"><span class="pre">.xml</span></code> formated file,
+a sample file could be downloaded <a class="reference download internal" href="../../_downloads/imageviewer.xml" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>The default image format could be set from menu: <code class="docutils literal"><span class="pre">Configurations</span> <span class="pre">&gt;</span> <span class="pre">Preferences</span>
+<span class="pre">&gt;</span> <span class="pre">Image</span> <span class="pre">Name</span> <span class="pre">Extension</span></code> or <code class="docutils literal"><span class="pre">SHIFT+CTRL+I</span></code> to open <code class="docutils literal"><span class="pre">Preferences</span></code> window, same rule
+applies to save figure data.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td><code class="docutils literal"><span class="pre">CTRL+W</span></code> is a common shortcut to close the app for all apps in <code class="docutils literal"><span class="pre">felapps</span></code>.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Auto saved data files could be used as the input data files of app: <code class="docutils literal"><span class="pre">dataworkshop</span></code>,
+which serves as a simply data post-processor.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>It is suggested that increasing this value gradually, e.g. by step of 0.5, e.g.
+<code class="docutils literal"><span class="pre">1</span> <span class="pre">Hz</span></code> for large image, and <code class="docutils literal"><span class="pre">5</span> <span class="pre">Hz</span></code> for small image.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[6]</a></td><td>Since saving data, especially <code class="docutils literal"><span class="pre">hdf5</span></code> is always more efficient that saving other
+format, it is suggested that only tick <code class="docutils literal"><span class="pre">hdf5</span></code> options when cares more about efficient,
+especially for image with large pixles.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id7">[7]</a></td><td>All these meta information could be set and get in the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Image</span></code> panel.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id8">[8]</a></td><td><a class="reference external" href="https://www.hdfgroup.org/products/java/hdfview/">https://www.hdfgroup.org/products/java/hdfview/</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../apidoc.html" title="API"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../demo.html" title="Examples and Demonstrations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../demo.html" >Examples and Demonstrations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

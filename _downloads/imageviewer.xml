@@ -1,0 +1,17 @@
+<config>
+    <group name="Image">
+        <properties cmFavor="jet  Greys  cool  rainbow  gnuplot  gray  hot  afmhot  viridis" height="100" imgIniFunc="peaks" saveImgDatExt=".hdf5" saveImgDatName="imagedat" saveImgExt=".jpeg" saveImgName="image" saveIntExt=".jpg" saveIntName="intensity" savePath="/home/tong/Desktop" width="100" />
+    </group>
+
+    <group name="Control">
+        <properties caAddrAuto="True" caAddrList="localhost" caArrayBytes="4000000" frequency="1.0" imgsrcPV="UN-BI:PROF19:ARR" imgsrcPVlist="UN-BI:PROF18:ARR  UN-BI:PROF20:ARR  UN-BI:PROF25:ARR  UN-BI:PROF19:ARR  13SIM1:image1:ArrayData  test:prof  test:wfdataout  sxfel:prof1" libcaPath="/home/tong/APS/epics/base/lib/linux-x86_64/libca.so" pixelSize="10.0" />
+    </group>
+
+    <group name="Style">
+        <properties backgroundColor="#E8E7E6" fontfacename="Sans" fontfamily="74" fontpointsize="10" fontstyle="90" fontweight="90" />
+    </group>
+
+    <group name="HistPlot">
+        <properties heightRatio="0.7" />
+    </group>
+</config>

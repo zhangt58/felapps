@@ -1,0 +1,22 @@
+felapps.apps.dataworkshop package
+=================================
+
+Submodules
+----------
+
+felapps.apps.dataworkshop.dataworkshop module
+---------------------------------------------
+
+.. automodule:: felapps.apps.dataworkshop.dataworkshop
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: felapps.apps.dataworkshop
+    :members:
+    :undoc-members:
+    :show-inheritance:

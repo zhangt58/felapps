@@ -1,0 +1,20 @@
+felapps package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    felapps.apps
+    felapps.facilities
+    felapps.physics
+    felapps.utils
+
+Module contents
+---------------
+
+.. automodule:: felapps
+    :members:
+    :undoc-members:
+    :show-inheritance:

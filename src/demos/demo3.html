@@ -1,0 +1,393 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example 3 &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html" />
+    <link rel="up" title="Examples and Demonstrations" href="../demo.html" />
+    <link rel="next" title="Example 4" href="demo4.html" />
+    <link rel="prev" title="Example 2" href="demo2.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo4.html" title="Example 4"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="demo2.html" title="Example 2"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../demo.html" accesskey="U">Examples and Demonstrations</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example 3</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage-guide">Usage Guide</a><ul>
+<li><a class="reference internal" href="#data-scan-guide">Data Scan Guide</a></li>
+<li><a class="reference internal" href="#curve-plot-tunning">Curve Plot Tunning</a><ul>
+<li><a class="reference internal" href="#curve-fitting">Curve Fitting</a></li>
+<li><a class="reference internal" href="#curve-style">Curve Style</a></li>
+<li><a class="reference internal" href="#scan-plot">Scan Plot</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#bonus-feature">Bonus Feature</a></li>
+<li><a class="reference internal" href="#scan-data">Scan Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="demo2.html"
+                        title="previous chapter">Example 2</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="demo4.html"
+                        title="next chapter">Example 4</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="example-3">
+<h1>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h1>
+<p><code class="docutils literal"><span class="pre">cornalyzer</span></code> &#8211; Parameter correlation analysis app.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>If the user wanna analysis the correlation between parameters, <code class="docutils literal"><span class="pre">cornalyzer</span></code> could help.
+Presently, main features that <code class="docutils literal"><span class="pre">cornalyzer</span></code> provides are:</p>
+<blockquote>
+<div><ul>
+<li><dl class="first docutils">
+<dt>Two dimensional parameters correlation analysis;</dt>
+<dd><ul class="first last simple">
+<li>post-processor could be applied to the second dimension</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Data plot with x/y errorbars;</p>
+</li>
+<li><dl class="first docutils">
+<dt>Curve fitting, support both polynomial and gaussian;</dt>
+<dd><ul class="first last simple">
+<li>additional fitting paramters</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Plenty of operations on the figure:</dt>
+<dd><ul class="first last simple">
+<li>Line/marker/errorbar style</li>
+<li>Labels, title, legend, text of fitted information</li>
+<li>Data range control</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Re-take the selected variable points for correction by <code class="docutils literal"><span class="pre">RETAKE</span></code> button;</p>
+</li>
+<li><p class="first">Save the analysis result.</p>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="usage-guide">
+<h2>Usage Guide<a class="headerlink" href="#usage-guide" title="Permalink to this headline">¶</a></h2>
+<p>Open the <code class="docutils literal"><span class="pre">cornalyzer</span></code> app, like the following image shows, currently only <code class="docutils literal"><span class="pre">Data</span> <span class="pre">Scan</span></code> mode is
+supported.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_01.png"><img alt="../../_images/cornalyzer_01.png" src="../../_images/cornalyzer_01.png" style="width: 500px;" /></a>
+<div class="section" id="data-scan-guide">
+<h3>Data Scan Guide<a class="headerlink" href="#data-scan-guide" title="Permalink to this headline">¶</a></h3>
+<p>Input the EPICS PV string names in the <code class="docutils literal"><span class="pre">Set</span> <span class="pre">Variables</span></code> panel, <code class="docutils literal"><span class="pre">Var-I</span></code> should be treated as the
+first dimension of the analysis, i.e. the paramter to be altered, since the set and read of
+<code class="docutils literal"><span class="pre">Var-I</span></code> usually are controlled by two different PV strings, so two input boxes should be filled
+correctly. The <code class="docutils literal"><span class="pre">Var-II</span></code> is the parameter that to be monitored as <code class="docutils literal"><span class="pre">Var-I</span></code> is tunning,
+post-processing operations could be applied to the raw data that read from the EPICS PV string of
+<code class="docutils literal"><span class="pre">Var-II</span></code>, click the combobox right next the input box of <code class="docutils literal"><span class="pre">Var-II</span></code>, choice could be one of
+<code class="docutils literal"><span class="pre">none</span></code>, <code class="docutils literal"><span class="pre">sum</span></code>, <code class="docutils literal"><span class="pre">max</span></code>, <code class="docutils literal"><span class="pre">min</span></code> and <code class="docutils literal"><span class="pre">user-defined</span></code>, the meaning could be found on the
+right side hint text.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_02.png"><img alt="../../_images/cornalyzer_02.png" src="../../_images/cornalyzer_02.png" style="width: 500px;" /></a>
+<p>Click <code class="docutils literal"><span class="pre">user-defined</span></code> option will pop up a window, browse the Python module that contains
+user-defined functions to load <a class="footnote-reference" href="#f1" id="id1">[1]</a>, below is the example of user-defined Python module:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">user-defined functions to process A, where</span>
+<span class="sd">A could be any type of:</span>
+<span class="sd">    </span>
+<span class="sd">    1. array, 1D or 2D,</span>
+<span class="sd">    3. scalar, float, integer,</span>
+
+<span class="sd">Usually, the raw value of A could be retrieved by caget(PV_string)</span>
+
+<span class="sd">This script/module is potentially be used by &#39;cornalyzer&#39;, </span>
+<span class="sd">i.e. correlation analyzer application, to apply post-processing</span>
+<span class="sd">procedure on the scan dependent variable.</span>
+
+<span class="sd">Created: 2016-07-14 14:59:11 PM CST</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="k">def</span> <span class="nf">f_fft</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; return frequency</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">f</span><span class="o">==</span><span class="n">f</span><span class="o">.</span><span class="n">max</span><span class="p">())[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">idx</span>
+
+<span class="k">def</span> <span class="nf">f_magnify</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; multipy by 10 folds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">a</span>
+
+<span class="k">def</span> <span class="nf">f_shrink</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; half value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">a</span>
+
+<span class="k">def</span> <span class="nf">f_cos</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; return sum of cos(x)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Choose the function to be applied on <code class="docutils literal"><span class="pre">Var-II</span></code>, push <code class="docutils literal"><span class="pre">OK</span></code> to return to the main window.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Tips to write the user-defined functions:</p>
+<ol class="last arabic simple">
+<li>Naming the function with meaningful strings;</li>
+<li>Keep function as simple as possible;</li>
+<li>Always write <em>doc string</em>, which will appear as the <code class="docutils literal"><span class="pre">Note</span></code> field to help understanding.</li>
+</ol>
+</div>
+<p>The meanings of other scan parameters could be get hint from the tool tips when the mouse hover
+over the controls, e.g. <code class="docutils literal"><span class="pre">Iteration</span> <span class="pre">Number</span></code> is the total counter of <code class="docutils literal"><span class="pre">Var-I</span></code> scan array
+(equally spaced) that to be altered, <code class="docutils literal"><span class="pre">Shot</span> <span class="pre">Number</span></code> is the total counter of the fetched data
+for every iteration, and <code class="docutils literal"><span class="pre">Scan</span> <span class="pre">DAQ</span> <span class="pre">rate</span></code> is the DAQ frequency, e.g. scan configurations like:
+<code class="docutils literal"><span class="pre">Iteration</span> <span class="pre">=</span> <span class="pre">20</span></code>, <code class="docutils literal"><span class="pre">Shot</span> <span class="pre">Number</span> <span class="pre">=</span> <span class="pre">10</span></code>, <code class="docutils literal"><span class="pre">Wait</span> <span class="pre">Time</span> <span class="pre">=</span> <span class="pre">0.5</span></code> and <code class="docutils literal"><span class="pre">Scan</span> <span class="pre">DAQ</span> <span class="pre">rate</span> <span class="pre">=</span> <span class="pre">5</span> <span class="pre">Hz</span></code> tell
+the app that alter the <code class="docutils literal"><span class="pre">Var-I</span></code> parameter from the min (<code class="docutils literal"><span class="pre">-10</span></code>) to max (<code class="docutils literal"><span class="pre">10</span></code>) with equal step,
+until the step counter reaches <code class="docutils literal"><span class="pre">20</span></code>, and for each variable update procedure, the global timer
+should wait <code class="docutils literal"><span class="pre">0.5</span></code> second <a class="footnote-reference" href="#f2" id="id2">[2]</a>, in each step, the DAQ system should be working to retrieve the
+data (<code class="docutils literal"><span class="pre">Var-II</span></code> with proper operation) with the speed of <code class="docutils literal"><span class="pre">0.2</span></code> second per shot, until get
+<code class="docutils literal"><span class="pre">10</span></code> shot in total, this is one iteration.</p>
+<p>Clicl <code class="docutils literal"><span class="pre">START</span></code> to start the scan procedure, and <code class="docutils literal"><span class="pre">STOP</span></code> to stop any time, scan log will show
+in the textbox, beginning with <code class="docutils literal"><span class="pre">Iter#...</span></code> for each iteration.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_03.png"><img alt="../../_images/cornalyzer_03.png" src="../../_images/cornalyzer_03.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="curve-plot-tunning">
+<h3>Curve Plot Tunning<a class="headerlink" href="#curve-plot-tunning" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">cornalyzer</span></code> is designed with the intention of generating publish-quality artwork for the data
+sharing and distributing.</p>
+<div class="section" id="curve-fitting">
+<h4>Curve Fitting<a class="headerlink" href="#curve-fitting" title="Permalink to this headline">¶</a></h4>
+<p>When the scan procedure is done, pop up dialog will show the warning that the scanned data could
+be saved by <code class="docutils literal"><span class="pre">CTRL+S</span></code>, while it is recommanded that trig saving action when proper fitting model
+be applied.</p>
+<p>In the <code class="docutils literal"><span class="pre">Curve</span></code> panel, choose <code class="docutils literal"><span class="pre">Model</span></code> to apply proper fitting model, e.g. <code class="docutils literal"><span class="pre">gaussian</span></code>,
+<code class="docutils literal"><span class="pre">polynomial</span></code>, the option <code class="docutils literal"><span class="pre">none</span></code> means not fitting the curve. In this example <code class="docutils literal"><span class="pre">gaussian</span></code>
+shoule be selected, blue gaussian shaped line (fitted average every iteration line)
+will be drawn onto the figure.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_04.png"><img alt="../../_images/cornalyzer_04.png" src="../../_images/cornalyzer_04.png" style="width: 500px;" /></a>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Additional parameters are also provided to make the curve fitting module
+more flexible, follow the steps to do this:</p>
+<blockquote class="last">
+<div><ol class="arabic simple">
+<li>Check <code class="docutils literal"><span class="pre">Add</span> <span class="pre">Config</span></code>, click <code class="docutils literal"><span class="pre">+</span></code> button to add parameters, just like the
+following image shows;</li>
+<li>Valid parameters: <code class="docutils literal"><span class="pre">n</span></code>, the highest order for the polynomial fitting model;
+<code class="docutils literal"><span class="pre">xmin</span></code> and <code class="docutils literal"><span class="pre">xmax</span></code>, to fix the fitting range along x-axis.</li>
+</ol>
+</div></blockquote>
+</div>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_05.png"><img alt="../../_images/cornalyzer_05.png" src="../../_images/cornalyzer_05.png" style="width: 500px;" /></a>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last"><code class="docutils literal"><span class="pre">user-defined</span></code> option should be added into the <code class="docutils literal"><span class="pre">Model</span></code> combobox, such that to handle
+more curve fitting scenarios.</p>
+</div>
+</div>
+<div class="section" id="curve-style">
+<h4>Curve Style<a class="headerlink" href="#curve-style" title="Permalink to this headline">¶</a></h4>
+<p>To adjust the style of the curves is of significance to make high-quality artworks, fortunately,
+Python package &#8212; <code class="docutils literal"><span class="pre">matplotlib</span></code> is dedicated to accomplish such mission.</p>
+<p>There are three options in <code class="docutils literal"><span class="pre">Edit</span> <span class="pre">Line</span></code> combobox, choose any one of them to apply proper style
+configurations below, e.g. line style, line color, line thinkness, marker style, marker color,
+maker size, etc., as well as putting legend, title, labels onto figure, more over the fitting
+functions with fitting parameters could be annotated, which supports mouse dragging to
+reposition <a class="footnote-reference" href="#f3" id="id3">[3]</a>.</p>
+<p>If <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">xlabel</span></code> is checked, the xlabel will be assigned with the PV strings of <code class="docutils literal"><span class="pre">Var-I</span></code> and
+<code class="docutils literal"><span class="pre">Var-II</span></code>, and if the user wanna assign with other string, just check the <code class="docutils literal"><span class="pre">Define</span></code> option, and
+write the user-defined xlabel in the right aside textbox, <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">xlabel</span></code> may be rechecked to show
+the new xlabel; the same rule applies to the <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Title</span></code> options <a class="footnote-reference" href="#f4" id="id4">[4]</a>.</p>
+</div>
+<div class="section" id="scan-plot">
+<h4>Scan Plot<a class="headerlink" href="#scan-plot" title="Permalink to this headline">¶</a></h4>
+<dl class="docutils">
+<dt>Main features of the scan plot region:</dt>
+<dd><ol class="first last arabic simple">
+<li>Save figure;</li>
+<li><code class="docutils literal"><span class="pre">x/y</span></code> data limit tunning;</li>
+<li>Operations that toolbar provides: <em>zoom in/out</em>, <em>panning</em>, <em>reset</em>, etc.</li>
+</ol>
+</dd>
+</dl>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_06.png"><img alt="../../_images/cornalyzer_06.png" src="../../_images/cornalyzer_06.png" style="width: 500px;" /></a>
+</div>
+</div>
+<div class="section" id="bonus-feature">
+<h3>Bonus Feature<a class="headerlink" href="#bonus-feature" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes, the user may demand that some iterations should be processed again, that means the
+data point should be retaken, no matter what reasons should be relied on, there should be
+some feature to accomplish such task, then the <code class="docutils literal"><span class="pre">RETAKE</span></code> button is created.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Only <code class="docutils literal"><span class="pre">RETAKE</span></code> when you have every reason that the data point(s) to be replaced
+is(are) wrong or flawed, e.g. then the machine was not that stable, believed the large jitter
+was cause by some malfunction of some power sources, etc., In a word, let the SCIENTIFIC
+DATA be more convinced.</p>
+</div>
+<p>In order to demonstrate the <code class="docutils literal"><span class="pre">RETAKE</span></code> feature, the data generator has been changed little,
+e.g. add more noise, just like the following image shows, three evident points with relatively
+large errorbar could be treated as wrong points, and need to be fixed <a class="footnote-reference" href="#f5" id="id5">[5]</a>. To <code class="docutils literal"><span class="pre">RETAKE</span></code>,
+first select the points to be retaken by click mouse onto the point, the selected points
+should be highlighted, then push <code class="docutils literal"><span class="pre">RETAKE</span></code> button to start retaken procedure.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_07.png"><img alt="../../_images/cornalyzer_07.png" src="../../_images/cornalyzer_07.png" style="width: 500px;" /></a>
+<p>The wrong points have been pushed back.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_08.png"><img alt="../../_images/cornalyzer_08.png" src="../../_images/cornalyzer_08.png" style="width: 500px;" /></a>
+<p>Apply fitting function by refresh button, right aside of <code class="docutils literal"><span class="pre">+</span></code>, to get final figure.</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_09.png"><img alt="../../_images/cornalyzer_09.png" src="../../_images/cornalyzer_09.png" style="width: 500px;" /></a>
+</div>
+<div class="section" id="scan-data">
+<h3>Scan Data<a class="headerlink" href="#scan-data" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">CTRL+S</span></code> could save all the data into defined file, including <em>raw</em> and <em>fit</em> data,
+e.g. see below image:</p>
+<a class="reference internal image-reference" href="../../_images/cornalyzer_10.png"><img alt="../../_images/cornalyzer_10.png" src="../../_images/cornalyzer_10.png" style="width: 500px;" /></a>
+<p class="rubric">Footnotes:</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>The Python module file is a normal Python script that has funtion definitions,
+it is the user&#8217;s liable to manage this file.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>The data that used by example shown here is provided by a soft-IOC, with the
+scan frequency of 5 Hz, while for the real machine, e.g. Dalian Coherent Light Source (DCLS),
+tests show that 10-20 second may require so as to get valid signals.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f3" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>Push <code class="docutils literal"><span class="pre">Stick</span> <span class="pre">To</span> <span class="pre">Figure</span></code> button will draw the fitting function onto figure
+(the grey box in the above image), control the position could be by mouse dragging or input
+proper parameters, e.g. input <code class="docutils literal"><span class="pre">x=0;y=0</span></code> in the textbox right aside of
+<code class="docutils literal"><span class="pre">Stick</span> <span class="pre">To</span> <span class="pre">Figure</span></code> button will move the grey box to <code class="docutils literal"><span class="pre">(0,0)</span></code>,
+another valid parameter is <code class="docutils literal"><span class="pre">fontsize</span></code>, which could be used to control the text size, details
+could be reached when the mouse hovers over the textbox.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f4" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>When the <code class="docutils literal"><span class="pre">Define</span></code> checkbox right aside of <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Title</span></code> is checked, in the user-defined
+title string, macro <code class="docutils literal"><span class="pre">$TITLE</span></code> could be used to substitute the default title string that
+<code class="docutils literal"><span class="pre">Auto</span> <span class="pre">Title</span></code> uses.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>Just increase the noise level in the data generating process (soft-IOC side)
+to magnify this effect; decrease noise level before <code class="docutils literal"><span class="pre">RETAKE</span></code> is performed,
+to mimic that machine status is back to stable or acceptable.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="demo4.html" title="Example 4"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="demo2.html" title="Example 2"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../demo.html" >Examples and Demonstrations</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>
