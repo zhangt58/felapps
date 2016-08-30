@@ -106,6 +106,8 @@ the system-menu integration issues, here is the usage:
     all the users would see the menu, or only the current user could see
     them.
 
-.. rubric:: Footnotes:
+.. only:: html
+    
+    .. rubric:: Footnotes:
 
 .. [#f1] The menu screenshot may differ from other operating systems.

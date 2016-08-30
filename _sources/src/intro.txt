@@ -89,12 +89,12 @@ Up to now (2016.8), the ready-to-deploy/use apps from ``felapps`` are:
     * ``update-felapps-menu``: script of integrating ``felapps`` into 
       system menu, as well as the reversed operation, i.e. uninstalling.
 
+.. only:: html
 
-.. rubric:: Footnotes:
+    .. rubric:: Footnotes:
 
 .. [#f1] App name that could be treated as the command name in the 
          command line interface, to get the app running, the same rule
          applies to other apps.
-
 .. [#f2] Python package ``beamline`` is required.
 

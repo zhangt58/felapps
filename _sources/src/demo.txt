@@ -20,13 +20,12 @@ approaches:
     3. Invoke ``runfelapps`` or ``appdrawer``, click <app name> from the 
        app's panel.
 
-
 .. toctree::
     :maxdepth: 2
     
-    Example 1: 'imageviewer' -- Fetch image figure and data <demos/demo1>
-    Example 2: 'dataworkshop' -- Post-processing about the figure data <demos/demo2>
-    Example 3: 'cornalyzer' -- Parameters correlation analysis <demos/demo3>
-    Example 4: 'felformula' -- FEL physics calculator <demos/demo4>
-    Example 5: 'latticeviewer' -- Online-model GUI app <demos/demo5>
-    Example 6: 'wxmpv' -- General matplot viewer <demos/demo6>
+    Example 1: 'imageviewer' --- Fetch image figure and data <demos/demo1>
+    Example 2: 'dataworkshop' --- Post-processing about the figure data <demos/demo2>
+    Example 3: 'cornalyzer' --- Parameters correlation analysis <demos/demo3>
+    Example 4: 'felformula' --- FEL physics calculator <demos/demo4>
+    Example 5: 'latticeviewer' --- Online-model GUI app <demos/demo5>
+    Example 6: 'wxmpv' --- General matplot viewer <demos/demo6>
