@@ -18,7 +18,7 @@ appPlatform         = ["Linux"]
 appAuthor           = "Tong Zhang"
 appAuthor_email     = "zhangtong@sinap.ac.cn"
 appLicense          = "MIT"
-appUrl              = "https://github.com/Archman/felapps"
+appUrl              = "http://archman.github.io/felapps/"
 appKeywords         = "FEL HLA high-level python wxpython"
 requiredpackages = ['numpy','scipy','matplotlib','pyepics','h5py',
                     'pyrpn','beamline','lmfit'] # install_requires

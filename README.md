@@ -14,6 +14,8 @@ physics level of FEL commissioning, including the beam tunning,
 parameters optimization and specific physics-related applications 
 deployment, etc.
 
+Documentation: http://archman.github.io/felapps/
+
 ### Installation
 <code>felapps</code> could be installed into the operating system by the 
 following approaches:
