@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.apps.felformula.felformula &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.apps.felformula.felformula</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">FelFormula: calculation cheat sheet for free-electron laser physics</span>
+
+<span class="sd">Author: Tong Zhang</span>
+<span class="sd">Created: May. 28, 2015 (re-organized)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">...physics</span> <span class="k">import</span> <span class="n">felcalc</span>
+<span class="kn">from</span> <span class="nn">...utils</span>   <span class="k">import</span> <span class="n">miscutils</span>
+<span class="kn">from</span> <span class="nn">...utils</span>   <span class="k">import</span> <span class="n">resutils</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">wx.lib.mixins.inspection</span> <span class="k">as</span> <span class="nn">wit</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="n">miscutils</span><span class="o">.</span><span class="n">AppVersions</span><span class="p">()</span><span class="o">.</span><span class="n">getVersion</span><span class="p">(</span><span class="s1">&#39;felformula&#39;</span><span class="p">)</span>
+<span class="n">__author__</span>  <span class="o">=</span> <span class="s2">&quot;Tong Zhang&quot;</span>
+
+<div class="viewcode-block" id="InspectApp"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.felformula.html#felapps.apps.felformula.felformula.InspectApp">[docs]</a><span class="k">class</span> <span class="nc">InspectApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">,</span> <span class="n">wit</span><span class="o">.</span><span class="n">InspectionMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="InspectApp.OnInit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.felformula.html#felapps.apps.felformula.felformula.InspectApp.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Init</span><span class="p">()</span>
+        <span class="n">myframe</span> <span class="o">=</span> <span class="n">felcalc</span><span class="o">.</span><span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;FEL Formula </span><span class="se">\u2014</span><span class="s1"> Calculator for FEL physics (debug mode, CTRL+ALT+I)&#39;</span><span class="p">,</span> <span class="n">appversion</span> <span class="o">=</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">ficon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetTopWindow</span><span class="p">(</span><span class="n">myframe</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.felformula.html#felapps.apps.felformula.felformula.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">maximize</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">logon</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">debug</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to call felformula GUI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">debug</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">InspectApp</span><span class="p">()</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">redirect</span> <span class="o">=</span> <span class="n">logon</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">maximize</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">myframe</span> <span class="o">=</span> <span class="n">felcalc</span><span class="o">.</span><span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;FEL Formula </span><span class="se">\u2014</span><span class="s1"> Calculator for FEL physics&#39;</span><span class="p">,</span> <span class="n">appversion</span> <span class="o">=</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">myframe</span> <span class="o">=</span> <span class="n">felcalc</span><span class="o">.</span><span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;FEL Formula </span><span class="se">\u2014</span><span class="s1"> FEL Calculation App&#39;</span><span class="p">,</span> <span class="n">appversion</span> <span class="o">=</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">ficon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

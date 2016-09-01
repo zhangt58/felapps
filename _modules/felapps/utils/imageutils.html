@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.utils.imageutils &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.utils.imageutils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">classes and functions for image processing</span>
+<span class="sd">    data2Image: generate image from data file, hdf5, asc, dat</span>
+
+<span class="sd">Author: Tong Zhang</span>
+<span class="sd">Created: Sep. 28, 2015</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">funutils</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">analysisframe</span>
+
+<span class="kn">import</span> <span class="nn">wx.lib.scrolledpanel</span> <span class="k">as</span> <span class="nn">scrolled</span>
+<span class="kn">import</span> <span class="nn">wx.dataview</span> <span class="k">as</span> <span class="nn">dv</span>
+
+<span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="k">import</span> <span class="n">imsave</span>
+
+<div class="viewcode-block" id="data2Image"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.data2Image">[docs]</a><span class="k">def</span> <span class="nf">data2Image</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">,</span> <span class="n">figtype</span><span class="o">=</span><span class="s1">&#39;jpg&#39;</span><span class="p">,</span> <span class="n">wdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">whflag</span><span class="o">=</span><span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">cmtype</span><span class="o">=</span><span class="s1">&#39;hot&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    generate image thumbnails from data file, by default from hdf5 array.</span>
+
+<span class="sd">    :param filename: data filename, f.</span>
+<span class="sd">    :param datatype: data format, </span>
+<span class="sd">        &#39;hdf5&#39; or &#39;h5&#39;: image data could be extracted by fid = h5py.File(f); fid[&#39;image&#39;][&#39;data&#39;].</span>
+<span class="sd">        &#39;asc&#39; or &#39;dat&#39;: image data could be extracted by np.loadtxt(f).</span>
+<span class="sd">    :param figtype: &#39;jpg&#39;, &#39;png&#39; or others.</span>
+<span class="sd">    :param wdir: working directory, to put generated jpg figures, if None, use cwd.</span>
+<span class="sd">    :param width:  image size in w, if None, take original values.</span>
+<span class="sd">    :param height: image size in h, if None, take original values.</span>
+<span class="sd">    :param whflag: &#39;w&#39; (h prop with w) or &#39;h&#39; (w prop with h) </span>
+<span class="sd">        or &#39;None&#39; (take size as w x h).</span>
+<span class="sd">    :param cmtype: colormap type, hot by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;hdf5&#39;</span> <span class="ow">or</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;h5&#39;</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;asc&#39;</span> <span class="ow">or</span> <span class="n">datatype</span> <span class="o">==</span> <span class="s1">&#39;dat&#39;</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        
+    <span class="k">if</span> <span class="n">wdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">wdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+    <span class="n">imgdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">&#39;._img&#39;</span><span class="p">)</span>
+    <span class="n">tmpdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wdir</span><span class="p">,</span> <span class="s1">&#39;._tmp&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">imgdir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">imgdir</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+
+    <span class="n">filenamebase</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">thumbname</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">filenamebase</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">figtype</span><span class="p">])</span>
+    <span class="n">thumbfullpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">thumbname</span><span class="p">)</span>
+    <span class="n">thumbrelpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">imgdir</span><span class="p">,</span> <span class="n">thumbname</span><span class="p">)</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    fig = plt.figure()</span>
+<span class="sd">    ax = fig.add_subplot(111)</span>
+<span class="sd">    ax.set_axis_off()</span>
+<span class="sd">    im = ax.imshow(data, cmap = cmtype, aspect = &#39;equal&#39;)</span>
+<span class="sd">    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())</span>
+<span class="sd">    plt.savefig(thumbfullpath, bbox_inches = extent, pad_inches = 0)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">imsave</span><span class="p">(</span><span class="n">thumbfullpath</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># use PIL to resize image in accurate pixel</span>
+    <span class="n">rawimg</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">thumbfullpath</span><span class="p">)</span>
+    <span class="n">rawsize_w</span><span class="p">,</span> <span class="n">rawsize_h</span> <span class="o">=</span> <span class="n">rawimg</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>
+
+    <span class="k">if</span> <span class="n">w</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">rawsize_w</span>
+    <span class="k">if</span> <span class="n">h</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">rawsize_h</span>
+    
+    <span class="k">if</span> <span class="n">whflag</span> <span class="o">==</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span>
+        <span class="n">sizecoef</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">/</span><span class="n">rawsize_h</span>
+    <span class="k">elif</span> <span class="n">whflag</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+        <span class="n">sizecoef</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="o">/</span><span class="n">rawsize_w</span>
+    <span class="k">elif</span> <span class="n">whflag</span> <span class="o">==</span> <span class="s1">&#39;None&#39;</span><span class="p">:</span>
+        <span class="n">sizecoef</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+    <span class="n">newsize</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">rawsize_w</span> <span class="o">*</span> <span class="n">sizecoef</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">rawsize_h</span> <span class="o">*</span> <span class="n">sizecoef</span><span class="p">)</span>
+    <span class="n">resizedimg</span> <span class="o">=</span> <span class="n">rawimg</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">newsize</span><span class="p">)</span>
+
+    <span class="n">resizedimg</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">thumbrelpath</span><span class="p">)</span>
+
+    <span class="c1">#plt.close(fig)</span>
+    
+    <span class="k">return</span> <span class="n">thumbrelpath</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel">[docs]</a><span class="k">class</span> <span class="nc">ImageGalleryPanel</span><span class="p">(</span><span class="n">scrolled</span><span class="o">.</span><span class="n">ScrolledPanel</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Panel for image gallery show</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">scrolled</span><span class="o">.</span><span class="n">ScrolledPanel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pxsize</span> <span class="o">=</span> <span class="mi">160</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_file_list</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># image file list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_bitmap_obj</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># staticbitmap list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wpsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">WrapSizer</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">GetParent</span><span class="p">()</span><span class="o">.</span><span class="n">GetParent</span><span class="p">()</span><span class="o">.</span><span class="n">ws_panel</span>
+
+        <span class="c1"># make UI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_RIGHT_DOWN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onRightPopup</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onRightPopup"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onRightPopup">[docs]</a>    <span class="k">def</span> <span class="nf">onRightPopup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">GetEventObject</span><span class="p">()</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_add_all</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_BACKWARD</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_rm_all</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_FORWARD</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_add_all</span><span class="p">,</span> <span class="s2">&quot;Add all to workspace&quot;</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_rm_all</span><span class="p">,</span> <span class="s2">&quot;Remove all from workspace&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">onPopAddAll</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_add_all</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">onPopRemoveAll</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_rm_all</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PopupMenu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="ImageGalleryPanel.onPopAddAll"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onPopAddAll">[docs]</a>    <span class="k">def</span> <span class="nf">onPopAddAll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_workspace</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onPopRemoveAll"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onPopRemoveAll">[docs]</a>    <span class="k">def</span> <span class="nf">onPopRemoveAll</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_workspace</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onLeftClick"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onLeftClick">[docs]</a>    <span class="k">def</span> <span class="nf">onLeftClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; when left click image, select corresponding item on workspace panel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">GetEventObject</span><span class="p">()</span>
+        <span class="n">itemstr</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">itemstr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="p">:</span>
+            <span class="n">rowidx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">dv_lc</span><span class="o">.</span><span class="n">SelectRow</span><span class="p">(</span><span class="n">rowidx</span><span class="p">)</span>
+            <span class="n">item_sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">dv_lc</span><span class="o">.</span><span class="n">RowToItem</span><span class="p">(</span><span class="n">rowidx</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">dv_lc</span><span class="o">.</span><span class="n">EnsureVisible</span><span class="p">(</span><span class="n">item_sel</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ImageGalleryPanel.onRightClick"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onRightClick">[docs]</a>    <span class="k">def</span> <span class="nf">onRightClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">GetEventObject</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_add</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ADD</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_pop</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_UP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id_remove</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_REMOVE</span>
+        <span class="n">menu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="p">:</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_remove</span><span class="p">,</span> <span class="s2">&quot;Out Workspace&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">onPopRemove</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_remove</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_add</span><span class="p">,</span> <span class="s2">&quot;To Workspace&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">onPopAdd</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_add</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">evt</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">onPopAnalysis</span><span class="p">(</span><span class="n">evt</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id_pop</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_pop</span><span class="p">,</span> <span class="s2">&quot;Pop up Analysis&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">PopupMenu</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
+        <span class="n">menu</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+        <span class="c1">#event.Skip()</span>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onPopAdd"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onPopAdd">[docs]</a>    <span class="k">def</span> <span class="nf">onPopAdd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_workspace</span><span class="p">())</span>
+        <span class="nb">print</span> <span class="s2">&quot;Add selected image to workspace&quot;</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onPopRemove"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onPopRemove">[docs]</a>    <span class="k">def</span> <span class="nf">onPopRemove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ws_panel</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_workspace</span><span class="p">())</span>
+        <span class="nb">print</span> <span class="s2">&quot;Remove selected image from workspace&quot;</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onPopAnalysis"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onPopAnalysis">[docs]</a>    <span class="k">def</span> <span class="nf">onPopAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="n">datasrc</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;;&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_frame</span> <span class="o">=</span> <span class="n">analysisframe</span><span class="o">.</span><span class="n">AnalysisFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datasrc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_frame</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="n">datasrc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">analysis_frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.get_workspace"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.get_workspace">[docs]</a>    <span class="k">def</span> <span class="nf">get_workspace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;dvc&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; _workspace_list element format: &quot;image_file_full_path;;;data_file_fullpath&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;dvc&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[[</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;;&#39;</span><span class="p">)]</span> 
+                        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s1">&#39;sta&#39;</span><span class="p">:</span> <span class="c1"># return data file list</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;;&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workspace_list</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span></div>
+        
+        <span class="c1">#return self._workspace_list</span>
+
+<div class="viewcode-block" id="ImageGalleryPanel.genImage"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.genImage">[docs]</a>    <span class="k">def</span> <span class="nf">genImage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">imagelist</span><span class="p">,</span> <span class="n">fdir</span><span class="p">,</span> <span class="n">ftype</span><span class="p">):</span>
+        <span class="n">imageobj_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">imagelist</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># not load any image data files, i.e. default status</span>
+            <span class="c1">#for imgid in xrange(16):</span>
+            <span class="c1">#    img = resizeImage(&#39;/home/tong/Programming/learning/python/PIL/test.jpg&#39;, 160)</span>
+            <span class="c1">#    self.imageobj.append(wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img)))</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">imagefilepath</span> <span class="ow">in</span> <span class="n">imagelist</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">resizeImage</span><span class="p">(</span><span class="n">imagefilepath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pxsize</span><span class="p">)</span>
+                <span class="n">datafilename</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">imagefilepath</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">datafilepath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fdir</span><span class="p">,</span> <span class="n">datafilename</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">ftype</span><span class="p">)</span>
+                <span class="c1">#print imagefilepath</span>
+                <span class="c1">#print datafilename, datafilepath</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;;;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">imagefilepath</span><span class="p">,</span> <span class="n">datafilepath</span><span class="p">])</span>
+                <span class="n">imageobj_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span>
+                                                     <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">img</span><span class="p">),</span> 
+                                                     <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">imageobj_list</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.initUI"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetBackgroundColour</span><span class="p">(</span><span class="s1">&#39;light grey&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onUpdate"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onUpdate">[docs]</a>    <span class="k">def</span> <span class="nf">onUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image_list</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; update image grid panel</span>
+<span class="sd">        :param image_list: image file list, jpg</span>
+<span class="sd">        :parma fdir: dirname of data files</span>
+<span class="sd">        :param ftype: ext of data format, which generate image_list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">image_list</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image_file_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">image_list</span><span class="p">)</span>  <span class="c1"># merge into image fullpath list (.jpg)</span>
+
+        <span class="c1"># wx.StaticBitmap objs generated from imagelist</span>
+        <span class="n">image_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">genImage</span><span class="p">(</span><span class="n">image_list</span><span class="p">,</span> <span class="n">fdir</span><span class="p">,</span> <span class="n">ftype</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_bitmap_obj</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">image_objs</span><span class="p">)</span>
+
+        <span class="n">wpsizer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wpsizer</span>
+        <span class="c1"># define a wrapsizer</span>
+        <span class="k">for</span> <span class="n">imgobj</span> <span class="ow">in</span> <span class="n">image_objs</span><span class="p">:</span>
+            <span class="n">wpsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">imgobj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_RIGHT_DOWN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onRightClick</span><span class="p">)</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_LEFT_DOWN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onLeftClick</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">imgobj</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span>
+            <span class="c1">#print &quot;---&quot;</span>
+            <span class="c1">#print name</span>
+            <span class="c1">#print &quot;---&quot;</span>
+            <span class="n">f_img</span><span class="p">,</span> <span class="n">f_data</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;;&#39;</span><span class="p">)</span>
+            <span class="n">f_img_info</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">get_file_info</span><span class="p">(</span><span class="n">f_img</span><span class="p">)</span>
+            <span class="n">f_data_info</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">get_file_info</span><span class="p">(</span><span class="n">f_data</span><span class="p">)</span>
+            <span class="n">ttext</span> <span class="o">=</span> <span class="s2">&quot;Image filename: </span><span class="si">{img_n}</span><span class="se">\n</span><span class="s2">Data source: </span><span class="si">{data_n}</span><span class="se">\n</span><span class="s2">Create: </span><span class="si">{ctime}</span><span class="se">\n</span><span class="s2">Bytes: </span><span class="si">{s_i}</span><span class="s2"> [image], </span><span class="si">{s_d}</span><span class="s2"> [data]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">img_n</span><span class="o">=</span><span class="n">f_img_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">data_n</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">ctime</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;ctime&#39;</span><span class="p">],</span>
+                    <span class="n">s_i</span><span class="o">=</span><span class="n">f_img_info</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span>
+                    <span class="n">s_d</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ToolTip</span><span class="p">(</span><span class="n">ttext</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">wpsizer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetupScrolling</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onScaleImageSize"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onScaleImageSize">[docs]</a>    <span class="k">def</span> <span class="nf">onScaleImageSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; just rescale image size to show on image grid</span>
+<span class="sd">        :param fdata_list: data file list, fullpath</span>
+<span class="sd">        :param image_list: image file list, fullpath</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">fdata_list</span> <span class="o">==</span> <span class="p">[]</span> <span class="ow">or</span> <span class="n">image_list</span> <span class="o">==</span> <span class="p">[]:</span>
+            <span class="k">return</span>
+        
+        <span class="n">image_obj</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">f_data</span><span class="p">,</span> <span class="n">f_img</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">):</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">resizeImage</span><span class="p">(</span><span class="n">f_img</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pxsize</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;;;;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f_img</span><span class="p">,</span> <span class="n">f_data</span><span class="p">])</span>
+            <span class="n">image_obj</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StaticBitmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> 
+                                             <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">img</span><span class="p">),</span>
+                                             <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_bitmap_obj</span> <span class="o">=</span> <span class="n">image_obj</span>  <span class="c1"># update bitmap objects</span>
+        <span class="n">wpsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">WrapSizer</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">imgobj</span> <span class="ow">in</span> <span class="n">image_obj</span><span class="p">:</span>
+            <span class="n">wpsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">imgobj</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_RIGHT_DOWN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onRightClick</span><span class="p">)</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_LEFT_DOWN</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onLeftClick</span><span class="p">)</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">imgobj</span><span class="o">.</span><span class="n">GetName</span><span class="p">()</span>
+            <span class="n">f_img</span><span class="p">,</span> <span class="n">f_data</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;;;;&#39;</span><span class="p">)</span>
+            <span class="n">f_img_info</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">get_file_info</span><span class="p">(</span><span class="n">f_img</span><span class="p">)</span>
+            <span class="n">f_data_info</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">get_file_info</span><span class="p">(</span><span class="n">f_data</span><span class="p">)</span>
+            <span class="n">ttext</span> <span class="o">=</span> <span class="s2">&quot;Image filename: </span><span class="si">{img_n}</span><span class="se">\n</span><span class="s2">Data source: </span><span class="si">{data_n}</span><span class="se">\n</span><span class="s2">Create: </span><span class="si">{ctime}</span><span class="se">\n</span><span class="s2">Bytes: </span><span class="si">{s_i}</span><span class="s2"> [image], </span><span class="si">{s_d}</span><span class="s2"> [data]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">img_n</span><span class="o">=</span><span class="n">f_img_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">data_n</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">ctime</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;ctime&#39;</span><span class="p">],</span>
+                    <span class="n">s_i</span><span class="o">=</span><span class="n">f_img_info</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">],</span>
+                    <span class="n">s_d</span><span class="o">=</span><span class="n">f_data_info</span><span class="p">[</span><span class="s1">&#39;bytes&#39;</span><span class="p">])</span>
+            <span class="n">imgobj</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ToolTip</span><span class="p">(</span><span class="n">ttext</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">wpsizer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Layout</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetupScrolling</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onClear"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onClear">[docs]</a>    <span class="k">def</span> <span class="nf">onClear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        clear all objs on panel</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetChildren</span><span class="p">():</span>
+            <span class="n">child</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_bitmap_obj</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">image_file_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wpsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">WrapSizer</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onScaleInc"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onScaleInc">[docs]</a>    <span class="k">def</span> <span class="nf">onScaleInc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">,</span> <span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        enlarge image by percent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pxsize</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">percent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onClear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onScaleImageSize</span><span class="p">(</span><span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ImageGalleryPanel.onScaleDec"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ImageGalleryPanel.onScaleDec">[docs]</a>    <span class="k">def</span> <span class="nf">onScaleDec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">percent</span><span class="p">,</span> <span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shrink image by percent</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pxsize</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">percent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onClear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">onScaleImageSize</span><span class="p">(</span><span class="n">fdata_list</span><span class="p">,</span> <span class="n">image_list</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="WorkspacePanel"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.WorkspacePanel">[docs]</a><span class="k">class</span> <span class="nc">WorkspacePanel</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># input data format:</span>
+        <span class="c1"># [[&#39;1&#39;, &#39;image1.jpg&#39;, &#39;hdf5&#39;], [&#39;2&#39;, &#39;image2.jpg&#39;, &#39;asc&#39;]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetBackgroundColour</span><span class="p">(</span><span class="s1">&#39;light grey&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_ui</span><span class="p">()</span>
+
+<div class="viewcode-block" id="WorkspacePanel.set_data"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.WorkspacePanel.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span></div>
+
+    <span class="k">def</span> <span class="nf">_init_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dv_lc</span> <span class="o">=</span> <span class="n">dv_lc</span> <span class="o">=</span> <span class="n">dv</span><span class="o">.</span><span class="n">DataViewListCtrl</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># id, image file name, data file ext</span>
+        <span class="n">dv_lc</span><span class="o">.</span><span class="n">AppendTextColumn</span><span class="p">(</span><span class="s1">&#39;ID&#39;</span><span class="p">,</span>    <span class="n">width</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+        <span class="n">dv_lc</span><span class="o">.</span><span class="n">AppendTextColumn</span><span class="p">(</span><span class="s1">&#39;Image&#39;</span><span class="p">,</span> <span class="n">width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">dv_lc</span><span class="o">.</span><span class="n">AppendTextColumn</span><span class="p">(</span><span class="s1">&#39;Data&#39;</span><span class="p">,</span>  <span class="n">width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">sizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">sizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">dv_lc</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">sizer</span><span class="p">)</span>
+
+<div class="viewcode-block" id="WorkspacePanel.clear"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.WorkspacePanel.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dv_lc</span><span class="o">.</span><span class="n">DeleteAllItems</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="WorkspacePanel.update"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.WorkspacePanel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">itemval</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dv_lc</span><span class="o">.</span><span class="n">AppendItem</span><span class="p">(</span><span class="n">itemval</span><span class="p">)</span></div></div>
+
+<span class="c1">#class AnalysisFrame(wx.Frame):</span>
+<span class="c1">#    def __init__(self, parent, datasrc, **kws):</span>
+<span class="c1">#        wx.Frame.__init__(self, parent, **kws)</span>
+<span class="c1">#        self.datasrc = datasrc</span>
+<span class="c1">#</span>
+<span class="c1">#        self.image_data = self.set_data(datasrc)</span>
+<span class="c1">#        self._init_ui()</span>
+<span class="c1">#</span>
+<span class="c1">#    def set_data(self, datasrc):</span>
+<span class="c1">#        f = h5py.File(datasrc, &#39;r&#39;)</span>
+<span class="c1">#        data = f[&#39;image&#39;][&#39;data&#39;][...]</span>
+<span class="c1">#        return data</span>
+<span class="c1">#        #hx, hy = np.sum(data, 0), np.sum(data, 1)</span>
+<span class="c1">#        #x, y = np.arange(hx.size), np.arange(hy.size)</span>
+<span class="c1">#        #x0, sx = self._gaussian_fit(x, hx)</span>
+<span class="c1">#        #y0, sy = self._gaussian_fit(y, hy)</span>
+<span class="c1">#        #print x0, sx</span>
+<span class="c1">#        #print y0, sy</span>
+<span class="c1"># </span>
+<span class="c1">#</span>
+<span class="c1">#    def _init_ui(self):</span>
+<span class="c1">#        self.psplitter = wx.SplitterWindow(self, style=wx.SP_3D)</span>
+<span class="c1">#        self.psplitter.SetSashGravity(0.7)</span>
+<span class="c1">#        self.psplitter.SetMinimumPaneSize(200)</span>
+<span class="c1">#        self.psplitter.Bind(wx.EVT_IDLE, self.psplitterOnIdle)</span>
+<span class="c1">#</span>
+<span class="c1">#        # left</span>
+<span class="c1">#        self.psplitter_leftpanel  = wx.Panel(self.psplitter)</span>
+<span class="c1">#        self.plotpanel = funutils.AnalysisPlotPanel(self.psplitter_leftpanel, self.image_data,</span>
+<span class="c1">#                type=&#39;image&#39;, toolbar=True)</span>
+<span class="c1">#        </span>
+<span class="c1">#        vbox_l = wx.BoxSizer()</span>
+<span class="c1">#        vbox_l.Add(self.plotpanel, 1, wx.EXPAND)</span>
+<span class="c1">#</span>
+<span class="c1">#        self.psplitter_leftpanel.SetSizerAndFit(vbox_l)</span>
+<span class="c1">#        </span>
+<span class="c1">#        # right</span>
+<span class="c1">#        self.psplitter_rightpanel = wx.Panel(self.psplitter)</span>
+<span class="c1">#        exit_btn = wx.Button(self.psplitter_rightpanel, label=u&quot;E&amp;xit&quot;)</span>
+<span class="c1">#        vbox_r = wx.BoxSizer()</span>
+<span class="c1">#        vbox_r.Add(exit_btn, 0)</span>
+<span class="c1">#</span>
+<span class="c1">#        self.psplitter_rightpanel.SetSizerAndFit(vbox_r)</span>
+<span class="c1">#        </span>
+<span class="c1">#        # set splitter</span>
+<span class="c1">#        self.psplitter.SplitVertically(self.psplitter_leftpanel,</span>
+<span class="c1">#                                       self.psplitter_rightpanel, 0)</span>
+<span class="c1">#    </span>
+<span class="c1">#        # plot sizer</span>
+<span class="c1">#        p_sizer = wx.BoxSizer(wx.HORIZONTAL)</span>
+<span class="c1">#        p_sizer.Add(self.psplitter, 1, wx.EXPAND, 0)</span>
+<span class="c1">#</span>
+<span class="c1">#        # main sizer</span>
+<span class="c1">#        m_sizer = wx.BoxSizer()</span>
+<span class="c1">#        m_sizer.Add(p_sizer, 1, wx.EXPAND, 10)</span>
+<span class="c1">#        </span>
+<span class="c1">#        self.SetSizerAndFit(m_sizer)</span>
+<span class="c1">#</span>
+<span class="c1">#        # events</span>
+<span class="c1">#        self.Bind(wx.EVT_BUTTON, self.onExit, exit_btn)</span>
+<span class="c1">#</span>
+<span class="c1">#    def onExit(self, event):</span>
+<span class="c1">#        self.Close(True)</span>
+<span class="c1">#</span>
+<span class="c1">#    def psplitterOnIdle(self, event):</span>
+<span class="c1">#        self.psplitter.SetSashPosition(0)</span>
+<span class="c1">#        self.psplitter.Unbind(wx.EVT_IDLE)</span>
+<span class="c1">#        </span>
+
+<div class="viewcode-block" id="ProgressBarFrame"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ProgressBarFrame">[docs]</a><span class="k">class</span> <span class="nc">ProgressBarFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">range</span> <span class="o">=</span> <span class="nb">range</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createProgressbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetMinSize</span><span class="p">((</span><span class="mi">400</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Centre</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_timer</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ProgressBarFrame.createProgressbar"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ProgressBarFrame.createProgressbar">[docs]</a>    <span class="k">def</span> <span class="nf">createProgressbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pb</span>       <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Gauge</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pb</span><span class="o">.</span><span class="n">SetRange</span><span class="p">(</span><span class="nb">range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">range</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_st</span>  <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;Elapsed Time:&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_val</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;00:00:00&#39;</span><span class="p">)</span>
+
+        <span class="n">vbox_main</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">hbox_time</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">hbox_time</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_st</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">hbox_time</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_val</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">vbox_main</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pb</span><span class="p">,</span>   <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">vbox_main</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hbox_time</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizerAndFit</span><span class="p">(</span><span class="n">vbox_main</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_timer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_TIMER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onTickTimer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_timer</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ProgressBarFrame.onTickTimer"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.ProgressBarFrame.onTickTimer">[docs]</a>    <span class="k">def</span> <span class="nf">onTickTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;%H:%M:%S&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elapsed_time_val</span><span class="o">.</span><span class="n">SetLabel</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)))</span></div></div>
+
+<div class="viewcode-block" id="resizeImage"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.resizeImage">[docs]</a><span class="k">def</span> <span class="nf">resizeImage</span><span class="p">(</span><span class="n">imagepath</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">whflag</span> <span class="o">=</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="n">quality</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">IMAGE_QUALITY_NORMAL</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    resize image read from file, return wx.Image obj</span>
+<span class="sd">    :param imagepath: jpg image file path</span>
+<span class="sd">    :param height: height in pixel after resizing</span>
+<span class="sd">    :param width:  width in pixel after resizing</span>
+<span class="sd">    :param whflag: w.r.t. height (&#39;h&#39;) or width (&#39;w&#39;)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">oimage</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">imagepath</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BITMAP_TYPE_ANY</span><span class="p">)</span> <span class="c1"># recommend jpg type</span>
+    <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">oimage</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">whflag</span> <span class="o">==</span> <span class="s1">&#39;h&#39;</span><span class="p">:</span>
+        <span class="n">scalingfactor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">height</span><span class="p">)</span><span class="o">/</span><span class="n">h</span>
+    <span class="k">elif</span> <span class="n">whflag</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
+        <span class="n">scalingfactor</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">width</span><span class="p">)</span><span class="o">/</span><span class="n">w</span>
+    
+    <span class="k">return</span> <span class="n">oimage</span><span class="o">.</span><span class="n">Scale</span><span class="p">(</span><span class="n">w</span><span class="o">*</span><span class="n">scalingfactor</span><span class="p">,</span> <span class="n">h</span><span class="o">*</span><span class="n">scalingfactor</span><span class="p">,</span> <span class="n">quality</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="test_data2Image"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.test_data2Image">[docs]</a><span class="k">def</span> <span class="nf">test_data2Image</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    test function Hdf2Image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data2Image</span><span class="p">(</span><span class="s1">&#39;~/Desktop/20150923/data.hdf5&#39;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">cmtype</span> <span class="o">=</span> <span class="s1">&#39;jet&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.imageutils.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">test_data2Image</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+    
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

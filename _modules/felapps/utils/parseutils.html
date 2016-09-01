@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.utils.parseutils &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.utils.parseutils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Author: Tong Zhang</span>
+<span class="sd">Created Time: 10:22, Sep. 17, 2015</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ConfigParser</span> <span class="k">import</span> <span class="n">SafeConfigParser</span><span class="p">,</span> <span class="n">ConfigParser</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<div class="viewcode-block" id="ConfigFile"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ConfigFile">[docs]</a><span class="k">class</span> <span class="nc">ConfigFile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to resolve parameters parsing by applying xmlparser approach.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infilename</span><span class="o">=</span><span class="s1">&#39;config.xml&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span> <span class="o">=</span> <span class="n">infilename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">namelist</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parseConfigs</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ConfigFile.parseConfigs"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ConfigFile.parseConfigs">[docs]</a>    <span class="k">def</span> <span class="nf">parseConfigs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ConfigFile.getConfigs"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ConfigFile.getConfigs">[docs]</a>    <span class="k">def</span> <span class="nf">getConfigs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">namelist</span></div>
+    
+<div class="viewcode-block" id="ConfigFile.updateConfigs"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ConfigFile.updateConfigs">[docs]</a>    <span class="k">def</span> <span class="nf">updateConfigs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_dict</span><span class="p">,</span> <span class="n">savetofile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">savetofile</span><span class="p">:</span>
+            <span class="n">savetofile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xmlfile</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;properties&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">params_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">params_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tree</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">savetofile</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="ParamParser"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser">[docs]</a><span class="k">class</span> <span class="nc">ParamParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class to resolve parameters parsing by applying ConfigParser approach.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inifilename</span> <span class="o">=</span> <span class="s1">&#39;config.ini&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inifilename</span> <span class="o">=</span> <span class="n">inifilename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="ParamParser.readConfig"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.readConfig">[docs]</a>    <span class="k">def</span> <span class="nf">readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inifilename</span><span class="p">):</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">createTemplate</span><span class="p">()</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inifilename</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ParamParser.createTemplate"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.createTemplate">[docs]</a>    <span class="k">def</span> <span class="nf">createTemplate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">configfilename</span><span class="o">=</span><span class="s1">&#39;config_sample.conf&#39;</span><span class="p">):</span>
+        <span class="n">dict_sample</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;00-info&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;author&#39;</span><span class="p">:</span> <span class="s1">&#39;Tong Zhang&#39;</span><span class="p">,</span> <span class="s1">&#39;note&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;created_time&#39;</span><span class="p">:</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S %Z&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())}),</span> <span class="p">(</span><span class="s1">&#39;01-facility&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;country&#39;</span><span class="p">:</span> <span class="s1">&#39;China&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;SDUV&#39;</span><span class="p">,</span> <span class="s1">&#39;affiliation&#39;</span><span class="p">:</span> <span class="s1">&#39;SINAP&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;02-electron_beam&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;normalized_emittance(m)&#39;</span><span class="p">:</span> <span class="s1">&#39;4e-6&#39;</span><span class="p">,</span> <span class="s1">&#39;peak_current(A)&#39;</span><span class="p">:</span> <span class="s1">&#39;300&#39;</span><span class="p">,</span> <span class="s1">&#39;central_energy(MeV)&#39;</span><span class="p">:</span> <span class="s1">&#39;150&#39;</span><span class="p">,</span> <span class="s1">&#39;average_beta_function(m)&#39;</span><span class="p">:</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;bunch_charge(C)&#39;</span><span class="p">:</span> <span class="s1">&#39;0.2e-9&#39;</span><span class="p">,</span> <span class="s1">&#39;energy_spread&#39;</span><span class="p">:</span> <span class="s1">&#39;1e-4&#39;</span><span class="p">,</span> <span class="s1">&#39;bunch_shape&#39;</span><span class="p">:</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;03-undulator&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;total_length(m)&#39;</span><span class="p">:</span> <span class="s1">&#39;10&#39;</span><span class="p">,</span> <span class="s1">&#39;period_length(m)&#39;</span><span class="p">:</span> <span class="s1">&#39;0.04&#39;</span><span class="p">}),</span> <span class="p">(</span><span class="s1">&#39;04-FEL_radiation&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;wavelength(m)&#39;</span><span class="p">:</span> <span class="s1">&#39;350e-9&#39;</span><span class="p">})])</span>
+        <span class="n">parser_sample</span> <span class="o">=</span> <span class="n">SafeConfigParser</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_sample</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">parser_sample</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">parser_sample</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section_name</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_sample</span><span class="p">[</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+        <span class="n">parser_sample</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">configfilename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ParamParser.makeFlatDict"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.makeFlatDict">[docs]</a>    <span class="k">def</span> <span class="nf">makeFlatDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return dict with key,value pairs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">onedict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="n">onedict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section_name</span><span class="p">)})</span>
+        <span class="k">return</span> <span class="n">onedict</span></div>
+
+<div class="viewcode-block" id="ParamParser.makeHierDict"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.makeHierDict">[docs]</a>    <span class="k">def</span> <span class="nf">makeHierDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        return dict with hierarch structure</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sdict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+                <span class="n">sdict</span><span class="p">[</span><span class="n">section_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section_name</span><span class="p">)}</span>
+        <span class="k">return</span> <span class="n">sdict</span></div>
+
+<div class="viewcode-block" id="ParamParser.setOneParam"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.setOneParam">[docs]</a>    <span class="k">def</span> <span class="nf">setOneParam</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section_name</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section_name</span><span class="p">,</span> <span class="n">option_name</span><span class="p">,</span> <span class="n">newvalue</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ParamParser.setAllParams"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.setAllParams">[docs]</a>    <span class="k">def</span> <span class="nf">setAllParams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newhierdict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="n">section_name</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section_name</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">newhierdict</span><span class="p">[</span><span class="n">section_name</span><span class="p">][</span><span class="n">k</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="ParamParser.dumpDictToConfig"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.dumpDictToConfig">[docs]</a>    <span class="k">def</span> <span class="nf">dumpDictToConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newhierdict</span><span class="p">,</span> <span class="n">configfilename</span><span class="p">):</span>
+        <span class="n">newparser</span> <span class="o">=</span> <span class="n">SafeConfigParser</span><span class="p">()</span>
+        <span class="n">newparser</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
+        <span class="k">for</span> <span class="n">section_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">newhierdict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">newparser</span><span class="o">.</span><span class="n">add_section</span><span class="p">(</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">newparser</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">section_name</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">newhierdict</span><span class="p">[</span><span class="n">section_name</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+        <span class="n">newparser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">configfilename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="ParamParser.saveConfig"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.ParamParser.saveConfig">[docs]</a>    <span class="k">def</span> <span class="nf">saveConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filetosave</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">filetosave</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filetosave</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inifilename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filetosave</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">))</span></div></div>
+
+<div class="viewcode-block" id="loadtest"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.loadtest">[docs]</a><span class="k">def</span> <span class="nf">loadtest</span><span class="p">():</span>
+    <span class="c1"># test load config from file</span>
+    <span class="n">testparser</span> <span class="o">=</span> <span class="n">ParamParser</span><span class="p">(</span><span class="s1">&#39;config_sample.conf&#39;</span><span class="p">)</span>
+    <span class="n">testparser</span><span class="o">.</span><span class="n">readConfig</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">testparser</span><span class="o">.</span><span class="n">makeHierDict</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="savetest"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.parseutils.savetest">[docs]</a><span class="k">def</span> <span class="nf">savetest</span><span class="p">():</span>
+    <span class="c1"># test save config to file</span>
+    <span class="c1"># save parser into new config file</span>
+
+    <span class="c1"># get param dict from config_sample.conf which is parsed by readConfig method</span>
+    <span class="n">testparser</span> <span class="o">=</span> <span class="n">ParamParser</span><span class="p">(</span><span class="s1">&#39;config_sample.conf&#39;</span><span class="p">)</span>
+    <span class="n">testparser</span><span class="o">.</span><span class="n">readConfig</span><span class="p">()</span>
+    <span class="n">raw_dict</span> <span class="o">=</span> <span class="n">testparser</span><span class="o">.</span><span class="n">makeHierDict</span><span class="p">()</span>
+
+    <span class="c1"># modify parameters</span>
+    <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;01-facility&#39;</span><span class="p">][</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;XFEL&#39;</span>
+    <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;03-undulator&#39;</span><span class="p">][</span><span class="s1">&#39;period_length(m)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mf">0.04</span><span class="p">)</span>
+    <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;02-electron_beam&#39;</span><span class="p">][</span><span class="s1">&#39;peak_current(A)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">raw_dict</span><span class="o">.</span><span class="n">has_key</span><span class="p">(</span><span class="s1">&#39;00-info&#39;</span><span class="p">):</span>
+        <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;00-info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;00-info&#39;</span><span class="p">][</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S %Z&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+
+    <span class="c1"># add options</span>
+    <span class="n">raw_dict</span><span class="p">[</span><span class="s1">&#39;04-FEL_radiation&#39;</span><span class="p">][</span><span class="s1">&#39;output_power(W)&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%.3e</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="mi">1</span><span class="n">e8</span>
+
+    <span class="c1"># save to new config file</span>
+    <span class="n">testparser</span><span class="o">.</span><span class="n">dumpDictToConfig</span><span class="p">(</span><span class="n">raw_dict</span><span class="p">,</span> <span class="s1">&#39;sxfel.conf&#39;</span><span class="p">)</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#loadtest()</span>
+    <span class="n">savetest</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

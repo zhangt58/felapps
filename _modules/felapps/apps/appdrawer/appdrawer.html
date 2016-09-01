@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.apps.appdrawer.appdrawer &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.apps.appdrawer.appdrawer</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">main launcher panel for all available apps from felapps</span>
+
+<span class="sd">Author: Tong Zhang</span>
+<span class="sd">Created: Oct. 8, 2015</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">miscutils</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">funutils</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">resutils</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">cornalyzer</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">dataworkshop</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">felformula</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">imageviewer</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">matchwizard</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">wxmpv</span>
+<span class="kn">from</span> <span class="nn">beamline</span> <span class="k">import</span> <span class="n">ui_main</span> <span class="k">as</span> <span class="n">latticeviewer</span>
+
+<span class="kn">import</span> <span class="nn">wx.lib.mixins.inspection</span> <span class="k">as</span> <span class="nn">wit</span>
+
+<span class="n">DEBUG_FLAG</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="AppDrawerFrame"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame">[docs]</a><span class="k">class</span> <span class="nc">AppDrawerFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">appversion</span><span class="o">=</span><span class="s1">&#39;1.0&#39;</span><span class="p">,</span> <span class="n">icon_set</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># style = wx.DEFAULT_FRAME_STYLE &amp; ~(wx.RESIZE_BORDER | wx.MAXIMIZE_BOX)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">appversion</span> <span class="o">=</span> <span class="n">appversion</span>
+        <span class="k">if</span> <span class="n">icon_set</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">icon_set</span> <span class="o">=</span> <span class="s1">&#39;short&#39;</span>  <span class="c1"># or &#39;long&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icon_set</span> <span class="o">=</span> <span class="n">icon_set</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onExit</span><span class="p">)</span>
+
+        <span class="c1"># initialize UI</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initUI</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">aicon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+
+<div class="viewcode-block" id="AppDrawerFrame.onExit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.onExit">[docs]</a>    <span class="k">def</span> <span class="nf">onExit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitApp</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.exitApp"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.exitApp">[docs]</a>    <span class="k">def</span> <span class="nf">exitApp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Are you sure to exit this application?&quot;</span><span class="p">,</span>
+                                <span class="n">caption</span><span class="o">=</span><span class="s1">&#39;Exit Warning&#39;</span><span class="p">,</span>
+                                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_QUESTION</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_YES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.initUI"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.initUI">[docs]</a>    <span class="k">def</span> <span class="nf">initUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preInit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createMenubar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createPanel</span><span class="p">()</span>
+        <span class="c1"># self.createStatusbar()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createToolbar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">postInit</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="AppDrawerFrame.preInit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.preInit">[docs]</a>    <span class="k">def</span> <span class="nf">preInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.postInit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.postInit">[docs]</a>    <span class="k">def</span> <span class="nf">postInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.createMenubar"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.createMenubar">[docs]</a>    <span class="k">def</span> <span class="nf">createMenubar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.createToolbar"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.createToolbar">[docs]</a>    <span class="k">def</span> <span class="nf">createToolbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.createStatusbar"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.createStatusbar">[docs]</a>    <span class="k">def</span> <span class="nf">createStatusbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">ESB</span><span class="o">.</span><span class="n">EnhancedStatusBar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">SetFieldsCount</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetStatusBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="p">)</span>
+        <span class="c1"># self.statusbar.SetStatusWidths([-3,-1,-4,-1,-1])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">SetStatusWidths</span><span class="p">([</span><span class="o">-</span><span class="mi">7</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">appinfo</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">u&quot;AppDrawer powered by Python&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timenow_st</span>        <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">u&quot;2015-06-05 14:00:00 CST&quot;</span><span class="p">)</span>
+        <span class="n">appversion</span>             <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">u&quot; (Version: &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">appversion</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
+        <span class="c1">#self.info_st = funutils.MyStaticText(self.statusbar, label = u&#39;Status: &#39;, fontcolor = &#39;red&#39;)</span>
+        <span class="c1">#self.info    = funutils.MyStaticText(self.statusbar, label = u&#39;&#39;,         fontcolor = &#39;red&#39;)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">AddWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">appinfo</span><span class="p">,</span> <span class="n">funutils</span><span class="o">.</span><span class="n">ESB</span><span class="o">.</span><span class="n">ESB_ALIGN_LEFT</span><span class="p">)</span>
+        <span class="c1">#self.statusbar.AddWidget(self.info_st,           funutils.ESB.ESB_ALIGN_RIGHT)</span>
+        <span class="c1">#self.statusbar.AddWidget(self.info,              funutils.ESB.ESB_ALIGN_LEFT )</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">AddWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timenow_st</span><span class="p">,</span>        <span class="n">funutils</span><span class="o">.</span><span class="n">ESB</span><span class="o">.</span><span class="n">ESB_ALIGN_RIGHT</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statusbar</span><span class="o">.</span><span class="n">AddWidget</span><span class="p">(</span><span class="n">appversion</span><span class="p">,</span>             <span class="n">funutils</span><span class="o">.</span><span class="n">ESB</span><span class="o">.</span><span class="n">ESB_ALIGN_RIGHT</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerFrame.createPanel"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerFrame.createPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">panel</span> <span class="o">=</span> <span class="n">AppDrawerPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">appversion</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icon_set</span><span class="p">)</span>
+
+        <span class="n">osizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">osizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">panel</span><span class="p">,</span> <span class="n">proportion</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizerAndFit</span><span class="p">(</span><span class="n">osizer</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="AppDrawerPanel"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel">[docs]</a><span class="k">class</span> <span class="nc">AppDrawerPanel</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">icon_set</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icon_set</span> <span class="o">=</span> <span class="n">icon_set</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">timefmt</span><span class="o">=</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S %Z&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">createPanel</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AppDrawerPanel.createPanel"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.createPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bkcolor</span> <span class="o">=</span> <span class="s1">&#39;#E1E1E1&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetBackgroundColour</span><span class="p">(</span><span class="n">funutils</span><span class="o">.</span><span class="n">hex2rgb</span><span class="p">(</span><span class="n">bkcolor</span><span class="p">))</span>
+
+        <span class="n">apptitle_st</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">MyStaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">u&quot;felapps </span><span class="se">\u2014</span><span class="s2"> High-level Applications for FEL&quot;</span><span class="p">,</span>
+                                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FONTWEIGHT_NORMAL</span><span class="p">,</span>
+                                <span class="n">fontcolor</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">)</span>
+        <span class="n">appver_st</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">MyStaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FONTWEIGHT_NORMAL</span><span class="p">,</span>
+                                <span class="n">fontcolor</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timenow_st</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">MyStaticText</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timefmt</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">()),</span>
+                                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">FONTWEIGHT_NORMAL</span><span class="p">,</span>
+                                <span class="n">fontcolor</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">)</span>
+
+        <span class="n">applistname</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">]</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">icon_set</span> <span class="o">==</span> <span class="s1">&#39;short&#39;</span><span class="p">:</span>
+            <span class="n">applisticon</span> <span class="o">=</span> <span class="p">[</span><span class="n">resutils</span><span class="o">.</span><span class="n">cicon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">dicon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">ficon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">iicon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">licon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">wicon_s</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># icon_set long</span>
+            <span class="n">applisticon</span> <span class="o">=</span> <span class="p">[</span><span class="n">resutils</span><span class="o">.</span><span class="n">cicon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">dicon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">ficon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">iicon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">licon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="n">resutils</span><span class="o">.</span><span class="n">wicon_l</span><span class="o">.</span><span class="n">GetBitmap</span><span class="p">(),</span>
+                           <span class="p">]</span>
+
+        <span class="n">applistevent</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">onClickAppC</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onClickAppD</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onClickAppF</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onClickAppI</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onClickAppL</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">onClickAppW</span><span class="p">,</span>
+                        <span class="p">]</span>
+        <span class="n">applisthint</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;run Correlation Analyzer&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Parameters Analysis Tool, e.g. SCAN&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;run Data Workshop&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Processing data generated from Imageviewer, e.g. AutoSaved HDF5 files&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;run FEL Formula&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Simple FEL physics calculations to grab the machine ideal performance&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;run Image Viewer&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Just feed with the waveform record PV string name&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;run Lattice Viewer&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Accelerator Online Modeling Tool&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;run Wx MatPlot Viewer&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  Offline plot analysis tool for exported fitting data from Imageviewer&#39;</span><span class="p">,</span>
+                       <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nameicondict</span>  <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">applistname</span><span class="p">,</span> <span class="n">applisticon</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nameeventdict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">applistname</span><span class="p">,</span> <span class="n">applistevent</span><span class="p">))</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">namehintdict</span>  <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">applistname</span><span class="p">,</span> <span class="n">applisthint</span><span class="p">))</span>
+        
+        <span class="n">apps_cnt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">applistname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">icon_set</span> <span class="o">==</span> <span class="s1">&#39;short&#39;</span><span class="p">:</span>
+            <span class="n">gsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GridSizer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">apps_cnt</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">gsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">GridSizer</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">apps_cnt</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            
+        <span class="k">for</span> <span class="n">appname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nameicondict</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">appobj</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapButton</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nameicondict</span><span class="p">[</span><span class="n">appname</span><span class="p">],</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">BORDER_NONE</span><span class="p">)</span>
+            <span class="n">appobj</span><span class="o">.</span><span class="n">SetToolTip</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ToolTip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">namehintdict</span><span class="p">[</span><span class="n">appname</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nameeventdict</span><span class="p">[</span><span class="n">appname</span><span class="p">],</span> <span class="n">appobj</span><span class="p">)</span>
+            <span class="n">gsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">appobj</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+        <span class="n">mainsizer</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="n">mainsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">apptitle_st</span><span class="p">,</span>     <span class="n">flag</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span>               <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">mainsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">appver_st</span><span class="p">,</span>       <span class="n">flag</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span>   <span class="n">border</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">mainsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timenow_st</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span>            <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">mainsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">gsizer</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span><span class="p">,</span> <span class="n">border</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="n">mainsizer</span><span class="o">.</span><span class="n">Add</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">mainsizer</span><span class="p">)</span>
+
+        <span class="c1"># timer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timernow</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Timer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_TIMER</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onTickTime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">timernow</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timernow</span><span class="o">.</span><span class="n">Start</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppC"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppC">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppC</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">cornalyzer</span><span class="o">.</span><span class="n">cornalyzer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppD"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppD">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppD</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">dataworkshop</span><span class="o">.</span><span class="n">dataworkshop</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppF"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppF">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">felformula</span><span class="o">.</span><span class="n">felformula</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppI"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppI">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">imageviewer</span><span class="o">.</span><span class="n">imageviewer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppM"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppM">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppM</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">matchwizard</span><span class="o">.</span><span class="n">matchwizard</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppL"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppL">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppL</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="n">resutils</span><span class="o">.</span><span class="n">licon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">()</span>
+        <span class="n">latticeviewer</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">,</span> <span class="n">icon</span><span class="o">=</span><span class="n">icon</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onClickAppW"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onClickAppW">[docs]</a>    <span class="k">def</span> <span class="nf">onClickAppW</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">wxmpv</span><span class="o">.</span><span class="n">wxmpv</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="n">DEBUG_FLAG</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AppDrawerPanel.onTickTime"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.AppDrawerPanel.onTickTime">[docs]</a>    <span class="k">def</span> <span class="nf">onTickTime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timenow_st</span><span class="o">.</span><span class="n">SetLabel</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timefmt</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">()))</span></div></div>
+
+<span class="c1">#========================================================================================================</span>
+<span class="n">__version__</span> <span class="o">=</span>  <span class="n">miscutils</span><span class="o">.</span><span class="n">AppVersions</span><span class="p">()</span><span class="o">.</span><span class="n">getVersion</span><span class="p">(</span><span class="s1">&#39;appdrawer&#39;</span><span class="p">)</span>
+<span class="n">__author__</span>  <span class="o">=</span> <span class="s2">&quot;Tong Zhang&quot;</span>
+
+<div class="viewcode-block" id="InspectApp"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.InspectApp">[docs]</a><span class="k">class</span> <span class="nc">InspectApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">,</span> <span class="n">wit</span><span class="o">.</span><span class="n">InspectionMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="InspectApp.OnInit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.InspectApp.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Init</span><span class="p">()</span>
+
+        <span class="n">myframe</span> <span class="o">=</span> <span class="n">AppDrawerFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">u&#39;App Drawer </span><span class="se">\u2014</span><span class="s1"> Apps collection of felapps (debug mode, CTRL+ALT+I)&#39;</span><span class="p">,</span> 
+                <span class="n">appversion</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetTopWindow</span><span class="p">(</span><span class="n">myframe</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.appdrawer.html#felapps.apps.appdrawer.appdrawer.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">maximize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">logon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kws</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to make appdrawer app run.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">icon_set</span><span class="o">=</span><span class="n">kws</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;icon_set&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">InspectApp</span><span class="p">()</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">redirect</span> <span class="o">=</span> <span class="n">logon</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">maximize</span><span class="p">:</span>
+            <span class="n">myframe</span> <span class="o">=</span> <span class="n">AppDrawerFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">u&#39;App Drawer </span><span class="se">\u2014</span><span class="s1"> Apps collection of felapps&#39;</span><span class="p">,</span> 
+                    <span class="n">appversion</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span> <span class="n">icon_set</span><span class="o">=</span><span class="n">icon_set</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">myframe</span> <span class="o">=</span> <span class="n">AppDrawerFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">u&#39;App Drawer </span><span class="se">\u2014</span><span class="s1"> Apps collection of felapps&#39;</span><span class="p">,</span> 
+                    <span class="n">appversion</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span> <span class="n">icon_set</span><span class="o">=</span><span class="n">icon_set</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+        <span class="n">myframe</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#run(icon_set=&#39;short&#39;)</span>
+    <span class="n">run</span><span class="p">(</span><span class="n">icon_set</span><span class="o">=</span><span class="s1">&#39;long&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

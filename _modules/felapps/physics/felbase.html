@@ -1,0 +1,340 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.physics.felbase &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.physics.felbase</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Python module for the basis of free-electron laser calculation.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy.special</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="k">import</span> <span class="n">fsolve</span>
+
+
+<div class="viewcode-block" id="PhysicalConstants"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.PhysicalConstants">[docs]</a><span class="k">class</span> <span class="nc">PhysicalConstants</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Physical constants</span>
+<span class="sd">    :param c0: :math:`c_0`, velocity of light in vacuum</span>
+<span class="sd">    :param epsilon0: :math:`\epsilon_0`, permittivity in vacuum</span>
+<span class="sd">    :param mu0: :math:`\mu_0`, permeability in vacuum</span>
+<span class="sd">    :param e0: :math:`e`, electron charge, [C]</span>
+<span class="sd">    :param m0: :math:`m_e`, electron mass, [kg]</span>
+<span class="sd">    :param h0: :math:`h`, Plank constant</span>
+<span class="sd">    :param currentA: :math:`I_A`, Alven current, [A]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">c0</span>       <span class="o">=</span> <span class="mf">2.99792458E+08</span>
+    <span class="n">epsilon0</span> <span class="o">=</span> <span class="mf">8.854187817620390E-12</span>
+    <span class="n">mu0</span>      <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="mi">4</span><span class="n">E</span><span class="o">-</span><span class="mi">7</span>
+    <span class="n">e0</span>       <span class="o">=</span> <span class="mf">1.60218E-19</span>
+    <span class="n">m0</span>       <span class="o">=</span> <span class="mf">9.10938E-31</span>
+    <span class="n">h0</span>       <span class="o">=</span> <span class="mf">6.62607E-34</span>
+    <span class="n">currentA</span> <span class="o">=</span> <span class="mi">17045</span></div>
+
+
+<div class="viewcode-block" id="HalbachPerm"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.HalbachPerm">[docs]</a><span class="k">class</span> <span class="nc">HalbachPerm</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_a</span><span class="o">=</span><span class="mf">3.33</span><span class="p">,</span> <span class="n">_b</span><span class="o">=-</span><span class="mf">5.47</span><span class="p">,</span> <span class="n">_c</span><span class="o">=</span><span class="mf">1.80</span><span class="p">,</span> <span class="n">_lambdau</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">_Bu</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Input parameters:</span>
+<span class="sd">        _a: first Halbach parameter</span>
+<span class="sd">        _b: second Halbach parameter</span>
+<span class="sd">        _c: third Halbach parameter</span>
+<span class="sd">        _lambdau: undulator period length, [mm]</span>
+<span class="sd">        _Bu: undulator magnetic field, [T]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef1</span>   <span class="o">=</span> <span class="n">_a</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef2</span>   <span class="o">=</span> <span class="n">_b</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">coef3</span>   <span class="o">=</span> <span class="n">_c</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lambdau</span> <span class="o">=</span> <span class="n">_lambdau</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bu</span>      <span class="o">=</span> <span class="n">_Bu</span>
+
+<div class="viewcode-block" id="HalbachPerm.findGap"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.HalbachPerm.findGap">[docs]</a>    <span class="k">def</span> <span class="nf">findGap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gap0</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve undulator gap value</span>
+
+<span class="sd">        :param gap0: initial gap value vector, [mm]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fbg</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bu</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">coef1</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coef2</span><span class="o">*</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lambdau</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">coef3</span><span class="o">*</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lambdau</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fbg</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">gap0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Bu</span><span class="p">)))</span></div></div>
+                    
+
+<div class="viewcode-block" id="FELcalc"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.FELcalc">[docs]</a><span class="k">class</span> <span class="nc">FELcalc</span><span class="p">(</span><span class="n">PhysicalConstants</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Analytical calculation for Free-electron Laser physics</span>
+
+<span class="sd">    Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7)</span>
+<span class="sd">    :param p1: beamEnergy, [MeV]</span>
+<span class="sd">    :param p2: relative energy spread</span>
+<span class="sd">    :param p3: undulator period length, [m]</span>
+<span class="sd">    :param p4: avgerage beta function, [m]</span>
+<span class="sd">    :param p5: radiation wavelength, [m]</span>
+<span class="sd">    :param p6: normalized transverse emittance, [m]</span>
+<span class="sd">    :param p7: peak current, [A]</span>
+<span class="sd">    :return res: dict, keys: &quot;au&quot;, &quot;bu&quot;, &quot;gap&quot;, &quot;sigmar&quot;, &quot;rho1D&quot;, &quot;rho3D&quot;, &quot;Lg1D&quot;, &quot;Lg3D&quot;, &quot;Psat&quot;, &quot;Pshot&quot;, &quot;Pss&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">_beamEnergy</span>           <span class="o">=</span> <span class="mf">6000.0</span><span class="p">,</span> 
+            <span class="n">_relativeEnergySpread</span> <span class="o">=</span> <span class="mf">0.0001</span><span class="p">,</span>
+            <span class="n">_unduPeriodLength</span>     <span class="o">=</span> <span class="mf">0.015</span><span class="p">,</span>
+            <span class="n">_avgBetaFunc</span>          <span class="o">=</span> <span class="mf">20.0</span><span class="p">,</span>
+            <span class="n">_radWavelength</span>        <span class="o">=</span> <span class="mf">1.0e-10</span><span class="p">,</span>
+            <span class="n">_normEmittance</span>        <span class="o">=</span> <span class="mf">0.4e-6</span><span class="p">,</span>
+            <span class="n">_peakCurrent</span>          <span class="o">=</span> <span class="mf">3500.0</span><span class="p">,</span>
+            <span class="n">_bunchCharge</span>          <span class="o">=</span> <span class="mf">0.5e-9</span><span class="p">,</span>
+            <span class="n">_undulatorLength</span>      <span class="o">=</span> <span class="mf">10.0</span><span class="p">,</span>
+            <span class="n">_bunchShape</span>           <span class="o">=</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">,</span>
+            <span class="n">_undulatorType</span>        <span class="o">=</span> <span class="s1">&#39;planar&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialized parameters:</span>
+<span class="sd">        beamEnergy 	 [MeV]</span>
+<span class="sd">        relativeEnergySpread</span>
+<span class="sd">        unduPeriodLength [m]</span>
+<span class="sd">        avgBetaFunc 	 [m]</span>
+<span class="sd">	    radWavelength 	 [m]</span>
+<span class="sd">	    normEmittance 	 [m]</span>
+<span class="sd">	    peakCurrent 	 [A]</span>
+<span class="sd">        bunchCharge      [C]</span>
+<span class="sd">        undulatorLength  [m]</span>
+<span class="sd">        bunchShape: gaussian or flattop</span>
+<span class="sd">	    &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">beamEnergy</span> 	  <span class="o">=</span> <span class="n">_beamEnergy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relativeEnergySpread</span> <span class="o">=</span> <span class="n">_relativeEnergySpread</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unduPeriodLength</span> 	  <span class="o">=</span> <span class="n">_unduPeriodLength</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">avgBetaFunc</span> 	  <span class="o">=</span> <span class="n">_avgBetaFunc</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">radWavelength</span> 	  <span class="o">=</span> <span class="n">_radWavelength</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">normEmittance</span> 	  <span class="o">=</span> <span class="n">_normEmittance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">peakCurrent</span> 	  <span class="o">=</span> <span class="n">_peakCurrent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bunchCharge</span>      <span class="o">=</span> <span class="n">_bunchCharge</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">undulatorLength</span>  <span class="o">=</span> <span class="n">_undulatorLength</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bunchShape</span>       <span class="o">=</span> <span class="n">_bunchShape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">undulatorType</span>    <span class="o">=</span> <span class="n">_undulatorType</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunchShape</span> <span class="o">==</span> <span class="s1">&#39;gaussian&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bunchratio</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunchShape</span> <span class="o">==</span> <span class="s1">&#39;flattop&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bunchratio</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<div class="viewcode-block" id="FELcalc.onFELAnalyse"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.FELcalc.onFELAnalyse">[docs]</a>    <span class="k">def</span> <span class="nf">onFELAnalyse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply M. Xie formulae for FEL analytical estimation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+	    <span class="c1"># Xie Ming Formulae fitted cofs</span>
+        <span class="n">a1</span>  <span class="o">=</span> <span class="mf">0.45</span>
+        <span class="n">a2</span>  <span class="o">=</span> <span class="mf">0.57</span>
+        <span class="n">a3</span>  <span class="o">=</span> <span class="mf">0.55</span>
+        <span class="n">a4</span>  <span class="o">=</span> <span class="mf">1.6</span>
+        <span class="n">a5</span>  <span class="o">=</span> <span class="mf">3.0</span>
+        <span class="n">a6</span>  <span class="o">=</span> <span class="mf">2.0</span>
+        <span class="n">a7</span>  <span class="o">=</span> <span class="mf">0.35</span>
+        <span class="n">a8</span>  <span class="o">=</span> <span class="mf">2.9</span>
+        <span class="n">a9</span>  <span class="o">=</span> <span class="mf">2.4</span>
+        <span class="n">a10</span> <span class="o">=</span> <span class="mf">51.0</span>
+        <span class="n">a11</span> <span class="o">=</span> <span class="mf">0.95</span>
+        <span class="n">a12</span> <span class="o">=</span> <span class="mf">3.0</span>
+        <span class="n">a13</span> <span class="o">=</span> <span class="mf">5.4</span>
+        <span class="n">a14</span> <span class="o">=</span> <span class="mf">0.7</span>
+        <span class="n">a15</span> <span class="o">=</span> <span class="mf">1.9</span>
+        <span class="n">a16</span> <span class="o">=</span> <span class="mf">1140.0</span>
+        <span class="n">a17</span> <span class="o">=</span> <span class="mf">2.2</span>
+        <span class="n">a18</span> <span class="o">=</span> <span class="mf">2.9</span>
+        <span class="n">a19</span> <span class="o">=</span> <span class="mf">3.2</span>
+        
+        <span class="n">gamma0</span>   <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beamEnergy</span><span class="o">/</span><span class="mf">0.511</span>
+        <span class="n">eta</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relativeEnergySpread</span>
+        <span class="n">lambdau</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">unduPeriodLength</span>
+        <span class="n">beta</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">avgBetaFunc</span>
+        <span class="n">lambdas</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radWavelength</span>
+        <span class="n">epsilonn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normEmittance</span>
+        <span class="n">Ipk</span>      <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">peakCurrent</span>
+        <span class="n">lu</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">undulatorLength</span>
+
+        <span class="n">sigmaBeam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="n">epsilonn</span><span class="o">/</span><span class="n">gamma0</span><span class="p">)</span>
+        <span class="n">au</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">lambdas</span><span class="o">*</span><span class="mf">2.0</span><span class="o">*</span><span class="n">gamma0</span><span class="o">**</span><span class="mf">2.0</span><span class="o">/</span><span class="n">lambdau</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">undulatorType</span> <span class="o">==</span> <span class="s1">&#39;planar&#39;</span><span class="p">:</span>
+            <span class="n">b</span>  <span class="o">=</span> <span class="n">au</span><span class="o">**</span><span class="mf">2.0</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">au</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">JJ</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">jn</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="n">sp</span><span class="o">.</span><span class="n">jn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># helical</span>
+            <span class="n">JJ</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">rho1D</span> <span class="o">=</span> <span class="p">((</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="n">gamma0</span><span class="p">)</span><span class="o">**</span><span class="mf">3.0</span><span class="o">*</span><span class="n">Ipk</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">currentA</span><span class="o">*</span><span class="p">(</span><span class="n">au</span><span class="o">*</span><span class="n">JJ</span><span class="o">*</span><span class="n">lambdau</span><span class="o">/</span><span class="mf">2.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">sigmaBeam</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="mf">3.0</span><span class="p">)</span>
+        <span class="n">Lg1D</span>  <span class="o">=</span> <span class="n">lambdau</span><span class="o">/</span><span class="mf">4.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="n">rho1D</span>
+        
+        <span class="n">etad</span> <span class="o">=</span> <span class="n">Lg1D</span><span class="o">/</span><span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">sigmaBeam</span><span class="o">**</span><span class="mf">2.0</span><span class="o">/</span><span class="n">lambdas</span><span class="p">)</span>
+        <span class="n">etae</span> <span class="o">=</span> <span class="n">Lg1D</span><span class="o">/</span><span class="n">beta</span><span class="o">*</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">epsilonn</span><span class="o">/</span><span class="p">(</span><span class="n">gamma0</span><span class="o">*</span><span class="n">lambdas</span><span class="p">)</span>
+        <span class="n">etag</span> <span class="o">=</span> <span class="n">Lg1D</span><span class="o">/</span><span class="n">lambdau</span><span class="o">*</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">eta</span>
+        <span class="n">capLambda</span> <span class="o">=</span>  <span class="n">a1</span><span class="o">*</span><span class="n">etad</span><span class="o">**</span> <span class="n">a2</span> \
+                <span class="o">+</span>  <span class="n">a3</span><span class="o">*</span><span class="n">etae</span><span class="o">**</span> <span class="n">a4</span> \
+                <span class="o">+</span>  <span class="n">a5</span><span class="o">*</span><span class="n">etag</span><span class="o">**</span> <span class="n">a6</span> \
+	            <span class="o">+</span>  <span class="n">a7</span><span class="o">*</span><span class="n">etae</span><span class="o">**</span> <span class="n">a8</span><span class="o">*</span><span class="n">etag</span><span class="o">**</span><span class="n">a9</span> \
+	            <span class="o">+</span> <span class="n">a10</span><span class="o">*</span><span class="n">etad</span><span class="o">**</span><span class="n">a11</span><span class="o">*</span><span class="n">etag</span><span class="o">**</span><span class="n">a12</span> \
+	            <span class="o">+</span> <span class="n">a13</span><span class="o">*</span><span class="n">etad</span><span class="o">**</span><span class="n">a14</span><span class="o">*</span><span class="n">etae</span><span class="o">**</span><span class="n">a15</span> \
+	            <span class="o">+</span> <span class="n">a16</span><span class="o">*</span><span class="n">etad</span><span class="o">**</span><span class="n">a17</span><span class="o">*</span><span class="n">etae</span><span class="o">**</span><span class="n">a18</span><span class="o">*</span><span class="n">etag</span><span class="o">**</span><span class="n">a19</span>
+        <span class="n">Lg3D</span>  <span class="o">=</span> <span class="n">Lg1D</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">capLambda</span><span class="p">)</span>
+        <span class="n">rho3D</span> <span class="o">=</span> <span class="n">lambdau</span><span class="o">/</span><span class="mf">4.0</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">/</span><span class="n">Lg3D</span>
+        <span class="n">Psat</span>  <span class="o">=</span> <span class="mf">1.6</span><span class="o">*</span><span class="n">rho1D</span><span class="o">*</span><span class="p">(</span><span class="n">Lg1D</span><span class="o">/</span><span class="n">Lg3D</span><span class="p">)</span><span class="o">**</span><span class="mf">2.0</span><span class="o">*</span><span class="n">gamma0</span><span class="o">*</span><span class="mf">0.511</span><span class="o">*</span><span class="n">Ipk</span><span class="o">*</span><span class="mf">1.0e6</span> <span class="c1">#W</span>
+        
+        <span class="c1"># update and return calculated parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">au</span> <span class="o">=</span> <span class="n">au</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">undulatorType</span> <span class="o">==</span> <span class="s1">&#39;planar&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">K</span>  <span class="o">=</span> <span class="n">au</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Bu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">/</span><span class="mf">0.934</span><span class="o">/</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">lambdau</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># helical</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">K</span>  <span class="o">=</span> <span class="n">au</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Bu</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="o">/</span><span class="mf">0.934</span><span class="o">/</span><span class="p">(</span><span class="mi">100</span><span class="o">*</span><span class="n">lambdau</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">gu</span>     <span class="o">=</span> <span class="n">HalbachPerm</span><span class="p">(</span><span class="n">_lambdau</span><span class="o">=</span><span class="n">lambdau</span><span class="o">*</span><span class="mi">1000</span><span class="p">,</span> <span class="n">_Bu</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Bu</span><span class="p">)</span><span class="o">.</span><span class="n">findGap</span><span class="p">(</span><span class="n">gap0</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sigmar</span> <span class="o">=</span> <span class="n">sigmaBeam</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho1D</span>  <span class="o">=</span> <span class="n">rho1D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rho3D</span>  <span class="o">=</span> <span class="n">rho3D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lg1D</span>   <span class="o">=</span> <span class="n">Lg1D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Lg3D</span>   <span class="o">=</span> <span class="n">Lg3D</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Psat</span>   <span class="o">=</span> <span class="n">Psat</span>
+        <span class="n">Nlambda</span>     <span class="o">=</span> <span class="n">Ipk</span><span class="o">*</span><span class="n">lambdas</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">e0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">c0</span>
+        <span class="n">Pshot</span>       <span class="o">=</span> <span class="mf">3.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">4.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">rho1D</span><span class="o">**</span><span class="mf">2.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">beamEnergy</span><span class="o">*</span><span class="n">Ipk</span><span class="o">/</span><span class="n">Nlambda</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">Nlambda</span><span class="o">/</span><span class="n">rho1D</span><span class="p">))</span> <span class="o">*</span> <span class="mi">1</span><span class="n">e6</span>
+        <span class="n">Lsat</span>        <span class="o">=</span> <span class="n">Lg3D</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">findSatFactor</span><span class="p">(</span><span class="n">Nlambda</span><span class="p">,</span> <span class="n">Lg3D</span><span class="p">,</span> <span class="n">lambdau</span><span class="p">)</span>
+        <span class="n">Pss</span>         <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="mf">9.0</span><span class="o">*</span><span class="n">Pshot</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">Lsat</span><span class="o">/</span><span class="n">Lg3D</span><span class="p">)</span>
+        
+        <span class="n">sigmat</span>    <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunchCharge</span><span class="o">/</span><span class="n">Ipk</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">bunchratio</span>  <span class="c1"># bunch length (rms) for gaussian, full lenth for rectangle</span>
+        <span class="n">bandwidth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span><span class="o">*</span><span class="n">rho3D</span><span class="o">*</span><span class="n">lambdau</span><span class="o">/</span><span class="n">lu</span><span class="p">)</span>
+        
+        <span class="c1">#Pexit = 1.0/9.0*Pshot*np.exp(Lsat/Lg3D)</span>
+
+        <span class="n">pulseEnergy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bunchratio</span><span class="o">*</span><span class="n">sigmat</span><span class="o">*</span><span class="n">Pss</span>  <span class="c1"># J</span>
+        <span class="n">photonEnergy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">h0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">c0</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">e0</span><span class="o">/</span><span class="n">lambdas</span>  <span class="c1"># eV</span>
+        <span class="n">Np</span> <span class="o">=</span> <span class="n">pulseEnergy</span><span class="o">/</span><span class="n">photonEnergy</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">e0</span>  <span class="c1"># photon per pulse</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;01-au&quot;</span>             <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">au</span><span class="p">,</span> 
+                <span class="s2">&quot;02-K&quot;</span>              <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">K</span><span class="p">,</span>
+                <span class="s2">&quot;03-Bu&quot;</span>             <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">Bu</span><span class="p">,</span>
+                <span class="s2">&quot;04-gap&quot;</span>            <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">gu</span><span class="p">,</span>
+                <span class="s2">&quot;05-rho1D&quot;</span>          <span class="p">:</span> <span class="n">rho1D</span><span class="p">,</span>
+                <span class="s2">&quot;06-rho3D&quot;</span>          <span class="p">:</span> <span class="n">rho3D</span><span class="p">,</span>
+                <span class="s2">&quot;07-Lg1D&quot;</span>           <span class="p">:</span> <span class="n">Lg1D</span><span class="p">,</span>
+                <span class="s2">&quot;08-Lg3D&quot;</span>           <span class="p">:</span> <span class="n">Lg3D</span><span class="p">,</span>
+                <span class="s2">&quot;09-Psat&quot;</span>           <span class="p">:</span> <span class="n">Psat</span><span class="p">,</span>
+                <span class="s2">&quot;10-Pshot&quot;</span>          <span class="p">:</span> <span class="n">Pshot</span><span class="p">,</span>
+                <span class="s2">&quot;11-Pss&quot;</span>            <span class="p">:</span> <span class="n">Pss</span><span class="p">,</span>
+                <span class="s2">&quot;12-Lsat&quot;</span>           <span class="p">:</span> <span class="n">Lsat</span><span class="p">,</span>
+                <span class="s2">&quot;13-sigmar&quot;</span>         <span class="p">:</span> <span class="n">sigmaBeam</span><span class="o">*</span><span class="mi">1</span><span class="n">e6</span><span class="p">,</span> 
+                <span class="s2">&quot;14-sigmat&quot;</span>         <span class="p">:</span> <span class="n">sigmat</span><span class="o">*</span><span class="mi">1</span><span class="n">e15</span><span class="p">,</span>
+                <span class="s2">&quot;15-bandWidth&quot;</span>      <span class="p">:</span> <span class="n">bandwidth</span><span class="o">*</span><span class="mi">100</span><span class="p">,</span>
+                <span class="s2">&quot;16-PhotonEnergy&quot;</span>   <span class="p">:</span> <span class="n">photonEnergy</span><span class="p">,</span>
+                <span class="s2">&quot;17-PulseEnergy&quot;</span>    <span class="p">:</span> <span class="n">pulseEnergy</span><span class="o">*</span><span class="mi">1</span><span class="n">e6</span><span class="p">,</span>
+                <span class="s2">&quot;18-PhotonPerPulse&quot;</span> <span class="p">:</span> <span class="n">Np</span><span class="p">,</span>
+                <span class="p">}</span></div>
+
+<div class="viewcode-block" id="FELcalc.findSatFactor"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.FELcalc.findSatFactor">[docs]</a>    <span class="k">def</span> <span class="nf">findSatFactor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nl</span><span class="p">,</span> <span class="n">l3</span><span class="p">,</span> <span class="n">xlamd</span><span class="p">,</span> <span class="n">factor0</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculator saturation length in the unit of 3D power gainlength</span>
+<span class="sd">        :param factor0: initial saturation factor, saturation length over power gain length</span>
+<span class="sd">        :param nl: electron count within one unit of FEL wavelength</span>
+<span class="sd">        :param l3: power gain length (3D)</span>
+<span class="sd">        :param xlamd: undulator period</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fx</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">6.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">*</span><span class="n">nl</span><span class="o">*</span><span class="n">l3</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">xlamd</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fsolve</span><span class="p">(</span><span class="n">fx</span><span class="p">,</span> <span class="n">x0</span><span class="o">=</span><span class="n">factor0</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Lg3D</span><span class="p">)))</span></div></div>
+
+<div class="viewcode-block" id="test1"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.test1">[docs]</a><span class="k">def</span> <span class="nf">test1</span><span class="p">():</span>
+    <span class="n">inst</span> <span class="o">=</span> <span class="n">FELcalc</span><span class="p">(</span><span class="mi">17500</span><span class="p">,</span> <span class="mf">8.5714e-5</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mf">1.3e-9</span><span class="p">,</span> <span class="mf">1.4e-6</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mf">1.0e-9</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">val</span><span class="p">)</span> <span class="ow">in</span> <span class="n">inst</span><span class="o">.</span><span class="n">onFELAnalyse</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">print</span> <span class="n">key</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">=</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="test2"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.test2">[docs]</a><span class="k">def</span> <span class="nf">test2</span><span class="p">():</span>
+    <span class="n">energy</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">17000</span><span class="p">,</span> <span class="mi">18000</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">inst</span> <span class="o">=</span> <span class="n">FELcalc</span><span class="p">(</span><span class="n">energy</span><span class="p">,</span> <span class="mf">8.5714e-5</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mf">1.3e-9</span><span class="p">,</span> <span class="mf">1.4e-6</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mf">1.0e-9</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">onFELAnalyse</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;ppp&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="test3"><a class="viewcode-back" href="../../../src/apidocs/felapps.physics.html#felapps.physics.felbase.test3">[docs]</a><span class="k">def</span> <span class="nf">test3</span><span class="p">():</span>
+    <span class="n">bunchCharge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.5e-9</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">inst</span> <span class="o">=</span> <span class="n">FELcalc</span><span class="p">(</span><span class="mi">17500</span><span class="p">,</span> <span class="mf">8.5714e-5</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mf">1.3e-9</span><span class="p">,</span> <span class="mf">1.4e-6</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="n">bunchCharge</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">inst</span><span class="o">.</span><span class="n">onFELAnalyse</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">result</span><span class="p">[</span><span class="s1">&#39;sigmat&#39;</span><span class="p">]</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">test3</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.utils.EnhancedStatusBar &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.utils.EnhancedStatusBar</h1><div class="highlight"><pre>
+<span></span><span class="c1"># --------------------------------------------------------------------------- #</span>
+<span class="c1"># ENHANCEDSTATUSBAR wxPython IMPLEMENTATION</span>
+<span class="c1"># Python Code By:</span>
+<span class="c1">#</span>
+<span class="c1"># Andrea Gavana, @ 31 May 2005</span>
+<span class="c1"># Nitro, @ 21 September 2005</span>
+<span class="c1"># Latest Revision: 21 September 2005, 19.57.20 GMT+2</span>
+<span class="c1"># Latest Revision before Latest Revision: 21 September 2005, 18.29.35 GMT+2</span>
+<span class="c1"># Latest Revision before Latest Revision before Latest Revision: 31 May 2005, 23.17 CET</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># TODO List/Caveats</span>
+<span class="c1">#</span>
+<span class="c1"># 1. Some Requests/Features To Add?</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># For All Kind Of Problems, Requests Of Enhancements And Bug Reports, Please</span>
+<span class="c1"># Write To Me At:</span>
+<span class="c1">#</span>
+<span class="c1"># andrea.gavana@agip.it</span>
+<span class="c1"># andrea_gavan@tin.it</span>
+<span class="c1">#</span>
+<span class="c1"># Or, Obviously, To The wxPython Mailing List!!!</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="c1"># End Of Comments</span>
+<span class="c1"># --------------------------------------------------------------------------- #</span>
+
+<span class="sd">&quot;&quot;&quot; Description:</span>
+
+<span class="sd">EnhancedStatusBar Is A Slight Modification (Actually A Subclassing) Of wx.StatusBar.</span>
+<span class="sd">It Allows You To Add Almost Any Widget You Like To The wx.StatusBar Of Your Main</span>
+<span class="sd">Frame Application And Also To Layout Them Properly.</span>
+
+
+<span class="sd">What It Can Do:</span>
+
+<span class="sd">1) Almost All The Functionalities Of wx.StatusBar Are Still Present;</span>
+<span class="sd">2) You Can Add Different Kind Of Widgets Into Every Field Of The EnhancedStatusBar;</span>
+<span class="sd">3) The AddWidget() Methods Accepts 2 Layout Inputs:</span>
+<span class="sd">   - horizontalalignment: This Specify The Horizontal Alignment For Your Widget,</span>
+<span class="sd">     And Can Be ESB_EXACT_FIT, ESB_ALIGN_CENTER_HORIZONTAL, ESB_ALIGN_LEFT And</span>
+<span class="sd">     ESB_ALIGN_RIGHT;</span>
+<span class="sd">   - varticalalignment: This Specify The Vertical Alignment For Your Widget,</span>
+<span class="sd">     And Can Be ESB_EXACT_FIT, ESB_ALIGN_CENTER_VERTICAL, ESB_ALIGN_BOTTOM And</span>
+<span class="sd">     ESB_ALIGN_LEFT;</span>
+
+<span class="sd">EnhancedStatusBar Is Freeware And Distributed Under The wxPython License. </span>
+
+<span class="sd">Latest Revision: 21 September 2005, 19.57.20 GMT+2</span>
+<span class="sd">Latest Revision before Latest Revision: 21 September 2005, 18.29.35 GMT+2</span>
+<span class="sd">Latest Revision before Latest Revision before Latest Revision: 31 May 2005, 23.17 CET</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">wx</span>
+
+<span class="c1"># Horizontal Alignment Constants</span>
+<span class="n">ESB_ALIGN_CENTER_VERTICAL</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">ESB_ALIGN_TOP</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">ESB_ALIGN_BOTTOM</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># Vertical Alignment Constants</span>
+<span class="n">ESB_ALIGN_CENTER_HORIZONTAL</span> <span class="o">=</span> <span class="mi">11</span>
+<span class="n">ESB_ALIGN_LEFT</span> <span class="o">=</span> <span class="mi">12</span>
+<span class="n">ESB_ALIGN_RIGHT</span> <span class="o">=</span> <span class="mi">13</span>
+
+<span class="c1"># Exact Fit (Either Horizontal Or Vertical Or Both) Constant</span>
+<span class="n">ESB_EXACT_FIT</span> <span class="o">=</span> <span class="mi">20</span>
+
+
+<span class="c1"># ---------------------------------------------------------------</span>
+<span class="c1"># Class EnhancedStatusBar</span>
+<span class="c1"># ---------------------------------------------------------------</span>
+<span class="c1"># This Is The Main Class Implementation. See The Demo For Details</span>
+<span class="c1"># ---------------------------------------------------------------</span>
+<div class="viewcode-block" id="EnhancedStatusBarItem"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.EnhancedStatusBar.EnhancedStatusBarItem">[docs]</a><span class="k">class</span> <span class="nc">EnhancedStatusBarItem</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="n">ESB_ALIGN_CENTER_HORIZONTAL</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="nb">locals</span><span class="p">()</span> <span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnhancedStatusBar"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.EnhancedStatusBar.EnhancedStatusBar">[docs]</a><span class="k">class</span> <span class="nc">EnhancedStatusBar</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">StatusBar</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">ST_SIZEGRIP</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="s2">&quot;EnhancedStatusBar&quot;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Default Class Constructor.</span>
+
+<span class="sd">        EnhancedStatusBar.__init__(self, parent, id=wx.ID_ANY,</span>
+<span class="sd">                                   style=wx.ST_SIZEGRIP,</span>
+<span class="sd">                                   name=&quot;EnhancedStatusBar&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">StatusBar</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">style</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_curPos</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">EVT_SIZE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">OnSize</span><span class="p">)</span> 
+        <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OnSize</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            
+<div class="viewcode-block" id="EnhancedStatusBar.OnSize"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.EnhancedStatusBar.EnhancedStatusBar.OnSize">[docs]</a>    <span class="k">def</span> <span class="nf">OnSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Handles The wx.EVT_SIZE Events For The StatusBar.</span>
+
+<span class="sd">        Actually, All The Calculations Linked To HorizontalAlignment And</span>
+<span class="sd">        VerticalAlignment Are Done In This Function.&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">widget</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="p">,</span> <span class="n">verticalalignment</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">widget</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">horizontalalignment</span><span class="p">,</span> <span class="n">item</span><span class="o">.</span><span class="n">verticalalignment</span>
+           
+            <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFieldRect</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+            <span class="n">widgetpos</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">GetPosition</span><span class="p">()</span>
+            <span class="n">widgetsize</span> <span class="o">=</span> <span class="n">widget</span><span class="o">.</span><span class="n">GetSize</span><span class="p">()</span>
+
+            <span class="n">rect</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFieldRect</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">horizontalalignment</span> <span class="o">==</span> <span class="n">ESB_EXACT_FIT</span><span class="p">:</span>
+                
+                <span class="k">if</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_EXACT_FIT</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rect</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">diffs</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_TOP</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_BOTTOM</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">rect</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="k">elif</span> <span class="n">horizontalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_LEFT</span><span class="p">:</span>
+                
+                <span class="n">xpos</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_EXACT_FIT</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">diffs</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_TOP</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_BOTTOM</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                
+            <span class="k">elif</span> <span class="n">horizontalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_RIGHT</span><span class="p">:</span>
+                
+                <span class="n">xpos</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="n">rect</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_EXACT_FIT</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">diffs</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_TOP</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_BOTTOM</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="k">elif</span> <span class="n">horizontalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_CENTER_HORIZONTAL</span><span class="p">:</span>
+                
+                <span class="n">xpos</span> <span class="o">=</span> <span class="n">rect</span><span class="o">.</span><span class="n">x</span> <span class="o">+</span> <span class="p">(</span><span class="n">rect</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_EXACT_FIT</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">))</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">diffs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rect</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">/</span><span class="mi">2</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="n">diffs</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                        <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_TOP</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">y</span><span class="p">))</span>
+                <span class="k">elif</span> <span class="n">verticalalignment</span> <span class="o">==</span> <span class="n">ESB_ALIGN_BOTTOM</span><span class="p">:</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">SetPosition</span><span class="p">((</span><span class="n">xpos</span><span class="p">,</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="n">widgetsize</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+                
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">event</span><span class="o">.</span><span class="n">Skip</span><span class="p">()</span></div>
+        
+        
+<div class="viewcode-block" id="EnhancedStatusBar.AddWidget"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.EnhancedStatusBar.EnhancedStatusBar.AddWidget">[docs]</a>    <span class="k">def</span> <span class="nf">AddWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="o">=</span><span class="n">ESB_ALIGN_CENTER_HORIZONTAL</span><span class="p">,</span>
+                  <span class="n">verticalalignment</span><span class="o">=</span><span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">,</span> <span class="n">pos</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add A Widget To The EnhancedStatusBar.</span>
+
+<span class="sd">        Parameters:</span>
+
+<span class="sd">        - horizontalalignment: This Can Be One Of:</span>
+<span class="sd">          a) ESB_EXACT_FIT: The Widget Will Fit Horizontally The StatusBar Field Width;</span>
+<span class="sd">          b) ESB_ALIGN_CENTER_HORIZONTAL: The Widget Will Be Centered Horizontally In</span>
+<span class="sd">             The StatusBar Field;</span>
+<span class="sd">          c) ESB_ALIGN_LEFT: The Widget Will Be Left Aligned In The StatusBar Field;</span>
+<span class="sd">          d) ESB_ALIGN_RIGHT: The Widget Will Be Right Aligned In The StatusBar Field;</span>
+
+<span class="sd">        - verticalalignment:</span>
+<span class="sd">          a) ESB_EXACT_FIT: The Widget Will Fit Vertically The StatusBar Field Height;</span>
+<span class="sd">          b) ESB_ALIGN_CENTER_VERTICAL: The Widget Will Be Centered Vertically In</span>
+<span class="sd">             The StatusBar Field;</span>
+<span class="sd">          c) ESB_ALIGN_BOTTOM: The Widget Will Be Bottom Aligned In The StatusBar Field;</span>
+<span class="sd">          d) ESB_ALIGN_TOP: The Widget Will Be TOP Aligned In The StatusBar Field;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_curPos</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_curPos</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">GetFieldsCount</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">pos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ERROR: EnhancedStatusBar has a max of </span><span class="si">%d</span><span class="s2"> items, you tried to set item #</span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">GetFieldsCount</span><span class="p">(),</span> <span class="n">pos</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">horizontalalignment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ESB_ALIGN_CENTER_HORIZONTAL</span><span class="p">,</span> <span class="n">ESB_EXACT_FIT</span><span class="p">,</span>
+                                       <span class="n">ESB_ALIGN_LEFT</span><span class="p">,</span> <span class="n">ESB_ALIGN_RIGHT</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">ERROR: Parameter &quot;horizontalalignment&quot; Should Be One Of &#39;</span>\
+                  <span class="s1">&#39;&quot;ESB_ALIGN_CENTER_HORIZONTAL&quot;, &quot;ESB_ALIGN_LEFT&quot;, &quot;ESB_ALIGN_RIGHT&quot;&#39;</span> \
+                  <span class="s1">&#39;&quot;ESB_EXACT_FIT&quot;&#39;</span>
+
+        <span class="k">if</span> <span class="n">verticalalignment</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ESB_ALIGN_CENTER_VERTICAL</span><span class="p">,</span> <span class="n">ESB_EXACT_FIT</span><span class="p">,</span>
+                                     <span class="n">ESB_ALIGN_TOP</span><span class="p">,</span> <span class="n">ESB_ALIGN_BOTTOM</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">ERROR: Parameter &quot;verticalalignment&quot; Should Be One Of &#39;</span>\
+                  <span class="s1">&#39;&quot;ESB_ALIGN_CENTER_VERTICAL&quot;, &quot;ESB_ALIGN_TOP&quot;, &quot;ESB_ALIGN_BOTTOM&quot;&#39;</span> \
+                  <span class="s1">&#39;&quot;ESB_EXACT_FIT&quot;&#39;</span>
+        
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">RemoveChild</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span> <span class="k">pass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_items</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="n">EnhancedStatusBarItem</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">horizontalalignment</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="p">)</span>
+        
+        <span class="n">wx</span><span class="o">.</span><span class="n">CallAfter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">OnSize</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

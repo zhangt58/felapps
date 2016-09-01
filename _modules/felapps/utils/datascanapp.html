@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.utils.datascanapp &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.utils.datascanapp</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot; New App for data correlation analysis</span>
+
+<span class="sd">Tong Zhang</span>
+<span class="sd">2016-07-12 10:11:05 AM CST</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.datascanframe</span> <span class="k">import</span> <span class="n">DataScanFrame</span>
+<span class="kn">from</span> <span class="nn">.funutils</span> <span class="k">import</span> <span class="n">ScanDataFactor</span><span class="p">,</span> <span class="n">getFileToSave</span>
+
+
+<div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">DataScanFrame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">appversion</span><span class="o">=</span><span class="s2">&quot;0.1&quot;</span><span class="p">):</span>
+        <span class="n">DataScanFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">appversion</span> <span class="o">=</span> <span class="n">appversion</span>
+
+        <span class="c1"># events:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_exit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MainFrame.about_mitemOnMenuSelection"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.about_mitemOnMenuSelection">[docs]</a>    <span class="k">def</span> <span class="nf">about_mitemOnMenuSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">wx.lib.wordwrap</span> <span class="k">import</span> <span class="n">wordwrap</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">u&quot;Cannot show about information, sorry!&quot;</span><span class="p">,</span>
+                    <span class="n">caption</span> <span class="o">=</span> <span class="s2">u&quot;Unknow Error&quot;</span><span class="p">,</span> 
+                    <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">OK</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CANCEL</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_ERROR</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_OK</span><span class="p">:</span>
+                <span class="n">dial</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">AboutDialogInfo</span><span class="p">()</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s2">&quot;Correlation Analyzer&quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">appversion</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Copyright</span> <span class="o">=</span> <span class="s2">&quot;(C) 2016 Tong Zhang, SINAP, CAS&quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Description</span> <span class="o">=</span> <span class="n">wordwrap</span><span class="p">(</span>
+            <span class="s2">&quot;This application is created for correlation analysis of parameters.</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+            <span class="s2">&quot;It is designed by Python language, using GUI module of wxPython.&quot;</span><span class="p">,</span>
+            <span class="mi">350</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1">#info.WebSite = (&quot;http://everyfame.me&quot;, &quot;Cornalyzer home page&quot;)</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Developers</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;Tong Zhang &lt;zhangtong@sinap.ac.cn&gt;&quot;</span><span class="p">]</span>
+        <span class="n">licenseText</span> <span class="o">=</span> <span class="s2">&quot;Cornalyzer is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cornalyzer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You should have received a copy of the GNU General Public License along with Cornalyzer; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA&quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">License</span> <span class="o">=</span> <span class="n">wordwrap</span><span class="p">(</span><span class="n">licenseText</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">AboutBox</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainFrame.exit_mitemOnMenuSelection"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.exit_mitemOnMenuSelection">[docs]</a>    <span class="k">def</span> <span class="nf">exit_mitemOnMenuSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_app</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainFrame.on_exit"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.on_exit">[docs]</a>    <span class="k">def</span> <span class="nf">on_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_app</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainFrame.exit_app"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.exit_app">[docs]</a>    <span class="k">def</span> <span class="nf">exit_app</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Are you sure to exit this application?&quot;</span><span class="p">,</span>
+                                <span class="n">caption</span> <span class="o">=</span> <span class="s1">&#39;Exit Warning&#39;</span><span class="p">,</span>
+                                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_QUESTION</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_YES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainFrame.close_btnOnButtonClick"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.close_btnOnButtonClick">[docs]</a>    <span class="k">def</span> <span class="nf">close_btnOnButtonClick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exit_app</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainFrame.save_mitemOnMenuSelection"><a class="viewcode-back" href="../../../src/apidocs/felapps.utils.html#felapps.utils.datascanapp.MainFrame.save_mitemOnMenuSelection">[docs]</a>    <span class="k">def</span> <span class="nf">save_mitemOnMenuSelection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">save_full_path</span> <span class="o">=</span> <span class="n">getFileToSave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;hdf5&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">save_full_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">scandata_ins</span> <span class="o">=</span> <span class="n">ScanDataFactor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scan_output_all</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaniternum_val</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shotnum_val</span><span class="p">)</span>
+            <span class="c1">#idx = scandata_ins.getYavg()</span>
+            <span class="n">data_avgx</span> <span class="o">=</span> <span class="n">scandata_ins</span><span class="o">.</span><span class="n">getXavg</span><span class="p">()</span>
+            <span class="n">data_avgy</span> <span class="o">=</span> <span class="n">scandata_ins</span><span class="o">.</span><span class="n">getYavg</span><span class="p">()</span>
+            <span class="n">data_xerr</span> <span class="o">=</span> <span class="n">scandata_ins</span><span class="o">.</span><span class="n">getXerrbar</span><span class="p">()</span>
+            <span class="n">data_yerr</span> <span class="o">=</span> <span class="n">scandata_ins</span><span class="o">.</span><span class="n">getYerrbar</span><span class="p">()</span>
+            <span class="n">data_raw</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scan_output_all</span>
+            <span class="n">data_shape</span> <span class="o">=</span> <span class="n">scandata_ins</span><span class="o">.</span><span class="n">scanshape</span>
+            <span class="n">data_var1_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">var1_get_PV</span><span class="o">.</span><span class="n">pvname</span>
+            <span class="n">data_var2_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">var2_get_PV</span><span class="o">.</span><span class="n">pvname</span>
+            <span class="n">data_var2_method</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">var2_op_combox</span><span class="o">.</span><span class="n">GetStringSelection</span><span class="p">()</span>
+
+            <span class="n">fl</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scanfig_panel</span><span class="o">.</span><span class="n">get_fit_line</span><span class="p">()</span>
+            <span class="n">data_fit</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">fl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">fl</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">y</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">data_fit</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
+            
+            <span class="c1"># save</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">save_full_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+            <span class="n">rg</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop_timestamp</span> <span class="c1">#time.strftime(&#39;%Y-%m-%d %H:%M:%S %Z&#39;, time.localtime())</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;file info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;scan data output&#39;</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;app&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;cornalyzer&#39;</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;scan variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_var1_name</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;scan dependent variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_var2_name</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;operation on dependent variable&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_var2_method</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;raw data shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_shape</span>
+
+            <span class="c1"># fitting data</span>
+            <span class="k">if</span> <span class="n">data_fit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;fit info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scanfig_panel</span><span class="o">.</span><span class="n">get_fit_model</span><span class="p">()</span><span class="o">.</span><span class="n">fit_report</span><span class="p">()</span> 
+                <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;fit data shape&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_fit</span><span class="o">.</span><span class="n">shape</span>
+
+            <span class="n">dset_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">data_avgx</span><span class="p">,</span> <span class="n">data_avgy</span><span class="p">,</span> <span class="n">data_xerr</span><span class="p">,</span> <span class="n">data_yerr</span><span class="p">,</span> <span class="n">data_raw</span><span class="p">,</span> <span class="n">data_fit</span><span class="p">]</span>
+            <span class="n">dset_name</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x_avg&#39;</span><span class="p">,</span> <span class="s1">&#39;y_avg&#39;</span><span class="p">,</span> <span class="s1">&#39;x_errb&#39;</span><span class="p">,</span> <span class="s1">&#39;y_errb&#39;</span><span class="p">,</span> <span class="s1">&#39;raw&#39;</span><span class="p">,</span> <span class="s1">&#39;fit&#39;</span><span class="p">]</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dsetname</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dset_list</span><span class="p">,</span> <span class="n">dset_name</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">continue</span>
+                <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span> <span class="o">+</span> <span class="n">dsetname</span><span class="p">,</span> 
+                        <span class="n">shape</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+                <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            
+            <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Saved Data into&quot;</span> <span class="o">+</span> <span class="n">save_full_path</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+                                    <span class="n">caption</span> <span class="o">=</span> <span class="s1">&#39;Save Message&#39;</span><span class="p">,</span>
+                                    <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">OK</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_QUESTION</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_OK</span><span class="p">:</span>
+                <span class="n">dial</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

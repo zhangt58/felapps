@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.apps.wxmpv.wxmpv &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.apps.wxmpv.wxmpv</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">General matplotlib plot panel developed by wxPython (UI) and Python</span>
+
+<span class="sd">Author : Tong Zhang</span>
+<span class="sd">Created: 2016-07-05 21:20:05 PM CST</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">h5py</span>
+
+<span class="kn">import</span> <span class="nn">wx.lib.mixins.inspection</span> <span class="k">as</span> <span class="nn">wit</span>
+<span class="kn">from</span> <span class="nn">wx.lib.wordwrap</span> <span class="k">import</span> <span class="n">wordwrap</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">analysisframe</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">miscutils</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">funutils</span>
+<span class="kn">from</span> <span class="nn">...utils</span> <span class="k">import</span> <span class="n">resutils</span>
+
+
+<span class="n">__version__</span> <span class="o">=</span>  <span class="n">miscutils</span><span class="o">.</span><span class="n">AppVersions</span><span class="p">()</span><span class="o">.</span><span class="n">getVersion</span><span class="p">(</span><span class="s1">&#39;wxmpv&#39;</span><span class="p">)</span>
+<span class="n">__author__</span>  <span class="o">=</span> <span class="s2">&quot;Tong Zhang&quot;</span>
+
+<div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">analysisframe</span><span class="o">.</span><span class="n">AnalysisFrame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">appversion</span><span class="o">=</span><span class="n">__version__</span><span class="p">):</span>
+        <span class="n">analysisframe</span><span class="o">.</span><span class="n">AnalysisFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">datasrc</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_appversion</span> <span class="o">=</span> <span class="n">appversion</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_ui</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_init_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">## </span>
+        <span class="n">file_menu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="n">open_mitem</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MenuItem</span><span class="p">(</span><span class="n">file_menu</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_OPEN</span><span class="p">,</span> <span class="s2">u&quot;&amp;Open</span><span class="se">\t</span><span class="s2">Ctrl+O&quot;</span><span class="p">)</span>
+        <span class="n">save_mitem</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MenuItem</span><span class="p">(</span><span class="n">file_menu</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_SAVE</span><span class="p">,</span> <span class="s2">u&quot;&amp;Save</span><span class="se">\t</span><span class="s2">Ctrl+S&quot;</span><span class="p">)</span>
+        <span class="n">exit_mitem</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MenuItem</span><span class="p">(</span><span class="n">file_menu</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_EXIT</span><span class="p">,</span> <span class="s2">u&quot;E&amp;xit</span><span class="se">\t</span><span class="s2">Ctrl+W&quot;</span><span class="p">)</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">AppendItem</span><span class="p">(</span><span class="n">open_mitem</span><span class="p">)</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">AppendItem</span><span class="p">(</span><span class="n">save_mitem</span><span class="p">)</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">AppendSeparator</span><span class="p">()</span>
+        <span class="n">file_menu</span><span class="o">.</span><span class="n">AppendItem</span><span class="p">(</span><span class="n">exit_mitem</span><span class="p">)</span>
+
+        <span class="c1">## </span>
+        <span class="n">help_menu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="n">info_mitem</span> <span class="o">=</span> <span class="n">help_menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_HELP</span><span class="p">,</span> <span class="s1">&#39;&amp;Contents</span><span class="se">\t</span><span class="s1">F1&#39;</span><span class="p">,</span> <span class="s1">&#39;Show help contents&#39;</span><span class="p">)</span>
+        <span class="n">about_mitem</span> <span class="o">=</span> <span class="n">help_menu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ABOUT</span><span class="p">,</span> <span class="s1">&#39;&amp;About&#39;</span><span class="p">,</span> <span class="s1">&#39;Show about information&#39;</span><span class="p">)</span>
+
+        <span class="c1">##</span>
+        <span class="n">menu_bar</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MenuBar</span><span class="p">()</span>
+        <span class="n">menu_bar</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">file_menu</span><span class="p">,</span> <span class="s2">u&quot;&amp;File&quot;</span><span class="p">)</span> 
+        <span class="n">menu_bar</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">help_menu</span><span class="p">,</span> <span class="s2">u&quot;&amp;Help&quot;</span><span class="p">)</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetMenuBar</span><span class="p">(</span><span class="n">menu_bar</span><span class="p">)</span>
+        
+        <span class="c1"># </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_exit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onExit</span><span class="p">,</span>   <span class="n">exit_mitem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_open</span><span class="p">,</span>  <span class="n">open_mitem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_save</span><span class="p">,</span>  <span class="n">save_mitem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_about</span><span class="p">,</span> <span class="n">about_mitem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_info</span><span class="p">,</span>  <span class="n">info_mitem</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MainFrame.on_info"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.on_info">[docs]</a>    <span class="k">def</span> <span class="nf">on_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MainFrame.on_exit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.on_exit">[docs]</a>    <span class="k">def</span> <span class="nf">on_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Are you sure to exit this application?&quot;</span><span class="p">,</span>
+            <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Exit Warning&quot;</span><span class="p">,</span>
+            <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_QUESTION</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_YES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MainFrame.on_about"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.on_about">[docs]</a>    <span class="k">def</span> <span class="nf">on_about</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">AboutDialogInfo</span><span class="p">()</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s2">&quot;wxMatPlotViewer</span><span class="se">\n</span><span class="s2"> wxmpv &quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Version</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_appversion</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Copyright</span> <span class="o">=</span> <span class="s2">&quot;(C) 2016 Tong Zhang, SINAP, CAS&quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Description</span> <span class="o">=</span> <span class="n">wordwrap</span><span class="p">(</span>
+            <span class="s2">&quot;Figure plot application build with matplotlib package.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;It is designed by Python language, using GUI module of wxPython.&quot;</span><span class="p">,</span>
+            <span class="mi">350</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1">#info.WebSite = (&quot;http://everyfame.me&quot;, &quot;Image Viewer home page&quot;)</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">Developers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Tong Zhang &lt;zhangtong@sinap.ac.cn&gt;&quot;</span><span class="p">]</span>
+        <span class="n">licenseText</span> <span class="o">=</span> <span class="s2">&quot;wxMatPlotViewer is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">wxMatPlotViewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You should have received a copy of the GNU General Public License along with Image Viewer; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA&quot;</span>
+        <span class="n">info</span><span class="o">.</span><span class="n">License</span> <span class="o">=</span> <span class="n">wordwrap</span><span class="p">(</span><span class="n">licenseText</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">AboutBox</span><span class="p">(</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainFrame.on_open"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.on_open">[docs]</a>    <span class="k">def</span> <span class="nf">on_open</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">openfile_name</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">getFileToLoad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;hdf5&#39;</span><span class="p">,</span><span class="s1">&#39;h5&#39;</span><span class="p">,</span> <span class="s1">&#39;txt&#39;</span><span class="p">,</span><span class="s1">&#39;asc&#39;</span><span class="p">,</span><span class="s1">&#39;dat&#39;</span><span class="p">,</span><span class="s1">&#39;jpg&#39;</span><span class="p">,</span><span class="s1">&#39;jpeg&#39;</span><span class="p">,</span><span class="s1">&#39;png&#39;</span><span class="p">,</span><span class="s1">&#39;bmp&#39;</span><span class="p">])</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">typ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_image_data</span><span class="p">(</span><span class="n">openfile_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotpanel</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plotpanel</span><span class="o">.</span><span class="n">set_figure_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">fit</span><span class="o">=</span><span class="p">(</span><span class="n">typ</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;JPG&#39;</span><span class="p">,</span> <span class="s1">&#39;PNG&#39;</span><span class="p">,</span> <span class="s1">&#39;BMP&#39;</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_fit_output</span><span class="p">()</span>
+            <span class="n">clim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotpanel</span><span class="o">.</span><span class="n">get_clim</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crange_tc</span><span class="o">.</span><span class="n">SetValue</span><span class="p">(</span><span class="n">clim</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainFrame.on_save"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.on_save">[docs]</a>    <span class="k">def</span> <span class="nf">on_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plotpanel</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+        <span class="n">savefile_name</span> <span class="o">=</span> <span class="n">funutils</span><span class="o">.</span><span class="n">getFileToSave</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;hdf5&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">savefile_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_data</span><span class="p">(</span><span class="n">savefile_name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MainFrame.save_data"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.MainFrame.save_data">[docs]</a>    <span class="k">def</span> <span class="nf">save_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+
+            <span class="n">rg</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+            <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;timestamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S %Z&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;attr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">rg</span><span class="o">.</span><span class="n">attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+            <span class="n">raw_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">][</span><span class="s1">&#39;prof_x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">][</span><span class="s1">&#39;prof_x&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/raw/x&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">raw_x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">raw_x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_x</span>
+            <span class="n">raw_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">][</span><span class="s1">&#39;prof_y&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;raw&#39;</span><span class="p">][</span><span class="s1">&#39;prof_y&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/raw/y&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">raw_y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">raw_y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_y</span>
+
+            <span class="n">fit_x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">][</span><span class="s1">&#39;prof_x&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">][</span><span class="s1">&#39;prof_x&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/fit/x&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">fit_x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fit_x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_x</span>
+
+            <span class="n">fit_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">][</span><span class="s1">&#39;prof_y&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;fit&#39;</span><span class="p">][</span><span class="s1">&#39;prof_y&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]],</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/fit/y&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">fit_y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">fit_y</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_y</span>
+            
+            <span class="n">im_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">]</span>
+            <span class="n">dset</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="s1">&#39;data/image&#39;</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">im_data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">im_data</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+            <span class="n">dset</span><span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">im_data</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Saved data into </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span><span class="p">,</span>
+                <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Save Done&quot;</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">OK</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_OK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Saving data into </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">fname</span> <span class="o">+</span> <span class="s2">&quot; fails.&quot;</span><span class="p">,</span>
+                <span class="n">caption</span><span class="o">=</span><span class="s2">&quot;Save Warning&quot;</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">OK</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_WARNING</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_OK</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_image_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">datafile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; read datafile (hdf5, txt, asc, jpg, etc.) into array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">datafile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">datafile</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;HDF5&#39;</span><span class="p">,</span> <span class="s1">&#39;H5&#39;</span><span class="p">]:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_hdf5</span><span class="p">(</span><span class="n">datafile</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;TXT&#39;</span><span class="p">,</span> <span class="s1">&#39;ASC&#39;</span><span class="p">,</span> <span class="s1">&#39;DAT&#39;</span><span class="p">]:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_txt</span><span class="p">(</span><span class="n">datafile</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;JPG&#39;</span><span class="p">,</span> <span class="s1">&#39;PNG&#39;</span><span class="p">,</span> <span class="s1">&#39;BMP&#39;</span><span class="p">]:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data_pic</span><span class="p">(</span><span class="n">datafile</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_get_data_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="s1">&#39;image&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="o">...</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">data</span>
+    
+    <span class="k">def</span> <span class="nf">_get_data_txt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+    
+    <span class="k">def</span> <span class="nf">_get_data_pic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">misc</span>
+        <span class="n">f_rgb</span> <span class="o">=</span> <span class="n">misc</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">f_rgb</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">f_lum</span> <span class="o">=</span> <span class="n">f_rgb</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mf">3.0</span>
+            <span class="k">return</span> <span class="n">f_lum</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f_rgb</span></div>
+
+        
+<div class="viewcode-block" id="InspectApp"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.InspectApp">[docs]</a><span class="k">class</span> <span class="nc">InspectApp</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">,</span> <span class="n">wit</span><span class="o">.</span><span class="n">InspectionMixin</span><span class="p">):</span>
+<div class="viewcode-block" id="InspectApp.OnInit"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.InspectApp.OnInit">[docs]</a>    <span class="k">def</span> <span class="nf">OnInit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Init</span><span class="p">()</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s2">u&quot;wxmpv </span><span class="se">\u2014</span><span class="s2"> wxMatPlotViewer (debug mode, CTRL+ALT+I)&quot;</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">wicon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetTopWindow</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span></div></div>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../../src/apidocs/felapps.apps.wxmpv.html#felapps.apps.wxmpv.wxmpv.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">logon</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    function to make app run.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">debug</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">InspectApp</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">redirect</span><span class="o">=</span><span class="n">logon</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;log&#39;</span><span class="p">)</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s2">u&quot;wxmpv </span><span class="se">\u2014</span><span class="s2"> wxMatPlotViewer&quot;</span><span class="p">)</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="n">frame</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">wicon_s</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
+
+
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>

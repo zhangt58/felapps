@@ -1,0 +1,347 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>felapps.facilities.dcls &mdash; felapps 1.5.13 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.5.13',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for felapps.facilities.dcls</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Author: Tong Zhang</span>
+<span class="sd">Created Time: 10:58, Jan. 28, 2015</span>
+
+<span class="sd">FEL experiment panel for Dalian Coherent Light Source.</span>
+<span class="sd">This is the main GUI frame.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<span class="kn">import</span> <span class="nn">wx</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">funutils</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">felutils</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">resutils</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame">[docs]</a><span class="k">class</span> <span class="nc">MainFrame</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">Frame</span><span class="p">):</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">InitUI</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.InitUI"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.InitUI">[docs]</a>    <span class="k">def</span> <span class="nf">InitUI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createMenu</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createPanel</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">createStatusbar</span><span class="p">()</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.createMenu"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.createMenu">[docs]</a>    <span class="k">def</span> <span class="nf">createMenu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MenuBar</span><span class="p">()</span>
+        
+        <span class="c1">## File (menu structure)</span>
+        <span class="c1">### Import Configuration</span>
+        <span class="c1">### Export Configuration</span>
+        <span class="c1">### --------------------</span>
+        <span class="c1">### Exit</span>
+        <span class="n">fileMenu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">importItem</span> <span class="o">=</span> <span class="n">fileMenu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> 
+                <span class="s1">u&#39;&amp;Import Configuration</span><span class="se">\t</span><span class="s1">Ctrl+Shift+I&#39;</span><span class="p">,</span> <span class="s1">u&#39;Import config file&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exportItem</span> <span class="o">=</span> <span class="n">fileMenu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span>
+                <span class="s1">u&#39;&amp;Export Configuration</span><span class="se">\t</span><span class="s1">Ctrl+Shift+E&#39;</span><span class="p">,</span> <span class="s1">u&#39;Export config file&#39;</span><span class="p">)</span>
+        <span class="n">fileMenu</span><span class="o">.</span><span class="n">AppendSeparator</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exitItem</span> <span class="o">=</span> <span class="n">fileMenu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_EXIT</span><span class="p">,</span> <span class="s1">u&#39;E&amp;xit</span><span class="se">\t</span><span class="s1">Ctrl+W&#39;</span><span class="p">,</span>
+                <span class="s1">u&#39;Exit this application&#39;</span><span class="p">)</span>
+        
+        <span class="c1">### define accelerator table (not working 2015-01-28)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        accel_entries = [wx.AcceleratorEntry() for i in range(3)]</span>
+<span class="sd">        accel_entries[0].Set(wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord(&#39;I&#39;), self.importItem.GetId())</span>
+<span class="sd">        accel_entries[1].Set(wx.ACCEL_CTRL | wx.ACCEL_SHIFT, ord(&#39;E&#39;), self.exportItem.GetId())</span>
+<span class="sd">        accel_entries[2].Set(wx.ACCEL_CTRL,                  ord(&#39;W&#39;), self.exitItem.GetId()  )</span>
+<span class="sd">        accel_table = wx.AcceleratorTable(accel_entries)</span>
+<span class="sd">        self.SetAcceleratorTable(accel_table)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">### bind events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onImport</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">importItem</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onExport</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exportItem</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onExit</span><span class="p">,</span>   <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">exitItem</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span>
+
+        <span class="c1">## Help (menu structure)</span>
+        <span class="c1">### About</span>
+        <span class="n">helpMenu</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Menu</span><span class="p">()</span>
+        <span class="n">aboutItem</span> <span class="o">=</span> <span class="n">helpMenu</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">ID_ABOUT</span><span class="p">,</span> <span class="s1">&#39;&amp;About</span><span class="se">\t</span><span class="s1">F1&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;About this application&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_MENU</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onAbout</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ABOUT</span><span class="p">)</span>
+
+        <span class="c1">##setup menubar</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">fileMenu</span><span class="p">,</span> <span class="s1">&#39;&amp;File&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="o">.</span><span class="n">Append</span><span class="p">(</span><span class="n">helpMenu</span><span class="p">,</span> <span class="s1">&#39;&amp;Help&#39;</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">SetMenuBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menubar</span><span class="p">)</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onImport"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onImport">[docs]</a>    <span class="k">def</span> <span class="nf">onImport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s2">&quot;you call me (import) for what?&quot;</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onExport"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onExport">[docs]</a>    <span class="k">def</span> <span class="nf">onExport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span> <span class="s2">&quot;you call me (export) for what?&quot;</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onExit"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onExit">[docs]</a>    <span class="k">def</span> <span class="nf">onExit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="n">dial</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">MessageDialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Are you sure to exit this application?&quot;</span><span class="p">,</span>
+                <span class="n">caption</span> <span class="o">=</span> <span class="s2">&quot;Exit Warning&quot;</span><span class="p">,</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">YES_NO</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">NO_DEFAULT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ICON_QUESTION</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">dial</span><span class="o">.</span><span class="n">ShowModal</span><span class="p">()</span> <span class="o">==</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_YES</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Destroy</span><span class="p">()</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onAbout"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onAbout">[docs]</a>    <span class="k">def</span> <span class="nf">onAbout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">wx.lib.wordwrap</span> <span class="k">import</span> <span class="n">wordwrap</span>
+        <span class="n">aboutinfo</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">AboutDialogInfo</span><span class="p">()</span>
+        <span class="c1">#aboutinfo.SetIcon(wx.Icon(funutils.getResPath(&#39;logo.jpg&#39;), wx.BITMAP_TYPE_PNG))</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetIcon</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">mainlogoicon</span><span class="o">.</span><span class="n">GetIcon</span><span class="p">())</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetName</span><span class="p">(</span><span class="s1">u&#39;FEL Commissioning Application for DCLS&#39;</span><span class="p">)</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetVersion</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">version: 1.0.0&#39;</span><span class="p">)</span>
+        <span class="n">descriptionText</span> <span class="o">=</span> <span class="s2">u&quot;Application designed for DCLS FEL commissioning.&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Powered by Python/C/C++&quot;</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetDescription</span><span class="p">(</span><span class="n">wordwrap</span><span class="p">(</span><span class="n">descriptionText</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetCopyright</span><span class="p">(</span><span class="s2">u&quot;(C) 2014-2015 Tong Zhang, SINAP, CAS&quot;</span><span class="p">)</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetWebSite</span><span class="p">([</span><span class="s2">u&quot;http://210.72.8.51/FELwiki/index.php/DCLS&quot;</span><span class="p">,</span>
+                <span class="s2">u&quot;DCLS home page&quot;</span><span class="p">])</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">AddDeveloper</span><span class="p">(</span><span class="s2">u&quot;Tong Zhang &lt;zhangtong@sinap.ac.cn&gt;&quot;</span><span class="p">)</span>
+        <span class="n">licenseText</span> <span class="o">=</span> <span class="s2">u&quot;FEL commissioning application for DCLS is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">FEL commissioning application for DCLS is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">You should have received a copy of the GNU General Public License along with this application; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA&quot;</span>
+        <span class="n">aboutinfo</span><span class="o">.</span><span class="n">SetLicense</span><span class="p">(</span><span class="n">wordwrap</span><span class="p">(</span><span class="n">licenseText</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ClientDC</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
+        <span class="n">wx</span><span class="o">.</span><span class="n">AboutBox</span><span class="p">(</span><span class="n">aboutinfo</span><span class="p">)</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.createStatusbar"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.createStatusbar">[docs]</a>    <span class="k">def</span> <span class="nf">createStatusbar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">CreateStatusBar</span><span class="p">()</span></div>
+    
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.createPanel"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.createPanel">[docs]</a>    <span class="k">def</span> <span class="nf">createPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">## create the base container: panel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">)</span>
+        <span class="c1">### configure the panel:</span>
+        <span class="c1">#self.panel.SetBackgroundColour(&#39;red&#39;)</span>
+        
+        <span class="n">vbox</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        
+        <span class="c1">## Title: &#39;Dalian Coherent Light Source --- FEL Commissioning&#39;</span>
+        <span class="n">title_st</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> 
+                <span class="n">label</span> <span class="o">=</span> <span class="s1">u&#39;Dalian Coherent Light Source --- FEL Commissioning&#39;</span><span class="p">,</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span><span class="p">)</span>
+        <span class="c1">### configure title_st</span>
+        <span class="n">title_st</span><span class="o">.</span><span class="n">SetForegroundColour</span><span class="p">(</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+        <span class="n">titlefont</span> <span class="o">=</span><span class="n">wx</span><span class="o">.</span><span class="n">SystemSettings_GetFont</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">SYS_SYSTEM_FONT</span><span class="p">)</span>
+        <span class="n">titlefont</span><span class="o">.</span><span class="n">SetPointSize</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+        <span class="n">titlefont</span><span class="o">.</span><span class="n">SetWeight</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">FONTWEIGHT_BOLD</span><span class="p">)</span>
+        <span class="n">title_st</span><span class="o">.</span><span class="n">SetFont</span><span class="p">(</span><span class="n">titlefont</span><span class="p">)</span>
+        <span class="c1">### add to boxsizer</span>
+        <span class="n">vbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">title_st</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1">## horizontal separate line</span>
+        <span class="n">sl_below_title</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticLine</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">LI_HORIZONTAL</span><span class="p">)</span>
+        <span class="c1">### add to boxsizer</span>
+        <span class="n">vbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sl_below_title</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1">## font for staticbox</span>
+        <span class="n">sbfont</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">SystemSettings_GetFont</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">SYS_SYSTEM_FONT</span><span class="p">)</span>
+        <span class="n">sbfont</span><span class="o">.</span><span class="n">SetPointSize</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+        <span class="n">sbfont</span><span class="o">.</span><span class="n">SetWeight</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">FONTWEIGHT_BOLD</span><span class="p">)</span>
+        <span class="n">sbfontcolor</span> <span class="o">=</span> <span class="s1">&#39;MAGENTA&#39;</span>
+
+        <span class="c1">## staticbox for layout</span>
+        <span class="n">sbox1</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">u&#39;Schematic Layout of DCLS&#39;</span><span class="p">)</span>
+        <span class="c1">### config staticbox</span>
+        <span class="n">sbox1</span><span class="o">.</span><span class="n">SetFont</span><span class="p">(</span><span class="n">sbfont</span><span class="p">)</span>
+        <span class="n">sbox1</span><span class="o">.</span><span class="n">SetForegroundColour</span><span class="p">(</span><span class="n">sbfontcolor</span><span class="p">)</span>
+        <span class="c1">### create the sizer</span>
+        <span class="n">sbsizer_layout</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBoxSizer</span><span class="p">(</span><span class="n">sbox1</span><span class="p">,</span> <span class="n">orient</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+        <span class="c1">### show image</span>
+    
+        <span class="c1">## todo: automatic resize w.r.t. size of sizer, 2015-01-28</span>
+        <span class="c1">#layoutBitmap = wx.StaticBitmap(self.panel, wx.ID_ANY, wx.BitmapFromImage(funutils.rescaleImage(funutils.getResPath(&#39;DCLSlayout.png&#39;), 1.0)))</span>
+        <span class="n">layoutBitmap</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBitmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">funutils</span><span class="o">.</span><span class="n">rescaleImage</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">dclslayouticon</span><span class="o">.</span><span class="n">GetImage</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)))</span>
+        <span class="n">sbsizer_layout</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">layoutBitmap</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span><span class="p">)</span>
+
+        <span class="c1">### add to boxsizer</span>
+        <span class="n">vbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sbsizer_layout</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1">## staticbox for FEL functional box</span>
+        <span class="n">sbox2</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="s1">u&#39;High-gain Harmonic Generation&#39;</span><span class="p">)</span>
+        <span class="c1">### config staticbox</span>
+        <span class="n">sbox2</span><span class="o">.</span><span class="n">SetFont</span><span class="p">(</span><span class="n">sbfont</span><span class="p">)</span>
+        <span class="n">sbox2</span><span class="o">.</span><span class="n">SetForegroundColour</span><span class="p">(</span><span class="n">sbfontcolor</span><span class="p">)</span>
+        <span class="c1">### create the sizer</span>
+        <span class="n">sbsizer_HGHG</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">StaticBoxSizer</span><span class="p">(</span><span class="n">sbox2</span><span class="p">,</span> <span class="n">orient</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">VERTICAL</span><span class="p">)</span>
+
+        <span class="c1">### hyperlink to ModsPanel, MatchPanel and RadisPanel</span>
+        <span class="n">moddsBitbtn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> 
+                <span class="n">bitmap</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">funutils</span><span class="o">.</span><span class="n">rescaleImage</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">moddsicon</span><span class="o">.</span><span class="n">GetImage</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)))</span>
+        <span class="n">radisBitbtn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> 
+                <span class="n">bitmap</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">funutils</span><span class="o">.</span><span class="n">rescaleImage</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">radisicon</span><span class="o">.</span><span class="n">GetImage</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)))</span>
+        <span class="n">matchBitbtn</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapButton</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ID_ANY</span><span class="p">,</span> 
+                <span class="n">bitmap</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BitmapFromImage</span><span class="p">(</span><span class="n">funutils</span><span class="o">.</span><span class="n">rescaleImage</span><span class="p">(</span><span class="n">resutils</span><span class="o">.</span><span class="n">matchicon</span><span class="o">.</span><span class="n">GetImage</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)))</span>
+        <span class="n">hbox</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">BoxSizer</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">HORIZONTAL</span><span class="p">)</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">moddsBitbtn</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">matchBitbtn</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">hbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">radisBitbtn</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">LEFT</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">TOP</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">BOTTOM</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">RIGHT</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">sbsizer_HGHG</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">hbox</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="c1">### add to boxsizer</span>
+        <span class="n">vbox</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="n">sbsizer_HGHG</span><span class="p">,</span> <span class="n">proportion</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">flag</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">EXPAND</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALIGN_CENTRE</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+        <span class="c1">## set boxsizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">panel</span><span class="o">.</span><span class="n">SetSizer</span><span class="p">(</span><span class="n">vbox</span><span class="p">)</span>
+
+        <span class="c1">## bind events</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_CLOSE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onExit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onModds</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">moddsBitbtn</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span><span class="c1"># ID_MODDSBBTN)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onMatch</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">matchBitbtn</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span><span class="c1"># ID_MATCHBBTN)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">EVT_BUTTON</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">onRadis</span><span class="p">,</span> <span class="nb">id</span> <span class="o">=</span> <span class="n">radisBitbtn</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span><span class="c1"># ID_RADISBBTN)</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onModds"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onModds">[docs]</a>    <span class="k">def</span> <span class="nf">onModds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moddspanel</span> <span class="o">=</span> <span class="n">felutils</span><span class="o">.</span><span class="n">ModdsPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;Laser-beam Interaction and Harmonic Generation&#39;</span><span class="p">,</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">880</span><span class="p">,</span> <span class="mi">668</span><span class="p">),</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moddspanel</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">moddspanel</span><span class="o">.</span><span class="n">MakeModal</span><span class="p">()</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onMatch"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onMatch">[docs]</a>    <span class="k">def</span> <span class="nf">onMatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matchpanel</span> <span class="o">=</span> <span class="n">felutils</span><span class="o">.</span><span class="n">MatchPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;Beam Envelope Matching Operation&#39;</span><span class="p">,</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">880</span><span class="p">,</span> <span class="mi">668</span><span class="p">),</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matchpanel</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">matchpanel</span><span class="o">.</span><span class="n">MakeModal</span><span class="p">()</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="MainFrame.onRadis"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.MainFrame.onRadis">[docs]</a>    <span class="k">def</span> <span class="nf">onRadis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radispanel</span> <span class="o">=</span> <span class="n">felutils</span><span class="o">.</span><span class="n">RadisPanel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">title</span> <span class="o">=</span> <span class="s1">u&#39;FEL Radiation Generation&#39;</span><span class="p">,</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">880</span><span class="p">,</span> <span class="mi">668</span><span class="p">),</span>
+                <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radispanel</span><span class="o">.</span><span class="n">Show</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radispanel</span><span class="o">.</span><span class="n">MakeModal</span><span class="p">()</span></div></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../src/apidocs/felapps.facilities.html#felapps.facilities.dcls.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">App</span><span class="p">(</span><span class="n">redirect</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="n">myframe</span> <span class="o">=</span> <span class="n">MainFrame</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="n">wx</span><span class="o">.</span><span class="n">DEFAULT_FRAME_STYLE</span> <span class="o">&amp;</span> <span class="o">~</span><span class="p">(</span><span class="n">wx</span><span class="o">.</span><span class="n">RESIZE_BORDER</span> <span class="o">|</span> <span class="n">wx</span><span class="o">.</span><span class="n">MAXIMIZE_BOX</span><span class="p">))</span>
+    <span class="n">myframe</span><span class="o">.</span><span class="n">SetTitle</span><span class="p">(</span><span class="s1">&#39;FEL Commissioning Application for DCLS&#39;</span><span class="p">)</span>
+    <span class="n">myframe</span><span class="o">.</span><span class="n">SetSize</span><span class="p">((</span><span class="mi">880</span><span class="p">,</span><span class="mi">668</span><span class="p">))</span>
+    <span class="n">myframe</span><span class="o">.</span><span class="n">Centre</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">MainLoop</span><span class="p">()</span></div>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">run</span><span class="p">()</span>
+
+<span class="c1">#------------------------------------------------------------------------#</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2016, Tong Zhang.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+    </div>
+  </body>
+</html>
