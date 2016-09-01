@@ -3,7 +3,135 @@ Example 4
 
 ``felformula`` -- Basic FEL physics calculator app.
 
-.. Introduction
-.. ------------
+Introduction
+------------
 
-.. Help the non-FEL-physics specialists, e.g. users/operator
+Help users/operators or other non-FEL physics specialists to understand
+the FEL facility performance under certain machine configurations should
+be significant, this app is created for such mission that not only
+providing the staright-forward FEL calculation results, but also showing
+the clues for the FEL specialists to tunning the machine.
+
+The main features of ``felformula`` are:
+
+    * FEL parameters calulations based on analytical formulae;
+    * Parameters scan studies, valid parameters: 
+        
+        .. hlist::
+            :columns: 4
+        
+            * Beam energy, :math:`E_b`, unit: *MeV*
+            * Energy spread, :math:`\sigma_\gamma`
+            * Transverse emittance, :math:`\epsilon_n`, unit: *m* 
+            * Peak current, :math:`I_p`, unit: *A*
+            * Undulator period, :math:`\lambda_u`, unit: *m*
+            * FEL wavelength, :math:`\lambda_s`, unit: *m*
+            * Average beta function, :math:`\beta`, unit: *m*
+            * Bunch charge, :math:`Q`, unit: *C*
+    
+    * Interactive scan results figure plot;
+    * Data saving/exporting and loading/importing.
+
+.. todo:: Comprehensive FEL physics studies could be extended to 
+    ``felformula``, e.g. integrate numerical simulations into ``Advanced``
+    menu, into which modules could be built to implement various FEL
+    simulation modes, like SASE, HGHG, EEHG, PEHG, and mixtures of them,
+    etc., as well as the algorithms like Twiss-matching, 
+    multi-parameters optimization, post-processing for data analyais, etc.
+    Note that every single module should be built with clean and clear 
+    APIs, so as to communicate with other modules or apps.
+
+Usage Guide
+-----------
+
+FEL Calculation
+^^^^^^^^^^^^^^^
+
+Open ``felformula`` as the previous examples demonstrated. Fill the 
+``Beam Parameters`` panel to setup the main parameters of an FEL 
+facility, e.g. Dalian Coherent Light Source, the physics meaning of 
+every input parameter should be explained the name itself.
+Push ``Calculate`` button in the ``Operations > Command`` panel to
+calculate/update the output parameters that listed in ``FEL Calculations``
+panel, where all the available parameters are grouped into 
+``Undulator and E-beam`` and ``FEL radiation`` categories, note that
+these calculated resutls are only for reference.
+
+.. image:: ../../images/felformula_01.png
+    :width: 500px
+
+All the data could be exported by ``File > Export (SHIFT+CTRL+E)``,
+additional meta information could be appended into saved file, see the 
+following image. 
+
+.. image:: ../../images/felformula_02.png
+    :width: 500px
+
+While the exported data file could also be imported by
+``File > Import (SHIFT+CTRL+I)``, here is the exported file example, 
+
+.. literalinclude:: ../../snippets/DCLS.conf
+    :language: rest
+
+Parameters Scan
+^^^^^^^^^^^^^^^
+
+Parameters scan feature is supported by checking the ``Enable Scan`` box,
+and selecting the parameter to be altered, e.g. average beta function.
+
+.. image:: ../../images/felformula_03.png
+    :width: 500px
+
+Click ``Calculate`` first, then ``Show Plot`` to open the figure plot 
+window, where the data for Y-axis could be seleted from the following table:
+
++--------------------+----------------------------------------+-----------------------------------------------+
+| Choice             | Symbol                                 | Literal explanations                          |
++====================+========================================+===============================================+
+| 01-au              | :math:`a_u`                            | Normalized undulator parameter                |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 02-K               | :math:`K`                              | Undulator parameter                           |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 03-Bu              | :math:`B_u\ \mathrm{[T]}`              | Undulator magnetic peak field [T]             |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 04-gap             | :math:`\mathrm{Gap\ [mm]}`             | Permanent undulator gap [mm]                  |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 05-rho1D           | :math:`\rho^{\mathrm{1D}}`             | FEL parameter or Pierce parameter (1D)        |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 06-rho3D           | :math:`\rho^{\mathrm{3D}}`             | FEL parameter or Pierce parameter (3D)        |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 07-Lg1D            | :math:`L_g^{\mathrm{1D}}\ \mathrm{[m]}`| FEL power gain length (1D) [m]                |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 08-Lg3D            | :math:`L_g^{\mathrm{3D}}\ \mathrm{[m]}`| FEL power gain length (3D) [m]                |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 09-Psat            | :math:`P_{\mathrm{sat}}\ \mathrm{[W]}` | FEL saturation power (M.Xie formulae) [W]     |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 10-Pshot           | :math:`P_{\mathrm{shot}}\ \mathrm{[W]}`| FEL initial shotnoise power [W]               |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 11-Pss             | :math:`P_{\mathrm{ss}}\ \mathrm{[W]}`  | FEL saturation power (SASE) [W]               |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 12-Lsat            | :math:`L_{\mathrm{sat}}\ \mathrm{[m]}` | FEL saturation length (SASE) [m]              |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 13-sigmar          | :math:`\sigma_r\ \mathrm{[\mu m]}`     | Transverse e-beam radius size (rms) [micro m] |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 14-sigmat          | :math:`\sigma_t\ \mathrm{[fs]}`        | Temporal bunch length (rms) [fs]              |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 15-bandWidth       | :math:`\Delta\lambda/\lambda [\%]`     | FEL bandwidth [\%]                            |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 16-PhotonEnergy    | :math:`E_p\ \mathrm{[eV]}`             | FEL photon energy [eV]                        |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 17-PulseEnergy     | :math:`W\ \mathrm{[\mu J]}`            | FEL pulse energy [micro J]                    |
++--------------------+----------------------------------------+-----------------------------------------------+
+| 18-PhotonPerPulse  | :math:`\mathrm{Photon\ \#/pulse}`      | FEL photon number per pulse                   |
++--------------------+----------------------------------------+-----------------------------------------------+
+
+.. image:: ../../images/felformula_04.png
+    :width: 500px
+
+The figure will be automatically updated when selected valid parameters.
+
+.. image:: ../../images/felformula_05.png
+    :width: 500px
+
+The data could also be saved by ``SHIFT+CTRL+S``, or ``CTRL+S`` to save the figure. Select the data columns 
+that to be saved, the grey ones are invalid, example file see :download:`here <../../snippets/scan.txt>`.

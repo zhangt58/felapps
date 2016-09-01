@@ -29,7 +29,7 @@ by the following style:
     :align: center
 
 Building such ``Python``-based software system requires much more effort
-to understanding the following key points, but not limited:
+to understanding the following key points (including but not limited to):
     * potentially demandings of the FEL facility commissioning;
     * software architecture of the system to be like;
     * comprehesive relationship between the lower-level control 
@@ -64,7 +64,7 @@ log book, i.e. to develop an e-log web system by ``Python``, incorporating
 the power from Python web-development community.
 
 Progress of felapps
-------------------
+-------------------
 
 Up to now (2016.8), the ready-to-deploy/use apps from ``felapps`` are:
 

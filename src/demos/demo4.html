@@ -50,6 +50,19 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example 4</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage-guide">Usage Guide</a><ul>
+<li><a class="reference internal" href="#fel-calculation">FEL Calculation</a></li>
+<li><a class="reference internal" href="#parameters-scan">Parameters Scan</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="demo3.html"
                         title="previous chapter">Example 3</a></p>
@@ -77,6 +90,228 @@
   <div class="section" id="example-4">
 <h1>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">felformula</span></code> &#8211; Basic FEL physics calculator app.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Help users/operators or other non-FEL physics specialists to understand
+the FEL facility performance under certain machine configurations should
+be significant, this app is created for such mission that not only
+providing the staright-forward FEL calculation results, but also showing
+the clues for the FEL specialists to tunning the machine.</p>
+<p>The main features of <code class="docutils literal"><span class="pre">felformula</span></code> are:</p>
+<blockquote>
+<div><ul>
+<li><p class="first">FEL parameters calulations based on analytical formulae;</p>
+</li>
+<li><p class="first">Parameters scan studies, valid parameters:</p>
+<blockquote>
+<div><table class="hlist"><tr><td><ul class="simple">
+<li>Beam energy, <img class="math" src="../../_images/math/1541a81b6542298129e2d92ac7f702e96fc51408.png" alt="E_b"/>, unit: <em>MeV</em></li>
+<li>Energy spread, <img class="math" src="../../_images/math/5e9ed621e8123829c884cc489ec3ec8a710eb059.png" alt="\sigma_\gamma"/></li>
+</ul>
+</td><td><ul class="simple">
+<li>Transverse emittance, <img class="math" src="../../_images/math/ff31266fe3661deea33a6089da172957f3232922.png" alt="\epsilon_n"/>, unit: <em>m</em></li>
+<li>Peak current, <img class="math" src="../../_images/math/99be7e31acdc7eb84249c34ec89da26d070bb345.png" alt="I_p"/>, unit: <em>A</em></li>
+</ul>
+</td><td><ul class="simple">
+<li>Undulator period, <img class="math" src="../../_images/math/3d70917a361c5ba7e99df51e00e5501751961073.png" alt="\lambda_u"/>, unit: <em>m</em></li>
+<li>FEL wavelength, <img class="math" src="../../_images/math/eac38748713731f8b2ed91f9771815d0f18aae4b.png" alt="\lambda_s"/>, unit: <em>m</em></li>
+</ul>
+</td><td><ul class="simple">
+<li>Average beta function, <img class="math" src="../../_images/math/410a9d0df9c135dd73b269cba7ef04dcfd932b1f.png" alt="\beta"/>, unit: <em>m</em></li>
+<li>Bunch charge, <img class="math" src="../../_images/math/331157c6afbd113256867fd408d80277d1a24756.png" alt="Q"/>, unit: <em>C</em></li>
+</ul>
+</td></tr></table>
+</div></blockquote>
+</li>
+<li><p class="first">Interactive scan results figure plot;</p>
+</li>
+<li><p class="first">Data saving/exporting and loading/importing.</p>
+</li>
+</ul>
+</div></blockquote>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Comprehensive FEL physics studies could be extended to
+<code class="docutils literal"><span class="pre">felformula</span></code>, e.g. integrate numerical simulations into <code class="docutils literal"><span class="pre">Advanced</span></code>
+menu, into which modules could be built to implement various FEL
+simulation modes, like SASE, HGHG, EEHG, PEHG, and mixtures of them,
+etc., as well as the algorithms like Twiss-matching,
+multi-parameters optimization, post-processing for data analyais, etc.
+Note that every single module should be built with clean and clear
+APIs, so as to communicate with other modules or apps.</p>
+</div>
+</div>
+<div class="section" id="usage-guide">
+<h2>Usage Guide<a class="headerlink" href="#usage-guide" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fel-calculation">
+<h3>FEL Calculation<a class="headerlink" href="#fel-calculation" title="Permalink to this headline">¶</a></h3>
+<p>Open <code class="docutils literal"><span class="pre">felformula</span></code> as the previous examples demonstrated. Fill the
+<code class="docutils literal"><span class="pre">Beam</span> <span class="pre">Parameters</span></code> panel to setup the main parameters of an FEL
+facility, e.g. Dalian Coherent Light Source, the physics meaning of
+every input parameter should be explained the name itself.
+Push <code class="docutils literal"><span class="pre">Calculate</span></code> button in the <code class="docutils literal"><span class="pre">Operations</span> <span class="pre">&gt;</span> <span class="pre">Command</span></code> panel to
+calculate/update the output parameters that listed in <code class="docutils literal"><span class="pre">FEL</span> <span class="pre">Calculations</span></code>
+panel, where all the available parameters are grouped into
+<code class="docutils literal"><span class="pre">Undulator</span> <span class="pre">and</span> <span class="pre">E-beam</span></code> and <code class="docutils literal"><span class="pre">FEL</span> <span class="pre">radiation</span></code> categories, note that
+these calculated resutls are only for reference.</p>
+<a class="reference internal image-reference" href="../../_images/felformula_01.png"><img alt="../../_images/felformula_01.png" src="../../_images/felformula_01.png" style="width: 500px;" /></a>
+<p>All the data could be exported by <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Export</span> <span class="pre">(SHIFT+CTRL+E)</span></code>,
+additional meta information could be appended into saved file, see the
+following image.</p>
+<a class="reference internal image-reference" href="../../_images/felformula_02.png"><img alt="../../_images/felformula_02.png" src="../../_images/felformula_02.png" style="width: 500px;" /></a>
+<p>While the exported data file could also be imported by
+<code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Import</span> <span class="pre">(SHIFT+CTRL+I)</span></code>, here is the exported file example,</p>
+<div class="highlight-rest"><div class="highlight"><pre><span></span>[00-info]
+author = Tong Zhang
+created_time = 2016-09-01 07:20:38 CST
+note = note = FEL user facility based on HGHG principle, generating FEL radiations from 50-150nm, pulse energy of &gt;100 uJ.
+
+[01-facility]
+affiliation = DICP
+country = China
+name = Dalian Coherent Light Source
+
+[02-electron_beam]
+average_beta_function(m) = 10
+bunch_charge(C) = 0.5e-9
+bunch_length_t(fs) = 664.9
+bunch_length_z(um) = 199.5
+bunch_shape = gaussian
+central_energy(MeV) = 300
+energy_spread = 0.0001
+normalized_emittance(m) = 2e-6
+peak_current(A) = 300
+transverse_beam_size(m) = 184.6
+
+[03-undulator]
+K = 0.870
+au = 0.615
+gap(mm) = 11.861
+peak_field(T) = 0.373
+period_length(m) = 0.025
+total_length(m) = 12
+type = planar
+
+[04-FEL_radiation]
+FEL_parameter_1D = 1.180e-03
+FEL_parameter_3D = 1.018e-03
+bandwidth(%) = 0.33
+gainlength_1D(m) = 0.973
+gainlength_3D(m) = 1.128
+output_power(W) = 4.485e+03
+photon_energy(eV) = 25
+photon_per_pulse = 1.88e+09
+pulse_energy(uJ) = 0.0075
+saturation_length_SASE(m) = 23.57
+saturation_power_MXie(W) = 1.265e+08
+saturation_power_SASE(W) = 1.278e+08
+shotnoise_power_SASE(W) = 0.97
+wavelength(m) = 50e-9
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="parameters-scan">
+<h3>Parameters Scan<a class="headerlink" href="#parameters-scan" title="Permalink to this headline">¶</a></h3>
+<p>Parameters scan feature is supported by checking the <code class="docutils literal"><span class="pre">Enable</span> <span class="pre">Scan</span></code> box,
+and selecting the parameter to be altered, e.g. average beta function.</p>
+<a class="reference internal image-reference" href="../../_images/felformula_03.png"><img alt="../../_images/felformula_03.png" src="../../_images/felformula_03.png" style="width: 500px;" /></a>
+<p>Click <code class="docutils literal"><span class="pre">Calculate</span></code> first, then <code class="docutils literal"><span class="pre">Show</span> <span class="pre">Plot</span></code> to open the figure plot
+window, where the data for Y-axis could be seleted from the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="37%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Choice</th>
+<th class="head">Symbol</th>
+<th class="head">Literal explanations</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>01-au</td>
+<td><img class="math" src="../../_images/math/1094b75b1520d4b7bb42b48887415efd4b932e8a.png" alt="a_u"/></td>
+<td>Normalized undulator parameter</td>
+</tr>
+<tr class="row-odd"><td>02-K</td>
+<td><img class="math" src="../../_images/math/684381a21cd73ebbf43b63a087d3f7410ee99ce8.png" alt="K"/></td>
+<td>Undulator parameter</td>
+</tr>
+<tr class="row-even"><td>03-Bu</td>
+<td><img class="math" src="../../_images/math/38b99cb171714ede7525fbd9811b875fa1ea010b.png" alt="B_u\ \mathrm{[T]}"/></td>
+<td>Undulator magnetic peak field [T]</td>
+</tr>
+<tr class="row-odd"><td>04-gap</td>
+<td><img class="math" src="../../_images/math/0113caabcc1c4a44330e03c66a0c1e74b8be427d.png" alt="\mathrm{Gap\ [mm]}"/></td>
+<td>Permanent undulator gap [mm]</td>
+</tr>
+<tr class="row-even"><td>05-rho1D</td>
+<td><img class="math" src="../../_images/math/c2aa377a6f71e6e2ae4ecd64d7fafd4577906459.png" alt="\rho^{\mathrm{1D}}"/></td>
+<td>FEL parameter or Pierce parameter (1D)</td>
+</tr>
+<tr class="row-odd"><td>06-rho3D</td>
+<td><img class="math" src="../../_images/math/22d81621986e0d203a7313337f83ab1a9a0b171c.png" alt="\rho^{\mathrm{3D}}"/></td>
+<td>FEL parameter or Pierce parameter (3D)</td>
+</tr>
+<tr class="row-even"><td>07-Lg1D</td>
+<td><img class="math" src="../../_images/math/eae5c3d62521e428b6050ca576289f0abb69b65c.png" alt="L_g^{\mathrm{1D}}\ \mathrm{[m]}"/></td>
+<td>FEL power gain length (1D) [m]</td>
+</tr>
+<tr class="row-odd"><td>08-Lg3D</td>
+<td><img class="math" src="../../_images/math/2a07d5632528204286088a9ea441e513655f0fb4.png" alt="L_g^{\mathrm{3D}}\ \mathrm{[m]}"/></td>
+<td>FEL power gain length (3D) [m]</td>
+</tr>
+<tr class="row-even"><td>09-Psat</td>
+<td><img class="math" src="../../_images/math/a4c19ff0fa5aef92406f296cfe59bfe73279d4ec.png" alt="P_{\mathrm{sat}}\ \mathrm{[W]}"/></td>
+<td>FEL saturation power (M.Xie formulae) [W]</td>
+</tr>
+<tr class="row-odd"><td>10-Pshot</td>
+<td><img class="math" src="../../_images/math/30a3219a8b80cec20bb1ca4a7df5a8c64512f5fb.png" alt="P_{\mathrm{shot}}\ \mathrm{[W]}"/></td>
+<td>FEL initial shotnoise power [W]</td>
+</tr>
+<tr class="row-even"><td>11-Pss</td>
+<td><img class="math" src="../../_images/math/5429e42e27a1bd684f9ce3c93f35270cb2b5ad0a.png" alt="P_{\mathrm{ss}}\ \mathrm{[W]}"/></td>
+<td>FEL saturation power (SASE) [W]</td>
+</tr>
+<tr class="row-odd"><td>12-Lsat</td>
+<td><img class="math" src="../../_images/math/7df07e76fa12dab5df6fbb8c23512acea3671f43.png" alt="L_{\mathrm{sat}}\ \mathrm{[m]}"/></td>
+<td>FEL saturation length (SASE) [m]</td>
+</tr>
+<tr class="row-even"><td>13-sigmar</td>
+<td><img class="math" src="../../_images/math/d36e101efece0bacb99278ac77c346ea82453277.png" alt="\sigma_r\ \mathrm{[\mu m]}"/></td>
+<td>Transverse e-beam radius size (rms) [micro m]</td>
+</tr>
+<tr class="row-odd"><td>14-sigmat</td>
+<td><img class="math" src="../../_images/math/462938dd4d2220ab2ade02f56af0015d46708017.png" alt="\sigma_t\ \mathrm{[fs]}"/></td>
+<td>Temporal bunch length (rms) [fs]</td>
+</tr>
+<tr class="row-even"><td>15-bandWidth</td>
+<td><img class="math" src="../../_images/math/fdd794a841d91942ccbd86332f31787148ca9386.png" alt="\Delta\lambda/\lambda [\%]"/></td>
+<td>FEL bandwidth [%]</td>
+</tr>
+<tr class="row-odd"><td>16-PhotonEnergy</td>
+<td><img class="math" src="../../_images/math/1ce22fa6260a4be897bc15e97222f283596387f7.png" alt="E_p\ \mathrm{[eV]}"/></td>
+<td>FEL photon energy [eV]</td>
+</tr>
+<tr class="row-even"><td>17-PulseEnergy</td>
+<td><img class="math" src="../../_images/math/8ea1e03ceb2b9488b2980e649c33d0f654ce90f1.png" alt="W\ \mathrm{[\mu J]}"/></td>
+<td>FEL pulse energy [micro J]</td>
+</tr>
+<tr class="row-odd"><td>18-PhotonPerPulse</td>
+<td><img class="math" src="../../_images/math/dd5a8016e5e95f09321e72104e994b4a5e231944.png" alt="\mathrm{Photon\ \#/pulse}"/></td>
+<td>FEL photon number per pulse</td>
+</tr>
+</tbody>
+</table>
+<a class="reference internal image-reference" href="../../_images/felformula_04.png"><img alt="../../_images/felformula_04.png" src="../../_images/felformula_04.png" style="width: 500px;" /></a>
+<p>The figure will be automatically updated when selected valid parameters.</p>
+<a class="reference internal image-reference" href="../../_images/felformula_05.png"><img alt="../../_images/felformula_05.png" src="../../_images/felformula_05.png" style="width: 500px;" /></a>
+<p>The data could also be saved by <code class="docutils literal"><span class="pre">SHIFT+CTRL+S</span></code>, or <code class="docutils literal"><span class="pre">CTRL+S</span></code> to save the figure. Select the data columns
+that to be saved, the grey ones are invalid, example file see <a class="reference download internal" href="../../_downloads/scan.txt" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a>.</p>
+</div>
+</div>
 </div>
 
 
