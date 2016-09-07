@@ -10,6 +10,7 @@ from scipy.optimize import fsolve
 
 class PhysicalConstants(object):
     """Physical constants
+
     :param c0: :math:`c_0`, velocity of light in vacuum
     :param epsilon0: :math:`\epsilon_0`, permittivity in vacuum
     :param mu0: :math:`\mu_0`, permeability in vacuum
@@ -28,15 +29,16 @@ class PhysicalConstants(object):
 
 
 class HalbachPerm(object):
+    """
+    Input parameters:
+
+    :param _a: first Halbach parameter
+    :param _b: second Halbach parameter
+    :parma _c: third Halbach parameter
+    :param _lambdau: undulator period length, [mm]
+    :parma _Bu: undulator magnetic field, [T]
+    """
     def __init__(self, _a=3.33, _b=-5.47, _c=1.80, _lambdau=20, _Bu=1.0):
-        """
-        Input parameters:
-        _a: first Halbach parameter
-        _b: second Halbach parameter
-        _c: third Halbach parameter
-        _lambdau: undulator period length, [mm]
-        _Bu: undulator magnetic field, [T]
-        """
         self.coef1   = _a
         self.coef2   = _b
         self.coef3   = _c
@@ -48,6 +50,7 @@ class HalbachPerm(object):
         Solve undulator gap value
 
         :param gap0: initial gap value vector, [mm]
+        :return: gap value in [mm]
         """
         fbg = lambda x: self.Bu - self.coef1*np.exp(self.coef2*x/self.lambdau+self.coef3*(x/self.lambdau)**2)
         return fsolve(fbg, x0=gap0*np.ones(np.size(self.Bu)))
@@ -57,7 +60,8 @@ class FELcalc(PhysicalConstants):
     """
     Analytical calculation for Free-electron Laser physics
 
-    Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7)
+    Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)
+
     :param p1: beamEnergy, [MeV]
     :param p2: relative energy spread
     :param p3: undulator period length, [m]
@@ -65,6 +69,9 @@ class FELcalc(PhysicalConstants):
     :param p5: radiation wavelength, [m]
     :param p6: normalized transverse emittance, [m]
     :param p7: peak current, [A]
+    :param p8: bunchCharge      [C]
+    :param p9: undulatorLength  [m]
+    :param p10: bunchShape, 'gaussian' or 'flattop'
     :return res: dict, keys: "au", "bu", "gap", "sigmar", "rho1D", "rho3D", "Lg1D", "Lg3D", "Psat", "Pshot", "Pss"
     """
     def __init__(self,
@@ -79,19 +86,6 @@ class FELcalc(PhysicalConstants):
             _undulatorLength      = 10.0,
             _bunchShape           = 'gaussian',
             _undulatorType        = 'planar'):
-        """
-        Initialized parameters:
-        beamEnergy 	 [MeV]
-        relativeEnergySpread
-        unduPeriodLength [m]
-        avgBetaFunc 	 [m]
-	    radWavelength 	 [m]
-	    normEmittance 	 [m]
-	    peakCurrent 	 [A]
-        bunchCharge      [C]
-        undulatorLength  [m]
-        bunchShape: gaussian or flattop
-	    """
 
         self.beamEnergy 	  = _beamEnergy
         self.relativeEnergySpread = _relativeEnergySpread
@@ -222,6 +216,7 @@ class FELcalc(PhysicalConstants):
 
     def findSatFactor(self, nl, l3, xlamd, factor0=20):
         """ Calculator saturation length in the unit of 3D power gainlength
+
         :param factor0: initial saturation factor, saturation length over power gain length
         :param nl: electron count within one unit of FEL wavelength
         :param l3: power gain length (3D)
