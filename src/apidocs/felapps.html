@@ -54,7 +54,6 @@
   <ul>
 <li><a class="reference internal" href="#">felapps package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#module-felapps">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -83,83 +82,67 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="felapps-package">
-<h1>felapps package<a class="headerlink" href="#felapps-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-felapps">
+<span id="felapps-package"></span><h1>felapps package<a class="headerlink" href="#module-felapps" title="Permalink to this headline">¶</a></h1>
+<p>Python package created for the commissioning of free-electron 
+laser facilities, providing general-purpose graphical user interface 
+applications to fulfill various tasks, such as image DAQ, 
+data post-processing, data correlation analysis and FEL physics 
+calculations, etc. Friendly user interative approaches are subtly 
+designed, as well as the straight-forward distribution manner.</p>
+<p><code class="docutils literal"><span class="pre">felapps</span></code> is the beginning phase to the world of python-powered software
+ecosystem that could be served as the infrastructure for the future 
+versatile large-scale scientific facilities.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Before installing <code class="docutils literal"><span class="pre">felapps</span></code>, another python package 
+<code class="docutils literal"><span class="pre">beamline</span></code> is required, so install that package first, 
+see <a class="reference external" href="https://archman.github.io/beamline">the documentation</a>.</p>
+</div>
+<p>Brief guide to the users:</p>
+<ol class="arabic">
+<li><p class="first">type <code class="docutils literal"><span class="pre">runfelapps</span></code> or <code class="docutils literal"><span class="pre">appdrawer</span></code> in the terminal to open the main 
+app portal of <code class="docutils literal"><span class="pre">felapps</span></code>;</p>
+</li>
+<li><p class="first">in [i]python terminal, first <code class="docutils literal"><span class="pre">import</span> <span class="pre">felapps</span></code>, then call 
+<code class="docutils literal"><span class="pre">felapps.imageviewer.run()</span></code> to open <code class="docutils literal"><span class="pre">imageviewer</span></code> app, the same rule
+applies to other apps:</p>
+<blockquote>
+<div><ul class="simple">
+<li><code class="docutils literal"><span class="pre">dataworkshop</span></code></li>
+<li><code class="docutils literal"><span class="pre">cornalyzer</span></code></li>
+<li><code class="docutils literal"><span class="pre">felformula</span></code></li>
+<li><code class="docutils literal"><span class="pre">wxmpv</span></code></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Version:</th><td class="field-body">1.5.13</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Author:</th><td class="field-body">Tong Zhang (<a class="reference external" href="mailto:zhangtong&#37;&#52;&#48;sinap&#46;ac&#46;cn">zhangtong<span>&#64;</span>sinap<span>&#46;</span>ac<span>&#46;</span>cn</a>)</td>
+</tr>
+</tbody>
+</table>
 <div class="section" id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="felapps.apps.html">felapps.apps package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="felapps.apps.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.appdrawer.html">felapps.apps.appdrawer package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.appdrawer.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.appdrawer.html#module-felapps.apps.appdrawer.appdrawer">felapps.apps.appdrawer.appdrawer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.appdrawer.html#module-felapps.apps.appdrawer">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="felapps.apps.html">apps package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="felapps.apps.html#subpackages">Subpackages</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.cornalyzer.html">felapps.apps.cornalyzer package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer.html#module-felapps.apps.cornalyzer.cornalyzer">felapps.apps.cornalyzer.cornalyzer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer.html#module-felapps.apps.cornalyzer">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.cornalyzer_old.html">felapps.apps.cornalyzer_old package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer_old.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer_old.html#module-felapps.apps.cornalyzer_old.cornalyzer">felapps.apps.cornalyzer_old.cornalyzer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.cornalyzer_old.html#module-felapps.apps.cornalyzer_old">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.dataworkshop.html">felapps.apps.dataworkshop package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.dataworkshop.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.dataworkshop.html#module-felapps.apps.dataworkshop.dataworkshop">felapps.apps.dataworkshop.dataworkshop module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.dataworkshop.html#module-felapps.apps.dataworkshop">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.felformula.html">felapps.apps.felformula package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.felformula.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.felformula.html#module-felapps.apps.felformula.felformula">felapps.apps.felformula.felformula module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.felformula.html#module-felapps.apps.felformula">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.imageviewer.html">felapps.apps.imageviewer package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.imageviewer.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.imageviewer.html#module-felapps.apps.imageviewer.imageviewer">felapps.apps.imageviewer.imageviewer module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.imageviewer.html#module-felapps.apps.imageviewer">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.matchwizard.html">felapps.apps.matchwizard package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.matchwizard.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.matchwizard.html#module-felapps.apps.matchwizard.matchwizard">felapps.apps.matchwizard.matchwizard module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.matchwizard.html#module-felapps.apps.matchwizard">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="felapps.apps.wxmpv.html">felapps.apps.wxmpv package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.wxmpv.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.wxmpv.html#module-felapps.apps.wxmpv.wxmpv">felapps.apps.wxmpv.wxmpv module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="felapps.apps.wxmpv.html#module-felapps.apps.wxmpv">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.apps.html#module-felapps.apps">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="felapps.facilities.html">felapps.facilities package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="felapps.facilities.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.facilities.html#module-felapps.facilities.dcls">felapps.facilities.dcls module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.facilities.html#module-felapps.facilities">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="felapps.physics.html">felapps.physics package</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="felapps.physics.html">physics package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="felapps.physics.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.physics.html#module-felapps.physics.felbase">felapps.physics.felbase module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.physics.html#module-felapps.physics.felcalc">felapps.physics.felcalc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.physics.html#module-felapps.physics">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="felapps.utils.html">felapps.utils package</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="felapps.utils.html">utils package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.EnhancedStatusBar">felapps.utils.EnhancedStatusBar module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.analysisframe">felapps.utils.analysisframe module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.datascanapp">felapps.utils.datascanapp module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.datascanframe">felapps.utils.datascanframe module</a></li>
@@ -177,14 +160,10 @@
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.resutils">felapps.utils.resutils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.scanutils">felapps.utils.scanutils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils.uiutils">felapps.utils.uiutils module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="felapps.utils.html#module-felapps.utils">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="module-felapps">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-felapps" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

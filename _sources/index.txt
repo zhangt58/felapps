@@ -10,6 +10,10 @@ Welcome to felapps's documentation!
     
     ``felapps``: FEL High-level Applications.
 
+    Install: ``pip install felapps``
+
+    PDF documentation: :download:`Download <_build/latex/felapps.pdf>`
+
     :Author: Tong Zhang 
     :E-mail: zhangtong@sinap.ac.cn
     :Date: 2015-2016

@@ -1,13 +1,18 @@
 felapps.utils package
 =====================
 
+.. automodule:: felapps.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
-felapps.utils.EnhancedStatusBar module
---------------------------------------
+.. felapps.utils.EnhancedStatusBar module
+.. --------------------------------------
 
-.. automodule:: felapps.utils.EnhancedStatusBar
+.. .. automodule:: felapps.utils.EnhancedStatusBar
     :members:
     :undoc-members:
     :show-inheritance:
@@ -149,10 +154,4 @@ felapps.utils.uiutils module
     :show-inheritance:
 
 
-Module contents
----------------
 
-.. automodule:: felapps.utils
-    :members:
-    :undoc-members:
-    :show-inheritance:

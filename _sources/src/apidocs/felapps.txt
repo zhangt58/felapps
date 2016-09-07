@@ -1,20 +1,19 @@
 felapps package
 ===============
 
-Subpackages
------------
-
-.. toctree::
-
-    felapps.apps
-    felapps.facilities
-    felapps.physics
-    felapps.utils
-
-Module contents
----------------
-
 .. automodule:: felapps
     :members:
     :undoc-members:
     :show-inheritance:
+
+Subpackages
+-----------
+
+.. toctree::
+    :maxdepth: 2
+
+    apps package <felapps.apps>
+    physics package <felapps.physics>
+    utils package <felapps.utils>
+
+.. felapps.facilities

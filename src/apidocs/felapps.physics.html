@@ -26,7 +26,7 @@
     <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html" />
     <link rel="up" title="felapps package" href="felapps.html" />
     <link rel="next" title="felapps.utils package" href="felapps.utils.html" />
-    <link rel="prev" title="felapps.facilities package" href="felapps.facilities.html" /> 
+    <link rel="prev" title="felapps.apps.wxmpv package" href="felapps.apps.wxmpv.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -42,7 +42,7 @@
           <a href="felapps.utils.html" title="felapps.utils package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="felapps.facilities.html" title="felapps.facilities package"
+          <a href="felapps.apps.wxmpv.html" title="felapps.apps.wxmpv package"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>
@@ -57,14 +57,13 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-felapps.physics.felbase">felapps.physics.felbase module</a></li>
 <li><a class="reference internal" href="#module-felapps.physics.felcalc">felapps.physics.felcalc module</a></li>
-<li><a class="reference internal" href="#module-felapps.physics">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="felapps.facilities.html"
-                        title="previous chapter">felapps.facilities package</a></p>
+  <p class="topless"><a href="felapps.apps.wxmpv.html"
+                        title="previous chapter">felapps.apps.wxmpv package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="felapps.utils.html"
                         title="next chapter">felapps.utils package</a></p>
@@ -86,8 +85,10 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="felapps-physics-package">
-<h1>felapps.physics package<a class="headerlink" href="#felapps-physics-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-felapps.physics">
+<span id="felapps-physics-package"></span><h1>felapps.physics package<a class="headerlink" href="#module-felapps.physics" title="Permalink to this headline">¶</a></h1>
+<p>This subpackage is designed for the purpose of including
+physics-related modules, both accelerator physics and FEL physics.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -96,26 +97,51 @@
 <p>Python module for the basis of free-electron laser calculation.</p>
 <dl class="class">
 <dt id="felapps.physics.felbase.FELcalc">
-<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">FELcalc</code><span class="sig-paren">(</span><em>_beamEnergy=6000.0</em>, <em>_relativeEnergySpread=0.0001</em>, <em>_unduPeriodLength=0.015</em>, <em>_avgBetaFunc=20.0</em>, <em>_radWavelength=1e-10</em>, <em>_normEmittance=4e-07</em>, <em>_peakCurrent=3500.0</em>, <em>_bunchCharge=5e-10</em>, <em>_undulatorLength=10.0</em>, <em>_bunchShape='gaussian'</em>, <em>_undulatorType='planar'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.FELcalc" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FELcalc</code><span class="sig-paren">(</span><em>_beamEnergy=6000.0</em>, <em>_relativeEnergySpread=0.0001</em>, <em>_unduPeriodLength=0.015</em>, <em>_avgBetaFunc=20.0</em>, <em>_radWavelength=1e-10</em>, <em>_normEmittance=4e-07</em>, <em>_peakCurrent=3500.0</em>, <em>_bunchCharge=5e-10</em>, <em>_undulatorLength=10.0</em>, <em>_bunchShape='gaussian'</em>, <em>_undulatorType='planar'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.FELcalc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.physics.felbase.PhysicalConstants" title="felapps.physics.felbase.PhysicalConstants"><code class="xref py py-class docutils literal"><span class="pre">felapps.physics.felbase.PhysicalConstants</span></code></a></p>
 <p>Analytical calculation for Free-electron Laser physics</p>
-<p>Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7)
-:param p1: beamEnergy, [MeV]
-:param p2: relative energy spread
-:param p3: undulator period length, [m]
-:param p4: avgerage beta function, [m]
-:param p5: radiation wavelength, [m]
-:param p6: normalized transverse emittance, [m]
-:param p7: peak current, [A]
-:return res: dict, keys: &#8220;au&#8221;, &#8220;bu&#8221;, &#8220;gap&#8221;, &#8220;sigmar&#8221;, &#8220;rho1D&#8221;, &#8220;rho3D&#8221;, &#8220;Lg1D&#8221;, &#8220;Lg3D&#8221;, &#8220;Psat&#8221;, &#8220;Pshot&#8221;, &#8220;Pss&#8221;</p>
+<p>Usage: res = FELcalc(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p1</strong> &#8211; beamEnergy, [MeV]</li>
+<li><strong>p2</strong> &#8211; relative energy spread</li>
+<li><strong>p3</strong> &#8211; undulator period length, [m]</li>
+<li><strong>p4</strong> &#8211; avgerage beta function, [m]</li>
+<li><strong>p5</strong> &#8211; radiation wavelength, [m]</li>
+<li><strong>p6</strong> &#8211; normalized transverse emittance, [m]</li>
+<li><strong>p7</strong> &#8211; peak current, [A]</li>
+<li><strong>p8</strong> &#8211; bunchCharge      [C]</li>
+<li><strong>p9</strong> &#8211; undulatorLength  [m]</li>
+<li><strong>p10</strong> &#8211; bunchShape, &#8216;gaussian&#8217; or &#8216;flattop&#8217;</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return res:</th><td class="field-body"><p class="first last">dict, keys: &#8220;au&#8221;, &#8220;bu&#8221;, &#8220;gap&#8221;, &#8220;sigmar&#8221;, &#8220;rho1D&#8221;, &#8220;rho3D&#8221;, &#8220;Lg1D&#8221;, &#8220;Lg3D&#8221;, &#8220;Psat&#8221;, &#8220;Pshot&#8221;, &#8220;Pss&#8221;</p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="felapps.physics.felbase.FELcalc.findSatFactor">
 <code class="descname">findSatFactor</code><span class="sig-paren">(</span><em>nl</em>, <em>l3</em>, <em>xlamd</em>, <em>factor0=20</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.FELcalc.findSatFactor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculator saturation length in the unit of 3D power gainlength
-:param factor0: initial saturation factor, saturation length over power gain length
-:param nl: electron count within one unit of FEL wavelength
-:param l3: power gain length (3D)
-:param xlamd: undulator period</p>
+<dd><p>Calculator saturation length in the unit of 3D power gainlength</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>factor0</strong> &#8211; initial saturation factor, saturation length over power gain length</li>
+<li><strong>nl</strong> &#8211; electron count within one unit of FEL wavelength</li>
+<li><strong>l3</strong> &#8211; power gain length (3D)</li>
+<li><strong>xlamd</strong> &#8211; undulator period</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -128,8 +154,28 @@
 
 <dl class="class">
 <dt id="felapps.physics.felbase.HalbachPerm">
-<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">HalbachPerm</code><span class="sig-paren">(</span><em>_a=3.33</em>, <em>_b=-5.47</em>, <em>_c=1.8</em>, <em>_lambdau=20</em>, <em>_Bu=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.HalbachPerm" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">HalbachPerm</code><span class="sig-paren">(</span><em>_a=3.33</em>, <em>_b=-5.47</em>, <em>_c=1.8</em>, <em>_lambdau=20</em>, <em>_Bu=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.HalbachPerm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Input parameters:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>_a</strong> &#8211; first Halbach parameter</li>
+<li><strong>_b</strong> &#8211; second Halbach parameter</li>
+<li><strong>_lambdau</strong> &#8211; undulator period length, [mm]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parma _c:</th><td class="field-body"><p class="first">third Halbach parameter</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Parma _Bu:</th><td class="field-body"><p class="first last">undulator magnetic field, [T]</p>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="felapps.physics.felbase.HalbachPerm.findGap">
 <code class="descname">findGap</code><span class="sig-paren">(</span><em>gap0=10</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.HalbachPerm.findGap" title="Permalink to this definition">¶</a></dt>
@@ -140,6 +186,8 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>gap0</strong> &#8211; initial gap value vector, [mm]</td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">gap value in [mm]</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -148,16 +196,26 @@
 
 <dl class="class">
 <dt id="felapps.physics.felbase.PhysicalConstants">
-<em class="property">class </em><code class="descclassname">felapps.physics.felbase.</code><code class="descname">PhysicalConstants</code><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PhysicalConstants</code><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Physical constants
-:param c0: <img class="math" src="../../_images/math/871e0834b8b6f132c00a57acee8b4c8fb2eb2c77.png" alt="c_0"/>, velocity of light in vacuum
-:param epsilon0: <img class="math" src="../../_images/math/f6da37ff3a3873900e235d0837af9e1d2a30c2ab.png" alt="\epsilon_0"/>, permittivity in vacuum
-:param mu0: <img class="math" src="../../_images/math/ba1d824b5472f0f2c69b48e08792e778866b4d52.png" alt="\mu_0"/>, permeability in vacuum
-:param e0: <img class="math" src="../../_images/math/78a06cf7a34f39fde71fbba0d5539baae7c72d4e.png" alt="e"/>, electron charge, [C]
-:param m0: <img class="math" src="../../_images/math/2ba5781b7f01aa385426a30b01d8a60d805c1b12.png" alt="m_e"/>, electron mass, [kg]
-:param h0: <img class="math" src="../../_images/math/293fb39e1b93282c804a86186e721b32f829f1b2.png" alt="h"/>, Plank constant
-:param currentA: <img class="math" src="../../_images/math/cf94ffd2d5925f7ed4e97d50fdae65ac9db126cc.png" alt="I_A"/>, Alven current, [A]</p>
+<p>Physical constants</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>c0</strong> &#8211; <img class="math" src="../../_images/math/871e0834b8b6f132c00a57acee8b4c8fb2eb2c77.png" alt="c_0"/>, velocity of light in vacuum</li>
+<li><strong>epsilon0</strong> &#8211; <img class="math" src="../../_images/math/f6da37ff3a3873900e235d0837af9e1d2a30c2ab.png" alt="\epsilon_0"/>, permittivity in vacuum</li>
+<li><strong>mu0</strong> &#8211; <img class="math" src="../../_images/math/ba1d824b5472f0f2c69b48e08792e778866b4d52.png" alt="\mu_0"/>, permeability in vacuum</li>
+<li><strong>e0</strong> &#8211; <img class="math" src="../../_images/math/78a06cf7a34f39fde71fbba0d5539baae7c72d4e.png" alt="e"/>, electron charge, [C]</li>
+<li><strong>m0</strong> &#8211; <img class="math" src="../../_images/math/2ba5781b7f01aa385426a30b01d8a60d805c1b12.png" alt="m_e"/>, electron mass, [kg]</li>
+<li><strong>h0</strong> &#8211; <img class="math" src="../../_images/math/293fb39e1b93282c804a86186e721b32f829f1b2.png" alt="h"/>, Plank constant</li>
+<li><strong>currentA</strong> &#8211; <img class="math" src="../../_images/math/cf94ffd2d5925f7ed4e97d50fdae65ac9db126cc.png" alt="I_A"/>, Alven current, [A]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="felapps.physics.felbase.PhysicalConstants.c0">
 <code class="descname">c0</code><em class="property"> = 299792458.0</em><a class="headerlink" href="#felapps.physics.felbase.PhysicalConstants.c0" title="Permalink to this definition">¶</a></dt>
@@ -197,17 +255,17 @@
 
 <dl class="function">
 <dt id="felapps.physics.felbase.test1">
-<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test1" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test1" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.physics.felbase.test2">
-<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test2" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test2" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.physics.felbase.test3">
-<code class="descclassname">felapps.physics.felbase.</code><code class="descname">test3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test3" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felbase.test3" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -218,7 +276,7 @@ Create Time: 15:22, Jan. 15, 2015
 first version is written in MATLAB on Dec. 25th, 2014.</p>
 <dl class="class">
 <dt id="felapps.physics.felcalc.DataSaveFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">DataSaveFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>dataparent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DataSaveFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>dataparent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.DataSaveFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.DataSaveFrame.InitUI">
@@ -259,7 +317,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="class">
 <dt id="felapps.physics.felcalc.ExportFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">ExportFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ExportFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.ExportFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.ExportFrame.InitUI">
@@ -285,7 +343,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="class">
 <dt id="felapps.physics.felcalc.InfoFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">InfoFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.InfoFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">InfoFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.InfoFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.InfoFrame.InitUI">
@@ -296,7 +354,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="class">
 <dt id="felapps.physics.felcalc.LogFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">LogFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.LogFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">LogFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.LogFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.LogFrame.InitUI">
@@ -312,7 +370,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="class">
 <dt id="felapps.physics.felcalc.MainFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">MainFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.MainFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MainFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.MainFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.MainFrame.collectAllParams">
@@ -417,7 +475,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="class">
 <dt id="felapps.physics.felcalc.PlotFrame">
-<em class="property">class </em><code class="descclassname">felapps.physics.felcalc.</code><code class="descname">PlotFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PlotFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.PlotFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.physics.felcalc.PlotFrame.InitUI">
@@ -488,12 +546,9 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 
 <dl class="function">
 <dt id="felapps.physics.felcalc.run">
-<code class="descclassname">felapps.physics.felcalc.</code><code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.physics.felcalc.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-felapps.physics">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-felapps.physics" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -516,7 +571,7 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
           <a href="felapps.utils.html" title="felapps.utils package"
              >next</a> |</li>
         <li class="right" >
-          <a href="felapps.facilities.html" title="felapps.facilities package"
+          <a href="felapps.apps.wxmpv.html" title="felapps.apps.wxmpv package"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>

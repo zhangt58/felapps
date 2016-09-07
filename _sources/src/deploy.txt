@@ -10,7 +10,7 @@ Prerequisites
 -------------
 
 Required Python packages: ``numpy``, ``scipy``, ``matplotlib``, 
-``pyepics``, ``h5py``, ``pyrpn``, ``beamline``, ``lmfit, ``wxPython``.
+``pyepics``, ``h5py``, ``pyrpn``, ``beamline``, ``lmfit``, ``wxPython``.
 
 Packages with version information:
 

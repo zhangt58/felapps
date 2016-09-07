@@ -1,6 +1,11 @@
 felapps.apps package
 ====================
 
+.. automodule:: felapps.apps
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -8,17 +13,10 @@ Subpackages
 
     felapps.apps.appdrawer
     felapps.apps.cornalyzer
-    felapps.apps.cornalyzer_old
     felapps.apps.dataworkshop
     felapps.apps.felformula
     felapps.apps.imageviewer
-    felapps.apps.matchwizard
     felapps.apps.wxmpv
 
-Module contents
----------------
-
-.. automodule:: felapps.apps
-    :members:
-    :undoc-members:
-    :show-inheritance:
+.. felapps.apps.matchwizard
+.. felapps.apps.cornalyzer_old

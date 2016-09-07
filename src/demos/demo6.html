@@ -50,6 +50,15 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example 6</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage-guide">Usage Guide</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="demo5.html"
                         title="previous chapter">Example 5</a></p>
@@ -77,6 +86,68 @@
   <div class="section" id="example-6">
 <span id="wxmpv-ex"></span><h1>Example 6<a class="headerlink" href="#example-6" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">wxmpv</span></code> &#8211; General matplot viewer app.</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">wxmpv</span></code> is the brief of <code class="docutils literal"><span class="pre">wx[Python]</span> <span class="pre">matplot[lib]</span> <span class="pre">viewer</span></code> or
+<code class="docutils literal"><span class="pre">wx[Python]</span> <span class="pre">mat[lab]</span> <span class="pre">plot</span> <span class="pre">viewer</span></code>, is designed with the intention of
+to provide the universal interface to manipulate the data files in the
+plot analysis stage, basic features should be included, such as:</p>
+<blockquote>
+<div><ul class="simple">
+<li>data loading/saving</li>
+<li>figure plot</li>
+<li>figure style tunning</li>
+<li>curve fitting</li>
+<li>etc.</li>
+</ul>
+</div></blockquote>
+<p>Currently, <code class="docutils literal"><span class="pre">wxmpv</span></code> could be used to operate these two (2) kinds of
+<code class="docutils literal"><span class="pre">hdf5</span></code> data that generated from <code class="docutils literal"><span class="pre">imageviewer</span></code> <a class="footnote-reference" href="#f1" id="id1">[1]</a>:</p>
+<blockquote>
+<div><ul class="simple">
+<li>data saved by <code class="docutils literal"><span class="pre">CTRL+D</span></code> in <code class="docutils literal"><span class="pre">imageviewer</span></code></li>
+<li>data generated from <code class="docutils literal"><span class="pre">Autosave</span></code> operation of <code class="docutils literal"><span class="pre">imageviewer</span></code></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="usage-guide">
+<h2>Usage Guide<a class="headerlink" href="#usage-guide" title="Permalink to this headline">¶</a></h2>
+<p>Open <code class="docutils literal"><span class="pre">wxmpv</span></code>, just like the following image shows, there are mainly two
+operation sections, the top and bottom region of figure and the style
+configuration panel in the right, as well as the curve fitting panel.</p>
+<a class="reference internal image-reference" href="../../_images/wxmpv_01.png"><img alt="../../_images/wxmpv_01.png" src="../../_images/wxmpv_01.png" style="width: 500px;" /></a>
+<p>Click <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Open</span> <span class="pre">(CTRL+O)</span></code> to open supported <code class="docutils literal"><span class="pre">hdf5</span></code> data file,
+both image and data curve should be plotted onto the figure, style
+adjustment to the image and curve is possible.</p>
+<a class="reference internal image-reference" href="../../_images/wxmpv_02.png"><img alt="../../_images/wxmpv_02.png" src="../../_images/wxmpv_02.png" style="width: 500px;" /></a>
+<p>For example, when tunning the curve styles, push <code class="docutils literal"><span class="pre">Hide</span> <span class="pre">Image</span></code> to hide
+the image temporarily, and click <code class="docutils literal"><span class="pre">Set</span> <span class="pre">Line</span> <span class="pre">ID</span></code> to select the line to
+adjust the style, valid options: line color, line width, line style,
+marker color, marker size, marker style, etc.; while the image could be
+adjusted with different type of color maps and color ranges, to meet the
+users&#8217; demanding.</p>
+<a class="reference internal image-reference" href="../../_images/wxmpv_03.png"><img alt="../../_images/wxmpv_03.png" src="../../_images/wxmpv_03.png" style="width: 500px;" /></a>
+<a class="reference internal image-reference" href="../../_images/wxmpv_04.png"><img alt="../../_images/wxmpv_04.png" src="../../_images/wxmpv_04.png" style="width: 500px;" /></a>
+<p>The figure could be saved as <code class="docutils literal"><span class="pre">eps</span></code>, <code class="docutils literal"><span class="pre">ps</span></code>, <code class="docutils literal"><span class="pre">png</span></code>, etc. Other options
+could be tried by the users.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last"><code class="docutils literal"><span class="pre">wxmpv</span></code> should be extended to support more data plotting
+functionality, so as to serve as to be the general-purpose data
+plotting and manipulation app.</p>
+</div>
+<p>Shortcut: <code class="docutils literal"><span class="pre">CTRL+S</span></code> would save all the data into <code class="docutils literal"><span class="pre">hdf5</span></code> format,
+sample file could be downloaded <a class="reference download internal" href="../../_downloads/wxmpv_data.hdf5" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a>.</p>
+<p class="rubric">Footnotes</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td><code class="docutils literal"><span class="pre">hdf5</span></code> data format should be first set in <code class="docutils literal"><span class="pre">Configurations</span></code>
+menu, <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Data</span> <span class="pre">Name</span> <span class="pre">Extension</span></code> and choose <code class="docutils literal"><span class="pre">hdf5</span></code> in
+<code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> window.</td></tr>
+</tbody>
+</table>
+</div>
 </div>
 
 

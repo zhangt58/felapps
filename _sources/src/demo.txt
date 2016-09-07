@@ -18,7 +18,11 @@ approaches:
     1. Type <app name> in the terminal;
     2. Browse <app name> from ``FELApps`` system menu;
     3. Invoke ``runfelapps`` or ``appdrawer``, click <app name> from the 
-       app's panel.
+       app's panel (see the following image).
+
+.. image:: ../images/runfelapps.png
+    :width: 500px
+    :align: center
 
 .. toctree::
     :maxdepth: 2

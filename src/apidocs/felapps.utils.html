@@ -51,7 +51,6 @@
   <ul>
 <li><a class="reference internal" href="#">felapps.utils package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-felapps.utils.EnhancedStatusBar">felapps.utils.EnhancedStatusBar module</a></li>
 <li><a class="reference internal" href="#module-felapps.utils.analysisframe">felapps.utils.analysisframe module</a></li>
 <li><a class="reference internal" href="#module-felapps.utils.datascanapp">felapps.utils.datascanapp module</a></li>
 <li><a class="reference internal" href="#module-felapps.utils.datascanframe">felapps.utils.datascanframe module</a></li>
@@ -69,7 +68,6 @@
 <li><a class="reference internal" href="#module-felapps.utils.resutils">felapps.utils.resutils module</a></li>
 <li><a class="reference internal" href="#module-felapps.utils.scanutils">felapps.utils.scanutils module</a></li>
 <li><a class="reference internal" href="#module-felapps.utils.uiutils">felapps.utils.uiutils module</a></li>
-<li><a class="reference internal" href="#module-felapps.utils">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -95,98 +93,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="felapps-utils-package">
-<h1>felapps.utils package<a class="headerlink" href="#felapps-utils-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-felapps.utils">
+<span id="felapps-utils-package"></span><h1>felapps.utils package<a class="headerlink" href="#module-felapps.utils" title="Permalink to this headline">¶</a></h1>
+<p>This subpackage is designed for providing essential modules,
+classes, functions that <code class="docutils literal"><span class="pre">felapps</span></code> needs to accomplish various different
+tasks, basically all the modules are grouped by the type of the task.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-felapps.utils.EnhancedStatusBar">
-<span id="felapps-utils-enhancedstatusbar-module"></span><h2>felapps.utils.EnhancedStatusBar module<a class="headerlink" href="#module-felapps.utils.EnhancedStatusBar" title="Permalink to this headline">¶</a></h2>
-<p>Description:</p>
-<p>EnhancedStatusBar Is A Slight Modification (Actually A Subclassing) Of wx.StatusBar.
-It Allows You To Add Almost Any Widget You Like To The wx.StatusBar Of Your Main
-Frame Application And Also To Layout Them Properly.</p>
-<p>What It Can Do:</p>
-<ol class="arabic">
-<li><p class="first">Almost All The Functionalities Of wx.StatusBar Are Still Present;</p>
-</li>
-<li><p class="first">You Can Add Different Kind Of Widgets Into Every Field Of The EnhancedStatusBar;</p>
-</li>
-<li><p class="first">The AddWidget() Methods Accepts 2 Layout Inputs:
-- horizontalalignment: This Specify The Horizontal Alignment For Your Widget,</p>
-<blockquote>
-<div><p>And Can Be ESB_EXACT_FIT, ESB_ALIGN_CENTER_HORIZONTAL, ESB_ALIGN_LEFT And
-ESB_ALIGN_RIGHT;</p>
-</div></blockquote>
-<ul class="simple">
-<li>varticalalignment: This Specify The Vertical Alignment For Your Widget,
-And Can Be ESB_EXACT_FIT, ESB_ALIGN_CENTER_VERTICAL, ESB_ALIGN_BOTTOM And
-ESB_ALIGN_LEFT;</li>
-</ul>
-</li>
-</ol>
-<p>EnhancedStatusBar Is Freeware And Distributed Under The wxPython License.</p>
-<p>Latest Revision: 21 September 2005, 19.57.20 GMT+2
-Latest Revision before Latest Revision: 21 September 2005, 18.29.35 GMT+2
-Latest Revision before Latest Revision before Latest Revision: 31 May 2005, 23.17 CET</p>
-<dl class="class">
-<dt id="felapps.utils.EnhancedStatusBar.EnhancedStatusBar">
-<em class="property">class </em><code class="descclassname">felapps.utils.EnhancedStatusBar.</code><code class="descname">EnhancedStatusBar</code><span class="sig-paren">(</span><em>parent</em>, <em>id=-1</em>, <em>style=16</em>, <em>name='EnhancedStatusBar'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.EnhancedStatusBar.EnhancedStatusBar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.StatusBar</span></code></p>
-<dl class="method">
-<dt id="felapps.utils.EnhancedStatusBar.EnhancedStatusBar.AddWidget">
-<code class="descname">AddWidget</code><span class="sig-paren">(</span><em>widget</em>, <em>horizontalalignment=11</em>, <em>verticalalignment=1</em>, <em>pos=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.EnhancedStatusBar.EnhancedStatusBar.AddWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add A Widget To The EnhancedStatusBar.</p>
-<p>Parameters:</p>
-<ul>
-<li><p class="first">horizontalalignment: This Can Be One Of:
-a) ESB_EXACT_FIT: The Widget Will Fit Horizontally The StatusBar Field Width;
-b) ESB_ALIGN_CENTER_HORIZONTAL: The Widget Will Be Centered Horizontally In</p>
-<blockquote>
-<div><p>The StatusBar Field;</p>
-</div></blockquote>
-<ol class="loweralpha simple" start="3">
-<li>ESB_ALIGN_LEFT: The Widget Will Be Left Aligned In The StatusBar Field;</li>
-<li>ESB_ALIGN_RIGHT: The Widget Will Be Right Aligned In The StatusBar Field;</li>
-</ol>
-</li>
-<li><p class="first">verticalalignment:
-a) ESB_EXACT_FIT: The Widget Will Fit Vertically The StatusBar Field Height;
-b) ESB_ALIGN_CENTER_VERTICAL: The Widget Will Be Centered Vertically In</p>
-<blockquote>
-<div><p>The StatusBar Field;</p>
-</div></blockquote>
-<ol class="loweralpha simple" start="3">
-<li>ESB_ALIGN_BOTTOM: The Widget Will Be Bottom Aligned In The StatusBar Field;</li>
-<li>ESB_ALIGN_TOP: The Widget Will Be TOP Aligned In The StatusBar Field;</li>
-</ol>
-</li>
-</ul>
-</dd></dl>
-
-<dl class="method">
-<dt id="felapps.utils.EnhancedStatusBar.EnhancedStatusBar.OnSize">
-<code class="descname">OnSize</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.EnhancedStatusBar.EnhancedStatusBar.OnSize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handles The wx.EVT_SIZE Events For The StatusBar.</p>
-<p>Actually, All The Calculations Linked To HorizontalAlignment And
-VerticalAlignment Are Done In This Function.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="felapps.utils.EnhancedStatusBar.EnhancedStatusBarItem">
-<em class="property">class </em><code class="descclassname">felapps.utils.EnhancedStatusBar.</code><code class="descname">EnhancedStatusBarItem</code><span class="sig-paren">(</span><em>widget</em>, <em>pos</em>, <em>horizontalalignment=11</em>, <em>verticalalignment=1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.EnhancedStatusBar.EnhancedStatusBarItem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-felapps.utils.analysisframe">
 <span id="felapps-utils-analysisframe-module"></span><h2>felapps.utils.analysisframe module<a class="headerlink" href="#module-felapps.utils.analysisframe" title="Permalink to this headline">¶</a></h2>
 <p>Subclass of PlotFrame, which is generated by wxFormBuilder.</p>
 <dl class="class">
 <dt id="felapps.utils.analysisframe.AnalysisFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.analysisframe.</code><code class="descname">AnalysisFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>datasrc</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.analysisframe.AnalysisFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AnalysisFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>datasrc</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.analysisframe.AnalysisFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.myui.PlotFrame" title="felapps.utils.myui.PlotFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.myui.PlotFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.analysisframe.AnalysisFrame.cmap_cbOnCombobox">
@@ -362,7 +282,7 @@ VerticalAlignment Are Done In This Function.</p>
 2016-07-12 10:11:05 AM CST</p>
 <dl class="class">
 <dt id="felapps.utils.datascanapp.MainFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanapp.</code><code class="descname">MainFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>appversion='0.1'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanapp.MainFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MainFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>appversion='0.1'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanapp.MainFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.datascanframe.DataScanFrame" title="felapps.utils.datascanframe.DataScanFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.datascanframe.DataScanFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datascanapp.MainFrame.about_mitemOnMenuSelection">
@@ -402,7 +322,7 @@ VerticalAlignment Are Done In This Function.</p>
 <p>Subclass of DataScanFrame, which is generated by wxFormBuilder.</p>
 <dl class="class">
 <dt id="felapps.utils.datascanframe.DataScanFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe.</code><code class="descname">DataScanFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.DataScanFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DataScanFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.DataScanFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.datascanframe_ui.DataScanFrame" title="felapps.utils.datascanframe_ui.DataScanFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.datascanframe_ui.DataScanFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe.DataScanFrame.about_mitemOnMenuSelection">
@@ -682,7 +602,7 @@ VerticalAlignment Are Done In This Function.</p>
 
 <dl class="class">
 <dt id="felapps.utils.datascanframe.MyEditConfigFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe.</code><code class="descname">MyEditConfigFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditConfigFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyEditConfigFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditConfigFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.uiutils.EditListFrame" title="felapps.utils.uiutils.EditListFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.uiutils.EditListFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe.MyEditConfigFrame.on_ok">
@@ -693,7 +613,7 @@ VerticalAlignment Are Done In This Function.</p>
 
 <dl class="class">
 <dt id="felapps.utils.datascanframe.MyEditFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe.</code><code class="descname">MyEditFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyEditFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.uiutils.EditListFrame" title="felapps.utils.uiutils.EditListFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.uiutils.EditListFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe.MyEditFrame.on_ok">
@@ -704,7 +624,7 @@ VerticalAlignment Are Done In This Function.</p>
 
 <dl class="class">
 <dt id="felapps.utils.datascanframe.MyEditListFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe.</code><code class="descname">MyEditListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditListFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyEditListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe.MyEditListFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.uiutils.EditListFrame" title="felapps.utils.uiutils.EditListFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.uiutils.EditListFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe.MyEditListFrame.on_ok">
@@ -718,7 +638,7 @@ VerticalAlignment Are Done In This Function.</p>
 <span id="felapps-utils-datascanframe-ui-module"></span><h2>felapps.utils.datascanframe_ui module<a class="headerlink" href="#module-felapps.utils.datascanframe_ui" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="felapps.utils.datascanframe_ui.DataScanFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe_ui.</code><code class="descname">DataScanFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe_ui.DataScanFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DataScanFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe_ui.DataScanFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe_ui.DataScanFrame.about_mitemOnMenuSelection">
@@ -919,7 +839,7 @@ VerticalAlignment Are Done In This Function.</p>
 
 <dl class="class">
 <dt id="felapps.utils.datascanframe_ui.FuncListFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.datascanframe_ui.</code><code class="descname">FuncListFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe_ui.FuncListFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FuncListFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datascanframe_ui.FuncListFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.datascanframe_ui.FuncListFrame.cancel_btnOnButtonClick">
@@ -959,7 +879,7 @@ VerticalAlignment Are Done In This Function.</p>
 Created: Sep. 23rd, 2015</p>
 <dl class="class">
 <dt id="felapps.utils.datautils.DataImportThread">
-<em class="property">class </em><code class="descclassname">felapps.utils.datautils.</code><code class="descname">DataImportThread</code><span class="sig-paren">(</span><em>parent</em>, <em>target</em>, <em>datafiles</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.DataImportThread" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DataImportThread</code><span class="sig-paren">(</span><em>parent</em>, <em>target</em>, <em>datafiles</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.DataImportThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/threading.html#threading.Thread" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datautils.DataImportThread.run">
@@ -975,7 +895,7 @@ Created: Sep. 23rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.datautils.DataWorkshop">
-<em class="property">class </em><code class="descclassname">felapps.utils.datautils.</code><code class="descname">DataWorkshop</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(1000</em>, <em>750)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.DataWorkshop" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DataWorkshop</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(1000</em>, <em>750)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.DataWorkshop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.datautils.DataWorkshop.createMenubar">
@@ -1124,7 +1044,7 @@ image_list: put generated image files from fdata_list</p>
 
 <dl class="class">
 <dt id="felapps.utils.datautils.ImageGrid">
-<em class="property">class </em><code class="descclassname">felapps.utils.datautils.</code><code class="descname">ImageGrid</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.ImageGrid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageGrid</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.ImageGrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.pltutils.ImagePanel" title="felapps.utils.pltutils.ImagePanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.pltutils.ImagePanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datautils.ImageGrid.doPlot">
@@ -1155,7 +1075,7 @@ image_list: put generated image files from fdata_list</p>
 
 <dl class="class">
 <dt id="felapps.utils.datautils.PlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.datautils.</code><code class="descname">PlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.PlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.PlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.funutils.AnalysisPlotPanel" title="felapps.utils.funutils.AnalysisPlotPanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.funutils.AnalysisPlotPanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.datautils.PlotPanel.clear">
@@ -1196,7 +1116,7 @@ image_list: put generated image files from fdata_list</p>
 
 <dl class="class">
 <dt id="felapps.utils.datautils.StatPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.datautils.</code><code class="descname">StatPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>datafiles</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.StatPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">StatPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>datafiles</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.datautils.StatPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.datautils.StatPanel.InitUI">
@@ -1259,7 +1179,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 </dl>
 <dl class="class">
 <dt id="felapps.utils.felutils.ChiConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">ChiConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ChiConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ChiConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ChiConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.ChiConfigPanel.InitUI">
@@ -1300,7 +1220,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.EbeamConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">EbeamConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.EbeamConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EbeamConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.EbeamConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.EbeamConfigPanel.InitUI">
@@ -1361,7 +1281,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.LaserConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">LaserConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.LaserConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">LaserConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.LaserConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.LaserConfigPanel.InitUI">
@@ -1422,7 +1342,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.MatchPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">MatchPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.MatchPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MatchPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.MatchPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.MatchPanel.InitUI">
@@ -1468,7 +1388,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.ModConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">ModConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ModConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ModConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ModConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.ModConfigPanel.InitUI">
@@ -1509,7 +1429,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.ModdsPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">ModdsPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ModdsPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ModdsPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.ModdsPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.ModdsPanel.InitUI">
@@ -1580,7 +1500,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.felutils.RadisPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.felutils.</code><code class="descname">RadisPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.RadisPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">RadisPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.RadisPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.felutils.RadisPanel.InitUI">
@@ -1626,7 +1546,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 
 <dl class="function">
 <dt id="felapps.utils.felutils.main">
-<code class="descclassname">felapps.utils.felutils.</code><code class="descname">main</code><span class="sig-paren">(</span><em>ClassName=&lt;class 'felapps.utils.felutils.ModdsPanel'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.main" title="Permalink to this definition">¶</a></dt>
+<code class="descname">main</code><span class="sig-paren">(</span><em>ClassName=&lt;class 'felapps.utils.felutils.ModdsPanel'&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.felutils.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -1634,7 +1554,7 @@ Created Time: 20:14, Jan. 28, 2015</p>
 <span id="felapps-utils-funclistframe-module"></span><h2>felapps.utils.funclistframe module<a class="headerlink" href="#module-felapps.utils.funclistframe" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="felapps.utils.funclistframe.FuncListFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.funclistframe.</code><code class="descname">FuncListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>fullpath='.'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funclistframe.FuncListFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FuncListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>fullpath='.'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funclistframe.FuncListFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.datascanframe_ui.FuncListFrame" title="felapps.utils.datascanframe_ui.FuncListFrame"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.datascanframe_ui.FuncListFrame</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funclistframe.FuncListFrame.cancel_btnOnButtonClick">
@@ -1671,7 +1591,7 @@ Created Time: 11:09, Jan. 29, 2015</p>
 <p>utilities/functions for convenience</p>
 <dl class="class">
 <dt id="felapps.utils.funutils.AnalysisPlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">AnalysisPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.AnalysisPlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AnalysisPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.AnalysisPlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.uiutils.MyPlotPanel" title="felapps.utils.uiutils.MyPlotPanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.uiutils.MyPlotPanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.AnalysisPlotPanel.clear">
@@ -1849,7 +1769,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.ExportData">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">ExportData</code><span class="sig-paren">(</span><em>data_raw</em>, <em>data_fit</em>, <em>model_x</em>, <em>model_y</em>, <em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ExportData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ExportData</code><span class="sig-paren">(</span><em>data_raw</em>, <em>data_fit</em>, <em>model_x</em>, <em>model_y</em>, <em>fname</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ExportData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.ExportData.onProcess">
@@ -1865,7 +1785,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.FitModels">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">FitModels</code><span class="sig-paren">(</span><em>model='gaussian'</em>, <em>params=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.FitModels" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FitModels</code><span class="sig-paren">(</span><em>model='gaussian'</em>, <em>params=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.FitModels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.FitModels.calc_p0">
@@ -1930,7 +1850,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.FloatSlider">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">FloatSlider</code><span class="sig-paren">(</span><em>parent</em>, <em>id=-1</em>, <em>value=0</em>, <em>minValue=0</em>, <em>maxValue=10</em>, <em>increment=0.1</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=4</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.FloatSlider" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FloatSlider</code><span class="sig-paren">(</span><em>parent</em>, <em>id=-1</em>, <em>value=0</em>, <em>minValue=0</em>, <em>maxValue=10</em>, <em>increment=0.1</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=4</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.FloatSlider" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.Slider</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.FloatSlider.GetInc">
@@ -1986,7 +1906,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.ImageDataFactor">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">ImageDataFactor</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ImageDataFactor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageDataFactor</code><span class="sig-paren">(</span><em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ImageDataFactor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.ImageDataFactor.getData">
@@ -2007,7 +1927,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyButton">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyButton</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyButton" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyButton</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyButton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.Button</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.MyButton.setFont">
@@ -2033,7 +1953,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyCheckBox">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyCheckBox</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyCheckBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyCheckBox</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyCheckBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.CheckBox</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.MyCheckBox.setFont">
@@ -2059,7 +1979,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyComboBox">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyComboBox</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=12</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyComboBox" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyComboBox</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=12</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyComboBox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.ComboBox</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.MyComboBox.setFont">
@@ -2085,13 +2005,13 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyListCtrl">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyListCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>ID</em>, <em>pos=wx.Point(-1</em>, <em>-1)</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyListCtrl" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyListCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>ID</em>, <em>pos=wx.Point(-1</em>, <em>-1)</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyListCtrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.ListCtrl</span></code>, <code class="xref py py-class docutils literal"><span class="pre">wx.lib.mixins.listctrl.ListCtrlAutoWidthMixin</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MySpinCtrl">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MySpinCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MySpinCtrl" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MySpinCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MySpinCtrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.SpinCtrl</span></code></p>
 <p>font: wx.Font()</p>
 <dl class="method">
@@ -2118,7 +2038,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyStaticText">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyStaticText</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyStaticText" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyStaticText</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>fontweight=90</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyStaticText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.StaticText</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.MyStaticText.setFont">
@@ -2144,7 +2064,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.MyTextCtrl">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">MyTextCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyTextCtrl" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyTextCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>font=None</em>, <em>fontsize=10</em>, <em>fontcolor='black'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.MyTextCtrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.TextCtrl</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.MyTextCtrl.setFont">
@@ -2170,7 +2090,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.ProgressBarFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">ProgressBarFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>range=100</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ProgressBarFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ProgressBarFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>range=100</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ProgressBarFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.ProgressBarFrame.createProgressbar">
@@ -2186,7 +2106,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.SaveData">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">SaveData</code><span class="sig-paren">(</span><em>data</em>, <em>fname</em>, <em>type</em>, <em>app='imageviewer'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.SaveData" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">SaveData</code><span class="sig-paren">(</span><em>data</em>, <em>fname</em>, <em>type</em>, <em>app='imageviewer'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.SaveData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.SaveData.onDataProcess">
@@ -2212,7 +2132,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.ScanDataFactor">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">ScanDataFactor</code><span class="sig-paren">(</span><em>z</em>, <em>scannum</em>, <em>shotnum</em>, <em>ndim=2</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ScanDataFactor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ScanDataFactor</code><span class="sig-paren">(</span><em>z</em>, <em>scannum</em>, <em>shotnum</em>, <em>ndim=2</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ScanDataFactor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.ScanDataFactor.getXavg">
@@ -2248,7 +2168,7 @@ else return None</p>
 
 <dl class="class">
 <dt id="felapps.utils.funutils.ScanPlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.funutils.</code><code class="descname">ScanPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ScanPlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ScanPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.ScanPlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.funutils.AnalysisPlotPanel" title="felapps.utils.funutils.AnalysisPlotPanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.funutils.AnalysisPlotPanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.funutils.ScanPlotPanel.adjustErrbar">
@@ -2431,13 +2351,13 @@ available keys of kws:, x, y, fontsize</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.aupmu">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">aupmu</code><span class="sig-paren">(</span><em>gap</em>, <em>xlamd</em>, <em>a=3.44</em>, <em>b=-5.0</em>, <em>c=1.54</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.aupmu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">aupmu</code><span class="sig-paren">(</span><em>gap</em>, <em>xlamd</em>, <em>a=3.44</em>, <em>b=-5.0</em>, <em>c=1.54</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.aupmu" title="Permalink to this definition">¶</a></dt>
 <dd><p>gap, xlamd: [mm]</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.color_to_hex">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">color_to_hex</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.color_to_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">color_to_hex</code><span class="sig-paren">(</span><em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.color_to_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert matplotlib colors into hex string format,
 e.g.
 1 color_to_hex(&#8216;r&#8217;) = &#8216;#FF0000&#8217;
@@ -2447,49 +2367,49 @@ e.g.
 
 <dl class="function">
 <dt id="felapps.utils.funutils.createwxButton">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">createwxButton</code><span class="sig-paren">(</span><em>parent</em>, <em>label</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em>, <em>size=wx.Size(-1</em>, <em>-1)</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxButton" title="Permalink to this definition">¶</a></dt>
+<code class="descname">createwxButton</code><span class="sig-paren">(</span><em>parent</em>, <em>label</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em>, <em>size=wx.Size(-1</em>, <em>-1)</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxButton" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.createwxPanel">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">createwxPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>backgroundcolor=None</em>, <em>id=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxPanel" title="Permalink to this definition">¶</a></dt>
+<code class="descname">createwxPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>backgroundcolor=None</em>, <em>id=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxPanel" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.createwxStaticBox">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">createwxStaticBox</code><span class="sig-paren">(</span><em>parent</em>, <em>label=''</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxStaticBox" title="Permalink to this definition">¶</a></dt>
+<code class="descname">createwxStaticBox</code><span class="sig-paren">(</span><em>parent</em>, <em>label=''</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxStaticBox" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.createwxStaticText">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">createwxStaticText</code><span class="sig-paren">(</span><em>parent</em>, <em>label</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxStaticText" title="Permalink to this definition">¶</a></dt>
+<code class="descname">createwxStaticText</code><span class="sig-paren">(</span><em>parent</em>, <em>label</em>, <em>size=wx.Size(-1</em>, <em>-1)</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxStaticText" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.createwxTextCtrl">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">createwxTextCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>value=''</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxTextCtrl" title="Permalink to this definition">¶</a></dt>
+<code class="descname">createwxTextCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>value=''</em>, <em>style=0</em>, <em>fontname=17</em>, <em>fontsize=10</em>, <em>fontweight=90</em>, <em>fontcolor='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.createwxTextCtrl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.findObj">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">findObj</code><span class="sig-paren">(</span><em>objroot</em>, <em>objclass</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.findObj" title="Permalink to this definition">¶</a></dt>
+<code class="descname">findObj</code><span class="sig-paren">(</span><em>objroot</em>, <em>objclass</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.findObj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find all the objects that is instance of objclass belongs to objroot.
 obj</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.func_peaks">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">func_peaks</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.func_peaks" title="Permalink to this definition">¶</a></dt>
+<code class="descname">func_peaks</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.func_peaks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.func_sinc">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">func_sinc</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.func_sinc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">func_sinc</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.func_sinc" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.gaussian_fit">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">gaussian_fit</code><span class="sig-paren">(</span><em>x</em>, <em>xdata</em>, <em>mode='full'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.gaussian_fit" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gaussian_fit</code><span class="sig-paren">(</span><em>x</em>, <em>xdata</em>, <em>mode='full'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.gaussian_fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>return fit result and fitmodels
 :param x: data to fit, x col, numpy array
 :param xdata: data to fit, y col, numpy array</p>
@@ -2497,17 +2417,17 @@ obj</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.getFileToLoad">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">getFileToLoad</code><span class="sig-paren">(</span><em>parent</em>, <em>ext='*'</em>, <em>flag='single'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getFileToLoad" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFileToLoad</code><span class="sig-paren">(</span><em>parent</em>, <em>ext='*'</em>, <em>flag='single'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getFileToLoad" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.getFileToSave">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">getFileToSave</code><span class="sig-paren">(</span><em>parent</em>, <em>ext='*'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getFileToSave" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getFileToSave</code><span class="sig-paren">(</span><em>parent</em>, <em>ext='*'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getFileToSave" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.getResPath">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">getResPath</code><span class="sig-paren">(</span><em>filename</em>, <em>cwd='.'</em>, <em>resdir='../resources'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getResPath" title="Permalink to this definition">¶</a></dt>
+<code class="descname">getResPath</code><span class="sig-paren">(</span><em>filename</em>, <em>cwd='.'</em>, <em>resdir='../resources'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.getResPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>return absolute path for resources, e.g. images, data
 :param reshead : the relative path for resources dir
 :param filename: filename for images or data</p>
@@ -2515,21 +2435,21 @@ obj</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.get_file_info">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">get_file_info</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_file_info" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_file_info</code><span class="sig-paren">(</span><em>filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_file_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>return file information
 :param filepath: file full path name</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.get_randstr">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">get_randstr</code><span class="sig-paren">(</span><em>length=1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_randstr" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_randstr</code><span class="sig-paren">(</span><em>length=1</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_randstr" title="Permalink to this definition">¶</a></dt>
 <dd><p>return string of random picked up chars
 :param length: string length to return</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.get_range">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">get_range</code><span class="sig-paren">(</span><em>x</em>, <em>xmin</em>, <em>xmax</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_range" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_range</code><span class="sig-paren">(</span><em>x</em>, <em>xmin</em>, <em>xmax</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.get_range" title="Permalink to this definition">¶</a></dt>
 <dd><p>find array range,
 :param x: orignal numpy array, 1d
 :param xmin: x min of range
@@ -2539,7 +2459,7 @@ return range_index and array</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.handleConfig">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">handleConfig</code><span class="sig-paren">(</span><em>config_name='imageviewer.xml'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.handleConfig" title="Permalink to this definition">¶</a></dt>
+<code class="descname">handleConfig</code><span class="sig-paren">(</span><em>config_name='imageviewer.xml'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.handleConfig" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>handle configuration files issues:</dt>
 <dd>1 load configuration files from app data
@@ -2558,7 +2478,7 @@ return range_index and array</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.hex2rgb">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">hex2rgb</code><span class="sig-paren">(</span><em>hex_string</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.hex2rgb" title="Permalink to this definition">¶</a></dt>
+<code class="descname">hex2rgb</code><span class="sig-paren">(</span><em>hex_string</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.hex2rgb" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert hexadecimal color into rgb form.
 :param hex_string: hex color string, e.g. white color: &#8216;#FFFFFF&#8217;</p>
 <p>Example:
@@ -2568,43 +2488,43 @@ return range_index and array</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.importCheck">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">importCheck</code><span class="sig-paren">(</span><em>moduleName</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.importCheck" title="Permalink to this definition">¶</a></dt>
+<code class="descname">importCheck</code><span class="sig-paren">(</span><em>moduleName</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.importCheck" title="Permalink to this definition">¶</a></dt>
 <dd><p>check could import moduleName or not</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.invert_color_hex">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">invert_color_hex</code><span class="sig-paren">(</span><em>hex_color_str</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.invert_color_hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">invert_color_hex</code><span class="sig-paren">(</span><em>hex_color_str</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.invert_color_hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>invert hex colors,
 e.g. invert_color_hex(&#8216;#FFFFFF&#8217;) = &#8216;#000000&#8217;</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.pick_color">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">pick_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.pick_color" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pick_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.pick_color" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.r56chi">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">r56chi</code><span class="sig-paren">(</span><em>gam0</em>, <em>ibfield</em>, <em>imagl=0.15</em>, <em>idril=0.285</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.r56chi" title="Permalink to this definition">¶</a></dt>
+<code class="descname">r56chi</code><span class="sig-paren">(</span><em>gam0</em>, <em>ibfield</em>, <em>imagl=0.15</em>, <em>idril=0.285</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.r56chi" title="Permalink to this definition">¶</a></dt>
 <dd><p>return r56 of chicane, ibfield: [T]</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.readfld">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">readfld</code><span class="sig-paren">(</span><em>filename</em>, <em>ncar=121</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.readfld" title="Permalink to this definition">¶</a></dt>
+<code class="descname">readfld</code><span class="sig-paren">(</span><em>filename</em>, <em>ncar=121</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.readfld" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.rescaleImage">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">rescaleImage</code><span class="sig-paren">(</span><em>image0</em>, <em>scaledFac</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.rescaleImage" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rescaleImage</code><span class="sig-paren">(</span><em>image0</em>, <em>scaledFac</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.rescaleImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>Jan. 28, 2105
 rescale image, given the image full path on disk</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.rgb2hex">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">rgb2hex</code><span class="sig-paren">(</span><em>rgb_tuple</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.rgb2hex" title="Permalink to this definition">¶</a></dt>
+<code class="descname">rgb2hex</code><span class="sig-paren">(</span><em>rgb_tuple</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.rgb2hex" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert color rgb into hex form.
 :param rgb_tuple: tuple of rgb color, e.g. white color: (255, 255, 255)</p>
 <p>Example:
@@ -2614,12 +2534,12 @@ u&#8217;ffaabb&#8217;</p>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.setPath">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">setPath</code><span class="sig-paren">(</span><em>pathstr</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.setPath" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setPath</code><span class="sig-paren">(</span><em>pathstr</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.setPath" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.funutils.set_staticbmp_color">
-<code class="descclassname">felapps.utils.funutils.</code><code class="descname">set_staticbmp_color</code><span class="sig-paren">(</span><em>obj</em>, <em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.set_staticbmp_color" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set_staticbmp_color</code><span class="sig-paren">(</span><em>obj</em>, <em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.funutils.set_staticbmp_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>obj: staticbitmap, bitmapbutton
 color: could be returned by pick_color()</p>
 </dd></dl>
@@ -2635,7 +2555,7 @@ color: could be returned by pick_color()</p>
 Created: Sep. 28, 2015</p>
 <dl class="class">
 <dt id="felapps.utils.imageutils.ImageGalleryPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.imageutils.</code><code class="descname">ImageGalleryPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.ImageGalleryPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageGalleryPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.ImageGalleryPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx.lib.scrolledpanel.ScrolledPanel</span></code></p>
 <p>Panel for image gallery show</p>
 <dl class="method">
@@ -2734,7 +2654,7 @@ Created: Sep. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.imageutils.ProgressBarFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.imageutils.</code><code class="descname">ProgressBarFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>range=100</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.ProgressBarFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ProgressBarFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>title</em>, <em>range=100</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.ProgressBarFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.imageutils.ProgressBarFrame.createProgressbar">
@@ -2750,7 +2670,7 @@ Created: Sep. 28, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.imageutils.WorkspacePanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.imageutils.</code><code class="descname">WorkspacePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.WorkspacePanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">WorkspacePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.WorkspacePanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.imageutils.WorkspacePanel.clear">
@@ -2771,7 +2691,7 @@ Created: Sep. 28, 2015</p>
 
 <dl class="function">
 <dt id="felapps.utils.imageutils.data2Image">
-<code class="descclassname">felapps.utils.imageutils.</code><code class="descname">data2Image</code><span class="sig-paren">(</span><em>filename</em>, <em>datatype='hdf5'</em>, <em>figtype='jpg'</em>, <em>wdir=None</em>, <em>width=None</em>, <em>height=None</em>, <em>whflag='h'</em>, <em>cmtype='hot'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.data2Image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">data2Image</code><span class="sig-paren">(</span><em>filename</em>, <em>datatype='hdf5'</em>, <em>figtype='jpg'</em>, <em>wdir=None</em>, <em>width=None</em>, <em>height=None</em>, <em>whflag='h'</em>, <em>cmtype='hot'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.data2Image" title="Permalink to this definition">¶</a></dt>
 <dd><p>generate image thumbnails from data file, by default from hdf5 array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2798,12 +2718,12 @@ or &#8216;None&#8217; (take size as w x h).</li>
 
 <dl class="function">
 <dt id="felapps.utils.imageutils.main">
-<code class="descclassname">felapps.utils.imageutils.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.main" title="Permalink to this definition">¶</a></dt>
+<code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.imageutils.resizeImage">
-<code class="descclassname">felapps.utils.imageutils.</code><code class="descname">resizeImage</code><span class="sig-paren">(</span><em>imagepath</em>, <em>height</em>, <em>width=None</em>, <em>whflag='h'</em>, <em>quality=0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.resizeImage" title="Permalink to this definition">¶</a></dt>
+<code class="descname">resizeImage</code><span class="sig-paren">(</span><em>imagepath</em>, <em>height</em>, <em>width=None</em>, <em>whflag='h'</em>, <em>quality=0</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.resizeImage" title="Permalink to this definition">¶</a></dt>
 <dd><p>resize image read from file, return wx.Image obj
 :param imagepath: jpg image file path
 :param height: height in pixel after resizing
@@ -2813,7 +2733,7 @@ or &#8216;None&#8217; (take size as w x h).</li>
 
 <dl class="function">
 <dt id="felapps.utils.imageutils.test_data2Image">
-<code class="descclassname">felapps.utils.imageutils.</code><code class="descname">test_data2Image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.test_data2Image" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test_data2Image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.imageutils.test_data2Image" title="Permalink to this definition">¶</a></dt>
 <dd><p>test function Hdf2Image</p>
 </dd></dl>
 
@@ -2828,7 +2748,7 @@ or &#8216;None&#8217; (take size as w x h).</li>
 Created: Sep. 23rd, 2015</p>
 <dl class="class">
 <dt id="felapps.utils.matchutils.LatVisPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.matchutils.</code><code class="descname">LatVisPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.matchutils.LatVisPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">LatVisPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.matchutils.LatVisPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.pltutils.ImagePanelxy" title="felapps.utils.pltutils.ImagePanelxy"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.pltutils.ImagePanelxy</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.matchutils.LatVisPanel.clear">
@@ -2849,7 +2769,7 @@ Created: Sep. 23rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.matchutils.MatchWizard">
-<em class="property">class </em><code class="descclassname">felapps.utils.matchutils.</code><code class="descname">MatchWizard</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(1000</em>, <em>750)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.matchutils.MatchWizard" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MatchWizard</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(1000</em>, <em>750)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.matchutils.MatchWizard" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.matchutils.MatchWizard.createMenubar">
@@ -2953,7 +2873,7 @@ Created: Sep. 23rd, 2015</p>
 <span id="felapps-utils-miscutils-module"></span><h2>felapps.utils.miscutils module<a class="headerlink" href="#module-felapps.utils.miscutils" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="felapps.utils.miscutils.AppVersions">
-<em class="property">class </em><code class="descclassname">felapps.utils.miscutils.</code><code class="descname">AppVersions</code><a class="headerlink" href="#felapps.utils.miscutils.AppVersions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AppVersions</code><a class="headerlink" href="#felapps.utils.miscutils.AppVersions" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="felapps.utils.miscutils.AppVersions.getVersion">
 <code class="descname">getVersion</code><span class="sig-paren">(</span><em>appName='imageviewer'</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.miscutils.AppVersions.getVersion" title="Permalink to this definition">¶</a></dt>
@@ -2971,7 +2891,7 @@ Created: Sep. 23rd, 2015</p>
 <span id="felapps-utils-myui-module"></span><h2>felapps.utils.myui module<a class="headerlink" href="#module-felapps.utils.myui" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="felapps.utils.myui.PlotFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.myui.</code><code class="descname">PlotFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.myui.PlotFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">PlotFrame</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.myui.PlotFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.myui.PlotFrame.cmap_cbOnCombobox">
@@ -3077,7 +2997,7 @@ Created: Sep. 23rd, 2015</p>
 Created Time: 10:22, Sep. 17, 2015</p>
 <dl class="class">
 <dt id="felapps.utils.parseutils.ConfigFile">
-<em class="property">class </em><code class="descclassname">felapps.utils.parseutils.</code><code class="descname">ConfigFile</code><span class="sig-paren">(</span><em>infilename='config.xml'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.ConfigFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ConfigFile</code><span class="sig-paren">(</span><em>infilename='config.xml'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.ConfigFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Class to resolve parameters parsing by applying xmlparser approach.</p>
 <dl class="method">
@@ -3099,7 +3019,7 @@ Created Time: 10:22, Sep. 17, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.parseutils.ParamParser">
-<em class="property">class </em><code class="descclassname">felapps.utils.parseutils.</code><code class="descname">ParamParser</code><span class="sig-paren">(</span><em>inifilename='config.ini'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.ParamParser" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ParamParser</code><span class="sig-paren">(</span><em>inifilename='config.ini'</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.ParamParser" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Class to resolve parameters parsing by applying ConfigParser approach.</p>
 <dl class="method">
@@ -3148,12 +3068,12 @@ Created Time: 10:22, Sep. 17, 2015</p>
 
 <dl class="function">
 <dt id="felapps.utils.parseutils.loadtest">
-<code class="descclassname">felapps.utils.parseutils.</code><code class="descname">loadtest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.loadtest" title="Permalink to this definition">¶</a></dt>
+<code class="descname">loadtest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.loadtest" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.parseutils.savetest">
-<code class="descclassname">felapps.utils.parseutils.</code><code class="descname">savetest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.savetest" title="Permalink to this definition">¶</a></dt>
+<code class="descname">savetest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.parseutils.savetest" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -3167,7 +3087,7 @@ Created Time: 10:22, Sep. 17, 2015</p>
 Created: Feb. 3rd, 2015</p>
 <dl class="class">
 <dt id="felapps.utils.pltutils.AppConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">AppConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.AppConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AppConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.AppConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.AppConfigPanel.InitUI">
@@ -3213,7 +3133,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.AutoSavePanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">AutoSavePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.AutoSavePanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">AutoSavePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.AutoSavePanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.AutoSavePanel.InitUI">
@@ -3249,7 +3169,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ChooseROIFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ChooseROIFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>imgsrcptn</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ChooseROIFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ChooseROIFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>imgsrcptn</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ChooseROIFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ChooseROIFrame.InitUI">
@@ -3300,7 +3220,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ChooseROIPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ChooseROIPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ChooseROIPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ChooseROIPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ChooseROIPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ChooseROIPanel.doPlot">
@@ -3322,7 +3242,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ConfigNoteBook">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ConfigNoteBook</code><span class="sig-paren">(</span><em>parent</em>, <em>style=64</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ConfigNoteBook" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ConfigNoteBook</code><span class="sig-paren">(</span><em>parent</em>, <em>style=64</em>, <em>*args</em>, <em>**kws</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ConfigNoteBook" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.Notebook</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ConfigNoteBook.MakePages">
@@ -3333,7 +3253,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ControlConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ControlConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ControlConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ControlConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ControlConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ControlConfigPanel.createPanel">
@@ -3374,7 +3294,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.DebugPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">DebugPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.DebugPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">DebugPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.DebugPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.DebugPanel.InitUI">
@@ -3390,7 +3310,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.FitPlotFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">FitPlotFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>model_x</em>, <em>model_y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.FitPlotFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FitPlotFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>model_x</em>, <em>model_y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.FitPlotFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.FitPlotFrame.onAutoScale">
@@ -3421,7 +3341,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.FitPlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">FitPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>fitmodel_x</em>, <em>fitmodel_y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.FitPlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">FitPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>fitmodel_x</em>, <em>fitmodel_y</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.FitPlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.pltutils.ImagePanelxy" title="felapps.utils.pltutils.ImagePanelxy"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.pltutils.ImagePanelxy</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.FitPlotPanel.doPlot">
@@ -3457,7 +3377,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.HistPlotConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">HistPlotConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.HistPlotConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">HistPlotConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.HistPlotConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.HistPlotConfigPanel.createPanel">
@@ -3478,7 +3398,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImageColorMap">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImageColorMap</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageColorMap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageColorMap</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageColorMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImageColorMap.doPlot">
@@ -3525,7 +3445,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImageConfigFile">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImageConfigFile</code><span class="sig-paren">(</span><em>infilename='config.xml'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageConfigFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageConfigFile</code><span class="sig-paren">(</span><em>infilename='config.xml'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageConfigFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.parseutils.ConfigFile" title="felapps.utils.parseutils.ConfigFile"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.parseutils.ConfigFile</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImageConfigFile.parseConfigs">
@@ -3536,7 +3456,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImageConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImageConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImageConfigPanel.createPanel">
@@ -3567,7 +3487,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImagePanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImagePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>heightratio=0.4</em>, <em>func='peaks'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImagePanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImagePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>heightratio=0.4</em>, <em>func='peaks'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImagePanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImagePanel.doPlot">
@@ -3679,7 +3599,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImagePanelxy">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImagePanelxy</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImagePanelxy" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImagePanelxy</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImagePanelxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImagePanelxy.doPlot">
@@ -3741,7 +3661,7 @@ Created: Feb. 3rd, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ImageViewer">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ImageViewer</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageViewer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImageViewer</code><span class="sig-paren">(</span><em>parent</em>, <em>config='config.xml'</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ImageViewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ImageViewer.InitUI">
@@ -3968,7 +3888,7 @@ self.statusbar.SetStatusText(versionfield, 1)</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.ShowIntPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">ShowIntPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ShowIntPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ShowIntPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.ShowIntPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.ShowIntPanel.InitUI">
@@ -4009,7 +3929,7 @@ self.statusbar.SetStatusText(versionfield, 1)</p>
 
 <dl class="class">
 <dt id="felapps.utils.pltutils.StyleConfigPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.pltutils.</code><code class="descname">StyleConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.StyleConfigPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">StyleConfigPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.StyleConfigPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.pltutils.StyleConfigPanel.createPanel">
@@ -4040,7 +3960,7 @@ self.statusbar.SetStatusText(versionfield, 1)</p>
 
 <dl class="function">
 <dt id="felapps.utils.pltutils.main">
-<code class="descclassname">felapps.utils.pltutils.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.main" title="Permalink to this definition">¶</a></dt>
+<code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.pltutils.main" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -4058,7 +3978,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 </dl>
 <dl class="class">
 <dt id="felapps.utils.scanutils.ImagePanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.scanutils.</code><code class="descname">ImagePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ImagePanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImagePanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ImagePanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.pltutils.ImagePanel" title="felapps.utils.pltutils.ImagePanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.pltutils.ImagePanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.scanutils.ImagePanel.doPlot">
@@ -4089,7 +4009,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.scanutils.ImagePanelxy">
-<em class="property">class </em><code class="descclassname">felapps.utils.scanutils.</code><code class="descname">ImagePanelxy</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ImagePanelxy" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ImagePanelxy</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize</em>, <em>dpi</em>, <em>bgcolor</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ImagePanelxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.pltutils.ImagePanelxy" title="felapps.utils.pltutils.ImagePanelxy"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.pltutils.ImagePanelxy</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.scanutils.ImagePanelxy.adjustErrbar">
@@ -4130,7 +4050,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.scanutils.ScanAnalyzer">
-<em class="property">class </em><code class="descclassname">felapps.utils.scanutils.</code><code class="descname">ScanAnalyzer</code><span class="sig-paren">(</span><em>parent</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanAnalyzer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ScanAnalyzer</code><span class="sig-paren">(</span><em>parent</em>, <em>size=(800</em>, <em>600)</em>, <em>appversion='1.0'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanAnalyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.scanutils.ScanAnalyzer.createMenubar">
@@ -4371,7 +4291,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.scanutils.ScanConfigFile">
-<em class="property">class </em><code class="descclassname">felapps.utils.scanutils.</code><code class="descname">ScanConfigFile</code><span class="sig-paren">(</span><em>infilename='.cornalyzer.conf'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanConfigFile" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ScanConfigFile</code><span class="sig-paren">(</span><em>infilename='.cornalyzer.conf'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanConfigFile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.parseutils.ConfigFile" title="felapps.utils.parseutils.ConfigFile"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.parseutils.ConfigFile</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.scanutils.ScanConfigFile.parseConfigs">
@@ -4382,7 +4302,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.scanutils.ScanThread">
-<em class="property">class </em><code class="descclassname">felapps.utils.scanutils.</code><code class="descname">ScanThread</code><span class="sig-paren">(</span><em>target</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanThread" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">ScanThread</code><span class="sig-paren">(</span><em>target</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.scanutils.ScanThread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/threading.html#threading.Thread" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></a></p>
 <p>Thread do scan routine, as well as show the progress bar.</p>
 <p>Dated: Jul. 1, 2015</p>
@@ -4401,7 +4321,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 2016-06-19 12:37:40 PM CST</p>
 <dl class="class">
 <dt id="felapps.utils.uiutils.CheckListCtrl">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">CheckListCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>log</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.CheckListCtrl" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">CheckListCtrl</code><span class="sig-paren">(</span><em>parent</em>, <em>log</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.CheckListCtrl" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._controls.ListCtrl</span></code>, <code class="xref py py-class docutils literal"><span class="pre">wx.lib.mixins.listctrl.CheckListCtrlMixin</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.uiutils.CheckListCtrl.OnItemActivated">
@@ -4412,7 +4332,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.EditFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">EditFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>init_string=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.EditFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EditFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>init_string=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.EditFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.uiutils.EditFrame.on_cancel">
@@ -4428,7 +4348,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.EditListFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">EditListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.EditListFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">EditListFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>string_list=None</em>, <em>label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.EditListFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.uiutils.EditListFrame.on_cancel">
@@ -4444,7 +4364,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.LatticePlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">LatticePlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.LatticePlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">LatticePlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.LatticePlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#felapps.utils.uiutils.MyPlotPanel" title="felapps.utils.uiutils.MyPlotPanel"><code class="xref py py-class docutils literal"><span class="pre">felapps.utils.uiutils.MyPlotPanel</span></code></a></p>
 <dl class="method">
 <dt id="felapps.utils.uiutils.LatticePlotPanel.identify_obj">
@@ -4460,7 +4380,7 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.MyPlotPanel">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">MyPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize=None</em>, <em>dpi=None</em>, <em>bgcolor=None</em>, <em>type=None</em>, <em>toolbar=None</em>, <em>aspect='auto'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.MyPlotPanel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyPlotPanel</code><span class="sig-paren">(</span><em>parent</em>, <em>figsize=None</em>, <em>dpi=None</em>, <em>bgcolor=None</em>, <em>type=None</em>, <em>toolbar=None</em>, <em>aspect='auto'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.MyPlotPanel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Panel</span></code></p>
 <dl class="method">
 <dt id="felapps.utils.uiutils.MyPlotPanel.fit_canvas">
@@ -4532,24 +4452,21 @@ Created Time: 09:26, Jun. 29, 2015</p>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.MyToolbar">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">MyToolbar</code><span class="sig-paren">(</span><em>canvas</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.MyToolbar" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">MyToolbar</code><span class="sig-paren">(</span><em>canvas</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.MyToolbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_wxagg.NavigationToolbar2WxAgg</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="felapps.utils.uiutils.TestFrame">
-<em class="property">class </em><code class="descclassname">felapps.utils.uiutils.</code><code class="descname">TestFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.TestFrame" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descname">TestFrame</code><span class="sig-paren">(</span><em>parent</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.TestFrame" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">wx._windows.Frame</span></code></p>
 </dd></dl>
 
 <dl class="function">
 <dt id="felapps.utils.uiutils.test">
-<code class="descclassname">felapps.utils.uiutils.</code><code class="descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.test" title="Permalink to this definition">¶</a></dt>
+<code class="descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#felapps.utils.uiutils.test" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="module-felapps.utils">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-felapps.utils" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

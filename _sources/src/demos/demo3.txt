@@ -151,7 +151,7 @@ some feature to accomplish such task, then the ``RETAKE`` button is created.
 
 .. warning:: Only ``RETAKE`` when you have every reason that the data point(s) to be replaced
     is(are) wrong or flawed, e.g. then the machine was not that stable, believed the large jitter
-    was cause by some malfunction of some power sources, etc., In a word, let the SCIENTIFIC
+    was caused by some malfunction of some power sources, etc., In a word, let the SCIENTIFIC
     DATA be more convinced.
 
 In order to demonstrate the ``RETAKE`` feature, the data generator has been changed little,
@@ -188,7 +188,7 @@ e.g. see below image:
     .. rubric:: Footnotes:
 
 .. [#f1] The Python module file is a normal Python script that has funtion definitions, 
-    it is the user's liable to manage this file.
+    it is the user's liability to manage this file.
 .. [#f2] The data that used by example shown here is provided by a soft-IOC, with the 
     scan frequency of 5 Hz, while for the real machine, e.g. Dalian Coherent Light Source (DCLS),
     tests show that 10-20 second may require so as to get valid signals.

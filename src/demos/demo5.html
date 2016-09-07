@@ -50,6 +50,20 @@
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example 5</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage-guide">Usage Guide</a><ul>
+<li><a class="reference internal" href="#open-file">Open File</a></li>
+<li><a class="reference internal" href="#operations">Operations</a></li>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="demo4.html"
                         title="previous chapter">Example 4</a></p>
@@ -77,6 +91,148 @@
   <div class="section" id="example-5">
 <h1>Example 5<a class="headerlink" href="#example-5" title="Permalink to this headline">¶</a></h1>
 <p><code class="docutils literal"><span class="pre">latticeviewer</span></code> &#8211; Accelerator online modeling app.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">latticeviewer</span></code> is an app based on package <code class="docutils literal"><span class="pre">beamline</span></code>,
+and is wrapped by <code class="docutils literal"><span class="pre">felapps</span></code> to present the GUI to the users, either
+in the main panel of <code class="docutils literal"><span class="pre">runfelapps</span></code> or <code class="docutils literal"><span class="pre">appdrawer</span></code>, or the script
+named <code class="docutils literal"><span class="pre">latticeviewer</span></code> or <code class="docutils literal"><span class="pre">lv</span></code>.</p>
+</div>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This app is built upon the console environment of accelerator online-model,
+which provides the basic toolkits to translate the real accelerator machine
+(as well as free-electron laser facility) into computer-recognized objects,
+such that manipulation to the real machine should be operated on the
+software level, so intuitively, this app should be the base on which
+physics-related procedures/extensions built into. In this example,
+the basic online-model procedure will be presented, contrasted to the
+CLI approach demonstrated <a class="reference external" href="https://archman.github.io/beamline/src/demos/demo2.html">here</a>.</p>
+</div>
+<div class="section" id="usage-guide">
+<h2>Usage Guide<a class="headerlink" href="#usage-guide" title="Permalink to this headline">¶</a></h2>
+<p>Open app by <code class="docutils literal"><span class="pre">lv</span></code> or <code class="docutils literal"><span class="pre">latticeviewer</span></code>, just like the following image
+shows:</p>
+<a class="reference internal image-reference" href="../../_images/latticeviewer_01.png"><img alt="../../_images/latticeviewer_01.png" src="../../_images/latticeviewer_01.png" style="width: 500px;" /></a>
+<p>The acceptable file should be either valid <code class="docutils literal"><span class="pre">lte</span></code> file
+(which is lattice file that could be used by <code class="docutils literal"><span class="pre">Elegant</span></code>)
+or <code class="docutils literal"><span class="pre">JSON</span></code> file (which is converted from valid <code class="docutils literal"><span class="pre">lte</span></code> file).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">lte</span></code> file could be converted to <code class="docutils literal"><span class="pre">JSON</span></code> file
+and vice versa, see commands&#8217; <a class="reference external" href="https://archman.github.io/beamline/src/demos/demo4.html">doc</a>: <code class="docutils literal"><span class="pre">lte2json</span></code> and <code class="docutils literal"><span class="pre">json2lte</span></code>.</p>
+</div>
+<div class="section" id="open-file">
+<h3>Open File<a class="headerlink" href="#open-file" title="Permalink to this headline">¶</a></h3>
+<p>Click <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Open</span> <span class="pre">(CTRL+O)</span></code> to import the lattice file
+(<code class="docutils literal"><span class="pre">lte</span></code> or <code class="docutils literal"><span class="pre">JSON</span></code>), here take the lattice of Shanghai soft x-ray
+free-electron laser (SXFEL) as example,
+<a class="reference download internal" href="../../_downloads/sxfel_all.lte" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a> is the <code class="docutils literal"><span class="pre">lte</span></code> file,
+which covers injector, LINAC, linac-to-undulator sections, while possible
+<code class="docutils literal"><span class="pre">ele</span></code> file and other required files that could be used to accomplish
+<code class="docutils literal"><span class="pre">Elegant</span></code> tracking could be download
+<a class="reference download internal" href="../../_downloads/sxfel_ele.tar.bz2" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a> and
+<a class="reference download internal" href="../../_downloads/injector.tar.bz2" download=""><code class="xref download docutils literal"><span class="pre">injector</span> <span class="pre">data</span></code></a> if needed.</p>
+<p>After file opened, the lattice would be parsed into tree list as shown
+in the left panel of <code class="docutils literal"><span class="pre">latticeviewer</span></code>, with the tree rootname of
+<code class="docutils literal"><span class="pre">Lattice</span></code> (which could be changed in <code class="docutils literal"><span class="pre">Tree</span> <span class="pre">Name</span></code> box <a href="#id5"><span class="problematic" id="id6"><span id="id1"></span>[#f]_</span></a>).
+All elements could be reached either by clicking the items or by searching
+the keywords in the left bottom search box. When element is selected, e.g.
+<code class="docutils literal"><span class="pre">rfcw</span></code> is selected, the right panel will list all the properties of
+selected item, just like the following shows.</p>
+<a class="reference internal image-reference" href="../../_images/latticeviewer_02.png"><img alt="../../_images/latticeviewer_02.png" src="../../_images/latticeviewer_02.png" style="width: 500px;" /></a>
+<p>In the right bottom, push red squared button, the brief operation log will
+pop up, from which one can grab basic information about the loaded lattice
+file, e.g. here indicates that 489 elements and 3111 properties have been
+parsed, if operation fails, the green boxed <code class="docutils literal"><span class="pre">LIST</span> <span class="pre">TREE</span></code> status should
+turn red.</p>
+<a class="reference internal image-reference" href="../../_images/latticeviewer_03.png"><img alt="../../_images/latticeviewer_03.png" src="../../_images/latticeviewer_03.png" style="width: 500px;" /></a>
+<p>Currently, the operations of the properties listing panel only support
+<code class="docutils literal"><span class="pre">Highlight</span></code> and <code class="docutils literal"><span class="pre">Edit</span></code>, it is envisioned that more functionality
+should be extended.</p>
+</div>
+<div class="section" id="operations">
+<h3>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">latticeviewer</span></code> is designed to be an online-modeling app, other high-level
+operations should be based on the fundamental lattice parsing feature, below
+is the main operations:</p>
+<p><em>Show</em></p>
+<p>If lattice is not opened by <code class="docutils literal"><span class="pre">Open</span></code> menu, push <code class="docutils literal"><span class="pre">Show</span></code> button should give
+guideline to locate the valid lattice file to show.</p>
+<p><em>Generate</em></p>
+<p>This button if the first step of online-modeling, heavy tasks about the
+element/beamline modeling will be done if <code class="docutils literal"><span class="pre">Generate</span></code> is pushed, pop
+up dialog will pop up if some other operation trigs this operation.</p>
+<p><em>Model</em></p>
+<p>This button is required by the online-modeling, another approach
+implemented on the GUI app <a class="footnote-reference" href="#f2" id="id2">[2]</a>.</p>
+<p><em>Clear</em></p>
+<p>Clear the lattice tree.</p>
+<p><em>Exit</em></p>
+<p>Quit the app.</p>
+<p><em>Menu operations</em></p>
+<blockquote>
+<div><ul class="simple">
+<li>Save, <code class="docutils literal"><span class="pre">CTRL+S</span></code>;</li>
+<li>Save AS, <code class="docutils literal"><span class="pre">SHIFT+CTRL+S</span></code>;</li>
+<li>Choose beamline, <code class="docutils literal"><span class="pre">SHIFT+CTRL+B</span></code>;</li>
+<li>Lattice visualization, <code class="docutils literal"><span class="pre">SHIFT+CTRL+V</span></code>.</li>
+<li>View lattice in three format: <code class="docutils literal"><span class="pre">raw</span> <span class="pre">string</span></code>,
+<code class="docutils literal"><span class="pre">JSON</span> <span class="pre">string</span></code>, <code class="docutils literal"><span class="pre">dict</span></code>.</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p><em>Save AS</em></p>
+<p>Push <code class="docutils literal"><span class="pre">Generate</span></code>, and <code class="docutils literal"><span class="pre">SHIFT+CTRL+S</span></code> to save lattice as <code class="docutils literal"><span class="pre">JSON</span></code> format.</p>
+<p><em>Model Selected Beamline</em></p>
+<p>Push <code class="docutils literal"><span class="pre">SHIFT+CTRL+B</span></code> to select the beamline name that to be modeled,
+e.g. <code class="docutils literal"><span class="pre">SXFEL</span></code> here is the beamline defined in <code class="docutils literal"><span class="pre">lte</span></code> file that
+including elements from LINAC and LTU. Click <code class="docutils literal"><span class="pre">OK</span></code> to confirm.</p>
+<a class="reference internal image-reference" href="../../_images/latticeviewer_04.png"><img alt="../../_images/latticeviewer_04.png" src="../../_images/latticeviewer_04.png" style="width: 500px;" /></a>
+<p>Click <code class="docutils literal"><span class="pre">Model</span></code> button to finish the modeling procedure, then push
+<code class="docutils literal"><span class="pre">SHIFT+CTRL+V</span></code> to open <code class="docutils literal"><span class="pre">Tools</span> <span class="pre">&gt;</span> <span class="pre">Visualization</span></code> window.</p>
+<a class="reference internal image-reference" href="../../_images/latticeviewer_05.png"><img alt="../../_images/latticeviewer_05.png" src="../../_images/latticeviewer_05.png" style="width: 500px;" /></a>
+<p>In this window, the artist view of the selected beamline is firstly shown
+in the <code class="docutils literal"><span class="pre">Drawing</span></code> panel, which support features like:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Operations provides by the bottom toolbar, e.g. <em>panning</em>,
+<em>zooming</em>, <em>save as</em>, etc.</li>
+<li>Element name tooltips, i.e. show the element name and type
+in the right of toolbar when mouse move onto the element,
+as well as the <code class="docutils literal"><span class="pre">s</span></code> position along the beamline.</li>
+</ul>
+</div></blockquote>
+<p>Also, type name annotation feature is supported, by checking in <code class="docutils literal"><span class="pre">Tag</span> <span class="pre">Options</span></code> panel.</p>
+<a class="reference internal image-reference" href="../../_images/sxfel_all.png"><img alt="../../_images/sxfel_all.png" src="../../_images/sxfel_all.png" style="width: 1000px;" /></a>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Note that <code class="docutils literal"><span class="pre">latticeviewer</span></code> is just a GUI app that only facilitate
+part of online-modeling operations, all the infrastructure features
+that make this possible are built into CLI, thus more features
+that would be implemented in the GUI framework should require much
+more effect. The ideal development cycle is to built high-level
+operations to the lattice into <code class="docutils literal"><span class="pre">Tools</span></code> menu, after all the
+algorithms have been well tested in the CLI framework.</p>
+</div>
+<p class="rubric">Footnotes:</p>
+<table class="docutils footnote" frame="void" id="f1" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>When the tree name is changed, <code class="docutils literal"><span class="pre">Reopen</span> <span class="pre">(CTRL+R)</span></code> is needed.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>The CLI approach could be found in <code class="docutils literal"><span class="pre">beamline</span></code>&#8216;s
+<a class="reference external" href="https://archman.github.io/beamline/src/demos/demo2.html">doc</a>.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 

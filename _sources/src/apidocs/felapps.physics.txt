@@ -1,6 +1,11 @@
 felapps.physics package
 =======================
 
+.. automodule:: felapps.physics
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 ----------
 
@@ -16,15 +21,6 @@ felapps.physics.felcalc module
 ------------------------------
 
 .. automodule:: felapps.physics.felcalc
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-Module contents
----------------
-
-.. automodule:: felapps.physics
     :members:
     :undoc-members:
     :show-inheritance:

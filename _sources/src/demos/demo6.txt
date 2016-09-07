@@ -4,3 +4,69 @@ Example 6
 =========
 
 ``wxmpv`` -- General matplot viewer app.
+
+Introduction
+------------
+
+``wxmpv`` is the brief of ``wx[Python] matplot[lib] viewer`` or 
+``wx[Python] mat[lab] plot viewer``, is designed with the intention of
+to provide the universal interface to manipulate the data files in the
+plot analysis stage, basic features should be included, such as:
+    * data loading/saving
+    * figure plot
+    * figure style tunning
+    * curve fitting
+    * etc.
+
+Currently, ``wxmpv`` could be used to operate these two (2) kinds of 
+``hdf5`` data that generated from ``imageviewer`` [#f1]_:
+    * data saved by ``CTRL+D`` in ``imageviewer``
+    * data generated from ``Autosave`` operation of ``imageviewer``
+
+Usage Guide
+-----------
+
+Open ``wxmpv``, just like the following image shows, there are mainly two
+operation sections, the top and bottom region of figure and the style
+configuration panel in the right, as well as the curve fitting panel.
+
+.. image:: ../../images/wxmpv_01.png
+    :width: 500px
+
+Click ``File > Open (CTRL+O)`` to open supported ``hdf5`` data file, 
+both image and data curve should be plotted onto the figure, style
+adjustment to the image and curve is possible.
+
+.. image:: ../../images/wxmpv_02.png
+    :width: 500px
+
+For example, when tunning the curve styles, push ``Hide Image`` to hide
+the image temporarily, and click ``Set Line ID`` to select the line to
+adjust the style, valid options: line color, line width, line style, 
+marker color, marker size, marker style, etc.; while the image could be 
+adjusted with different type of color maps and color ranges, to meet the
+users' demanding.
+
+.. image:: ../../images/wxmpv_03.png
+    :width: 500px
+.. image:: ../../images/wxmpv_04.png
+    :width: 500px
+
+The figure could be saved as ``eps``, ``ps``, ``png``, etc. Other options
+could be tried by the users.
+
+.. todo:: ``wxmpv`` should be extended to support more data plotting
+    functionality, so as to serve as to be the general-purpose data
+    plotting and manipulation app.
+
+
+Shortcut: ``CTRL+S`` would save all the data into ``hdf5`` format, 
+sample file could be downloaded :download:`here <../../snippets/wxmpv_data.hdf5>`.
+
+.. only:: html
+    
+    .. rubric:: Footnotes
+
+.. [#f1] ``hdf5`` data format should be first set in ``Configurations``
+    menu, ``Image Data Name Extension`` and choose ``hdf5`` in 
+    ``Auto save`` window.
