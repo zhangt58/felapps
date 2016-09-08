@@ -14,7 +14,7 @@ the clues for the FEL specialists to tunning the machine.
 
 The main features of ``felformula`` are:
 
-    * FEL parameters calulations based on analytical formulae;
+    * FEL parameters calculations based on analytical formulae;
     * Parameters scan studies, valid parameters: 
         
         .. hlist::
@@ -34,7 +34,8 @@ The main features of ``felformula`` are:
 
 .. todo:: Comprehensive FEL physics studies could be extended to 
     ``felformula``, e.g. integrate numerical simulations into ``Advanced``
-    menu, into which modules could be built to implement various FEL
+    menu (should be created first into the menubar), into which modules 
+    could be built to implement various FEL
     simulation modes, like SASE, HGHG, EEHG, PEHG, and mixtures of them,
     etc., as well as the algorithms like Twiss-matching, 
     multi-parameters optimization, post-processing for data analyais, etc.
@@ -50,7 +51,7 @@ FEL Calculation
 Open ``felformula`` as the previous examples demonstrated. Fill the 
 ``Beam Parameters`` panel to setup the main parameters of an FEL 
 facility, e.g. Dalian Coherent Light Source, the physics meaning of 
-every input parameter should be explained the name itself.
+every input parameter should be explained by the name itself.
 Push ``Calculate`` button in the ``Operations > Command`` panel to
 calculate/update the output parameters that listed in ``FEL Calculations``
 panel, where all the available parameters are grouped into 

@@ -56,7 +56,7 @@ The figure could be saved as ``eps``, ``ps``, ``png``, etc. Other options
 could be tried by the users.
 
 .. todo:: ``wxmpv`` should be extended to support more data plotting
-    functionality, so as to serve as to be the general-purpose data
+    functionality, so as to serve as the general-purpose data
     plotting and manipulation app.
 
 

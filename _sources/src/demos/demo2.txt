@@ -1,3 +1,5 @@
+.. _dataworkshop_ex:
+
 Example 2
 =========
 
@@ -8,7 +10,8 @@ Introduction
 ------------
 
 Initially, ``dataworkshop`` is created for the data processing tasks, since
-not all of the tasks, especially those demanding heavy computing resources,
+not all of the tasks, especially those demanding heavy computing resources
+are not required to be processed simultaneously,
 so we first get all the data that may need, then filter/process by another app, that
 is ``dataworkshop``'s job.
 
@@ -46,15 +49,15 @@ There are two approaches to add/remove data files into ``Data Workspace``:
     2. Right click the blank space of ``Image Grid`` panel, i.e. any space that is not occupied
        by the images, ``Add all to workspace`` and ``Remove all to workspace`` actions could be
        applied;
-    3. Once the file is already added into ``Data Workspace``, then the right click on the image
-       should pop up ``Out Workspace`` item if removing out of ``Data Workspace`` is required.
+    3. Once the file is already added into ``Data Workspace``, then right click on the image
+       should pop up ``Out Workspace`` action which would remove added file out of ``Data Workspace``.
 
 
 .. image:: ../../images/dataworkshop_03.png
     :width: 500px
 
 .. note:: When right clicking the image, another available action is ``Pop up Analysis``, which 
-    will show the selected image as a more vivid way, details see :ref:`wxmpv_ex`.
+    will show the selected image in a more vivid way, details see :ref:`wxmpv_ex`.
 
 Post-processing
 ^^^^^^^^^^^^^^^

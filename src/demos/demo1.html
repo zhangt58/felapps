@@ -143,9 +143,9 @@ visibility;</p>
 </dd>
 </dl>
 <p>The following image is captured when <code class="docutils literal"><span class="pre">imageviewer</span></code> successfully fetch image data from
-PV named <code class="docutils literal"><span class="pre">sxfel:prof1</span></code>, which is a <code class="docutils literal"><span class="pre">50</span> <span class="pre">x</span> <span class="pre">50</span></code> array after reshaping operation, push
+PV named <code class="docutils literal"><span class="pre">sxfel:prof1</span></code> <a class="footnote-reference" href="#f5" id="id5">[5]</a>, which is a <code class="docutils literal"><span class="pre">50</span> <span class="pre">x</span> <span class="pre">50</span></code> array after reshaping operation, push
 <code class="docutils literal"><span class="pre">START</span></code> will trig the DAQ procedure with the configured rate <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Control</span> <span class="pre">&gt;</span>
-<span class="pre">Monitor</span> <span class="pre">Frequency</span></code> <a class="footnote-reference" href="#f5" id="id5">[5]</a>.</p>
+<span class="pre">Monitor</span> <span class="pre">Frequency</span></code> <a class="footnote-reference" href="#f6" id="id6">[6]</a>.</p>
 <a class="reference internal image-reference" href="../../_images/imageviewer_02.png"><img alt="../../_images/imageviewer_02.png" src="../../_images/imageviewer_02.png" style="width: 500px;" /></a>
 <p>Presently, <code class="docutils literal"><span class="pre">imageviewer</span></code> has been integrated Gaussian fitting model to show the x/y
 profiles of the image, click the pop up button right aside of <code class="docutils literal"><span class="pre">...</span> <span class="pre">Gaussian</span> <span class="pre">...</span></code> in the
@@ -164,13 +164,16 @@ be applied, the <code class="docutils literal"><span class="pre">imageviewer</sp
 <ol class="last arabic simple">
 <li><code class="docutils literal"><span class="pre">Image</span> <span class="pre">Width</span></code> and <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Height</span></code>, which is the dimension (2D array) to reshape;</li>
 <li><code class="docutils literal"><span class="pre">CA</span> <span class="pre">Library</span> <span class="pre">Path</span></code>, <code class="docutils literal"><span class="pre">CA</span> <span class="pre">Max</span> <span class="pre">Array</span> <span class="pre">Bytes</span></code> and <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">CA</span> <span class="pre">Address</span></code>, which is the
-control specific parameters, proper tunning is required so as to fetch the image data.</li>
+control specific parameters, proper tunning is required so as to fetch the image data
+from soft-IOC.</li>
 </ol>
 </div>
 </div>
 <div class="section" id="auto-save">
 <h2>Auto Save<a class="headerlink" href="#auto-save" title="Permalink to this headline">¶</a></h2>
-<p>Here take the <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operation as example. <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> is designed for the following
+<p>Here take the <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operation as example. <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> is one of the operation modules in
+the <code class="docutils literal"><span class="pre">Operations</span></code> menu, future extended operation modules should be inserted into this menu. The
+shortcut for <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> is <code class="docutils literal"><span class="pre">ALT+S</span></code>. <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> is designed for the following
 scenario:</p>
 <blockquote>
 <div><ul class="simple">
@@ -178,7 +181,7 @@ scenario:</p>
 <li>DAQ procedure should be activated to get bundle of data, e.g. for some kind of analysis.</li>
 </ul>
 </div></blockquote>
-<p>Pop up <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> window, in which, tick the interested data and image format to be saved <a class="footnote-reference" href="#f6" id="id6">[6]</a>,
+<p>Pop up <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> window, in which, tick the interested data and image format to be saved <a class="footnote-reference" href="#f7" id="id7">[7]</a>,
 as well as the full path to save files and the save frequency and save counter, etc. Push
 <code class="docutils literal"><span class="pre">Start</span> <span class="pre">SAVE</span></code> to trig the auto save procedure, the saving status could be found in the highlighted
 status bar in <code class="docutils literal"><span class="pre">imageviewer</span></code> app.</p>
@@ -193,17 +196,17 @@ the DAQ mode, i.e. <code class="docutils literal"><span class="pre">START</span>
 <h2>Data Example<a class="headerlink" href="#data-example" title="Permalink to this headline">¶</a></h2>
 <p>The data files generated by <code class="docutils literal"><span class="pre">imageviewer</span></code> can be classified into two categories, i.e.
 <em>figure</em> and <em>data</em>, while <em>figure</em> could be saved as <code class="docutils literal"><span class="pre">png</span></code>, <code class="docutils literal"><span class="pre">jpeg</span></code>, <code class="docutils literal"><span class="pre">svg</span></code>, <code class="docutils literal"><span class="pre">tiff</span></code>,
-<code class="docutils literal"><span class="pre">ps</span></code>, <code class="docutils literal"><span class="pre">eps</span></code>, <code class="docutils literal"><span class="pre">pdf</span></code>, etc., <em>data</em> could be saved as <code class="docutils literal"><span class="pre">txt</span></code> and <code class="docutils literal"><span class="pre">hdf5</span></code>, of which
+<code class="docutils literal"><span class="pre">ps</span></code>, <code class="docutils literal"><span class="pre">eps</span></code>, <code class="docutils literal"><span class="pre">pdf</span></code>, etc.; <em>data</em> could be saved as <code class="docutils literal"><span class="pre">txt</span></code> and <code class="docutils literal"><span class="pre">hdf5</span></code>, of which
 only <code class="docutils literal"><span class="pre">hdf5</span></code> could be self-explained, it is recommanded to use <code class="docutils literal"><span class="pre">hdf5</span></code>.</p>
 <p><code class="docutils literal"><span class="pre">hdf5</span></code> files could be generated in the following scenarios:</p>
 <div class="section" id="image-data">
 <h3>1. Image Data<a class="headerlink" href="#image-data" title="Permalink to this headline">¶</a></h3>
-<p>Click <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">``Save</span> <span class="pre">Image</span> <span class="pre">Data</span></code>, or by shortcut <code class="docutils literal"><span class="pre">CTRL+D</span></code>, figura raw data with trivial
-properties will be saved in to a <code class="docutils literal"><span class="pre">hdf5</span></code> file, by default, the full path filename will be
+<p>Click <code class="docutils literal"><span class="pre">File</span> <span class="pre">&gt;</span> <span class="pre">Save</span> <span class="pre">Image</span> <span class="pre">Data</span></code>, or by shortcut <code class="docutils literal"><span class="pre">CTRL+D</span></code>, raw data of the figure with trivial
+properties will be saved into a <code class="docutils literal"><span class="pre">hdf5</span></code> file, by default, the full path filename will be
 <code class="docutils literal"><span class="pre">save</span> <span class="pre">root</span> <span class="pre">directory</span></code> + <code class="docutils literal"><span class="pre">&lt;folder</span> <span class="pre">name</span> <span class="pre">like</span> <span class="pre">'20160830'&gt;</span></code> + <code class="docutils literal"><span class="pre">save</span> <span class="pre">filename</span> <span class="pre">head</span></code> +
-<code class="docutils literal"><span class="pre">&lt;time</span> <span class="pre">stamp</span> <span class="pre">(hour,min,sec)</span> <span class="pre">like</span> <span class="pre">'100607'&gt;</span></code> <a class="footnote-reference" href="#f7" id="id7">[7]</a>.</p>
+<code class="docutils literal"><span class="pre">&lt;time</span> <span class="pre">stamp</span> <span class="pre">(hour,min,sec)</span> <span class="pre">like</span> <span class="pre">'100607'&gt;</span></code> <a class="footnote-reference" href="#f8" id="id8">[8]</a>.</p>
 <p>Any <code class="docutils literal"><span class="pre">hdf5</span></code> file could be opened by a program that distributed by HDF5 official group, named
-<code class="docutils literal"><span class="pre">hdfview</span></code> <a class="footnote-reference" href="#f8" id="id8">[8]</a>. Also, in the CLI, command <code class="docutils literal"><span class="pre">h5ls</span></code> could be used for inspection, below are
+<code class="docutils literal"><span class="pre">hdfview</span></code> <a class="footnote-reference" href="#f9" id="id9">[9]</a>. Also, in the CLI, command <code class="docutils literal"><span class="pre">h5ls</span></code> could be used for inspection, below are
 the illustrations for the two approaches:</p>
 <a class="reference internal image-reference" href="../../_images/imageviewer_05.png"><img alt="../../_images/imageviewer_05.png" src="../../_images/imageviewer_05.png" style="width: 500px;" /></a>
 <a class="reference internal image-reference" href="../../_images/imageviewer_06.png"><img alt="../../_images/imageviewer_06.png" src="../../_images/imageviewer_06.png" style="width: 500px;" /></a>
@@ -290,11 +293,12 @@ be retrieved according to the string names.</p>
 </div>
 <div class="section" id="auto-saved-data">
 <h3>3. Auto Saved Data<a class="headerlink" href="#auto-saved-data" title="Permalink to this headline">¶</a></h3>
-<p>Data generated by <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operations could be <code class="docutils literal"><span class="pre">hdf5</span></code> (recommand exclusive choice),
+<p>Data generated by <code class="docutils literal"><span class="pre">Auto</span> <span class="pre">save</span></code> operation could be <code class="docutils literal"><span class="pre">hdf5</span></code> (recommanded the exclusive choice),
 is similar as <code class="docutils literal"><span class="pre">Image</span> <span class="pre">Data</span></code>, besides <code class="docutils literal"><span class="pre">timestamp</span></code> property,
 but with only one property: <code class="docutils literal"><span class="pre">app</span></code>, which value is <code class="docutils literal"><span class="pre">imageviewer</span></code>,
 indicating that the file is generated by app named <code class="docutils literal"><span class="pre">imageviewer</span></code>.
-These <code class="docutils literal"><span class="pre">hdf5</span></code> data files could be imported into <code class="docutils literal"><span class="pre">dataworkshop</span></code> for post-processing.</p>
+These <code class="docutils literal"><span class="pre">hdf5</span></code> data files could be imported into <code class="docutils literal"><span class="pre">dataworkshop</span></code> for post-processing,
+see <a class="reference internal" href="demo2.html#dataworkshop-ex"><span class="std std-ref">Example 2</span></a>.</p>
 <p class="rubric">Footnotes:</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -321,34 +325,41 @@ applies to save figure data.</td></tr>
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Auto saved data files could be used as the input data files of app: <code class="docutils literal"><span class="pre">dataworkshop</span></code>,
-which serves as a simply data post-processor.</td></tr>
+which serves as a simple data post-processor.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td>It is suggested that increasing this value gradually, e.g. by step of 0.5, e.g.
-<code class="docutils literal"><span class="pre">1</span> <span class="pre">Hz</span></code> for large image, and <code class="docutils literal"><span class="pre">5</span> <span class="pre">Hz</span></code> for small image.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id5">[5]</a></td><td><code class="docutils literal"><span class="pre">sxfel:prof1</span></code> is a waveform record of an soft-IOC that is used to simulate the
+EPICS control environment.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f6" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id6">[6]</a></td><td>Since saving data, especially <code class="docutils literal"><span class="pre">hdf5</span></code> is always more efficient that saving other
-format, it is suggested that only tick <code class="docutils literal"><span class="pre">hdf5</span></code> options when cares more about efficient,
-especially for image with large pixles.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id6">[6]</a></td><td>It is suggested that increasing this value gradually, e.g. by step of 0.5, e.g.
+<code class="docutils literal"><span class="pre">1</span> <span class="pre">Hz</span></code> for large image, and <code class="docutils literal"><span class="pre">5</span> <span class="pre">Hz</span></code> for small image.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f7" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id7">[7]</a></td><td>All these meta information could be set and get in the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Image</span></code> panel.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id7">[7]</a></td><td>Since saving data, especially <code class="docutils literal"><span class="pre">hdf5</span></code> is always more efficient that saving other
+format, it is suggested that only tick <code class="docutils literal"><span class="pre">hdf5</span></code> options when cares more about efficient,
+especially for image with large pixles.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f8" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id8">[8]</a></td><td><a class="reference external" href="https://www.hdfgroup.org/products/java/hdfview/">https://www.hdfgroup.org/products/java/hdfview/</a></td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id8">[8]</a></td><td>All these meta information could be set and get in the <code class="docutils literal"><span class="pre">Preferences</span> <span class="pre">&gt;</span> <span class="pre">Image</span></code> panel.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="f9" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id9">[9]</a></td><td><a class="reference external" href="https://www.hdfgroup.org/products/java/hdfview/">https://www.hdfgroup.org/products/java/hdfview/</a></td></tr>
 </tbody>
 </table>
 </div>

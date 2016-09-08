@@ -16,7 +16,7 @@ which provides the basic toolkits to translate the real accelerator machine
 (as well as free-electron laser facility) into computer-recognized objects,
 such that manipulation to the real machine should be operated on the 
 software level, so intuitively, this app should be the base on which
-physics-related procedures/extensions built into. In this example, 
+physics-related procedures/extensions could be built. In this example, 
 the basic online-model procedure will be presented, contrasted to the 
 CLI approach demonstrated `here <https://archman.github.io/beamline/src/demos/demo2.html>`_.
 
@@ -50,13 +50,13 @@ which covers injector, LINAC, linac-to-undulator sections, while possible
 :download:`here <../../snippets/sxfel_ele.tar.bz2>` and 
 :download:`injector data <../../snippets/injector.tar.bz2>` if needed.
 
-After file opened, the lattice would be parsed into tree list as shown
+After the file is opened, the lattice would be parsed into tree list as shown
 in the left panel of ``latticeviewer``, with the tree rootname of 
-``Lattice`` (which could be changed in ``Tree Name`` box [#f]_).
+``Lattice`` (which could be changed in ``Tree Name`` box [#f1]_).
 All elements could be reached either by clicking the items or by searching
 the keywords in the left bottom search box. When element is selected, e.g.
 ``rfcw`` is selected, the right panel will list all the properties of 
-selected item, just like the following shows.
+selected item, just like the following image shows.
 
 .. image:: ../../images/latticeviewer_02.png
     :width: 500px
@@ -84,14 +84,14 @@ is the main operations:
 
 *Show*
 
-If lattice is not opened by ``Open`` menu, push ``Show`` button should give
+If lattice file is not opened by ``Open`` menu, push ``Show`` button should give
 guideline to locate the valid lattice file to show.
 
 *Generate*
 
 This button if the first step of online-modeling, heavy tasks about the 
-element/beamline modeling will be done if ``Generate`` is pushed, pop
-up dialog will pop up if some other operation trigs this operation.
+element/beamline modeling will be done if ``Generate`` is pushed, 
+dialog will pop up if some other operation trigs this operation.
 
 *Model*
 

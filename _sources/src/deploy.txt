@@ -65,7 +65,7 @@ Configurations
 **Environmental Variables**
 
 After installing ``felapps``, system-wide environment variables should be 
-configured correctly, say save the following shell code to file 
+configured correctly, say save the following shell script to a file named 
 ``felapps.sh``, put it into folder: ``/etc/profile.d``, or append them 
 into the bash configuration files.
 
@@ -81,7 +81,7 @@ into the bash configuration files.
 
 To integrate the available apps into system menu would greatly improve the
 user experience, just like the following image shows [#f1]_: all the apps are
-categorized into ``FEL Apps`` menu, through which you can reach differnt
+categorized into ``FEL Apps`` menu, through which you can reach different
 apps to accomplish different tasks.
 
 .. image:: ../images/felapps-menu.png

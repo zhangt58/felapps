@@ -5,14 +5,15 @@ Here goes through the main features that ``felapps`` provides,
 among which ``latticeviewer`` is an app based on ``beamline`` package.
 
 .. warning::
-    The operating system is Linux (64 bit), distributions that has been 
-    tested: *Scientifig Linux 6.4*, *CentOS 6.4*, *Linux Mint 17.x, 18*
+    The operating system is Linux (64 bit), distributions that have been 
+    tested: *Scientific Linux 6.4*, *CentOS 6.4*, *Linux Mint 17.x, 18*
     (*Ubuntu 15.x, 16.x*), 
     other distros should work provided proper configurations. 
-    Part of features should work in Windows OS, but not be fully tested.
+    Part of features should work in Windows OS, but not has been fully 
+    tested.
 
 
-In the following examples, the invocation of the apps should be one of these
+In the following examples, the invocation of the apps could be one of these
 approaches:
 
     1. Type <app name> in the terminal;

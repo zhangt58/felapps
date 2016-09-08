@@ -105,7 +105,7 @@ which provides the basic toolkits to translate the real accelerator machine
 (as well as free-electron laser facility) into computer-recognized objects,
 such that manipulation to the real machine should be operated on the
 software level, so intuitively, this app should be the base on which
-physics-related procedures/extensions built into. In this example,
+physics-related procedures/extensions could be built. In this example,
 the basic online-model procedure will be presented, contrasted to the
 CLI approach demonstrated <a class="reference external" href="https://archman.github.io/beamline/src/demos/demo2.html">here</a>.</p>
 </div>
@@ -133,13 +133,13 @@ which covers injector, LINAC, linac-to-undulator sections, while possible
 <code class="docutils literal"><span class="pre">Elegant</span></code> tracking could be download
 <a class="reference download internal" href="../../_downloads/sxfel_ele.tar.bz2" download=""><code class="xref download docutils literal"><span class="pre">here</span></code></a> and
 <a class="reference download internal" href="../../_downloads/injector.tar.bz2" download=""><code class="xref download docutils literal"><span class="pre">injector</span> <span class="pre">data</span></code></a> if needed.</p>
-<p>After file opened, the lattice would be parsed into tree list as shown
+<p>After the file is opened, the lattice would be parsed into tree list as shown
 in the left panel of <code class="docutils literal"><span class="pre">latticeviewer</span></code>, with the tree rootname of
-<code class="docutils literal"><span class="pre">Lattice</span></code> (which could be changed in <code class="docutils literal"><span class="pre">Tree</span> <span class="pre">Name</span></code> box <a href="#id5"><span class="problematic" id="id6"><span id="id1"></span>[#f]_</span></a>).
+<code class="docutils literal"><span class="pre">Lattice</span></code> (which could be changed in <code class="docutils literal"><span class="pre">Tree</span> <span class="pre">Name</span></code> box <a class="footnote-reference" href="#f1" id="id1">[1]</a>).
 All elements could be reached either by clicking the items or by searching
 the keywords in the left bottom search box. When element is selected, e.g.
 <code class="docutils literal"><span class="pre">rfcw</span></code> is selected, the right panel will list all the properties of
-selected item, just like the following shows.</p>
+selected item, just like the following image shows.</p>
 <a class="reference internal image-reference" href="../../_images/latticeviewer_02.png"><img alt="../../_images/latticeviewer_02.png" src="../../_images/latticeviewer_02.png" style="width: 500px;" /></a>
 <p>In the right bottom, push red squared button, the brief operation log will
 pop up, from which one can grab basic information about the loaded lattice
@@ -157,12 +157,12 @@ should be extended.</p>
 operations should be based on the fundamental lattice parsing feature, below
 is the main operations:</p>
 <p><em>Show</em></p>
-<p>If lattice is not opened by <code class="docutils literal"><span class="pre">Open</span></code> menu, push <code class="docutils literal"><span class="pre">Show</span></code> button should give
+<p>If lattice file is not opened by <code class="docutils literal"><span class="pre">Open</span></code> menu, push <code class="docutils literal"><span class="pre">Show</span></code> button should give
 guideline to locate the valid lattice file to show.</p>
 <p><em>Generate</em></p>
 <p>This button if the first step of online-modeling, heavy tasks about the
-element/beamline modeling will be done if <code class="docutils literal"><span class="pre">Generate</span></code> is pushed, pop
-up dialog will pop up if some other operation trigs this operation.</p>
+element/beamline modeling will be done if <code class="docutils literal"><span class="pre">Generate</span></code> is pushed,
+dialog will pop up if some other operation trigs this operation.</p>
 <p><em>Model</em></p>
 <p>This button is required by the online-modeling, another approach
 implemented on the GUI app <a class="footnote-reference" href="#f2" id="id2">[2]</a>.</p>
@@ -221,7 +221,7 @@ algorithms have been well tested in the CLI framework.</p>
 <table class="docutils footnote" frame="void" id="f1" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td>When the tree name is changed, <code class="docutils literal"><span class="pre">Reopen</span> <span class="pre">(CTRL+R)</span></code> is needed.</td></tr>
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>When the tree name is changed, <code class="docutils literal"><span class="pre">Reopen</span> <span class="pre">(CTRL+R)</span></code> is needed.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="f2" rules="none">
