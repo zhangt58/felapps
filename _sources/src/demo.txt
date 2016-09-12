@@ -20,6 +20,19 @@ approaches:
     2. Browse <app name> from ``FELApps`` system menu;
     3. Invoke ``runfelapps`` or ``appdrawer``, click <app name> from the 
        app's panel (see the following image).
+    4. Run ``<app>`` in the python terminal:
+       ``<app>`` could be one of 
+       ``imageviewer``, ``cornalyzer``, ``dataworkshop``, ``felformula``,
+       ``wxmpv``
+        
+       For instance:
+
+       .. code-block:: python
+            
+            import felapps
+            felapps.imageviewer.run()
+
+       or ``python -c "import felapps;felapps.imageviewer.run()"``
 
 .. image:: ../images/runfelapps.png
     :width: 500px

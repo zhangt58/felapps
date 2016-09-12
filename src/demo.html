@@ -88,11 +88,25 @@ tested.</p>
 <p>In the following examples, the invocation of the apps could be one of these
 approaches:</p>
 <blockquote>
-<div><ol class="arabic simple">
-<li>Type &lt;app name&gt; in the terminal;</li>
-<li>Browse &lt;app name&gt; from <code class="docutils literal"><span class="pre">FELApps</span></code> system menu;</li>
-<li>Invoke <code class="docutils literal"><span class="pre">runfelapps</span></code> or <code class="docutils literal"><span class="pre">appdrawer</span></code>, click &lt;app name&gt; from the
-app&#8217;s panel (see the following image).</li>
+<div><ol class="arabic">
+<li><p class="first">Type &lt;app name&gt; in the terminal;</p>
+</li>
+<li><p class="first">Browse &lt;app name&gt; from <code class="docutils literal"><span class="pre">FELApps</span></code> system menu;</p>
+</li>
+<li><p class="first">Invoke <code class="docutils literal"><span class="pre">runfelapps</span></code> or <code class="docutils literal"><span class="pre">appdrawer</span></code>, click &lt;app name&gt; from the
+app&#8217;s panel (see the following image).</p>
+</li>
+<li><p class="first">Run <code class="docutils literal"><span class="pre">&lt;app&gt;</span></code> in the python terminal:
+<code class="docutils literal"><span class="pre">&lt;app&gt;</span></code> could be one of
+<code class="docutils literal"><span class="pre">imageviewer</span></code>, <code class="docutils literal"><span class="pre">cornalyzer</span></code>, <code class="docutils literal"><span class="pre">dataworkshop</span></code>, <code class="docutils literal"><span class="pre">felformula</span></code>,
+<code class="docutils literal"><span class="pre">wxmpv</span></code></p>
+<p>For instance:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">felapps</span>
+<span class="n">felapps</span><span class="o">.</span><span class="n">imageviewer</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>or <code class="docutils literal"><span class="pre">python</span> <span class="pre">-c</span> <span class="pre">&quot;import</span> <span class="pre">felapps;felapps.imageviewer.run()&quot;</span></code></p>
+</li>
 </ol>
 </div></blockquote>
 <a class="reference internal image-reference" href="../_images/runfelapps.png"><img alt="../_images/runfelapps.png" class="align-center" src="../_images/runfelapps.png" style="width: 500px;" /></a>

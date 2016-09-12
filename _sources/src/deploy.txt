@@ -59,6 +59,11 @@ Download `felapps <https://pypi.python.org/pypi/felapps>`_ from PyPI.
 
     * ``root`` privilege may be asked.
 
+.. warning::
+    After installing ``felapps``, the following command may need to be 
+    executed: ``su -c 'sed -i "s|/usr/bin/python|/usr/local/bin/python|" /opt/high-level-apps/bin/*'``
+
+
 Configurations
 --------------
 
