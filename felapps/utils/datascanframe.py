@@ -49,6 +49,12 @@ class DataScanFrame(dsfui.DataScanFrame):
                 }
         self._user_func = [] # user defined functions
 
+        # define var1 set operation
+        self.var1_set_dict = {
+                'none'         : self._set_none,
+                'user-defined' : self._set_other,
+                }
+
         # set up scan_flag, 'xyscan' or 'daq'
         self.scan_flag = {True:'xyscan',False:'daq'}[self.ds_flag_rb.GetValue()]
 
@@ -63,6 +69,9 @@ class DataScanFrame(dsfui.DataScanFrame):
 
         # default var2_op_func:
         self.var2_op_func = lambda x: x
+
+        # default var1_set_func:
+        self.var1_set_func = lambda x, pvobj: pvobj.put(x)
 
         # default path for user-defined functions
         self.func_path = '.'
@@ -218,6 +227,11 @@ class DataScanFrame(dsfui.DataScanFrame):
         op_func, hint_text = self.var2_op_dict[obj.GetStringSelection()]()
         self.var2_op_st.SetLabel(hint_text)
         self.var2_op_func = op_func
+
+    def var1_set_comboxOnCombobox(self, event):
+        obj = self.var1_set_combox
+        set_func = self.var1_set_dict[obj.GetStringSelection()]()
+        self.var1_set_func = set_func
 
     def fit_model_cbOnCombobox(self, event):
         obj = event.GetEventObject()
@@ -394,7 +408,15 @@ class DataScanFrame(dsfui.DataScanFrame):
             if not self.retake_flag:  # retake is not enabled
                 #print "active normal process", self.var1_idx, self.var1_range_num
                 assert self.var1_idx < self.var1_range_num
-                self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
+                # define the PUT action here
+                # 1: the simplest case: directly put the value onto some PV
+                #self.var1_set_PV.put(self.var1_range_array[self.var1_idx])
+                # 2: general case: define the PUT action, should including case 1
+                scanval = self.var1_range_array[self.var1_idx]
+                #print self.var1_set_func
+                self.var1_set_func(scanval, pvobj=self.var1_set_PV)
+                #self._debug_check_pv(self.var1_set_PV)
+
                 wx.MilliSleep(self.waitmsec_val)
                 self.start_scan_daq_timer(self.scandaqdelt_msec, self.var1_idx)
                 self.var1_idx += 1
@@ -582,7 +604,7 @@ class DataScanFrame(dsfui.DataScanFrame):
             return True
         else:
             return False
-        
+
     def _op_none(self):
         hint_text = u"Raw data."
         op_func = lambda x: x
@@ -607,13 +629,28 @@ class DataScanFrame(dsfui.DataScanFrame):
         hint_text = u"Use user-defined function."
         op_func = lambda x: x
         obj = self.var2_op_combox
-        frame = FuncListFrame(self, self.func_path)
-        frame.SetTitle('Input User-defined Function')
+        frame = FuncListFrame(self, self.func_path, 'op')
+        frame.SetTitle('Select User-defined Function')
         x, y = obj.GetScreenPosition()
         y += obj.GetSize()[1]
         frame.Show()
         frame.SetPosition((x,y))
         return op_func, hint_text 
+
+    def _set_none(self):
+        set_func = lambda x, pvobj: pvobj.put(x)
+        return set_func
+    
+    def _set_other(self):
+        set_func = lambda x, pvobj: pvobj.put(x)
+        obj = self.var1_set_combox
+        frame = FuncListFrame(self, self.func_path, 'set')
+        frame.SetTitle('Select User-defined Function')
+        x, y = obj.GetScreenPosition()
+        y += obj.GetSize()[1]
+        frame.Show()
+        frame.SetPosition((x,y))
+        return set_func
 
     def set_scan_params(self):
         """set up scan parameters, var1(x) and var2(y)
@@ -693,6 +730,15 @@ class DataScanFrame(dsfui.DataScanFrame):
         except:
             kws = {}
         self.scanfig_panel.set_text(text, **kws) 
+
+    def _debug_check_pv(self, pv):
+        """ check the get PV value, debug only
+        
+        :param pv: pyepics PV object, i.e. created by epics.PV(EPICS_pv_string_name)
+        """
+        print(pv.get())
+    
+    #def 
 
 
 class MyEditListFrame(EditListFrame):

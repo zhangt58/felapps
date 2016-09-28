@@ -11,7 +11,7 @@ import os
 from inspect import getmembers, isfunction
 
 class FuncListFrame(dsfui.FuncListFrame):
-    def __init__(self, parent, fullpath='.'):
+    def __init__(self, parent, fullpath='.', type='op'):
         dsfui.FuncListFrame.__init__(self, parent)
         self.parent = parent
 
@@ -20,6 +20,7 @@ class FuncListFrame(dsfui.FuncListFrame):
         self._init_items()
         
         self.select_idx = None
+        self.type = type # type could be 'op', or 'set'
 
     def _init_items(self):
         full_path = os.path.expanduser(self.path_tc.GetValue())
@@ -68,7 +69,12 @@ class FuncListFrame(dsfui.FuncListFrame):
 
     def ok_btnOnButtonClick(self, event):
         if self.select_idx is not None:
-            self.parent.var2_op_func = self.func_list[self.select_idx][1]
+            if self.type == 'op':
+                self.parent.var2_op_func = self.func_list[self.select_idx][1]
+            elif self.type == 'set':
+                self.parent.var1_set_func = self.func_list[self.select_idx][1]
+            else:
+                print("type ERROR")
         self.Close()
 
     def path_btnOnButtonClick(self, event):
