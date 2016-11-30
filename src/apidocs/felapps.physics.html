@@ -1,89 +1,148 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>felapps.physics package &mdash; felapps 1.5.13 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
     
-    <title>felapps.physics package &mdash; felapps 1.5.13 documentation</title>
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html"/>
+        <link rel="up" title="felapps package" href="felapps.html"/>
+        <link rel="next" title="felapps.utils package" href="felapps.utils.html"/>
+        <link rel="prev" title="felapps.apps.wxmpv package" href="felapps.apps.wxmpv.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
     
-    <link rel="stylesheet" href="../../_static/sphinxdoc.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '1.5.13',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="felapps 1.5.13 documentation" href="../../index.html" />
-    <link rel="up" title="felapps package" href="felapps.html" />
-    <link rel="next" title="felapps.utils package" href="felapps.utils.html" />
-    <link rel="prev" title="felapps.apps.wxmpv package" href="felapps.apps.wxmpv.html" /> 
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="felapps.utils.html" title="felapps.utils package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="felapps.apps.wxmpv.html" title="felapps.apps.wxmpv package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="felapps.html" accesskey="U">felapps package</a> &raquo;</li> 
-      </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">felapps.physics package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-felapps.physics.felbase">felapps.physics.felbase module</a></li>
-<li><a class="reference internal" href="#module-felapps.physics.felcalc">felapps.physics.felcalc module</a></li>
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> felapps
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.13
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../deploy.html">Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../demo.html">Examples and Demonstrations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../apidoc.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="felapps.html">felapps package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="felapps.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="felapps.apps.html">apps package</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">physics package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="felapps.utils.html">utils package</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="felapps.apps.wxmpv.html"
-                        title="previous chapter">felapps.apps.wxmpv package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="felapps.utils.html"
-                        title="next chapter">felapps.utils package</a></p>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+            
+          
         </div>
       </div>
+    </nav>
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">felapps</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../apidoc.html">API</a> &raquo;</li>
+      
+          <li><a href="felapps.html">felapps package</a> &raquo;</li>
+      
+    <li>felapps.physics package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="module-felapps.physics">
 <span id="felapps-physics-package"></span><h1>felapps.physics package<a class="headerlink" href="#module-felapps.physics" title="Permalink to this headline">¶</a></h1>
@@ -204,13 +263,13 @@ physics-related modules, both accelerator physics and FEL physics.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>c0</strong> &#8211; <img class="math" src="../../_images/math/871e0834b8b6f132c00a57acee8b4c8fb2eb2c77.png" alt="c_0"/>, velocity of light in vacuum</li>
-<li><strong>epsilon0</strong> &#8211; <img class="math" src="../../_images/math/f6da37ff3a3873900e235d0837af9e1d2a30c2ab.png" alt="\epsilon_0"/>, permittivity in vacuum</li>
-<li><strong>mu0</strong> &#8211; <img class="math" src="../../_images/math/ba1d824b5472f0f2c69b48e08792e778866b4d52.png" alt="\mu_0"/>, permeability in vacuum</li>
-<li><strong>e0</strong> &#8211; <img class="math" src="../../_images/math/78a06cf7a34f39fde71fbba0d5539baae7c72d4e.png" alt="e"/>, electron charge, [C]</li>
-<li><strong>m0</strong> &#8211; <img class="math" src="../../_images/math/2ba5781b7f01aa385426a30b01d8a60d805c1b12.png" alt="m_e"/>, electron mass, [kg]</li>
-<li><strong>h0</strong> &#8211; <img class="math" src="../../_images/math/293fb39e1b93282c804a86186e721b32f829f1b2.png" alt="h"/>, Plank constant</li>
-<li><strong>currentA</strong> &#8211; <img class="math" src="../../_images/math/cf94ffd2d5925f7ed4e97d50fdae65ac9db126cc.png" alt="I_A"/>, Alven current, [A]</li>
+<li><strong>c0</strong> &#8211; <span class="math">\(c_0\)</span>, velocity of light in vacuum</li>
+<li><strong>epsilon0</strong> &#8211; <span class="math">\(\epsilon_0\)</span>, permittivity in vacuum</li>
+<li><strong>mu0</strong> &#8211; <span class="math">\(\mu_0\)</span>, permeability in vacuum</li>
+<li><strong>e0</strong> &#8211; <span class="math">\(e\)</span>, electron charge, [C]</li>
+<li><strong>m0</strong> &#8211; <span class="math">\(m_e\)</span>, electron mass, [kg]</li>
+<li><strong>h0</strong> &#8211; <span class="math">\(h\)</span>, Plank constant</li>
+<li><strong>currentA</strong> &#8211; <span class="math">\(I_A\)</span>, Alven current, [A]</li>
 </ul>
 </td>
 </tr>
@@ -553,34 +612,72 @@ first version is written in MATLAB on Dec. 25th, 2014.</p>
 </div>
 
 
+           </div>
           </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="felapps.utils.html" class="btn btn-neutral float-right" title="felapps.utils package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="felapps.apps.wxmpv.html" class="btn btn-neutral" title="felapps.apps.wxmpv package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Tong Zhang.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="felapps.utils.html" title="felapps.utils package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="felapps.apps.wxmpv.html" title="felapps.apps.wxmpv package"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">felapps 1.5.13 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../apidoc.html" >API</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="felapps.html" >felapps package</a> &raquo;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Tong Zhang.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
-    </div>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.5.13',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>

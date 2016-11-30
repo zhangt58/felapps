@@ -6,17 +6,19 @@
 Welcome to felapps's documentation!
 ===================================
 
-.. sidebar:: felapps Python package
-    
-    ``felapps``: FEL High-level Applications.
+.. only:: latex
 
-    Install: ``pip install felapps``
+    .. sidebar:: felapps Python package
+        
+        ``felapps``: FEL High-level Applications.
 
-    PDF documentation: :download:`Download <_build/latex/felapps.pdf>`
+        Install: ``pip install felapps``
 
-    :Author: Tong Zhang 
-    :E-mail: zhangtong@sinap.ac.cn
-    :Date: 2015-2016
+        PDF documentation: :download:`Download <_build/latex/felapps.pdf>`
+
+        :Author: Tong Zhang 
+        :E-mail: zhangtong@sinap.ac.cn
+        :Date: 2015-2016
 
 
 .. toctree::
