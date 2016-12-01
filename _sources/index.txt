@@ -29,6 +29,9 @@ Welcome to felapps's documentation!
     src/demo
     src/apidoc
 
+.. only:: html
+
+    PDF documentation: :download:`Download <_build/latex/felapps.pdf>`
 
 Indices and tables
 ==================
