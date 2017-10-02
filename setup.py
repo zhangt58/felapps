@@ -11,7 +11,7 @@ import os
 import glob
 
 appName             = "felapps"
-appVersion          = "1.5.15"
+appVersion          = "1.5.16"
 appDescription      = "High-level applications for FEL commissioning."
 appLong_description = readme() + '\n\n'
 appPlatform         = ["Linux"]

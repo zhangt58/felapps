@@ -11,7 +11,7 @@ class AppVersions():
                          'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
                          'wxmpv'        : '0.2',
-                         'appdrawer'    : '1.5.15',
+                         'appdrawer'    : '1.5.16',
                          }
 
     def setVersion(self, verNum, appName = 'imageviewer'):
