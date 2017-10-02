@@ -23,12 +23,17 @@ appKeywords         = "FEL HLA high-level python wxpython"
 requiredpackages = ['numpy','scipy','matplotlib','pyepics','h5py',
                     'pyrpn','beamline','lmfit'] # install_requires
 appScriptsName = ['imageviewer', 
-                  'felformula', 
+                  'imageviewer.py'
+                  'felformula',
+                  'felformula.py'
                   'cornalyzer', 
-                  'dataworkshop', 
+                  'cornalyzer.py'
+                  'dataworkshop',
+                  'dataworkshop.py'
                   'appdrawer', 
                   'wxmpv',
                   'runfelapps',
+                  'runfelapps.py'
                   'update-felapps-menu',
                   ]
 #'matchwizard', 
