@@ -1,6 +1,5 @@
 wheel
 numpy
-scipy
 matplotlib
 h5py
 pyrpn
@@ -8,3 +7,4 @@ pyepics
 lmfit
 beamline
 pillow
+scipy
