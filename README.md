@@ -1,5 +1,10 @@
 # felapps
 
+**Note**:
+As of [v2.0.0](https://github.com/archman/felapps/releases/tag/v2.0.0), development will focus on `Python 3.x` and
+`wxPython 4.0` (phoenix), the last release for `wxPython 3.x` (classic)
+and `Python 2.7` is [v1.5.16](https://github.com/archman/felapps/releases/tag/v1.5.16).
+
 High-level applications for the commissioning of free-electron laser facilities. Purely open-sourced, mainly developed by `Python` (2.7), powered by various well-benchmarked module/packages, e.g.: `matplotlib` (beautiful scientific plotting); `numpy` and `scipy` (scientific computing); `wxPython` (GUI building); `PyEpics` (interface with EPICS); `h5py` (interface with HDF5 data format), etc.
 
 The goal of this project is to make a mature, full-fledged, friendly, beautiful and stable open source software framework/suite for the FEL commissioning (and operation), including beam tuning, parameters optimization and specific physics-related applications deployment, etc.
@@ -9,7 +14,7 @@ Documentation: http://archman.github.io/felapps/
 ### Installation
 `felapps` could be installed into the operating system by the following approaches:
 
-1. (Recommended) Install directly from PyPI by: 
+1. (Recommended) Install directly from PyPI by:
   `pip install felapps`, the required packages (i.e. the above listed Python modules) will be pulled and installed automatically;
 2. Clone this repo by `git clone https://github.com/archman/felapps.git`.
 
