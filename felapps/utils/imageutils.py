@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
-
 """
 classes and functions for image processing
     data2Image: generate image from data file, hdf5, asc, dat
@@ -8,6 +7,7 @@ classes and functions for image processing
 Author: Tong Zhang
 Created: Sep. 28, 2015
 """
+from __future__ import print_function
 
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -24,7 +24,17 @@ import wx.dataview as dv
 
 from scipy.misc import imsave
 
-def data2Image(filename, datatype='hdf5', figtype='jpg', wdir=None, width=None, height=None, whflag='h', cmtype='hot', *args, **kwargs):
+
+def data2Image(filename,
+               datatype='hdf5',
+               figtype='jpg',
+               wdir=None,
+               width=None,
+               height=None,
+               whflag='h',
+               cmtype='hot',
+               *args,
+               **kwargs):
     """
     generate image thumbnails from data file, by default from hdf5 array.
 
@@ -45,7 +55,7 @@ def data2Image(filename, datatype='hdf5', figtype='jpg', wdir=None, width=None, 
         data = f['image']['data']
     elif datatype == 'asc' or datatype == 'dat':
         data = np.loadtxt(filename)
-        
+
     if wdir is None:
         wdir = os.getcwd()
     imgdir = os.path.join(wdir, '._img')
@@ -60,7 +70,6 @@ def data2Image(filename, datatype='hdf5', figtype='jpg', wdir=None, width=None, 
     thumbname = '.'.join(filenamebase.split('.')[:-1] + [figtype])
     thumbfullpath = os.path.join(tmpdir, thumbname)
     thumbrelpath = os.path.join(imgdir, thumbname)
-    
     """
     fig = plt.figure()
     ax = fig.add_subplot(111)
@@ -81,11 +90,11 @@ def data2Image(filename, datatype='hdf5', figtype='jpg', wdir=None, width=None, 
         w = rawsize_w
     if h == None:
         h = rawsize_h
-    
+
     if whflag == 'h':
-        sizecoef = float(h)/rawsize_h
+        sizecoef = float(h) / rawsize_h
     elif whflag == 'w':
-        sizecoef = float(w)/rawsize_w
+        sizecoef = float(w) / rawsize_w
     elif whflag == 'None':
         sizecoef = 1.0
 
@@ -95,19 +104,21 @@ def data2Image(filename, datatype='hdf5', figtype='jpg', wdir=None, width=None, 
     resizedimg.save(thumbrelpath)
 
     #plt.close(fig)
-    
+
     return thumbrelpath
+
 
 class ImageGalleryPanel(scrolled.ScrolledPanel):
     """
     Panel for image gallery show
     """
+
     def __init__(self, parent, *args, **kwargs):
         scrolled.ScrolledPanel.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         self.pxsize = 160
         self.image_file_list = []  # image file list
-        self.image_bitmap_obj = [] # staticbitmap list
+        self.image_bitmap_obj = []  # staticbitmap list
         self.wpsizer = wx.WrapSizer()
 
         self._workspace_list = []
@@ -125,12 +136,18 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         menu = wx.Menu()
         menu.Append(self.id_add_all, "Add all to workspace")
         menu.Append(self.id_rm_all, "Remove all from workspace")
-        self.Bind(wx.EVT_MENU, lambda evt: self.onPopAddAll(evt, obj), id=self.id_add_all)
-        self.Bind(wx.EVT_MENU, lambda evt: self.onPopRemoveAll(evt, obj), id=self.id_rm_all)
+        self.Bind(
+            wx.EVT_MENU,
+            lambda evt: self.onPopAddAll(evt, obj),
+            id=self.id_add_all)
+        self.Bind(
+            wx.EVT_MENU,
+            lambda evt: self.onPopRemoveAll(evt, obj),
+            id=self.id_rm_all)
         self.PopupMenu(menu)
         menu.Destroy()
         event.Skip()
-    
+
     def onPopAddAll(self, event, obj):
         self._workspace_list = [i.GetName() for i in obj]
         self._ws_panel.clear()
@@ -151,7 +168,7 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
             self._ws_panel.dv_lc.SelectRow(rowidx)
             item_sel = self._ws_panel.dv_lc.RowToItem(rowidx)
             self._ws_panel.dv_lc.EnsureVisible(item_sel)
-    
+
     def onRightClick(self, event):
         obj = event.GetEventObject()
         self.id_add = wx.ID_ADD
@@ -160,11 +177,20 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         menu = wx.Menu()
         if obj.GetName() in self._workspace_list:
             menu.Append(self.id_remove, "Out Workspace")
-            self.Bind(wx.EVT_MENU, lambda evt: self.onPopRemove(evt, obj), id=self.id_remove)
+            self.Bind(
+                wx.EVT_MENU,
+                lambda evt: self.onPopRemove(evt, obj),
+                id=self.id_remove)
         else:
             menu.Append(self.id_add, "To Workspace")
-            self.Bind(wx.EVT_MENU, lambda evt: self.onPopAdd(evt, obj), id=self.id_add)
-        self.Bind(wx.EVT_MENU, lambda evt: self.onPopAnalysis(evt, obj), id=self.id_pop)
+            self.Bind(
+                wx.EVT_MENU,
+                lambda evt: self.onPopAdd(evt, obj),
+                id=self.id_add)
+        self.Bind(
+            wx.EVT_MENU,
+            lambda evt: self.onPopAnalysis(evt, obj),
+            id=self.id_pop)
         menu.Append(self.id_pop, "Pop up Analysis")
         self.PopupMenu(menu)
         menu.Destroy()
@@ -174,13 +200,13 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         self._workspace_list.append(obj.GetName())
         self._ws_panel.clear()
         self._ws_panel.update(self.get_workspace())
-        print "Add selected image to workspace"
+        print("Add selected image to workspace")
 
     def onPopRemove(self, event, obj):
         self._workspace_list.remove(obj.GetName())
         self._ws_panel.clear()
         self._ws_panel.update(self.get_workspace())
-        print "Remove selected image from workspace"
+        print("Remove selected image from workspace")
 
     def onPopAnalysis(self, event, obj):
         datasrc = obj.GetName().split(';;;')[-1]
@@ -192,18 +218,20 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         """ _workspace_list element format: "image_file_full_path;;;data_file_fullpath"
         """
         if fmt == 'dvc':
-            return [[str(idx+1)] + [os.path.basename(n) for n in e.split(';;;')] 
-                        for idx, e in enumerate(self._workspace_list)]
-        elif fmt == 'sta': # return data file list
+            return [
+                [str(idx + 1)] + [os.path.basename(n) for n in e.split(';;;')]
+                for idx, e in enumerate(self._workspace_list)
+            ]
+        elif fmt == 'sta':  # return data file list
             return [e.split(';;;')[-1] for e in self._workspace_list]
         else:
             return None
-        
+
         #return self._workspace_list
 
     def genImage(self, imagelist, fdir, ftype):
         imageobj_list = []
-        if imagelist is None: # not load any image data files, i.e. default status
+        if imagelist is None:  # not load any image data files, i.e. default status
             #for imgid in xrange(16):
             #    img = resizeImage('/home/tong/Programming/learning/python/PIL/test.jpg', 160)
             #    self.imageobj.append(wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img)))
@@ -211,14 +239,15 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         else:
             for imagefilepath in imagelist:
                 img = resizeImage(imagefilepath, self.pxsize)
-                datafilename = '.'.join(os.path.basename(imagefilepath).split('.')[0:-1])
+                datafilename = '.'.join(
+                    os.path.basename(imagefilepath).split('.')[0:-1])
                 datafilepath = os.path.join(fdir, datafilename + '.' + ftype)
                 #print imagefilepath
                 #print datafilename, datafilepath
                 name = ';;;'.join([imagefilepath, datafilepath])
-                imageobj_list.append(wx.StaticBitmap(self, wx.ID_ANY,
-                                                     wx.BitmapFromImage(img), 
-                                                     name=name))
+                imageobj_list.append(
+                    wx.StaticBitmap(
+                        self, wx.ID_ANY, wx.BitmapFromImage(img), name=name))
         return imageobj_list
 
     def initUI(self):
@@ -231,7 +260,8 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         :param ftype: ext of data format, which generate image_list
         """
         if image_list != []:
-            self.image_file_list.extend(image_list)  # merge into image fullpath list (.jpg)
+            self.image_file_list.extend(
+                image_list)  # merge into image fullpath list (.jpg)
 
         # wx.StaticBitmap objs generated from imagelist
         image_objs = self.genImage(image_list, fdir, ftype)
@@ -251,11 +281,11 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
             f_img_info = funutils.get_file_info(f_img)
             f_data_info = funutils.get_file_info(f_data)
             ttext = "Image filename: {img_n}\nData source: {data_n}\nCreate: {ctime}\nBytes: {s_i} [image], {s_d} [data]".format(
-                    img_n=f_img_info['name'],
-                    data_n=f_data_info['name'],
-                    ctime=f_data_info['ctime'],
-                    s_i=f_img_info['bytes'],
-                    s_d=f_data_info['bytes'])
+                img_n=f_img_info['name'],
+                data_n=f_data_info['name'],
+                ctime=f_data_info['ctime'],
+                s_i=f_img_info['bytes'],
+                s_d=f_data_info['bytes'])
             imgobj.SetToolTip(wx.ToolTip(ttext))
 
         self.SetSizer(wpsizer)
@@ -269,14 +299,14 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         """
         if fdata_list == [] or image_list == []:
             return
-        
+
         image_obj = []
         for (f_data, f_img) in zip(fdata_list, image_list):
             img = resizeImage(f_img, self.pxsize)
             name = ';;;'.join([f_img, f_data])
-            image_obj.append(wx.StaticBitmap(self, wx.ID_ANY, 
-                                             wx.BitmapFromImage(img),
-                                             name=name))
+            image_obj.append(
+                wx.StaticBitmap(
+                    self, wx.ID_ANY, wx.BitmapFromImage(img), name=name))
 
         self.image_bitmap_obj = image_obj  # update bitmap objects
         wpsizer = wx.WrapSizer()
@@ -289,11 +319,11 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
             f_img_info = funutils.get_file_info(f_img)
             f_data_info = funutils.get_file_info(f_data)
             ttext = "Image filename: {img_n}\nData source: {data_n}\nCreate: {ctime}\nBytes: {s_i} [image], {s_d} [data]".format(
-                    img_n=f_img_info['name'],
-                    data_n=f_data_info['name'],
-                    ctime=f_data_info['ctime'],
-                    s_i=f_img_info['bytes'],
-                    s_d=f_data_info['bytes'])
+                img_n=f_img_info['name'],
+                data_n=f_data_info['name'],
+                ctime=f_data_info['ctime'],
+                s_i=f_img_info['bytes'],
+                s_d=f_data_info['bytes'])
             imgobj.SetToolTip(wx.ToolTip(ttext))
 
         self.SetSizer(wpsizer)
@@ -314,7 +344,7 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         """
         enlarge image by percent
         """
-        self.pxsize *= (1.0+percent)
+        self.pxsize *= (1.0 + percent)
         self.onClear()
         self.onScaleImageSize(fdata_list, image_list)
 
@@ -322,9 +352,10 @@ class ImageGalleryPanel(scrolled.ScrolledPanel):
         """
         shrink image by percent
         """
-        self.pxsize *= (1.0-percent)
+        self.pxsize *= (1.0 - percent)
         self.onClear()
         self.onScaleImageSize(fdata_list, image_list)
+
 
 class WorkspacePanel(wx.Panel):
     def __init__(self, parent, data=None):
@@ -343,9 +374,9 @@ class WorkspacePanel(wx.Panel):
         self.dv_lc = dv_lc = dv.DataViewListCtrl(self)
 
         # id, image file name, data file ext
-        dv_lc.AppendTextColumn('ID',    width=30)
+        dv_lc.AppendTextColumn('ID', width=30)
         dv_lc.AppendTextColumn('Image', width=-1)
-        dv_lc.AppendTextColumn('Data',  width=-1)
+        dv_lc.AppendTextColumn('Data', width=-1)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         sizer.Add(dv_lc, 1, wx.EXPAND)
@@ -358,6 +389,7 @@ class WorkspacePanel(wx.Panel):
         self.set_data(data)
         for itemval in self.data:
             self.dv_lc.AppendItem(itemval)
+
 
 #class AnalysisFrame(wx.Frame):
 #    def __init__(self, parent, datasrc, **kws):
@@ -377,7 +409,7 @@ class WorkspacePanel(wx.Panel):
 #        #y0, sy = self._gaussian_fit(y, hy)
 #        #print x0, sx
 #        #print y0, sy
-# 
+#
 #
 #    def _init_ui(self):
 #        self.psplitter = wx.SplitterWindow(self, style=wx.SP_3D)
@@ -389,12 +421,12 @@ class WorkspacePanel(wx.Panel):
 #        self.psplitter_leftpanel  = wx.Panel(self.psplitter)
 #        self.plotpanel = funutils.AnalysisPlotPanel(self.psplitter_leftpanel, self.image_data,
 #                type='image', toolbar=True)
-#        
+#
 #        vbox_l = wx.BoxSizer()
 #        vbox_l.Add(self.plotpanel, 1, wx.EXPAND)
 #
 #        self.psplitter_leftpanel.SetSizerAndFit(vbox_l)
-#        
+#
 #        # right
 #        self.psplitter_rightpanel = wx.Panel(self.psplitter)
 #        exit_btn = wx.Button(self.psplitter_rightpanel, label=u"E&xit")
@@ -402,11 +434,11 @@ class WorkspacePanel(wx.Panel):
 #        vbox_r.Add(exit_btn, 0)
 #
 #        self.psplitter_rightpanel.SetSizerAndFit(vbox_r)
-#        
+#
 #        # set splitter
 #        self.psplitter.SplitVertically(self.psplitter_leftpanel,
 #                                       self.psplitter_rightpanel, 0)
-#    
+#
 #        # plot sizer
 #        p_sizer = wx.BoxSizer(wx.HORIZONTAL)
 #        p_sizer.Add(self.psplitter, 1, wx.EXPAND, 0)
@@ -414,7 +446,7 @@ class WorkspacePanel(wx.Panel):
 #        # main sizer
 #        m_sizer = wx.BoxSizer()
 #        m_sizer.Add(p_sizer, 1, wx.EXPAND, 10)
-#        
+#
 #        self.SetSizerAndFit(m_sizer)
 #
 #        # events
@@ -426,10 +458,11 @@ class WorkspacePanel(wx.Panel):
 #    def psplitterOnIdle(self, event):
 #        self.psplitter.SetSashPosition(0)
 #        self.psplitter.Unbind(wx.EVT_IDLE)
-#        
+#
+
 
 class ProgressBarFrame(wx.Frame):
-    def __init__(self, parent, title, range=100) :
+    def __init__(self, parent, title, range=100):
         wx.Frame.__init__(self, parent=parent, title=title)
         self.range = range
         self.createProgressbar()
@@ -441,29 +474,37 @@ class ProgressBarFrame(wx.Frame):
         self.Show()
 
     def createProgressbar(self):
-        self.pb       = wx.Gauge(self)
-        self.pb.SetRange(range = self.range)
+        self.pb = wx.Gauge(self)
+        self.pb.SetRange(range=self.range)
 
-        self.elapsed_time_st  = wx.StaticText(self, label = 'Elapsed Time:')
-        self.elapsed_time_val = wx.StaticText(self, label = '00:00:00')
+        self.elapsed_time_st = wx.StaticText(self, label='Elapsed Time:')
+        self.elapsed_time_val = wx.StaticText(self, label='00:00:00')
 
         vbox_main = wx.BoxSizer(wx.VERTICAL)
         hbox_time = wx.BoxSizer(wx.HORIZONTAL)
-        hbox_time.Add(self.elapsed_time_st,  0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
-        hbox_time.Add(self.elapsed_time_val, 0, wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
-        vbox_main.Add(self.pb,   0, wx.EXPAND | wx.ALL, 5)
+        hbox_time.Add(self.elapsed_time_st, 0,
+                      wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        hbox_time.Add(self.elapsed_time_val, 0,
+                      wx.ALIGN_LEFT | wx.EXPAND | wx.ALL, 5)
+        vbox_main.Add(self.pb, 0, wx.EXPAND | wx.ALL, 5)
         vbox_main.Add(hbox_time, 0, wx.EXPAND | wx.ALL, 5)
 
         self.SetSizerAndFit(vbox_main)
 
         self.elapsed_time_timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.onTickTimer, self.elapsed_time_timer)
-    
-    def onTickTimer(self, event):
-        fmt='%H:%M:%S'
-        self.elapsed_time_val.SetLabel(time.strftime(fmt, time.gmtime(time.time()-self.t0)))
 
-def resizeImage(imagepath, height, width = None, whflag = 'h', quality = wx.IMAGE_QUALITY_NORMAL):
+    def onTickTimer(self, event):
+        fmt = '%H:%M:%S'
+        self.elapsed_time_val.SetLabel(
+            time.strftime(fmt, time.gmtime(time.time() - self.t0)))
+
+
+def resizeImage(imagepath,
+                height,
+                width=None,
+                whflag='h',
+                quality=wx.IMAGE_QUALITY_NORMAL):
     """
     resize image read from file, return wx.Image obj
     :param imagepath: jpg image file path
@@ -471,24 +512,26 @@ def resizeImage(imagepath, height, width = None, whflag = 'h', quality = wx.IMAG
     :param width:  width in pixel after resizing
     :param whflag: w.r.t. height ('h') or width ('w')
     """
-    oimage = wx.Image(imagepath, type = wx.BITMAP_TYPE_ANY) # recommend jpg type
+    oimage = wx.Image(imagepath, type=wx.BITMAP_TYPE_ANY)  # recommend jpg type
     w, h = oimage.GetSize()
     if whflag == 'h':
-        scalingfactor = float(height)/h
+        scalingfactor = float(height) / h
     elif whflag == 'w':
-        scalingfactor = float(width)/w
-    
-    return oimage.Scale(w*scalingfactor, h*scalingfactor, quality)
+        scalingfactor = float(width) / w
+
+    return oimage.Scale(w * scalingfactor, h * scalingfactor, quality)
+
 
 def test_data2Image():
     """
     test function Hdf2Image
     """
-    data2Image('~/Desktop/20150923/data.hdf5', height=100, cmtype = 'jet')
+    data2Image('~/Desktop/20150923/data.hdf5', height=100, cmtype='jet')
+
 
 def main():
     test_data2Image()
 
+
 if __name__ == '__main__':
     main()
-    

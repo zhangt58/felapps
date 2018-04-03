@@ -4,7 +4,7 @@ import wx
 import h5py
 import numpy as np
 
-import myui
+from . import myui
 
 from . import resutils
 
@@ -13,26 +13,27 @@ from . import resutils
 class AnalysisFrame(myui.PlotFrame):
     def __init__(self, parent, datasrc):
         myui.PlotFrame.__init__(self, parent)
-        
+
         self.datasrc = datasrc
         self.image_data = self.get_data(datasrc)
-        self.fontsize = wx.SystemSettings_GetFont(wx.SYS_SYSTEM_FONT).GetPointSize()
+        self.fontsize = wx.SystemSettings.GetFont(
+            wx.SYS_SYSTEM_FONT).GetPointSize()
         self.post_init()
 
     def post_init(self):
         # cmap_cb
-        cmaplist = ['viridis', 'jet', 'inferno',
-                    'plasma', 'magma', 'hot', 'cool',
-                    'gist_earth', 'gist_rainbow', 
-                    'gist_heat', 'terrain', 'gnuplot2', 
-                    'seismic', 'gray']
+        cmaplist = [
+            'viridis', 'jet', 'inferno', 'plasma', 'magma', 'hot', 'cool',
+            'gist_earth', 'gist_rainbow', 'gist_heat', 'terrain', 'gnuplot2',
+            'seismic', 'gray'
+        ]
         self.cmap_cb.Clear()
         self.cmap_cb.AppendItems(cmaplist)
         self.cmap_cb.SetValue('jet')
 
         # line choice
         self.lineid_choice.Clear()
-        self.lineid_choice.AppendItems(['raw', 'fit','none','show'])
+        self.lineid_choice.AppendItems(['raw', 'fit', 'none', 'show'])
         self.lineid_choice.SetString(2, 'none')
         self.lineid_choice.SetSelection(2)
 
@@ -44,27 +45,78 @@ class AnalysisFrame(myui.PlotFrame):
 
         # marker style
         mk_dict = {
-                    'none'     : {'code': u'none',                              'symbol': '' },
-                    'point'    : {'code': u'\N{BLACK CIRCLE}',                  'symbol': '.'},
-                    'circle'   : {'code': u'\N{WHITE CIRCLE}',                  'symbol': 'o'},
-                    'square'   : {'code': u'\N{WHITE LARGE SQUARE}',            'symbol': 's'},
-                    'pentagon' : {'code': u'\N{WHITE PENTAGON}',                'symbol': 'p'},
-                    'hexagon1' : {'code': u'\N{WHITE HEXAGON}',                 'symbol': 'h'},
-                    'diamond'  : {'code': u'\N{WHITE DIAMOND}',                 'symbol': 'D'},
-                    'tdiamond' : {'code': u'\N{LOZENGE}',                       'symbol': 'd'},
-                    'star'     : {'code': u'\N{STAR OPERATOR}',                 'symbol': '*'},
-                    'cross'    : {'code': u'\N{VECTOR OR CROSS PRODUCT}',       'symbol': 'x'},
-                    'plus'     : {'code': u'\N{PLUS SIGN}',                     'symbol': '+'},
-                    'hline'    : {'code': u'\N{MINUS SIGN}',                    'symbol': '_'},
-                    'vline'    : {'code': u'\N{DIVIDES}',                       'symbol': '|'},
-                    'tri_down' : {'code': u'\N{WHITE DOWN-POINTING TRIANGLE}',  'symbol': 'v'},
-                    'tri_up'   : {'code': u'\N{WHITE UP-POINTING TRIANGLE}',    'symbol': '^'},
-                    'tri_right': {'code': u'\N{WHITE RIGHT-POINTING TRIANGLE}', 'symbol': '>'},
-                    'tri_left' : {'code': u'\N{WHITE LEFT-POINTING TRIANGLE}',  'symbol': '<'},
-                }
+            'none': {
+                'code': u'none',
+                'symbol': ''
+            },
+            'point': {
+                'code': u'\N{BLACK CIRCLE}',
+                'symbol': '.'
+            },
+            'circle': {
+                'code': u'\N{WHITE CIRCLE}',
+                'symbol': 'o'
+            },
+            'square': {
+                'code': u'\N{WHITE LARGE SQUARE}',
+                'symbol': 's'
+            },
+            'pentagon': {
+                'code': u'\N{WHITE PENTAGON}',
+                'symbol': 'p'
+            },
+            'hexagon1': {
+                'code': u'\N{WHITE HEXAGON}',
+                'symbol': 'h'
+            },
+            'diamond': {
+                'code': u'\N{WHITE DIAMOND}',
+                'symbol': 'D'
+            },
+            'tdiamond': {
+                'code': u'\N{LOZENGE}',
+                'symbol': 'd'
+            },
+            'star': {
+                'code': u'\N{STAR OPERATOR}',
+                'symbol': '*'
+            },
+            'cross': {
+                'code': u'\N{VECTOR OR CROSS PRODUCT}',
+                'symbol': 'x'
+            },
+            'plus': {
+                'code': u'\N{PLUS SIGN}',
+                'symbol': '+'
+            },
+            'hline': {
+                'code': u'\N{MINUS SIGN}',
+                'symbol': '_'
+            },
+            'vline': {
+                'code': u'\N{DIVIDES}',
+                'symbol': '|'
+            },
+            'tri_down': {
+                'code': u'\N{WHITE DOWN-POINTING TRIANGLE}',
+                'symbol': 'v'
+            },
+            'tri_up': {
+                'code': u'\N{WHITE UP-POINTING TRIANGLE}',
+                'symbol': '^'
+            },
+            'tri_right': {
+                'code': u'\N{WHITE RIGHT-POINTING TRIANGLE}',
+                'symbol': '>'
+            },
+            'tri_left': {
+                'code': u'\N{WHITE LEFT-POINTING TRIANGLE}',
+                'symbol': '<'
+            },
+        }
         self.mk_cb.Clear()
-        mk_code = [v['code']   for k,v in mk_dict.items()]
-        self.mk_symbol = [v['symbol'] for k,v in mk_dict.items()]
+        mk_code = [v['code'] for k, v in mk_dict.items()]
+        self.mk_symbol = [v['symbol'] for k, v in mk_dict.items()]
         self.mk_cb.AppendItems(mk_code)
         self.mk_cb.SetValue('none')
 
@@ -72,8 +124,8 @@ class AnalysisFrame(myui.PlotFrame):
             # image
             self.plotpanel.set_figure_data(self.image_data)
 
-            self.plotpanel.axes.set_xlabel('$x$', fontsize=self.fontsize+4)
-            self.plotpanel.axes.set_ylabel('$y$', fontsize=self.fontsize+4)
+            self.plotpanel.axes.set_xlabel('$x$', fontsize=self.fontsize + 4)
+            self.plotpanel.axes.set_ylabel('$y$', fontsize=self.fontsize + 4)
             self.plotpanel.refresh()
 
             # lines
@@ -104,10 +156,10 @@ class AnalysisFrame(myui.PlotFrame):
         # events:
         self.Bind(wx.EVT_BUTTON, self.onIncFontSize, self.inc_font_btn)
         self.Bind(wx.EVT_BUTTON, self.onDecFontSize, self.dec_font_btn)
-        self.Bind(wx.EVT_BUTTON, self.onPickGridc,   self.gridc_btn)
-        self.Bind(wx.EVT_BUTTON, self.onPickMK1c,    self.mkc1_btn)
-        self.Bind(wx.EVT_BUTTON, self.onPickMK2c,    self.mkc2_btn)
-        self.Bind(wx.EVT_BUTTON, self.onPickPcc,     self.pcc_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickGridc, self.gridc_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickMK1c, self.mkc1_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickMK2c, self.mkc2_btn)
+        self.Bind(wx.EVT_BUTTON, self.onPickPcc, self.pcc_btn)
         self.Bind(wx.EVT_CLOSE, self.onExit)
 
     def get_data(self, datasrc=None):
@@ -221,14 +273,14 @@ class AnalysisFrame(myui.PlotFrame):
 
     def exit_btnOnButtonClick(self, event):
         self.exitApp()
-    
+
     def onExit(self, event):
         self.exitApp()
 
     def imhide_tgbtnOnToggleButton(self, event):
         obj = event.GetEventObject()
         self.plotpanel.hide_image(obj.GetValue())
-    
+
     def grid_ckbOnCheckBox(self, event):
         if event.GetEventObject().IsChecked():
             self.plotpanel.set_grids(self.grid_color)
@@ -293,18 +345,20 @@ class AnalysisFrame(myui.PlotFrame):
             self.yaxis_direction = y_direction
 
     def exitApp(self):
-        dial = wx.MessageDialog(self, message = "Are you sure to exit this application?",
-                                caption = 'Exit Warning',
-                                style = wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION) 
-        if dial.ShowModal() == wx.ID_YES:                                
-            self.Destroy() 
+        dial = wx.MessageDialog(
+            self,
+            message="Are you sure to exit this application?",
+            caption='Exit Warning',
+            style=wx.YES_NO | wx.NO_DEFAULT | wx.CENTRE | wx.ICON_QUESTION)
+        if dial.ShowModal() == wx.ID_YES:
+            self.Destroy()
 
     def set_staticbmp_color(self, obj, color):
         r, g, b = color.Red(), color.Green(), color.Blue()
         w, h = 16, 16
         bmp = wx.EmptyBitmap(w, h)
         img = wx.ImageFromBitmap(bmp)
-        img.SetRGBRect(wx.Rect(0, 0, w, h), r, g, b)
+        img.SetRGB(wx.Rect(0, 0, w, h), r, g, b)
         obj.SetBitmap(img.ConvertToBitmap())
 
     def set_fit_output(self):
@@ -312,5 +366,5 @@ class AnalysisFrame(myui.PlotFrame):
         out_y = self.plotpanel.get_fit_report('y')
         if out_x is not None and out_y is not None:
             self.output_tc.SetValue(out_x)
-            self.output_tc.AppendText('\n' + '-'*20 + '\n')
+            self.output_tc.AppendText('\n' + '-' * 20 + '\n')
             self.output_tc.AppendText(out_y)

@@ -38,10 +38,10 @@ class MainFrame(analysisframe.AnalysisFrame):
         open_mitem = wx.MenuItem(file_menu, wx.ID_OPEN, u"&Open\tCtrl+O")
         save_mitem = wx.MenuItem(file_menu, wx.ID_SAVE, u"&Save\tCtrl+S")
         exit_mitem = wx.MenuItem(file_menu, wx.ID_EXIT, u"E&xit\tCtrl+W")
-        file_menu.AppendItem(open_mitem)
-        file_menu.AppendItem(save_mitem)
+        file_menu.Append(open_mitem)
+        file_menu.Append(save_mitem)
         file_menu.AppendSeparator()
-        file_menu.AppendItem(exit_mitem)
+        file_menu.Append(exit_mitem)
 
         ## 
         help_menu = wx.Menu()
@@ -75,7 +75,7 @@ class MainFrame(analysisframe.AnalysisFrame):
             self.Destroy()
 
     def on_about(self, event):
-        info = wx.AboutDialogInfo()
+        info = wx.adv.AboutDialogInfo()
         info.Name = "wxMatPlotViewer\n wxmpv "
         info.Version = self._appversion
         info.Copyright = "(C) 2016 Tong Zhang, SINAP, CAS"
@@ -87,7 +87,7 @@ class MainFrame(analysisframe.AnalysisFrame):
         info.Developers = ["Tong Zhang <zhangtong@sinap.ac.cn>"]
         licenseText = "wxMatPlotViewer is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.\n" + "\nwxMatPlotViewer is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.\n" + "\nYou should have received a copy of the GNU General Public License along with Image Viewer; if not, write to the Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA"
         info.License = wordwrap(licenseText, 500, wx.ClientDC(self))
-        wx.AboutBox(info)
+        wx.adv.AboutBox(info)
 
     def on_open(self, event):
         openfile_name = funutils.getFileToLoad(self, ext=['hdf5','h5', 'txt','asc','dat','jpg','jpeg','png','bmp'])

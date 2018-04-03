@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """
 custom GUI controls
 
@@ -17,9 +16,16 @@ from bisect import bisect
 
 import wx.gizmos as gizmos
 
+
 class MyPlotPanel(wx.Panel):
-    def __init__(self, parent, figsize=None, dpi=None,
-                 bgcolor=None, type=None, toolbar=None, aspect='auto',
+    def __init__(self,
+                 parent,
+                 figsize=None,
+                 dpi=None,
+                 bgcolor=None,
+                 type=None,
+                 toolbar=None,
+                 aspect='auto',
                  **kwargs):
         """ construction method of MyPlotPanel class
         :param parent: parent object
@@ -60,7 +66,7 @@ class MyPlotPanel(wx.Panel):
         self.canvas.mpl_connect('pick_event', self.on_pick)
         self.Bind(wx.EVT_SIZE, self.on_size)
 
-        self.xylim_choice.Bind(wx.EVT_CHOICE,  self.xylim_choiceOnChoice)
+        self.xylim_choice.Bind(wx.EVT_CHOICE, self.xylim_choiceOnChoice)
         self.minlim_tc.Bind(wx.EVT_TEXT_ENTER, self.minlim_tcOnTextEnter)
         self.maxlim_tc.Bind(wx.EVT_TEXT_ENTER, self.maxlim_tcOnTextEnter)
 
@@ -78,50 +84,61 @@ class MyPlotPanel(wx.Panel):
             hbox.Add(self.toobar, 0, wx.EXPAND | wx.RIGHT, 5)
 
         # add x[y]lim control
-        xylim_hbox = wx.BoxSizer( wx.HORIZONTAL )
+        xylim_hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        xy_vbox = wx.BoxSizer( wx.VERTICAL )
+        xy_vbox = wx.BoxSizer(wx.VERTICAL)
 
-        xylim_choiceChoices = [ u"X-Limit", u"Y-Limit", u"Auto" ]
-        self.xylim_choice = wx.Choice( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, xylim_choiceChoices, 0 )
-        self.xylim_choice.SetSelection( 0 )
-        xy_vbox.Add( self.xylim_choice, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 3 )
+        xylim_choiceChoices = [u"X-Limit", u"Y-Limit", u"Auto"]
+        self.xylim_choice = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition,
+                                      wx.DefaultSize, xylim_choiceChoices, 0)
+        self.xylim_choice.SetSelection(0)
+        xy_vbox.Add(self.xylim_choice, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 3)
 
-        xylim_hbox.Add( xy_vbox, 0, wx.ALIGN_CENTER_VERTICAL, 1 )
+        xylim_hbox.Add(xy_vbox, 0, wx.ALIGN_CENTER_VERTICAL, 1)
 
-        lim_vbox = wx.BoxSizer( wx.VERTICAL )
+        lim_vbox = wx.BoxSizer(wx.VERTICAL)
 
-        min_hbox = wx.BoxSizer( wx.HORIZONTAL )
+        min_hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.minlim_st = wx.StaticText( self, wx.ID_ANY, u"Min", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.minlim_st.Wrap( -1 )
-        self.minlim_st.SetFont( wx.Font( 6, 70, 90, 90, False, "Monospace" ) )
+        self.minlim_st = wx.StaticText(self, wx.ID_ANY, u"Min",
+                                       wx.DefaultPosition, wx.DefaultSize, 0)
+        self.minlim_st.Wrap(-1)
+        self.minlim_st.SetFont(wx.Font(6, 70, 90, 90, False, "Monospace"))
 
-        min_hbox.Add( self.minlim_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.RIGHT|wx.TOP, 1 )
+        min_hbox.Add(self.minlim_st, 0,
+                     wx.ALIGN_CENTER_VERTICAL | wx.RIGHT | wx.TOP, 1)
 
-        self.minlim_tc = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
-        self.minlim_tc.SetFont( wx.Font( 6, 70, 90, 90, False, "Monospace" ) )
-        self.minlim_tc.SetToolTipString( u"Min of Limit" )
+        self.minlim_tc = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString,
+                                     wx.DefaultPosition, wx.DefaultSize,
+                                     wx.TE_PROCESS_ENTER)
+        self.minlim_tc.SetFont(wx.Font(6, 70, 90, 90, False, "Monospace"))
+        self.minlim_tc.SetToolTip(u"Min of Limit")
 
-        min_hbox.Add( self.minlim_tc, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP, 1 )
+        min_hbox.Add(self.minlim_tc, 0, wx.ALIGN_CENTER_VERTICAL | wx.TOP, 1)
 
-        lim_vbox.Add( min_hbox, 1, wx.EXPAND, 1 )
+        lim_vbox.Add(min_hbox, 1, wx.EXPAND, 1)
 
-        max_hbox = wx.BoxSizer( wx.HORIZONTAL )
+        max_hbox = wx.BoxSizer(wx.HORIZONTAL)
 
-        self.maxlim_st = wx.StaticText( self, wx.ID_ANY, u"Max", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.maxlim_st.Wrap( -1 )
-        self.maxlim_st.SetFont( wx.Font( 6, 70, 90, 90, False, "Monospace" ) )
+        self.maxlim_st = wx.StaticText(self, wx.ID_ANY, u"Max",
+                                       wx.DefaultPosition, wx.DefaultSize, 0)
+        self.maxlim_st.Wrap(-1)
+        self.maxlim_st.SetFont(wx.Font(6, 70, 90, 90, False, "Monospace"))
 
-        max_hbox.Add( self.maxlim_st, 0, wx.ALIGN_CENTER_VERTICAL|wx.BOTTOM|wx.RIGHT|wx.TOP, 1 )
+        max_hbox.Add(self.maxlim_st, 0,
+                     wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM | wx.RIGHT | wx.TOP,
+                     1)
 
-        self.maxlim_tc = wx.TextCtrl( self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, wx.TE_PROCESS_ENTER )
-        self.maxlim_tc.SetFont( wx.Font( 6, 70, 90, 90, False, "Monospace" ) )
-        self.maxlim_tc.SetToolTipString( u"Max of Limit" )
+        self.maxlim_tc = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString,
+                                     wx.DefaultPosition, wx.DefaultSize,
+                                     wx.TE_PROCESS_ENTER)
+        self.maxlim_tc.SetFont(wx.Font(6, 70, 90, 90, False, "Monospace"))
+        self.maxlim_tc.SetToolTip(u"Max of Limit")
 
-        max_hbox.Add( self.maxlim_tc, 0, wx.ALIGN_CENTER_VERTICAL|wx.BOTTOM|wx.TOP, 1 )
-        lim_vbox.Add( max_hbox, 1, wx.EXPAND, 1 )
-        xylim_hbox.Add( lim_vbox, 0, wx.ALIGN_CENTER_VERTICAL|wx.EXPAND, 1 )
+        max_hbox.Add(self.maxlim_tc, 0,
+                     wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM | wx.TOP, 1)
+        lim_vbox.Add(max_hbox, 1, wx.EXPAND, 1)
+        xylim_hbox.Add(lim_vbox, 0, wx.ALIGN_CENTER_VERTICAL | wx.EXPAND, 1)
 
         hbox.Add(xylim_hbox, 0, wx.EXPAND | wx.RIGHT, 5)
 
@@ -139,7 +156,7 @@ class MyPlotPanel(wx.Panel):
             self.x, self.y = np.meshgrid(x, y)
             self.z = self._func_peaks(self.x, self.y)
             self.image = self.axes.imshow(self.z)
-        else: # draw line
+        else:  # draw line
             self.x = np.linspace(-10, 10, 200)
             self.y = np.sin(self.x)
             self.line, = self.axes.plot(self.x, self.y)
@@ -154,8 +171,9 @@ class MyPlotPanel(wx.Panel):
         """
         if rgb_tuple is None:
             #rgb_tuple = wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE).Get()
-            rgb_tuple = wx.SystemSettings.GetColour(wx.SYS_COLOUR_DESKTOP).Get()
-        clr = [c/255.0 for c in rgb_tuple]
+            rgb_tuple = wx.SystemSettings.GetColour(
+                wx.SYS_COLOUR_DESKTOP).Get()
+        clr = [c / 255.0 for c in rgb_tuple]
         self.figure.set_facecolor(clr)
         self.figure.set_edgecolor(clr)
         self.canvas.SetBackgroundColour(wx.Colour(*rgb_tuple))
@@ -176,7 +194,8 @@ class MyPlotPanel(wx.Panel):
 
     def on_motion(self, event):
         if event.inaxes is not None:
-            self.pos_st.SetLabel("({x:<.4f}, {y:<.4f})".format(x=event.xdata, y=event.ydata))
+            self.pos_st.SetLabel(
+                "({x:<.4f}, {y:<.4f})".format(x=event.xdata, y=event.ydata))
 
     def fit_canvas(self):
         """ tight fit canvas layout
@@ -202,10 +221,14 @@ class MyPlotPanel(wx.Panel):
             self.maxlim_st.Disable()
 
             # auto set xy limit
-            min_list = [np.vstack(line.get_data()).min(axis=1).tolist() 
-                            for line in self.axes.get_lines()]
-            max_list = [np.vstack(line.get_data()).max(axis=1).tolist()
-                            for line in self.axes.get_lines()]
+            min_list = [
+                np.vstack(line.get_data()).min(axis=1).tolist()
+                for line in self.axes.get_lines()
+            ]
+            max_list = [
+                np.vstack(line.get_data()).max(axis=1).tolist()
+                for line in self.axes.get_lines()
+            ]
             xmin, ymin = np.array(min_list).min(axis=0)
             xmax, ymax = np.array(max_list).max(axis=0)
             x0, xhw = (xmin + xmax) * 0.5, (xmax - xmin) * 0.5
@@ -230,8 +253,7 @@ class MyPlotPanel(wx.Panel):
                 _ylim = [0, 100]
             self._set_default_minlim(_xlim, _ylim)
             self._set_default_maxlim(_xlim, _ylim)
-        
-    
+
     def _set_default_minlim(self, xlim_array, ylim_array):
         if self._xylim == 'X-Limit':
             self.minlim_tc.SetValue("{xmin:.3g}".format(xmin=xlim_array[0]))
@@ -270,13 +292,14 @@ class MyPlotPanel(wx.Panel):
         elif self._xylim == 'Y-Limit':
             self.axes.set_ylim([vmin, vmax])
         self.refresh()
-            
+
 
 class MyToolbar(Toolbar):
     def __init__(self, canvas):
         Toolbar.__init__(self, canvas)
 
         #self.AddTool(wx.ID_ANY, '')
+
 
 class LatticePlotPanel(MyPlotPanel):
     def __init__(self, parent, **kwargs):
@@ -294,15 +317,15 @@ class LatticePlotPanel(MyPlotPanel):
         if event.inaxes is not None:
             name, type = self.identify_obj(event.xdata)
             if name is not None:
-                self.pos_st.SetLabel("({x:<.4f}, {y:<.4f}) --- [{name} : {type}]".format(
-                    x=event.xdata, y=event.ydata,
-                    name=name,type=type))
+                self.pos_st.SetLabel(
+                    "({x:<.4f}, {y:<.4f}) --- [{name} : {type}]".format(
+                        x=event.xdata, y=event.ydata, name=name, type=type))
             else:
                 self.pos_st.SetLabel("({x:<.4f}, {y:<.4f})".format(
                     x=event.xdata, y=event.ydata))
 
     def identify_obj(self, x):
-        if self.x_pos_list is None: return None,None
+        if self.x_pos_list is None: return None, None
         else:
             try:
                 idx = bisect(self.x_pos_list, x)
@@ -311,6 +334,7 @@ class LatticePlotPanel(MyPlotPanel):
             except IndexError:
                 name, type = None, None
             return name, type
+
 
 class EditListFrame(wx.Frame):
     def __init__(self, parent, string_list=None, label=None):
@@ -324,7 +348,8 @@ class EditListFrame(wx.Frame):
     def _init_ui(self):
         self.panel = wx.Panel(self)
         msizer = wx.BoxSizer(wx.VERTICAL)
-        self.elb = gizmos.EditableListBox(self.panel, -1, label=self.label, size=(250, 250))
+        self.elb = gizmos.EditableListBox(
+            self.panel, -1, label=self.label, size=(250, 250))
         if self.string_list is None:
             self.string_list = []
         self.elb.SetStrings(self.string_list)
@@ -333,7 +358,7 @@ class EditListFrame(wx.Frame):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         cancel_btn = wx.Button(self.panel, label='Cancel')
-        ok_btn     = wx.Button(self.panel, label='OK')
+        ok_btn = wx.Button(self.panel, label='OK')
         hbox.Add(cancel_btn, 0)
         hbox.Add(ok_btn, 0, wx.LEFT, 10)
 
@@ -342,13 +367,14 @@ class EditListFrame(wx.Frame):
         self.panel.SetSizer(msizer)
 
         self.Bind(wx.EVT_BUTTON, self.on_cancel, cancel_btn)
-        self.Bind(wx.EVT_BUTTON, self.on_ok,     ok_btn)
+        self.Bind(wx.EVT_BUTTON, self.on_ok, ok_btn)
 
     def on_cancel(self, event):
         self.Close()
 
     def on_ok(self, event):
         self.Close()
+
 
 class EditFrame(wx.Frame):
     def __init__(self, parent, init_string=None):
@@ -362,7 +388,8 @@ class EditFrame(wx.Frame):
     def _init_ui(self):
         self.panel = wx.Panel(self)
         msizer = wx.BoxSizer(wx.VERTICAL)
-        self.tc = wx.TextCtrl(self.panel, -1, value='', size=(250, 250), style=wx.TE_MULTILINE)
+        self.tc = wx.TextCtrl(
+            self.panel, -1, value='', size=(250, 250), style=wx.TE_MULTILINE)
         if self.init_string is None:
             self.init_string = ''
         self.tc.SetValue(self.init_string)
@@ -371,7 +398,7 @@ class EditFrame(wx.Frame):
 
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         cancel_btn = wx.Button(self.panel, label='Cancel')
-        ok_btn     = wx.Button(self.panel, label='OK')
+        ok_btn = wx.Button(self.panel, label='OK')
         hbox.Add(cancel_btn, 0)
         hbox.Add(ok_btn, 0, wx.LEFT, 10)
 
@@ -380,7 +407,7 @@ class EditFrame(wx.Frame):
         self.panel.SetSizer(msizer)
 
         self.Bind(wx.EVT_BUTTON, self.on_cancel, cancel_btn)
-        self.Bind(wx.EVT_BUTTON, self.on_ok,     ok_btn)
+        self.Bind(wx.EVT_BUTTON, self.on_ok, ok_btn)
 
     def on_cancel(self, event):
         self.Close()
@@ -388,7 +415,10 @@ class EditFrame(wx.Frame):
     def on_ok(self, event):
         self.Close()
 
+
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
+
+
 class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
     def __init__(self, parent, log):
         wx.ListCtrl.__init__(self, parent, -1, style=wx.LC_REPORT)
@@ -399,21 +429,23 @@ class CheckListCtrl(wx.ListCtrl, CheckListCtrlMixin):
     def OnItemActivated(self, event):
         pass
 
+
 class TestFrame(wx.Frame):
     def __init__(self, parent, **kwargs):
         wx.Frame.__init__(self, parent, **kwargs)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
-        m_panel = MyPlotPanel(self, figsize=None,
-                               type='line', toolbar=True)
+        m_panel = MyPlotPanel(self, figsize=None, type='line', toolbar=True)
         sizer.Add(m_panel, 1, wx.ALIGN_CENTER | wx.EXPAND, 10)
         self.SetSizerAndFit(sizer)
+
 
 def test():
     app = wx.App()
     frame = TestFrame(None, title="Matplotlib Panel Test")
     frame.Show()
     app.MainLoop()
+
 
 if __name__ == '__main__':
     test()

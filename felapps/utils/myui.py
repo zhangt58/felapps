@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Jul 11 2016)
+## Python code generated with wxFormBuilder (version Jan 23 2018)
 ## http://www.wxformbuilder.org/
 ##
-## PLEASE DO "NOT" EDIT THIS FILE!
+## PLEASE DO *NOT* EDIT THIS FILE!
 ###########################################################################
 
 import wx
@@ -19,15 +19,16 @@ from . import funutils
 
 class PlotFrame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self,
-                          parent,
-                          id=wx.ID_ANY,
-                          title=wx.EmptyString,
-                          pos=wx.DefaultPosition,
-                          size=wx.Size(1024, 768),
-                          style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
+        wx.Frame.__init__(
+            self,
+            parent,
+            id=wx.ID_ANY,
+            title=wx.EmptyString,
+            pos=wx.DefaultPosition,
+            size=wx.Size(1024, 768),
+            style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
 
-        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
         vbox_m = wx.BoxSizer(wx.VERTICAL)
 
@@ -46,24 +47,24 @@ class PlotFrame(wx.Frame):
         self.imhide_tgbtn = wx.ToggleButton(self.splitter_left, wx.ID_ANY,
                                             u"Hide Image", wx.DefaultPosition,
                                             wx.DefaultSize, 0)
-        hbox_ctrl_t.Add(self.imhide_tgbtn, 0, wx.ALIGN_CENTER_VERTICAL |
-                        wx.ALL, 5)
+        hbox_ctrl_t.Add(self.imhide_tgbtn, 0,
+                        wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.inc_font_btn = wx.BitmapButton(self.splitter_left, wx.ID_ANY,
                                             wx.NullBitmap, wx.DefaultPosition,
                                             wx.DefaultSize, wx.BU_AUTODRAW)
         self.inc_font_btn.SetBitmap(resutils.incrfsicon.GetBitmap())
         #self.inc_font_btn.Bind(wx.EVT_BUTTON, self.onIncFontSize)
-        hbox_ctrl_t.Add(self.inc_font_btn, 0, wx.ALIGN_CENTER_VERTICAL |
-                        wx.ALL, 5)
+        hbox_ctrl_t.Add(self.inc_font_btn, 0,
+                        wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.dec_font_btn = wx.BitmapButton(self.splitter_left, wx.ID_ANY,
                                             wx.NullBitmap, wx.DefaultPosition,
                                             wx.DefaultSize, wx.BU_AUTODRAW)
         self.dec_font_btn.SetBitmap(resutils.decrfsicon.GetBitmap())
         #self.dec_font_btn.Bind(wx.EVT_BUTTON, self.onDecFontSize)
-        hbox_ctrl_t.Add(self.dec_font_btn, 0, wx.ALIGN_CENTER_VERTICAL |
-                        wx.ALL, 5)
+        hbox_ctrl_t.Add(self.dec_font_btn, 0,
+                        wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.ll_origin = wx.RadioButton(self.splitter_left, wx.ID_ANY, u"SW",
                                         wx.DefaultPosition, wx.DefaultSize, 0)
@@ -93,10 +94,10 @@ class PlotFrame(wx.Frame):
                                          wx.NullBitmap, wx.DefaultPosition,
                                          wx.DefaultSize, wx.BU_AUTODRAW)
         w, h = 16, 16
-        k_bmp = wx.EmptyBitmap(w, h)
-        k_img = wx.ImageFromBitmap(k_bmp)
-        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 0, 0, 0)
-        self.gridc_btn.SetBitmap(wx.BitmapFromImage(k_img))
+        k_bmp = wx.Bitmap(w, h)
+        k_img = k_bmp.ConvertToImage()
+        k_img.SetRGB(wx.Rect(0, 0, w, h), 0, 0, 0)
+        self.gridc_btn.SetBitmap(wx.Bitmap(k_img))
         hbox_ctrl_t.Add(self.gridc_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL,
                         5)
 
@@ -107,8 +108,8 @@ class PlotFrame(wx.Frame):
 
         vbox_left.Add(hbox_ctrl_t, 0, wx.EXPAND, 2)
 
-        self.plotpanel = funutils.AnalysisPlotPanel(self.splitter_left,
-                                                    toolbar=True)
+        self.plotpanel = funutils.AnalysisPlotPanel(
+            self.splitter_left, toolbar=True)
         vbox_left.Add(self.plotpanel, 1, wx.ALL | wx.EXPAND, 2)
 
         hbox_ctrl_b = wx.BoxSizer(wx.HORIZONTAL)
@@ -128,10 +129,10 @@ class PlotFrame(wx.Frame):
                                         wx.NullBitmap, wx.DefaultPosition,
                                         wx.DefaultSize, wx.BU_AUTODRAW)
         w, h = 16, 16
-        k_bmp = wx.EmptyBitmap(w, h)
-        k_img = wx.ImageFromBitmap(k_bmp)
-        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 255, 0, 0)
-        self.mkc1_btn.SetBitmap(wx.BitmapFromImage(k_img))
+        k_bmp = wx.Bitmap(w, h)
+        k_img = k_bmp.ConvertToImage()
+        k_img.SetRGB(wx.Rect(0, 0, w, h), 255, 0, 0)
+        self.mkc1_btn.SetBitmap(wx.Bitmap(k_img))
         hbox_ctrl_b.Add(self.mkc1_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.pos2_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"#2",
@@ -143,10 +144,10 @@ class PlotFrame(wx.Frame):
                                         wx.NullBitmap, wx.DefaultPosition,
                                         wx.DefaultSize, wx.BU_AUTODRAW)
         w, h = 16, 16
-        k_bmp = wx.EmptyBitmap(w, h)
-        k_img = wx.ImageFromBitmap(k_bmp)
-        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 240, 230, 140)
-        self.mkc2_btn.SetBitmap(wx.BitmapFromImage(k_img))
+        k_bmp = wx.Bitmap(w, h)
+        k_img = k_bmp.ConvertToImage()
+        k_img.SetRGB(wx.Rect(0, 0, w, h), 240, 230, 140)
+        self.mkc2_btn.SetBitmap(wx.Bitmap(k_img))
         hbox_ctrl_b.Add(self.mkc2_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.pcc_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"M Color",
@@ -158,10 +159,10 @@ class PlotFrame(wx.Frame):
                                        wx.NullBitmap, wx.DefaultPosition,
                                        wx.DefaultSize, wx.BU_AUTODRAW)
         w, h = 16, 16
-        k_bmp = wx.EmptyBitmap(w, h)
-        k_img = wx.ImageFromBitmap(k_bmp)
-        k_img.SetRGBRect(wx.Rect(0, 0, w, h), 0, 0, 0)
-        self.pcc_btn.SetBitmap(wx.BitmapFromImage(k_img))
+        k_bmp = wx.Bitmap(w, h)
+        k_img = k_bmp.ConvertToImage()
+        k_img.SetRGB(wx.Rect(0, 0, w, h), 0, 0, 0)
+        self.pcc_btn.SetBitmap(wx.Bitmap(k_img))
         hbox_ctrl_b.Add(self.pcc_btn, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         fgSizer_info = wx.FlexGridSizer(0, 4, 0, 0)
@@ -173,7 +174,9 @@ class PlotFrame(wx.Frame):
         self.m1_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"M1:",
                                    wx.DefaultPosition, wx.Size(-1, 12), 0)
         self.m1_st.Wrap(-1)
-        self.m1_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.m1_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
         fgSizer_info.Add(self.m1_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
@@ -181,15 +184,19 @@ class PlotFrame(wx.Frame):
                                        wx.EmptyString, wx.DefaultPosition,
                                        wx.DefaultSize, 0)
         self.m1_pos_st.Wrap(-1)
-        self.m1_pos_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.m1_pos_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
-        fgSizer_info.Add(self.m1_pos_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL |
-                         wx.EXPAND, 0)
+        fgSizer_info.Add(self.m1_pos_st, 1,
+                         wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
 
-        self.delx_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}x:",
+        self.delx_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"dx:",
                                      wx.DefaultPosition, wx.DefaultSize, 0)
         self.delx_st.Wrap(-1)
-        self.delx_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.delx_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
         fgSizer_info.Add(self.delx_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
@@ -197,15 +204,19 @@ class PlotFrame(wx.Frame):
                                          wx.EmptyString, wx.DefaultPosition,
                                          wx.DefaultSize, 0)
         self.delx_val_st.Wrap(-1)
-        self.delx_val_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.delx_val_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
-        fgSizer_info.Add(self.delx_val_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL
-                         | wx.EXPAND, 0)
+        fgSizer_info.Add(self.delx_val_st, 1,
+                         wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
 
         self.m2_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"M2:",
                                    wx.DefaultPosition, wx.DefaultSize, 0)
         self.m2_st.Wrap(-1)
-        self.m2_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.m2_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
         fgSizer_info.Add(self.m2_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
@@ -213,15 +224,19 @@ class PlotFrame(wx.Frame):
                                        wx.EmptyString, wx.DefaultPosition,
                                        wx.DefaultSize, 0)
         self.m2_pos_st.Wrap(-1)
-        self.m2_pos_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.m2_pos_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
-        fgSizer_info.Add(self.m2_pos_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL |
-                         wx.EXPAND, 0)
+        fgSizer_info.Add(self.m2_pos_st, 1,
+                         wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
 
-        self.dely_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"\N{GREEK CAPITAL LETTER DELTA}y:",
+        self.dely_st = wx.StaticText(self.splitter_left, wx.ID_ANY, u"dy:",
                                      wx.DefaultPosition, wx.DefaultSize, 0)
         self.dely_st.Wrap(-1)
-        self.dely_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.dely_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
         fgSizer_info.Add(self.dely_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 0)
 
@@ -229,13 +244,15 @@ class PlotFrame(wx.Frame):
                                          wx.EmptyString, wx.DefaultPosition,
                                          wx.DefaultSize, 0)
         self.dely_val_st.Wrap(-1)
-        self.dely_val_st.SetFont(wx.Font(8, 70, 90, 90, False, "Monospace"))
+        self.dely_val_st.SetFont(
+            wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL,
+                    wx.FONTWEIGHT_NORMAL, False, "Monospace"))
 
-        fgSizer_info.Add(self.dely_val_st, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL
-                         | wx.EXPAND, 0)
+        fgSizer_info.Add(self.dely_val_st, 1,
+                         wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
 
-        hbox_ctrl_b.Add(fgSizer_info, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL |
-                        wx.EXPAND, 5)
+        hbox_ctrl_b.Add(fgSizer_info, 1,
+                        wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 5)
 
         vbox_left.Add(hbox_ctrl_b, 0, wx.EXPAND, 2)
 
@@ -250,8 +267,8 @@ class PlotFrame(wx.Frame):
         self.style_panel = wx.Panel(self.splitter_right, wx.ID_ANY,
                                     wx.DefaultPosition, wx.DefaultSize,
                                     wx.TAB_TRAVERSAL)
-        self.style_panel.SetBackgroundColour(wx.SystemSettings.GetColour(
-            wx.SYS_COLOUR_WINDOWFRAME))
+        self.style_panel.SetBackgroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME))
 
         fgsizer_style = wx.FlexGridSizer(0, 2, 0, 4)
         fgsizer_style.SetFlexibleDirection(wx.BOTH)
@@ -264,9 +281,9 @@ class PlotFrame(wx.Frame):
                           5)
 
         cmap_cbChoices = [u"jet"]
-        self.cmap_cb = wx.ComboBox(self.style_panel, wx.ID_ANY, wx.EmptyString,
-                                   wx.DefaultPosition, wx.Size(130, -1),
-                                   cmap_cbChoices, wx.CB_READONLY)
+        self.cmap_cb = wx.ComboBox(
+            self.style_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+            wx.Size(130, -1), cmap_cbChoices, wx.CB_READONLY)
         self.cmap_cb.SetSelection(0)
         fgsizer_style.Add(self.cmap_cb, 1, wx.ALIGN_CENTER_VERTICAL | wx.ALL,
                           5)
@@ -292,12 +309,12 @@ class PlotFrame(wx.Frame):
                           5)
 
         lineid_choiceChoices = []
-        self.lineid_choice = wx.Choice(self.style_panel, wx.ID_ANY,
-                                       wx.DefaultPosition, wx.Size(130, -1),
-                                       lineid_choiceChoices, 0)
+        self.lineid_choice = wx.Choice(
+            self.style_panel, wx.ID_ANY, wx.DefaultPosition,
+            wx.Size(130, -1), lineid_choiceChoices, 0)
         self.lineid_choice.SetSelection(0)
-        fgsizer_style.Add(self.lineid_choice, 0, wx.ALIGN_CENTER_VERTICAL |
-                          wx.ALL, 5)
+        fgsizer_style.Add(self.lineid_choice, 0,
+                          wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.lc_st = wx.StaticText(self.style_panel, wx.ID_ANY, u"Line Color",
                                    wx.DefaultPosition, wx.DefaultSize, 0)
@@ -309,13 +326,14 @@ class PlotFrame(wx.Frame):
         self.lc_bmp = wx.StaticBitmap(self.style_panel, wx.ID_ANY,
                                       wx.NullBitmap, wx.DefaultPosition,
                                       wx.Size(16, 16), 0)
-        lc_hbox.Add(self.lc_bmp, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT |
-                    wx.RIGHT, 5)
+        lc_hbox.Add(self.lc_bmp, 0,
+                    wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
 
         self.lc_btn = wx.Button(self.style_panel, wx.ID_ANY, u"Pick Color",
                                 wx.DefaultPosition, wx.Size(-1, -1), 0)
-        lc_hbox.Add(self.lc_btn, 1, wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM |
-                    wx.RIGHT | wx.TOP, 5)
+        lc_hbox.Add(self.lc_btn, 1,
+                    wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM | wx.RIGHT | wx.TOP,
+                    5)
 
         fgsizer_style.Add(lc_hbox, 1, wx.EXPAND, 5)
 
@@ -325,9 +343,9 @@ class PlotFrame(wx.Frame):
         fgsizer_style.Add(self.ls_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         ls_cbChoices = [u"solid"]
-        self.ls_cb = wx.ComboBox(self.style_panel, wx.ID_ANY, wx.EmptyString,
-                                 wx.DefaultPosition, wx.Size(130, -1),
-                                 ls_cbChoices, wx.CB_READONLY)
+        self.ls_cb = wx.ComboBox(
+            self.style_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+            wx.Size(130, -1), ls_cbChoices, wx.CB_READONLY)
         self.ls_cb.SetSelection(0)
         fgsizer_style.Add(self.ls_cb, 0, wx.ALL, 5)
 
@@ -337,8 +355,8 @@ class PlotFrame(wx.Frame):
         fgsizer_style.Add(self.lw_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.lw_tc = wx.TextCtrl(self.style_panel, wx.ID_ANY, u"1",
-                                 wx.DefaultPosition, wx.Size(130, -1),
-                                 wx.TE_PROCESS_ENTER)
+                                 wx.DefaultPosition,
+                                 wx.Size(130, -1), wx.TE_PROCESS_ENTER)
         fgsizer_style.Add(self.lw_tc, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.mk_st = wx.StaticText(self.style_panel, wx.ID_ANY,
@@ -348,9 +366,9 @@ class PlotFrame(wx.Frame):
         fgsizer_style.Add(self.mk_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         mk_cbChoices = [u"circle"]
-        self.mk_cb = wx.ComboBox(self.style_panel, wx.ID_ANY, wx.EmptyString,
-                                 wx.DefaultPosition, wx.Size(130, -1),
-                                 mk_cbChoices, wx.CB_READONLY)
+        self.mk_cb = wx.ComboBox(
+            self.style_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+            wx.Size(130, -1), mk_cbChoices, wx.CB_READONLY)
         self.mk_cb.SetSelection(0)
         fgsizer_style.Add(self.mk_cb, 0, wx.ALL, 5)
 
@@ -360,8 +378,8 @@ class PlotFrame(wx.Frame):
         fgsizer_style.Add(self.ms_st, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.ms_tc = wx.TextCtrl(self.style_panel, wx.ID_ANY, u"5",
-                                 wx.DefaultPosition, wx.Size(130, -1),
-                                 wx.TE_PROCESS_ENTER)
+                                 wx.DefaultPosition,
+                                 wx.Size(130, -1), wx.TE_PROCESS_ENTER)
         fgsizer_style.Add(self.ms_tc, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5)
 
         self.mec_st = wx.StaticText(self.style_panel, wx.ID_ANY,
@@ -375,13 +393,14 @@ class PlotFrame(wx.Frame):
         self.mec_bmp = wx.StaticBitmap(self.style_panel, wx.ID_ANY,
                                        wx.NullBitmap, wx.DefaultPosition,
                                        wx.Size(16, 16), 0)
-        mec_hbox.Add(self.mec_bmp, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT |
-                     wx.RIGHT, 5)
+        mec_hbox.Add(self.mec_bmp, 0,
+                     wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
 
         self.mec_btn = wx.Button(self.style_panel, wx.ID_ANY, u"Pick Color",
                                  wx.DefaultPosition, wx.Size(-1, -1), 0)
-        mec_hbox.Add(self.mec_btn, 1, wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM |
-                     wx.RIGHT | wx.TOP, 5)
+        mec_hbox.Add(self.mec_btn, 1,
+                     wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM | wx.RIGHT | wx.TOP,
+                     5)
 
         fgsizer_style.Add(mec_hbox, 1, wx.EXPAND, 5)
 
@@ -396,21 +415,22 @@ class PlotFrame(wx.Frame):
         self.mfc_bmp = wx.StaticBitmap(self.style_panel, wx.ID_ANY,
                                        wx.NullBitmap, wx.DefaultPosition,
                                        wx.Size(16, 16), 0)
-        mfc_hbox.Add(self.mfc_bmp, 0, wx.ALIGN_CENTER_VERTICAL | wx.LEFT |
-                     wx.RIGHT, 5)
+        mfc_hbox.Add(self.mfc_bmp, 0,
+                     wx.ALIGN_CENTER_VERTICAL | wx.LEFT | wx.RIGHT, 5)
 
         self.mfc_btn = wx.Button(self.style_panel, wx.ID_ANY, u"Pick Color",
                                  wx.DefaultPosition, wx.Size(-1, -1), 0)
-        mfc_hbox.Add(self.mfc_btn, 1, wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM |
-                     wx.RIGHT | wx.TOP, 5)
+        mfc_hbox.Add(self.mfc_btn, 1,
+                     wx.ALIGN_CENTER_VERTICAL | wx.BOTTOM | wx.RIGHT | wx.TOP,
+                     5)
 
         fgsizer_style.Add(mfc_hbox, 1, wx.EXPAND, 5)
 
         self.style_panel.SetSizer(fgsizer_style)
         self.style_panel.Layout()
         fgsizer_style.Fit(self.style_panel)
-        vbox_right.Add(self.style_panel, 1, wx.EXPAND | wx.LEFT | wx.RIGHT |
-                       wx.TOP, 5)
+        vbox_right.Add(self.style_panel, 1,
+                       wx.EXPAND | wx.LEFT | wx.RIGHT | wx.TOP, 5)
 
         self.m_staticline1 = wx.StaticLine(self.splitter_right, wx.ID_ANY,
                                            wx.DefaultPosition, wx.DefaultSize,
@@ -420,10 +440,10 @@ class PlotFrame(wx.Frame):
         self.result_panel = wx.Panel(self.splitter_right, wx.ID_ANY,
                                      wx.DefaultPosition, wx.DefaultSize,
                                      wx.TAB_TRAVERSAL)
-        self.result_panel.SetForegroundColour(wx.SystemSettings.GetColour(
-            wx.SYS_COLOUR_WINDOW))
-        self.result_panel.SetBackgroundColour(wx.SystemSettings.GetColour(
-            wx.SYS_COLOUR_WINDOWFRAME))
+        self.result_panel.SetForegroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        self.result_panel.SetBackgroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME))
 
         vbox_res = wx.BoxSizer(wx.VERTICAL)
 
@@ -431,28 +451,32 @@ class PlotFrame(wx.Frame):
                                        u"Fitting Output:", wx.DefaultPosition,
                                        wx.DefaultSize, 0)
         self.output_st.Wrap(-1)
-        self.output_st.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90,
-                                       90, False, wx.EmptyString))
-        self.output_st.SetForegroundColour(wx.SystemSettings.GetColour(
-            wx.SYS_COLOUR_WINDOWTEXT))
+        self.output_st.SetFont(
+            wx.Font(wx.NORMAL_FONT.GetPointSize(), wx.FONTFAMILY_DEFAULT,
+                    wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
+                    wx.EmptyString))
+        self.output_st.SetForegroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWTEXT))
 
         vbox_res.Add(self.output_st, 0, wx.ALL, 5)
 
         self.output_tc = wx.TextCtrl(
             self.result_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
             wx.DefaultSize, wx.TE_MULTILINE | wx.TE_READONLY)
-        self.output_tc.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90,
-                                       90, False, "Monospace"))
-        self.output_tc.SetBackgroundColour(wx.SystemSettings.GetColour(
-            wx.SYS_COLOUR_WINDOWFRAME))
+        self.output_tc.SetFont(
+            wx.Font(wx.NORMAL_FONT.GetPointSize(), wx.FONTFAMILY_DEFAULT,
+                    wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False,
+                    "Monospace"))
+        self.output_tc.SetBackgroundColour(
+            wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME))
 
         vbox_res.Add(self.output_tc, 1, wx.ALL | wx.EXPAND, 1)
 
         self.result_panel.SetSizer(vbox_res)
         self.result_panel.Layout()
         vbox_res.Fit(self.result_panel)
-        vbox_right.Add(self.result_panel, 1, wx.BOTTOM | wx.EXPAND | wx.LEFT |
-                       wx.RIGHT, 5)
+        vbox_right.Add(self.result_panel, 1,
+                       wx.BOTTOM | wx.EXPAND | wx.LEFT | wx.RIGHT, 5)
 
         hbox_ctrl1 = wx.BoxSizer(wx.HORIZONTAL)
 
