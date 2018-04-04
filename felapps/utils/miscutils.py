@@ -5,13 +5,13 @@
 class AppVersions():
     def __init__(self):
         self.versions = {
-                         'imageviewer'  : '1.4.1',
-                         'cornalyzer'   : '2.0',
+                         'imageviewer'  : '1.4.2',
+                         'cornalyzer'   : '2.0.1',
                          'felformula'   : '1.4',
                          'dataworkshop' : '1.1',
                          'matchwizard'  : '1.0',
                          'wxmpv'        : '0.2',
-                         'appdrawer'    : '1.5.16',
+                         'appdrawer'    : '2.0.0',
                          }
 
     def setVersion(self, verNum, appName = 'imageviewer'):
